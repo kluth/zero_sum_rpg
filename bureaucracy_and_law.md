@@ -1,8 +1,11 @@
 # Bureaucracy and Law: The Silent War
+![The Boardroom](assets/spire_boardroom_1781869498874.jpg)
 
 In *Zero Sum*, the most dangerous adversaries do not carry firearms. They carry clipboards, injunctions, and itemized billing software. Combat against the system is fought through litigation, metadata scraping, and leveraging secrets.
 
 ## 1. The Auditors
+![The Auditor](assets/auditor_faceless_1781869450046.jpg)
+
 The Auditors are corporate accountants flanked by heavily armed, private military contractors. They represent the apex predators of the financial ecosystem. 
 - **Modus Operandi:** Auditors do not shoot; they arrive mid-firefight or shortly after to serve immediate legal injunctions.
 - **Abilities:** They can remotely freeze a character's bank accounts, revoke DRM licenses on cybernetics or weaponry, and legally claim a character's internal organs to settle defaulted debts.
