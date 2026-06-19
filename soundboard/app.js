@@ -12,7 +12,13 @@ const audioMap = {
     'btn-suppressed-shot': 'audio/suppressed_shot.mp3',
     'btn-police-sirens': 'audio/police_sirens.mp3',
     'btn-system-compromise': 'audio/system_compromise.mp3',
-    'btn-burn-tie': 'audio/burn_tie.mp3'
+    'btn-burn-tie': 'audio/burn_tie.mp3',
+    'btn-crowd-protest': 'audio/crowd_protest.mp3',
+    'btn-crowd-riot': 'audio/crowd_riot.mp3',
+    'btn-crowd-panic': 'audio/crowd_panic.mp3',
+    'btn-chant-usa': 'audio/chant_usa.mp3',
+    'btn-chant-uk': 'audio/chant_uk.mp3',
+    'btn-chant-france': 'audio/chant_france.mp3'
 };
 
 const activeAudio = {};
