@@ -18,7 +18,9 @@ const audioMap = {
     'btn-crowd-panic': 'audio/crowd_panic.mp3',
     'btn-chant-usa': 'audio/chant_usa.mp3',
     'btn-chant-uk': 'audio/chant_uk.mp3',
-    'btn-chant-france': 'audio/chant_france.mp3'
+    'btn-chant-france': 'audio/chant_france.mp3',
+    'btn-chant-china': 'audio/chant_china.mp3',
+    'btn-chant-russia': 'audio/chant_russia.mp3'
 };
 
 const activeAudio = {};
