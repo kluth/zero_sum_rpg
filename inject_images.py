@@ -3,31 +3,31 @@ import re
 
 mapping = {
     "real_world_npcs.md": [
-        ("Elias Vance", "elias_vance_monochrome.jpg"),
-        ("Viktor Petrov", "viktor_petrov_monochrome.jpg"),
-        ("El Fantasma", "el_fantasma_monochrome.jpg"),
-        ("Director Yossi", "director_yossi_monochrome.jpg"),
-        ("Chairman Wei", "chairman_wei_monochrome.jpg"),
-        ("Simon Black", "simon_black_monochrome.jpg")
+        ("Elias Vance", "elias_vance_redacted.jpg"),
+        ("Viktor Petrov", "viktor_petrov_redacted.jpg"),
+        ("El Fantasma", "el_fantasma_redacted.jpg"),
+        ("Director Yossi", "director_yossi_redacted.jpg"),
+        ("Chairman Wei", "chairman_wei_redacted.jpg"),
+        ("Simon Black", "simon_black_redacted.jpg")
     ],
     "factions.md": [
-        ("Valkyrie", "valkyrie_pmc_monochrome.jpg"),
-        ("Dark Money", "dark_money_syndicate_monochrome.jpg"),
-        ("Hacker", "underground_hackers_monochrome.jpg")
+        ("Valkyrie", "valkyrie_pmc_redacted.jpg"),
+        ("Dark Money", "dark_money_syndicate_redacted.jpg"),
+        ("Hacker", "underground_hackers_redacted.jpg")
     ],
     "locations.md": [
-        ("Drone", "drone_zone_monochrome.jpg"),
-        ("Geneva", "geneva_freeport_monochrome.jpg"),
-        ("Ashburn", "ashburn_data_center_monochrome.jpg"),
-        ("Climate", "climate_disaster_zone_monochrome.jpg"),
-        ("Frontline", "eastern_european_frontline_monochrome.jpg"),
-        ("Transnistria", "transnistria_monochrome.jpg"),
-        ("K Street", "k_street_firm_monochrome.jpg")
+        ("Drone", "drone_zone_redacted.jpg"),
+        ("Geneva", "geneva_freeport_redacted.jpg"),
+        ("Ashburn", "ashburn_data_center_redacted.jpg"),
+        ("Climate", "climate_disaster_zone_redacted.jpg"),
+        ("Frontline", "eastern_european_frontline_redacted.jpg"),
+        ("Transnistria", "transnistria_redacted.jpg"),
+        ("K Street", "k_street_firm_redacted.jpg")
     ],
     "items_and_tech.md": [
-        ("Aether", "aether_headset_monochrome.jpg"),
-        ("Wallet", "encrypted_cold_wallet_monochrome.jpg"),
-        ("Zero-Day", "zero_day_exploit_monochrome.jpg")
+        ("Aether", "aether_headset_redacted.jpg"),
+        ("Wallet", "encrypted_cold_wallet_redacted.jpg"),
+        ("Zero-Day", "zero_day_exploit_redacted.jpg")
     ]
 }
 

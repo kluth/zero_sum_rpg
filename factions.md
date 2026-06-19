@@ -14,7 +14,7 @@ Corporate equivalents of intelligence agencies, offering deniable operations to 
 
 ## 3. High Finance & "Dark Money"
 
-![Dark Money](assets/dark_money_syndicate_abstract_1781871118865.jpg)
+![Dark Money](assets/dark_money_syndicate_redacted.jpg)
 
 The people who actually run the world. They don't use guns; they use algorithmic trading and offshore tax havens.
 * **The Sovereign Wealth Syndicates:** Trillions of dollars hidden in shell companies across the Cayman Islands, Delaware, and Swiss Freeports. They will eliminate anyone who threatens their financial secrecy.
