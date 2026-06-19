@@ -59,7 +59,8 @@ class ZeroSumScenarioGenerator:
             "Degrees of Separation (D)": degrees_of_separation,
             "Violence Probability (V)": round(violence_probability, 2),
             "Player Resources (R)": player_resources,
-            "Initial Heat (I)": initial_heat
+            "Initial Heat (I)": initial_heat,
+            "Security Tier": mac_tier
         }
         return scenario
 
