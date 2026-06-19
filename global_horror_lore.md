@@ -4,7 +4,7 @@ In *Zero Sum*, the most terrifying monsters are human logistics, unchecked algor
 
 ## 1. The Cyber-Cartels (Latin America)
 The cartels of the 2020s are no longer just drug runners; they are heavily armed tech conglomerates. 
-* **The Horror:** They don't just kidnap people for ransom; they kidnap telecommunications engineers to build private, shadow cellular networks across the jungle. They use militarized drones to drop explosives and employ ex-special forces with night-vision optics. 
+* **The Horror:** They don't just kidnap people for ransom; they kidnap telecommunications engineers to build private, shadow cellular networks across the jungle. They use commercial quadcopters to drop improvised explosives and employ ex-special forces with night-vision optics. 
 * **The Thriller Aspect:** A cartel doesn't just shoot a journalist. They use NSO-style spyware to track the journalist's family, send them a livestream of their living room, and force the journalist to write cartel propaganda to save their children.
 
 ## 2. The Panopticon & Social Erasure (East Asia)
@@ -27,10 +27,10 @@ The bureaucratic, sterilized horror of the "Global War on Terror" infrastructure
 * **The Horror:** You don't get a trial. You get a hood placed over your head in an airport parking lot, loaded onto an unmarked Gulfstream jet, and flown to a secret prison operating in a legal gray zone (like historical sites in Poland or Romania). 
 * **The Thriller Aspect:** "Enhanced interrogation." Sleep deprivation, sound torture, and sensory deprivation. If a player or their Tie is taken, the rescue mission isn't just a shootout; it's a desperate race to find a building that doesn't officially exist before the victim's mind is permanently broken.
 
-## 6. Militarized AI and Autonomous Warfare (The Drone-Zones)
+## 6. Automated Warfare (The Kill-Zones)
 In the active warzones and resource-extraction borders of 2026, humans have been removed from the kill chain.
-* **The Horror:** Entire territories are designated as "Autonomous Containment Zones" (ACZs), policed by low-altitude drone swarms executing algorithmic targeting models. These systems do not require human authorization to fire; they scan for biometric gait signatures, thermal profiles, and electronic emissions. If an individual matches the behavioral model of a combatant or a trespasser (e.g., running, carrying a metallic object, hiding under foliage), the algorithm registers them as a target and dispatches a kinetic micro-drone to execute them.
-* **The Thriller Aspect:** Players navigating a drone-zone cannot use their kinetics to dodge bullets or hide from guards. They are fighting mathematical probabilities. They must keep their heart rates low, mask their heat signatures, and move in irregular, non-human patterns to avoid triggering the automated classification algorithm. A single panicky sprint can flag them as "threat signature: positive" and trigger a swarm.
+* **The Horror:** Entire territories are designated as "Autonomous Containment Zones" (ACZs), policed by automated sniper turrets and static sensor networks executing algorithmic targeting models. These systems do not require human authorization to fire; they scan for biometric gait signatures, thermal profiles, and electronic emissions. If an individual matches the behavioral model of a combatant or a trespasser (e.g., running, carrying a metallic object, hiding under foliage), the algorithm registers them as a target and fires automatically.
+* **The Thriller Aspect:** Players navigating a kill-zone cannot use their kinetics to dodge bullets or hide from guards. They are fighting mathematical probabilities. They must keep their heart rates low, mask their heat signatures, and move in irregular, non-human patterns to avoid triggering the automated classification algorithm. A single panicky sprint can flag them as "threat signature: positive" and trigger the turrets.
 
 ## 7. Digital Asylums (Algorithmic Gaslighting)
 When the system cannot capture your body, it captures your past, trapping you in a jail built of artificial memories.

@@ -27,7 +27,7 @@ Once money is programmable, the Factions can instantly execute **Financial Excom
 
 
 ### 3. The Proxy Wars (Distraction & R&D)
-The horrific grinding wars in Eastern Europe and the Middle East are not just for territory. They are **The Distraction**. By forcing national governments to pour trillions of dollars into proxy wars, those nations are rapidly marching toward sovereign bankruptcy. Simultaneously, these warzones act as **The R&D Labs** for the autonomous drone swarms and facial recognition tech that will soon be used to police the new corporate mega-cities.
+The horrific grinding wars in Eastern Europe and the Middle East are not just for territory. They are **The Distraction**. By forcing national governments to pour trillions of dollars into proxy wars, those nations are rapidly marching toward sovereign bankruptcy. Simultaneously, these warzones act as **The R&D Labs** for the automated perimeter turrets and facial recognition tech that will soon be used to police the new corporate mega-cities.
 
 ### 4. Climate Collapse (Disaster Capitalism)
 The climate crisis wasn't engineered by the Factions, but they are the ones ruthlessly capitalizing on it. As wildfires, heatwaves, and flooding render rural areas uninhabitable, the Factions use supply-chain manipulation to restrict aid. The global population is thus forced to migrate into hyper-dense, corporate-owned "Smart Cities." The disaster is the shepherd; the Panopticon is the pen.

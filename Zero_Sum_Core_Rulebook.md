@@ -19,7 +19,7 @@
 ## CHAPTER 1: The Global Horror of Zero Sum
 
 ### 1.1 The Core Truth
-*Zero Sum* is a tabletop roleplaying game set in the bleeding edge of 2026. This is a game of systemic horror. There are no monsters; instead, there are algorithmic bank runs, cartel hit-squads using militarized drones, AI-generated blackmail, and extraordinary rendition flights to black sites. The players are outmatched, out-funded, and hunted across a global board.
+*Zero Sum* is a tabletop roleplaying game set in the bleeding edge of 2026. This is a game of systemic horror. There are no monsters; instead, there are algorithmic bank runs, cartel hit-squads using commercial quadcopters with explosives, AI-generated blackmail, and extraordinary rendition flights to black sites. The players are outmatched, out-funded, and hunted across a global board.
 
 ### 1.3 The Grand Unification: The Paradigm Shift
 The chaos of the 2020s is not random. The wars, the AI explosion, the crypto crashes, and the climate disasters are all interlocking gears of a single, coordinated meta-plot known as **The Paradigm Shift**. The ultimate goal of the highest-tier factions is the "Post-State Era": bankrupting national governments through proxy wars and crises so that Algorithmic Corporate Hegemonies can take over. Every single crisis relies on the others to herd the global population into total compliance.
@@ -51,7 +51,7 @@ The mind and body can only withstand so much tension before the cracks begin to 
 * **Fully Depleting Load:** If a character's Cognitive Load reaches its maximum capacity (filled to its limit), they immediately suffer a **Psychological Burn** (see Section 2.4).
 
 ### 2.3 Refined Desensitization Levels
-When characters face truly horrific scenarios—such as discovering a family member's home has been bugged, witnessing an autonomous drone strike, or viewing a cartel torture video—the shock bypasses temporary load and leaves lasting damage. When a character fails a **Detachment** roll under these circumstances, they suffer a condition called **Desensitization**. 
+When characters face truly horrific scenarios—such as discovering a family member's home has been bugged, witnessing an automated turret execution, or viewing a cartel torture video—the shock bypasses temporary load and leaves lasting damage. When a character fails a **Detachment** roll under these circumstances, they suffer a condition called **Desensitization**. 
 
 Desensitization manifests in three progressive levels of severity, applying **Situational Complications** (never permanent attribute penalties, to avoid a death spiral):
 * **Mild Desensitization:** Represents initial psychological scarring. It imposes a minor situational complication (e.g., *Hypervigilance*—you cannot reroll 1s on social checks; or *Numbness*—you take 1 extra minute to perform fine-motor tasks).
@@ -111,7 +111,7 @@ Characters are built on three dualities, containing six attributes.
 * *Physical:* Firearms (Penalized heavily), Evasion, Close-Quarters, Athletics.
 
 ### 3.3 The Desensitization System
-Instead of simple "Health," characters suffer specific Desensitization conditions when confronted by the horrors of the real world (e.g., watching a cartel flaying video, realizing your family is targeted, witnessing a drone strike).
+Instead of simple "Health," characters suffer specific Desensitization conditions when confronted by the horrors of the real world (e.g., watching a cartel flaying video, realizing your family is targeted, witnessing an automated execution).
 As detailed in Chapter 2, when a character fails a **Detachment** roll in a horrific situation, they gain a condition at either the **Mild** or **Severe** level:
 * **Paranoia (Severe):** You cannot sleep in the same place twice (behavioral restriction).
 * **Obsession (Severe):** You must pursue the conspiracy, regardless of the danger, checking every lead immediately (behavioral restriction).
@@ -136,7 +136,7 @@ As detailed in Chapter 2, when a character fails a **Detachment** roll in a horr
 ## CHAPTER 5: Combat & Autopsies (Why Violence Fails)
 
 In *Zero Sum*, drawing a weapon is a failure state. 
-* **Asymmetric Power:** You have a 9mm handgun. The PMC hunting you has thermal-optic drones, body armor, and legal immunity.
+* **Asymmetric Power:** You have a 9mm handgun. The PMC hunting you has thermal-optic sights, body armor, and legal immunity.
 * **The Forensic Nightmare:** Firing a gun leaves gunshot residue, casings, and acoustic signatures picked up by city-wide ShotSpotter microphones. Police response is measured in seconds.
 * **Damage:** There are no HP sponges. A single bullet causes a **Severe Wound** (bleeding out, -2 to all physical rolls). Two bullets usually result in a **Critical Wound** (death within minutes).
 
@@ -153,7 +153,7 @@ In *Zero Sum*, drawing a weapon is a failure state.
 
 ### 6.2 Wars & Existential Cover Operations
 Wars in *Zero Sum* are massive laundering machines and R&D labs.
-* **Active Warzones (Eastern Europe, Middle East):** Used to test autonomous drones and facial recognition on captive populations.
+* **Active Warzones (Eastern Europe, Middle East):** Used to test automated sniper turrets and facial recognition on captive populations.
 * **Climate Collapse:** Weaponized via "Disaster Capitalism." PMCs secure fresh water aquifers during engineered crises.
 * **Bio-Security (Pandemics):** The threat of viruses is used to enforce mandatory DNA harvesting and digital movement-tracking passports.
 
