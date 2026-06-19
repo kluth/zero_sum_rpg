@@ -6,7 +6,13 @@ const audioMap = {
     'btn-debt-ledger': 'audio/debt_ledger.mp3',
     'btn-data-scrub': 'audio/data_scrub.mp3',
     'btn-heartbeat': 'audio/heartbeat.mp3',
-    'btn-cpem-eval': 'audio/cpem_eval.mp3'
+    'btn-cpem-eval': 'audio/cpem_eval.mp3',
+    'btn-burner-ring': 'audio/burner_ring.mp3',
+    'btn-imsi-catch': 'audio/imsi_catch.mp3',
+    'btn-suppressed-shot': 'audio/suppressed_shot.mp3',
+    'btn-police-sirens': 'audio/police_sirens.mp3',
+    'btn-system-compromise': 'audio/system_compromise.mp3',
+    'btn-burn-tie': 'audio/burn_tie.mp3'
 };
 
 const activeAudio = {};
