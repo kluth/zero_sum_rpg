@@ -22,10 +22,13 @@ Scarcity is a core theme. Numbers on a page are easily ignored, but physical tok
 ![The Black Market Kiosk](assets/black_market_kiosk_redacted.jpg)
 
 Instead of a digital ticker, the GM rolls for Market Fluctuations in front of the players at the start of every session (or whenever they visit a vendor).
-- **The Market Roll:** Roll a D100 on the **Market Crash Table**.
+- **The Market Roll:** Roll a D10 Dice Pool on the **Market Crash Table**.
 - **Outcomes:** A low roll means the market is stable (prices are standard). A high roll indicates a crisis (e.g., Syndicate blockade, Corporate tax hike), applying a percentage multiplier (e.g., +50%, +200%) to all basic goods like ammo and medicine for the duration of the session.
 
 ## 5. The Itemized Receipt
 At the end of a session, instead of simply awarding "XP and Loot," the GM physically hands each player a printed **Itemized Operational Receipt**.
 - The GM fills in the blanks: Gross Payout, Ammo Deductions, Bio-Hazard Cleanup, and Net Profit.
 - Players must then copy their Net Profit (which is often a negative number) onto their Debt Ledger in red ink.
+
+### Metadata Exhaust & The Debt Ledger
+Players must scrub their Metadata Exhaust using the physical Debt Ledger. By physically writing a new debt line item, a player reduces their Metadata Exhaust by 1. Alternatively, they can hand the GM an Analogue Market token to erase 1 Exhaust.

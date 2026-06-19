@@ -10,7 +10,7 @@ These aren't rogue agents; they are the system working exactly as designed.
 ## 2. Private Intelligence & Cyber Mercenaries
 Corporate equivalents of intelligence agencies, offering deniable operations to the highest bidder.
 * **Aegis Analytics:** A data-mining firm that weaponizes social media data and psychological profiling to rig elections and destroy reputations.
-* **Vanguard Solutions:** Purveyors of military-grade spyware (similar to Pegasus/NSO Group). They sell zero-click smartphone exploits to authoritarian regimes and nervous billionaires.
+* **Vanguard Solutions:** Purveyors of military-grade spyware (similar to Pegasus/Krieger-Vanguard Intelligence Division). They sell zero-click smartphone exploits to authoritarian regimes and nervous billionaires.
 
 ## 3. High Finance & "Dark Money"
 

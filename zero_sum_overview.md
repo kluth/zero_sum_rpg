@@ -7,28 +7,28 @@ Below is the complete abstract of the game's current state, its rules, lore, and
 ---
 
 ## 1. Core Concept & Setting
-The game takes place in a world reeling from **The Paradigm Shift (2022-2026)**, a catastrophic era where the global economy collapsed, and reality itself fractured. Mega-corporations have transcended nations, establishing a totalitarian neo-feudalism. At the same time, the collective trauma of humanity has manifested as literal, paranormal phenomena. The world is bathed in moral gray areas, brutal economic survival, and sanity-shredding horrors. 
+The game takes place in a world reeling from **The Paradigm Shift (2022-2026)**, a catastrophic era where the global economy collapsed, and reality itself fractured. Mega-corporations have transcended nations, establishing a totalitarian neo-feudalism. At the same time, the collective psychological burn of humanity has manifested as literal, paranormal phenomena. The world is bathed in moral gray areas, brutal economic survival, and sanity-shredding horrors. 
 
 ## 2. Game Mechanics
-- **The Fracture System (D100):** A percentile-based resolution system where rolling lower is better. Pushing a roll increases the risk of a "Fracture" (a critical failure that permanently alters the character's psyche or reality).
-- **Zero Sum Combat:** Violence is inherently destructive. Even when a character wins a physical confrontation, they suffer inevitable resource depletion, physical injury, or psychological trauma. There are no clean victories.
-- **Trauma & Sanity Tracking:** Characters accrue "Trauma Points" instead of losing hit points. When Trauma maxes out, characters develop permanent psychological scars or terrifying paranormal afflictions.
+- **The Fracture System (D10 Dice Pool):** A percentile-based resolution system where rolling lower is better. Pushing a roll increases the risk of a "Fracture" (a critical failure that permanently alters the character's psyche or reality).
+- **Zero Sum Combat:** Violence is inherently destructive. Even when a character wins a physical confrontation, they suffer inevitable resource depletion, physical injury, or psychological psychological burn. There are no clean victories.
+- **Psychological Burn & Sanity Tracking:** Characters accrue "Psychological Burn Points" instead of losing hit points. When Psychological Burn maxes out, characters develop permanent psychological scars or terrifying paranormal afflictions.
 - **Hyper-Capitalist Logistics:** Ammo, food, and medicine are scarcer than human life. Inventory management and economic bartering are central to survival. 
 
 ## 3. World Lore & Factions
-- **Global Horror Lore:** The paranormal elements are psychological in nature. Horrors are manifested from corporate greed, societal despair, and existential dread (e.g., "The Harvesters").
+- **Global Horror Lore:** The paranormal elements are psychological in nature. Horrors are manifested from corporate greed, societal despair, and existential dread (e.g., "The Corporate Auditors").
 - **The Factions:**
   - **The Board:** The ultimate, faceless corporate oligarchy that controls the remnants of civilization.
   - **The Null-State Insurgents:** Radical anarchists attempting to break the system through violent, unpredictable means.
   - **Black Market Cartels (The Syndicate):** Opportunists who control the flow of illicit goods, illegal surveillance tech, and forbidden information.
-  - **The Harvesters:** Paranormal entities drawn to intense human misery and debt.
+  - **The Corporate Auditors:** Paranormal entities drawn to intense human misery and debt.
 
 ## 4. Key NPCs & Locations
-- **Locations:** The neon-drenched corporate monoliths of **The Spire**, the decaying **Sub-City Havens**, hidden **Black Sites** used for horrific experiments, and the irradiated **Wastes** outside the city zones.
+- **Locations:** The neon-drenched corporate monoliths of **The Omni-Stat Global Headquarters**, the decaying **Sub-City Havens**, hidden **Black Sites** used for horrific experiments, and the irradiated **Wastes** outside the city zones.
 - **Major NPCs:** 
-  - **Elias Vance** (Corporate defector)
-  - **Viktor Petrov** (Syndicate boss)
-  - **Simon Black** (Mercenary commander)
+  - **The Architect** (Corporate defector)
+  - **The Siloviki** (Syndicate boss)
+  - **The Fixer** (Mercenary commander)
   - **The Broker** & **The Archivist**
   *Artistic Note:* All human characters are visually represented not as distinct individuals, but as featureless shadows and surreal "Fratzen" (distorted faces), reflecting the loss of humanity and identity within the system.
 

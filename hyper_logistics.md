@@ -6,7 +6,7 @@ In *Zero Sum*, the economy is the deadliest enemy in the game. Combat shouldn't 
 ![Corporate Debt Notice](assets/corporate_debt_notice_redacted.jpg)
 
 Characters do not start at zero; they start with crippling debt (housing, medical, oxygen taxes). **Debt is a core stat.**
-- **The Transfer:** If a character dies or their Trauma maxes out, they aren't simply removed from the game. Due to the "Guarantor Act," their negative balance is legally transferred to their designated emergency contact.
+- **The Transfer:** If a character dies or their Psychological Burn maxes out, they aren't simply removed from the game. Due to the "Guarantor Act," their negative balance is legally transferred to their designated emergency contact.
 - **Next-of-Kin:** The player's *newly rolled character* is this emergency contact. You inherit your predecessor's financial ruin, ensuring that death offers no escape from the Board's ledgers.
 
 ## 2. Algorithmic Surge Pricing

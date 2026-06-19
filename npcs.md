@@ -3,7 +3,7 @@
 In *Zero Sum*, NPCs are defined by their leverage, their resources, and their breaking point. No one is fearless.
 
 ## The Fixers & Handlers
-* **Elias Vance (The Information Broker):** Operates out of an antique bookstore in Berlin. He communicates entirely offline via one-time pads. He has access to zero-day exploits and leaked databases, but his prices are exorbitant, and he will sell the players out if a major intelligence agency corners him.
+* **The Architect (The Information Broker):** Operates out of an antique bookstore in Berlin. He communicates entirely offline via one-time pads. He has access to zero-day exploits and leaked databases, but his prices are exorbitant, and he will sell the players out if a major intelligence agency corners him.
 * **Sarah Chen (The Burned Lawyer):** A former corporate litigator who found out too much about a sovereign wealth fund. She now operates from the shadows, providing players with legal loopholes, forged documents, and emergency safehouses. 
 
 ## The Antagonists

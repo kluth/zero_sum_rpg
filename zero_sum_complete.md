@@ -8,7 +8,7 @@
 ## TABLE OF CONTENTS
 1. [Chapter 1: The Global Horror of Zero Sum](#chapter-1-the-global-horror-of-zero-sum)
 2. [Chapter 2: The Fracture Mechanics (Core Rules)](#chapter-2-the-fracture-mechanics-core-rules)
-3. [Chapter 3: Character Creation (Stats & Trauma)](#chapter-3-character-creation-stats--trauma)
+3. [Chapter 3: Character Creation (Stats & Psychological Burn)](#chapter-3-character-creation-stats--psychological burn)
 4. [Chapter 4: Equipment, Logistics & Economics](#chapter-4-equipment-logistics--economics)
 5. [Chapter 5: Combat & Autopsies (Why Violence Fails)](#chapter-5-combat--autopsies-why-violence-fails)
 6. [Chapter 6: Factions: The Global Web](#chapter-6-factions-the-global-web)
@@ -69,7 +69,7 @@ When a Burn occurs, the player must choose one of the following two devastating 
 * **Strain a Tie:** The character heavily damages one of their active **Ties** (contacts, family members, or allies). In their panic or cold detachment, the character alienates them. The Tie requires intense narrative upkeep to fix, otherwise it cannot be used.
 * **Mental Scar:** The character develops a clinical psychological disorder from the following list:
   * *Amnesia:* The character loses key memories, erasing a past contact or a professional skill (temporarily reducing a Skill to 0).
-  * *Catatonia:* In high-stress situations (such as the beginning of a firefight or a chase), the character must roll Detachment (DC 2) or freeze, becoming unable to take actions for the first round of the scene.
+  * *Catatonia:* In high-cognitive load situations (such as the beginning of a firefight or a chase), the character must roll Detachment (DC 2) or freeze, becoming unable to take actions for the first round of the scene.
   * *Hallucinations:* The character perceives false threats, ghost signals on their devices, or voices, forcing them to waste resources or make checks against threats that do not exist.
 
 Once a Burn is resolved, the character's Cognitive Load is reset to 0, but the permanent scars remain.
@@ -88,7 +88,7 @@ The GM tracks the group's global visibility.
 
 ---
 
-## CHAPTER 3: Character Creation (Stats & Trauma)
+## CHAPTER 3: Character Creation (Stats & Psychological Burn)
 
 To survive in *Zero Sum*, a character's psychology is just as important as their physical capability. 
 
@@ -127,7 +127,7 @@ As detailed in Chapter 2, when a character fails a **Detachment** roll in a horr
 * **Faraday Bags:** Essential. Without them, your electronics will betray you.
 * **Stingray (IMSI Catcher):** A suitcase device to hijack cell towers.
 * **Zero-Click Exploits:** Costs millions in crypto. Infects a phone instantly.
-* **Trauma Kits:** Military-grade chest seals and QuikClot. Hospitals will report you to the state.
+* **Psychological Burn Kits:** Military-grade chest seals and QuikClot. Hospitals will report you to the state.
 
 ### 4.2 Global Economics
 * **Privacy Coins (Monero):** The only untraceable digital currency.
@@ -139,7 +139,7 @@ As detailed in Chapter 2, when a character fails a **Detachment** roll in a horr
 
 In *Zero Sum*, drawing a weapon is a failure state. 
 * **Asymmetric Power:** You have a 9mm handgun. The PMC hunting you has thermal-optic sights, body armor, and legal immunity.
-* **The Forensic Nightmare:** Firing a gun leaves gunshot residue, casings, and acoustic signatures picked up by city-wide ShotSpotter microphones. Police response is measured in seconds.
+* **The Forensic Nightmare:** Firing a gun leaves gunshot residue, casings, and acoustic signatures picked up by city-wide AcousticNet microphones. Police response is measured in seconds.
 * **Damage:** There are no HP sponges. A single bullet causes a **Severe Wound** (bleeding out, -2 to all physical rolls). Two bullets usually result in a **Critical Wound** (death within minutes).
 
 ---
@@ -164,10 +164,10 @@ Wars in *Zero Sum* are massive laundering machines and R&D labs.
 ## CHAPTER 7: Real-World NPCs & Black Sites
 
 ### 7.1 Key Figures
-* **Elias Vance:** Erratic tech billionaire manipulating global infrastructure.
-* **Viktor Petrov:** Autocrat utilizing PMC "Valkyrie Group" for global assassinations.
-* **"El Fantasma":** A Dubai-based cartel boss optimizing drug routes with AI.
-* **Director Yossi:** Tel Aviv spyware merchant entirely detached from the blood on his hands.
+* **The Architect:** Erratic tech billionaire manipulating global infrastructure.
+* **The Siloviki:** Autocrat utilizing PMC "Krieger-Vanguard" for global assassinations.
+* **"The Fixer":** A Dubai-based cartel boss optimizing drug routes with AI.
+* **The Contractor:** Tel Aviv spyware merchant entirely detached from the blood on his hands.
 
 ### 7.2 The Global Dungeons (Locations)
 * **The Geneva Freeports:** Tax-free vaults holding stolen art and illegal servers.
@@ -202,6 +202,22 @@ The ZSCM is a mathematical framework to ensure scenarios maintain the brutal asy
 Use the included `scenario_generator.py` to automatically roll and mathematically verify scenarios against these theorems.
 
 
+## Core Gameplay Loop
+
+At the heart of *Zero Sum* is the D10 Dice Pool system, representing a character's technical proficiency, tactical training, and psychological endurance. To perform an action, players roll a number of D10s equal to their relevant attribute and skill, counting any die that lands on a 6 or higher as a Success. Complex tasks require multiple Successes, and the environment is entirely hostile: combat is lethal, resources are strictly monetized, and every action carries systemic risk. There are no supernatural threats—only the terrifying reality of debt, surveillance, and corporate violence.
+
+The psychological toll of this existence is tracked through **Cognitive Load**, **Desensitization**, and **Psychological Burn**. As players witness atrocities or compromise their morals for survival, their Cognitive Load increases. If unmanaged, this escalating Load hardens into Desensitization, permanently stripping away their humanity and empathy. Reaching critical mass results in Psychological Burn, where the character suffers a complete, debilitating breakdown in the face of the crushing bureaucratic nightmare they are trapped within.
+
+## Metadata Exhaust
+
+Metadata Exhaust complements Cognitive Load perfectly. While Cognitive Load represents *internal* psychological deterioration, Metadata Exhaust represents *external* systemic heat. Every time a player uses a digital tool, engages in combat, or utilizes a Tie, they generate Metadata Exhaust. When a player's Exhaust exceeds their Technical Attribute, the GM automatically gains a "Parallel Construction" token—allowing the GM to suddenly freeze bank accounts, revoke digital access, or deploy a corporate hit squad.
+
+**The Grey-Market Wash (Scrubbing Exhaust):**
+To scrub Metadata Exhaust, players must physically interact with the game's Analogue Mechanics during Downtime. A player can hand physical **Analogue Market tokens** (representing untraceable cash or physical favors) to the GM to "pay off" a data scrubber at a 1-to-1 ratio (1 token = 1 Exhaust removed). 
+
+If the player is out of physical tokens, they can still scrub their Exhaust, but they must explicitly write a new, permanent line item in their physical **Debt Ledger** (e.g., "Owe Apex-Sovereign one favor - $50,000 equivalent"). The physical act of writing the debt permanently binds the character to the corporations they are fighting. For every new debt written, they reduce their Metadata Exhaust by 1.
+
+
 # --- analogue_mechanics.md ---
 
 # Analogue Mechanics: Offline Brutalism
@@ -228,7 +244,7 @@ Scarcity is a core theme. Numbers on a page are easily ignored, but physical tok
 ![The Black Market Kiosk](assets/black_market_kiosk_redacted.jpg)
 
 Instead of a digital ticker, the GM rolls for Market Fluctuations in front of the players at the start of every session (or whenever they visit a vendor).
-- **The Market Roll:** Roll a D100 on the **Market Crash Table**.
+- **The Market Roll:** Roll a D10 Dice Pool on the **Market Crash Table**.
 - **Outcomes:** A low roll means the market is stable (prices are standard). A high roll indicates a crisis (e.g., Syndicate blockade, Corporate tax hike), applying a percentage multiplier (e.g., +50%, +200%) to all basic goods like ammo and medicine for the duration of the session.
 
 ## 5. The Itemized Receipt
@@ -236,6 +252,8 @@ At the end of a session, instead of simply awarding "XP and Loot," the GM physic
 - The GM fills in the blanks: Gross Payout, Ammo Deductions, Bio-Hazard Cleanup, and Net Profit.
 - Players must then copy their Net Profit (which is often a negative number) onto their Debt Ledger in red ink.
 
+### Metadata Exhaust & The Debt Ledger
+Players must scrub their Metadata Exhaust using the physical Debt Ledger. By physically writing a new debt line item, a player reduces their Metadata Exhaust by 1. Alternatively, they can hand the GM an Analogue Market token to erase 1 Exhaust.
 
 # --- bureaucracy_and_law.md ---
 
@@ -275,17 +293,17 @@ Combat is not just physically destructive; it is a financial disaster.
 Here are three ready-to-play campaign hooks directly based on the lore and NPCs of the 2022-2026 period. 
 
 ## Campaign 1: The Apex Cold Wallet
-* **The Premise:** Simon Bank-Firth (Sam Bankman-Fried equivalent) is awaiting trial in a secure federal holding facility. But the missing $8 billion from his collapsed crypto exchange, Apex, wasn't lost—it was hidden. 
+* **The Premise:** Simon Apex-Sovereign (Sam Bankman-Fried equivalent) is awaiting trial in a secure federal holding facility. But the missing $8 billion from his collapsed crypto exchange, Apex, wasn't lost—it was hidden. 
 * **The Hook:** A burned lawyer (Sarah Chen) approaches the players. She has one half of a multi-sig cryptographic key. The other half is in a safe deposit box in the Geneva Freeports.
-* **The Twist:** Bank-Firth didn't just steal money from investors; he was laundering money for the "Valkyrie Group" (Russian PMC). Now, Valkyrie hitmen, FBI agents, and cartel fixers are all hunting for the keys. The players must break into the Freeports, secure the drive, and figure out how to launder or whistleblow the funds without getting assassinated.
+* **The Twist:** Apex-Sovereign didn't just steal money from investors; he was laundering money for the "Krieger-Vanguard" (Russian PMC). Now, Krieger-Vanguard hitmen, FBI agents, and cartel fixers are all hunting for the keys. The players must break into the Freeports, secure the drive, and figure out how to launder or whistleblow the funds without getting assassinated.
 
-## Campaign 2: The Epworth Ledger Shard
-* **The Premise:** Jeffrey Epworth is dead, but his leverage lives on. The "Epworth Ledger," containing the darkest secrets of politicians, royals, and CEOs, was broken into three encrypted shards by his blackmail insurance team.
+## Campaign 2: The Apex-Sovereign Ledger Shard
+* **The Premise:** Jeffrey Apex-Sovereign is dead, but his leverage lives on. The "Apex-Sovereign Ledger," containing the darkest secrets of politicians, royals, and CEOs, was broken into three encrypted shards by his blackmail insurance team.
 * **The Hook:** An investigative journalist who got too close to one of the shards is found dead (ruled an "improbable suicide"). The players find their encrypted notes, pointing to a server farm in Ashburn, Virginia.
-* **The Twist:** The shard is currently held by Markus Zuckman's "Omni" corporation. They aren't turning it over to the authorities; they are using it to feed their AI behavior-prediction models. The players must infiltrate the Ashburn data center, air-gapped from the internet, and extract the data while Omni's private corporate security ("The Auditors") lock down the building.
+* **The Twist:** The shard is currently held by The Architect's "Omni-Stat Global" corporation. They aren't turning it over to the authorities; they are using it to feed their AI behavior-prediction models. The players must infiltrate the Ashburn data center, air-gapped from the internet, and extract the data while Omni-Stat Global's private corporate security ("The Auditors") lock down the building.
 
 ## Campaign 3: The Deepfake President
-* **The Premise:** It's the eve of a major global summit in 2026. President Joseph Binder is scheduled to make a speech that will drastically escalate the proxy war in Eastern Europe.
+* **The Premise:** It's the eve of a major global summit in 2026. President Joseph Omni-Stat Global-Stat Global is scheduled to make a speech that will drastically escalate the proxy war in Eastern Europe.
 * **The Hook:** The players are contacted by Jack "Discord" Taylor, an NSA analyst currently on the run. He shows the players irrefutable proof that the President suffered a severe medical emergency three days ago and is completely incapacitated. The man scheduled to give the speech is an incredibly sophisticated AI-generated hologram and voice clone, operated by a shadow cabinet pushing for war.
 * **The Twist:** The players have 48 hours to expose the deepfake. However, because of the AI explosion of 2023-2024, no one trusts digital evidence anymore. They can't just leak Jack's files; they have to physically crash the summit in Washington D.C. (heavily guarded by Secret Service and Faction 1 agents) and disrupt the broadcast on live, analog television before the war is declared.
 
@@ -297,7 +315,7 @@ Here are three ready-to-play campaign hooks directly based on the lore and NPCs 
 In *Zero Sum*, you don't play super-spies or elite commandos. You play people who were just doing their jobs until they dug too deep.
 
 ## Backgrounds (Archetypes)
-* **The Whistleblower:** Corporate insider, accountant, or data analyst. You have the evidence, but no one to trust. (Skills: Bureaucracy, Data Analysis, Encryption).
+* **The The Leaker:** Corporate insider, accountant, or data analyst. You have the evidence, but no one to trust. (Skills: Bureaucracy, Data Analysis, Encryption).
 * **The Investigative Journalist:** You know how to find the truth, but your editor just killed the story. (Skills: Interrogation, Research, Streetwise).
 * **The Burned Asset:** Ex-police or low-level intelligence. You know how the system works, and that's why they want you dead. (Skills: Surveillance, Firearms, Evasion).
 * **The Hacktivist:** You live in the digital shadows, but this time, you breached a server that fights back. (Skills: Hacking, Electronic Warfare, Forgery).
@@ -310,22 +328,22 @@ Characters start with a limited pool of **Resources** (stashed cash, burner phon
 
 # Clinical Psychosis: Grounding the Paranormal
 
-In *Zero Sum*, the paranormal is not magical; it is a manifestation of severe clinical psychology, environmental poisoning, and systemic stress. The human mind simply breaks under the weight of the Paradigm Shift.
+In *Zero Sum*, the paranormal is not magical; it is a manifestation of severe clinical psychology, environmental poisoning, and systemic cognitive load. The human mind simply breaks under the weight of the Paradigm Shift.
 
 ## 1. Mass Psychogenic Illness (MPI)
-The entities known as *The Harvesters* are not supernatural demons. In reality, they are regular, minimum-wage human Repo-Men and Riot Police executing corporate mandates.
-- **The Delusion:** The unmedicated, collective trauma of society—combined with the heavy neurotoxic smog that blankets the Spire—triggers a shared psychosis (Folie à Deux / MPI).
+The entities known as *The Corporate Auditors* are not supernatural demons. In reality, they are regular, minimum-wage human Repo-Men and Riot Police executing corporate mandates.
+- **The Delusion:** The unmedicated, collective psychological burn of society—combined with the heavy neurotoxic smog that blankets the Omni-Stat—triggers a shared psychosis (Folie à Deux / MPI).
 - **The Visuals:** The human mind refuses to process the reality of their cruelty. As a defense mechanism, it mentally censors these enforcers into terrifying, surreal "Fratzen" (distorted, nightmarish faces). The horror is the brain protecting itself from the mundane reality of human evil.
 
 ## 2. Clinical Prosopagnosia (Face-Blindness)
-The aesthetic of faceless, shadowy figures is directly tied to the mechanics of trauma and empathy collapse.
-- **Mechanic:** As a character's Trauma score increases, the empathy and recognition centers of their brain begin to shut down, inducing stress-induced prosopagnosia. 
-- **Gameplay Effect:** Characters literally lose the ability to recognize human faces. At high Trauma levels, the GM can force players to roll an Observation check simply to distinguish their own allies from enemies in chaotic situations. Everyone becomes a shadowy, featureless liability. Paranoia becomes mechanical.
+The aesthetic of faceless, shadowy figures is directly tied to the mechanics of psychological burn and empathy collapse.
+- **Mechanic:** As a character's Psychological Burn score increases, the empathy and recognition centers of their brain begin to shut down, inducing cognitive load-induced prosopagnosia. 
+- **Gameplay Effect:** Characters literally lose the ability to recognize human faces. At high Psychological Burn levels, the GM can force players to roll an Observation check simply to distinguish their own allies from enemies in chaotic situations. Everyone becomes a shadowy, featureless liability. Paranoia becomes mechanical.
 
-## 3. The Fracture Table (Based on the DSM-5)
-A "Fracture" is not a magical curse; it is a clinical neurological collapse. When a character pushes their luck too far or maxes out their Trauma, they roll on the Fracture Table for real-world symptoms:
+## 3. The Fracture Table (Based on the Corporate Psychological Evaluation Matrix (CPEM))
+A "Fracture" is not a magical curse; it is a clinical neurological collapse. When a character pushes their luck too far or maxes out their Psychological Burn, they roll on the Fracture Table for real-world symptoms:
 - **Tachycardia & Tremors:** Heart rate explodes, hands shake uncontrollably. *-20 to all precision and combat checks.*
-- **Auditory Exclusion:** Temporary stress-induced deafness. *The GM may no longer speak aloud to the player and must communicate with them strictly via written notes for the duration of the encounter.*
+- **Auditory Exclusion:** Temporary cognitive load-induced deafness. *The GM may no longer speak aloud to the player and must communicate with them strictly via written notes for the duration of the encounter.*
 - **Fugue State:** Dissociative amnesia. *The character loses memory of the last 10 minutes. The player must act as if they have no idea why they are in their current situation or who fired the first shot.*
 - **Hyperventilation Syndrome:** *Stamina recovery drops to zero. The character must spend a full turn attempting to regulate their breathing using a specialized (and expensive) corporate inhaler.*
 
@@ -356,9 +374,9 @@ The world is teetering on the edge. Economic instability, deepfakes, AI-driven m
 ## The System
 *Zero Sum* uses a simple D10 dice pool system. You roll a number of 10-sided dice equal to your Attribute + Skill. Any die that rolls a 7 or higher is a Success. Multiple successes determine the magnitude of your achievement.
 
-## The Stress & Paranoia Tracks
-Instead of just tracking physical Health, characters track **Stress** and **Paranoia**.
-* **Stress:** Gained from physical exhaustion, close calls, and minor setbacks. High stress penalizes rolls.
+## The Cognitive Load & Paranoia Tracks
+Instead of just tracking physical Health, characters track **Cognitive Load** and **Paranoia**.
+* **Cognitive Load:** Gained from physical exhaustion, close calls, and minor setbacks. High cognitive load penalizes rolls.
 * **Paranoia:** Gained when characters realize they are being watched, when an ally betrays them, or when they uncover terrifying truths. High paranoia forces characters to make irrational decisions to "stay safe" (e.g., abandoning a safehouse early, destroying perfectly good equipment, cutting ties with contacts).
 
 ## The Heat Level
@@ -384,8 +402,8 @@ The Hivemind has completed its ruthless evaluation of the *Zero Sum* framework. 
 Below is the consolidated critique and the proposed roadmap for V2.
 
 ## 1. Legal & Copyright (The Liability Pass)
-*   **Libel Risk (High):** Using 1:1 real-world figures (Elian Moss, Simon Bank-Firth) and assigning them massive felonies is actionable defamation. **Proposed Fix:** Decouple them. Create composite archetypes. Rename "Chirp" and "Omniverse" to distance from real trademarks.
-*   **Copyright Proximity:** "Stress Track" and "Fracture" are legally uncomfortably close to *Alien RPG*. **Proposed Fix:** Rename the mechanics to **"Cognitive Load"** and **"Psychological Burn."**
+*   **Libel Risk (High):** Using 1:1 real-world figures (Elian Moss, Simon Apex-Sovereign) and assigning them massive felonies is actionable defamation. **Proposed Fix:** Decouple them. Create composite archetypes. Rename "Chirp" and "Omniverse" to distance from real trademarks.
+*   **Copyright Proximity:** "Cognitive Load Track" and "Fracture" are legally uncomfortably close to *Alien RPG*. **Proposed Fix:** Rename the mechanics to **"Cognitive Load"** and **"Psychological Burn."**
 *   **Sovereign Void Fallacy:** International waters are not lawless; they are governed by flag-state UNCLOS laws. **Proposed Fix:** Reframe the Void as a **"Jurisdictional Labyrinth."** PMCs don't kill you because there are no laws; they kill you because the local magistrate is bought and the ship flies a Bahamian flag of convenience.
 *   **Parallel Construction Mechanics:** **Proposed Fix:** Make this an active battleground. If players realize they are being framed via parallel construction, give them legal/social mechanics to expose the "Fruit of the Poisonous Tree" and drop the charges.
 
@@ -396,7 +414,7 @@ Below is the consolidated critique and the proposed roadmap for V2.
 
 ## 3. PnP Mechanics & Math (The Balance Pass)
 *   **Broken Difficulty Classes (DCs):** With successes on a 7-10 (40% chance), a 4-dice character has a mere 2.5% chance of passing a DC 4. This forces elite operators to act like amateurs. **Proposed Fix:** Lower the success threshold to **6+ (50% per die)** or firmly cap DCs at 3.
-*   **The Trauma Death Spiral:** Permanently lowering Attributes due to Trauma creates a death spiral where failing a roll permanently cripples your dice pool, guaranteeing more failures. **Proposed Fix:** Traumas should inflict **Situational Complications** (e.g., "Cannot reroll 1s", "Catatonia during ambushes") rather than permanently subtracting dice.
+*   **The Psychological Burn Death Spiral:** Permanently lowering Attributes due to Psychological Burn creates a death spiral where failing a roll permanently cripples your dice pool, guaranteeing more failures. **Proposed Fix:** Traumas should inflict **Situational Complications** (e.g., "Cannot reroll 1s", "Catatonia during ambushes") rather than permanently subtracting dice.
 *   **The ZSCM Script is "Fraudulent":** The Asymmetry theorem math currently breaks the 1-10 bounded scale by forcing the Antagonist Power up to 20. The footprint checking uses hard-coded city strings instead of systemic logic. **Proposed Fix:** Refactor the math to respect the 1-10 scale ($E = \min(10, \max(5, R + \lfloor I/2 \rfloor))$). Update the python script to assign and verify dynamic "Security Tiers" rather than parsing for specific city names.
 
 ---
@@ -417,7 +435,7 @@ These aren't rogue agents; they are the system working exactly as designed.
 ## 2. Private Intelligence & Cyber Mercenaries
 Corporate equivalents of intelligence agencies, offering deniable operations to the highest bidder.
 * **Aegis Analytics:** A data-mining firm that weaponizes social media data and psychological profiling to rig elections and destroy reputations.
-* **Vanguard Solutions:** Purveyors of military-grade spyware (similar to Pegasus/NSO Group). They sell zero-click smartphone exploits to authoritarian regimes and nervous billionaires.
+* **Vanguard Solutions:** Purveyors of military-grade spyware (similar to Pegasus/Krieger-Vanguard Intelligence Division). They sell zero-click smartphone exploits to authoritarian regimes and nervous billionaires.
 
 ## 3. High Finance & "Dark Money"
 
@@ -489,7 +507,7 @@ In *Zero Sum*, the economy is the deadliest enemy in the game. Combat shouldn't 
 ![Corporate Debt Notice](assets/corporate_debt_notice_redacted.jpg)
 
 Characters do not start at zero; they start with crippling debt (housing, medical, oxygen taxes). **Debt is a core stat.**
-- **The Transfer:** If a character dies or their Trauma maxes out, they aren't simply removed from the game. Due to the "Guarantor Act," their negative balance is legally transferred to their designated emergency contact.
+- **The Transfer:** If a character dies or their Psychological Burn maxes out, they aren't simply removed from the game. Due to the "Guarantor Act," their negative balance is legally transferred to their designated emergency contact.
 - **Next-of-Kin:** The player's *newly rolled character* is this emergency contact. You inherit your predecessor's financial ruin, ensuring that death offers no escape from the Board's ledgers.
 
 ## 2. Algorithmic Surge Pricing
@@ -530,7 +548,7 @@ In the modern world, information is a weapon, and your smartphone is a tracking 
 Guns are loud, leave forensic evidence, and escalate the Heat Level immediately.
 * **Concealed Handguns (e.g., Glock 19, Sig P365):** The most common weapons. Easy to hide, but firing one without a suppressor guarantees a police response within minutes in an urban area.
 * **Untraceable "Ghost Guns":** 3D-printed receivers combined with standard parts. No serial numbers. Expensive to acquire on the black market, but vital for deniable operations.
-* **Trauma Kits:** Since hospitals are required to report gunshot wounds, players must rely on military-grade trauma kits (tourniquets, QuikClot, chest seals) and underground doctors to survive.
+* **Psychological Burn Kits:** Since hospitals are required to report gunshot wounds, players must rely on military-grade psychological burn kits (tourniquets, QuikClot, chest seals) and underground doctors to survive.
 
 ## Financial Tools
 * **Monero / Privacy Coins:** The only way to move money anonymously. Bitcoin is entirely traceable by forensic accountants.
@@ -590,10 +608,10 @@ In *Zero Sum*, the news you read over the last four years was only the surface l
 ## 2022: The Eastern Conflict & The Proxy War
 * **The Public Narrative:** A massive geopolitical crisis in Eastern Europe as a superpower invades its neighbor. Global sanctions are applied, and a proxy war begins.
 * **The Zero Sum Truth:** While the human toll is tragically real, the military-industrial complex treats the conflict as the ultimate live-fire testing ground. Faction 2 (Private Intelligence & Cyber Mercenaries) field-tests automated sniper turrets and zero-click cyberweapons against national infrastructure. The war drags on intentionally because the weapons manufacturers and energy syndicates are making record profits.
-* **Game Hook:** The players discover a "Valkyrie Group" (PMC) data center in London that is using the war as a cover to launder stolen Ukrainian and Russian gold into the London real estate market.
+* **Game Hook:** The players discover a "Krieger-Vanguard" (PMC) data center in London that is using the war as a cover to launder stolen Ukrainian and Russian gold into the London real estate market.
 
 ## 2022-2023: The Crypto Collapse & "Apex" Fall
-* **The Public Narrative:** The cryptocurrency market crashes violently. Major exchanges like "Apex" (run by Simon Bank-Firth) collapse overnight, revealing massive fraud and billions in lost customer funds.
+* **The Public Narrative:** The cryptocurrency market crashes violently. Major exchanges like "Apex" (run by Simon Apex-Sovereign) collapse overnight, revealing massive fraud and billions in lost customer funds.
 * **The Zero Sum Truth:** Faction 3 (High Finance & Dark Money) orchestrated the crash. Crypto was becoming too decentralized and hard to track. By imploding the biggest exchanges, they destroyed public trust in decentralized finance, paving the way for government-backed Central Bank Digital Currencies (CBDCs)—which allow the state to track every single transaction a citizen makes.
 * **Game Hook:** The players acquire a cold wallet belonging to an Apex executive. It contains not just money, but the transaction ledgers proving which politicians were bribed to let the fraud happen.
 
@@ -624,7 +642,7 @@ In *Zero Sum*, the news you read over the last four years was only the surface l
 In *Zero Sum*, NPCs are defined by their leverage, their resources, and their breaking point. No one is fearless.
 
 ## The Fixers & Handlers
-* **Elias Vance (The Information Broker):** Operates out of an antique bookstore in Berlin. He communicates entirely offline via one-time pads. He has access to zero-day exploits and leaked databases, but his prices are exorbitant, and he will sell the players out if a major intelligence agency corners him.
+* **The Architect (The Information Broker):** Operates out of an antique bookstore in Berlin. He communicates entirely offline via one-time pads. He has access to zero-day exploits and leaked databases, but his prices are exorbitant, and he will sell the players out if a major intelligence agency corners him.
 * **Sarah Chen (The Burned Lawyer):** A former corporate litigator who found out too much about a sovereign wealth fund. She now operates from the shadows, providing players with legal loopholes, forged documents, and emergency safehouses. 
 
 ## The Antagonists
@@ -643,20 +661,20 @@ In *Zero Sum*, NPCs are defined by their leverage, their resources, and their br
 In *Zero Sum*, the puppeteers are global. The horror of these figures is their utter detachment from the human cost of their actions.
 
 ## The Tech Titans (US / Global)
-* **Elias Vance (The Erratic Visionary):** An aerospace engineer and defense contractor. Owner of the micro-blogging platform "Echo" and low-orbit surveillance satellites. He is unpredictable, using his platform to manipulate global markets and incite political violence on a whim, treating the world like a simulation he owns.
-* **Arthur Zuck (The Data Baron):** His "Aether" data-broker platforms and social networks are the ultimate biometric panopticon. He views human emotion strictly as data to be harvested and sold to intelligence agencies.
+* **The Architect (The Erratic Visionary):** An aerospace engineer and defense contractor. Owner of the micro-blogging platform "Echo" and low-orbit surveillance satellites. He is unpredictable, using his platform to manipulate global markets and incite political violence on a whim, treating the world like a simulation he owns.
+* **The Architect (The Data Baron):** His "Omni-Stat Global-Stat Global" data-broker platforms and social networks are the ultimate biometric panopticon. He views human emotion strictly as data to be harvested and sold to intelligence agencies.
 
 ## The Global Autocrats & Oligarchs
-* **Viktor Petrov (The Siloviki Mastermind):** A composite of Eastern European oligarchs. He doesn't just run an energy conglomerate; he runs a global mafia. He utilizes PMC "Valkyrie Group" for plausible deniability, assassinating dissidents across Europe with exotic nerve agents. The horror is his absolute impunity.
-* **Chairman Wei (The Panopticon Architect):** A fictionalized composite of global surveillance architects. Wei oversees an algorithmic social credit system. He is terrifying because he isn't cruel; he genuinely believes that mathematically calculated social control is the only way to save humanity from itself.
+* **The Siloviki (The Siloviki Mastermind):** A composite of Eastern European oligarchs. He doesn't just run an energy conglomerate; he runs a global mafia. He utilizes PMC "Krieger-Vanguard" for plausible deniability, assassinating dissidents across Europe with exotic nerve agents. The horror is his absolute impunity.
+* **The Architect (The Panopticon Architect):** A fictionalized composite of global surveillance architects. The Architect oversees an algorithmic social credit system. He is terrifying because he isn't cruel; he genuinely believes that mathematically calculated social control is the only way to save humanity from itself.
 
 ## The Dark Money & Cartel Lords
-* **"El Fantasma" (The Cyber-Cartel Boss):** He doesn't live in a jungle camp; he lives in a luxury penthouse in Dubai. He uses big data analytics to optimize cocaine shipping routes and employs mercenary hackers to dox and assassinate judges.
-* **Simon Black (The Algorithmic Launderer):** Once a wunderkind of a decentralized dark-pool exchange, now in federal custody. He laundered money for state-sponsored hackers and cartels. The horror is that the cartels want their billions back, and Simon will sell out anyone—including the players—to survive.
+* **"The Fixer" (The Cyber-Cartel Boss):** He doesn't live in a jungle camp; he lives in a luxury penthouse in Dubai. He uses big data analytics to optimize cocaine shipping routes and employs mercenary hackers to dox and assassinate judges.
+* **The Fixer (The Algorithmic Launderer):** Once a wunderkind of a decentralized dark-pool exchange, now in federal custody. He laundered money for state-sponsored hackers and cartels. The horror is that the cartels want their billions back, and Simon will sell out anyone—including the players—to survive.
 
 ## The Intelligence & PMC Directors
-* **Director Yossi (The Spyware Merchant):** Based on the founders of NSO Group/Black Cube. Operates out of Tel Aviv. He sells zero-click exploits to autocrats. He defends his actions by claiming he only sells "software," fully washing his hands of the journalists and activists who are subsequently tortured and murdered by his clients.
-* **Commander "Vulture" Vance (The Blood-Mine Overseer):** A South African ex-mercenary running security for a massive cobalt mine in the DRC. He commands a private army with attack helicopters. He is paid by Western tech companies to ensure the supply chain never stops, regardless of how many child laborers die in the mud. He represents the brutal physical violence required to maintain the digital world.
+* **The Contractor (The Spyware Merchant):** Based on the founders of Krieger-Vanguard Intelligence Division/Krieger-Vanguard Intelligence Division. Operates out of Tel Aviv. He sells zero-click exploits to autocrats. He defends his actions by claiming he only sells "software," fully washing his hands of the journalists and activists who are subsequently tortured and murdered by his clients.
+* **The Contractor (The Blood-Mine Overseer):** A South African ex-mercenary running security for a massive cobalt mine in the DRC. He commands a private army with attack helicopters. He is paid by Western tech companies to ensure the supply chain never stops, regardless of how many child laborers die in the mud. He represents the brutal physical violence required to maintain the digital world.
 
 
 # --- test.md ---
@@ -687,7 +705,7 @@ Everything you have seen over the last four years is a gear turning in this mach
 You cannot overthrow governments if the populace can still organize. The generative AI flood (2023-2024) was intentionally unleashed to destroy objective reality. By flooding the internet with deepfakes and algorithmic noise, they created a "Zero-Trust" society. Without a shared reality, mass protests and revolutions are impossible to coordinate.
 
 ### 2. The Crypto Crash and Programmable CBDCs (Financial Excommunication)
-The collapse of exchanges like Simon Bank-Firth's "Apex" was engineered to terrify the public away from decentralized finance. By destroying crypto, the Syndicates forced populations into the arms of Central Bank Digital Currencies (CBDCs). 
+The collapse of exchanges like Simon Apex-Sovereign's "Apex" was engineered to terrify the public away from decentralized finance. By destroying crypto, the Syndicates forced populations into the arms of Central Bank Digital Currencies (CBDCs). 
 
 Once money is programmable, the Factions can instantly execute **Financial Excommunication** on anyone flagged as a systemic threat:
 * **Smart-Contract Isolation:** A dissident's digital currency is programmed with automated restrictions. It can expire if not spent immediately, and it is blocked from purchasing restricted items like transit tickets, burner phones, or encryption keys.
@@ -802,28 +820,28 @@ Below is the complete abstract of the game's current state, its rules, lore, and
 ---
 
 ## 1. Core Concept & Setting
-The game takes place in a world reeling from **The Paradigm Shift (2022-2026)**, a catastrophic era where the global economy collapsed, and reality itself fractured. Mega-corporations have transcended nations, establishing a totalitarian neo-feudalism. At the same time, the collective trauma of humanity has manifested as literal, paranormal phenomena. The world is bathed in moral gray areas, brutal economic survival, and sanity-shredding horrors. 
+The game takes place in a world reeling from **The Paradigm Shift (2022-2026)**, a catastrophic era where the global economy collapsed, and reality itself fractured. Mega-corporations have transcended nations, establishing a totalitarian neo-feudalism. At the same time, the collective psychological burn of humanity has manifested as literal, paranormal phenomena. The world is bathed in moral gray areas, brutal economic survival, and sanity-shredding horrors. 
 
 ## 2. Game Mechanics
-- **The Fracture System (D100):** A percentile-based resolution system where rolling lower is better. Pushing a roll increases the risk of a "Fracture" (a critical failure that permanently alters the character's psyche or reality).
-- **Zero Sum Combat:** Violence is inherently destructive. Even when a character wins a physical confrontation, they suffer inevitable resource depletion, physical injury, or psychological trauma. There are no clean victories.
-- **Trauma & Sanity Tracking:** Characters accrue "Trauma Points" instead of losing hit points. When Trauma maxes out, characters develop permanent psychological scars or terrifying paranormal afflictions.
+- **The Fracture System (D10 Dice Pool):** A percentile-based resolution system where rolling lower is better. Pushing a roll increases the risk of a "Fracture" (a critical failure that permanently alters the character's psyche or reality).
+- **Zero Sum Combat:** Violence is inherently destructive. Even when a character wins a physical confrontation, they suffer inevitable resource depletion, physical injury, or psychological psychological burn. There are no clean victories.
+- **Psychological Burn & Sanity Tracking:** Characters accrue "Psychological Burn Points" instead of losing hit points. When Psychological Burn maxes out, characters develop permanent psychological scars or terrifying paranormal afflictions.
 - **Hyper-Capitalist Logistics:** Ammo, food, and medicine are scarcer than human life. Inventory management and economic bartering are central to survival. 
 
 ## 3. World Lore & Factions
-- **Global Horror Lore:** The paranormal elements are psychological in nature. Horrors are manifested from corporate greed, societal despair, and existential dread (e.g., "The Harvesters").
+- **Global Horror Lore:** The paranormal elements are psychological in nature. Horrors are manifested from corporate greed, societal despair, and existential dread (e.g., "The Corporate Auditors").
 - **The Factions:**
   - **The Board:** The ultimate, faceless corporate oligarchy that controls the remnants of civilization.
   - **The Null-State Insurgents:** Radical anarchists attempting to break the system through violent, unpredictable means.
   - **Black Market Cartels (The Syndicate):** Opportunists who control the flow of illicit goods, illegal surveillance tech, and forbidden information.
-  - **The Harvesters:** Paranormal entities drawn to intense human misery and debt.
+  - **The Corporate Auditors:** Paranormal entities drawn to intense human misery and debt.
 
 ## 4. Key NPCs & Locations
-- **Locations:** The neon-drenched corporate monoliths of **The Spire**, the decaying **Sub-City Havens**, hidden **Black Sites** used for horrific experiments, and the irradiated **Wastes** outside the city zones.
+- **Locations:** The neon-drenched corporate monoliths of **The Omni-Stat Global Headquarters**, the decaying **Sub-City Havens**, hidden **Black Sites** used for horrific experiments, and the irradiated **Wastes** outside the city zones.
 - **Major NPCs:** 
-  - **Elias Vance** (Corporate defector)
-  - **Viktor Petrov** (Syndicate boss)
-  - **Simon Black** (Mercenary commander)
+  - **The Architect** (Corporate defector)
+  - **The Siloviki** (Syndicate boss)
+  - **The Fixer** (Mercenary commander)
   - **The Broker** & **The Archivist**
   *Artistic Note:* All human characters are visually represented not as distinct individuals, but as featureless shadows and surreal "Fratzen" (distorted faces), reflecting the loss of humanity and identity within the system.
 

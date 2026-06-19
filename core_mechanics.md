@@ -3,9 +3,9 @@
 ## The System
 *Zero Sum* uses a simple D10 dice pool system. You roll a number of 10-sided dice equal to your Attribute + Skill. Any die that rolls a 7 or higher is a Success. Multiple successes determine the magnitude of your achievement.
 
-## The Stress & Paranoia Tracks
-Instead of just tracking physical Health, characters track **Stress** and **Paranoia**.
-* **Stress:** Gained from physical exhaustion, close calls, and minor setbacks. High stress penalizes rolls.
+## The Cognitive Load & Paranoia Tracks
+Instead of just tracking physical Health, characters track **Cognitive Load** and **Paranoia**.
+* **Cognitive Load:** Gained from physical exhaustion, close calls, and minor setbacks. High cognitive load penalizes rolls.
 * **Paranoia:** Gained when characters realize they are being watched, when an ally betrays them, or when they uncover terrifying truths. High paranoia forces characters to make irrational decisions to "stay safe" (e.g., abandoning a safehouse early, destroying perfectly good equipment, cutting ties with contacts).
 
 ## The Heat Level

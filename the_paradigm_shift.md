@@ -19,7 +19,7 @@ Everything you have seen over the last four years is a gear turning in this mach
 You cannot overthrow governments if the populace can still organize. The generative AI flood (2023-2024) was intentionally unleashed to destroy objective reality. By flooding the internet with deepfakes and algorithmic noise, they created a "Zero-Trust" society. Without a shared reality, mass protests and revolutions are impossible to coordinate.
 
 ### 2. The Crypto Crash and Programmable CBDCs (Financial Excommunication)
-The collapse of exchanges like Simon Bank-Firth's "Apex" was engineered to terrify the public away from decentralized finance. By destroying crypto, the Syndicates forced populations into the arms of Central Bank Digital Currencies (CBDCs). 
+The collapse of exchanges like Simon Apex-Sovereign's "Apex" was engineered to terrify the public away from decentralized finance. By destroying crypto, the Syndicates forced populations into the arms of Central Bank Digital Currencies (CBDCs). 
 
 Once money is programmable, the Factions can instantly execute **Financial Excommunication** on anyone flagged as a systemic threat:
 * **Smart-Contract Isolation:** A dissident's digital currency is programmed with automated restrictions. It can expire if not spent immediately, and it is blocked from purchasing restricted items like transit tickets, burner phones, or encryption keys.

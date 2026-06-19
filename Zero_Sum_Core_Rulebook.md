@@ -6,7 +6,7 @@
 ## TABLE OF CONTENTS
 1. [Chapter 1: The Global Horror of Zero Sum](#chapter-1-the-global-horror-of-zero-sum)
 2. [Chapter 2: The Fracture Mechanics (Core Rules)](#chapter-2-the-fracture-mechanics-core-rules)
-3. [Chapter 3: Character Creation (Stats & Trauma)](#chapter-3-character-creation-stats--trauma)
+3. [Chapter 3: Character Creation (Stats & Psychological Burn)](#chapter-3-character-creation-stats--psychological burn)
 4. [Chapter 4: Equipment, Logistics & Economics](#chapter-4-equipment-logistics--economics)
 5. [Chapter 5: Combat & Autopsies (Why Violence Fails)](#chapter-5-combat--autopsies-why-violence-fails)
 6. [Chapter 6: Factions: The Global Web](#chapter-6-factions-the-global-web)
@@ -67,7 +67,7 @@ When a Burn occurs, the player must choose one of the following two devastating 
 * **Strain a Tie:** The character heavily damages one of their active **Ties** (contacts, family members, or allies). In their panic or cold detachment, the character alienates them. The Tie requires intense narrative upkeep to fix, otherwise it cannot be used.
 * **Mental Scar:** The character develops a clinical psychological disorder from the following list:
   * *Amnesia:* The character loses key memories, erasing a past contact or a professional skill (temporarily reducing a Skill to 0).
-  * *Catatonia:* In high-stress situations (such as the beginning of a firefight or a chase), the character must roll Detachment (DC 2) or freeze, becoming unable to take actions for the first round of the scene.
+  * *Catatonia:* In high-cognitive load situations (such as the beginning of a firefight or a chase), the character must roll Detachment (DC 2) or freeze, becoming unable to take actions for the first round of the scene.
   * *Hallucinations:* The character perceives false threats, ghost signals on their devices, or voices, forcing them to waste resources or make checks against threats that do not exist.
 
 Once a Burn is resolved, the character's Cognitive Load is reset to 0, but the permanent scars remain.
@@ -86,7 +86,7 @@ The GM tracks the group's global visibility.
 
 ---
 
-## CHAPTER 3: Character Creation (Stats & Trauma)
+## CHAPTER 3: Character Creation (Stats & Psychological Burn)
 
 To survive in *Zero Sum*, a character's psychology is just as important as their physical capability. 
 
@@ -125,7 +125,7 @@ As detailed in Chapter 2, when a character fails a **Detachment** roll in a horr
 * **Faraday Bags:** Essential. Without them, your electronics will betray you.
 * **Stingray (IMSI Catcher):** A suitcase device to hijack cell towers.
 * **Zero-Click Exploits:** Costs millions in crypto. Infects a phone instantly.
-* **Trauma Kits:** Military-grade chest seals and QuikClot. Hospitals will report you to the state.
+* **Psychological Burn Kits:** Military-grade chest seals and QuikClot. Hospitals will report you to the state.
 
 ### 4.2 Global Economics
 * **Privacy Coins (Monero):** The only untraceable digital currency.
@@ -137,7 +137,7 @@ As detailed in Chapter 2, when a character fails a **Detachment** roll in a horr
 
 In *Zero Sum*, drawing a weapon is a failure state. 
 * **Asymmetric Power:** You have a 9mm handgun. The PMC hunting you has thermal-optic sights, body armor, and legal immunity.
-* **The Forensic Nightmare:** Firing a gun leaves gunshot residue, casings, and acoustic signatures picked up by city-wide ShotSpotter microphones. Police response is measured in seconds.
+* **The Forensic Nightmare:** Firing a gun leaves gunshot residue, casings, and acoustic signatures picked up by city-wide AcousticNet microphones. Police response is measured in seconds.
 * **Damage:** There are no HP sponges. A single bullet causes a **Severe Wound** (bleeding out, -2 to all physical rolls). Two bullets usually result in a **Critical Wound** (death within minutes).
 
 ---
@@ -162,10 +162,10 @@ Wars in *Zero Sum* are massive laundering machines and R&D labs.
 ## CHAPTER 7: Real-World NPCs & Black Sites
 
 ### 7.1 Key Figures
-* **Elias Vance:** Erratic tech billionaire manipulating global infrastructure.
-* **Viktor Petrov:** Autocrat utilizing PMC "Valkyrie Group" for global assassinations.
-* **"El Fantasma":** A Dubai-based cartel boss optimizing drug routes with AI.
-* **Director Yossi:** Tel Aviv spyware merchant entirely detached from the blood on his hands.
+* **The Architect:** Erratic tech billionaire manipulating global infrastructure.
+* **The Siloviki:** Autocrat utilizing PMC "Krieger-Vanguard" for global assassinations.
+* **"The Fixer":** A Dubai-based cartel boss optimizing drug routes with AI.
+* **The Contractor:** Tel Aviv spyware merchant entirely detached from the blood on his hands.
 
 ### 7.2 The Global Dungeons (Locations)
 * **The Geneva Freeports:** Tax-free vaults holding stolen art and illegal servers.
@@ -198,3 +198,19 @@ The ZSCM is a mathematical framework to ensure scenarios maintain the brutal asy
 
 ### 9.3 The Automated Script
 Use the included `scenario_generator.py` to automatically roll and mathematically verify scenarios against these theorems.
+
+
+## Core Gameplay Loop
+
+At the heart of *Zero Sum* is the D10 Dice Pool system, representing a character's technical proficiency, tactical training, and psychological endurance. To perform an action, players roll a number of D10s equal to their relevant attribute and skill, counting any die that lands on a 6 or higher as a Success. Complex tasks require multiple Successes, and the environment is entirely hostile: combat is lethal, resources are strictly monetized, and every action carries systemic risk. There are no supernatural threats—only the terrifying reality of debt, surveillance, and corporate violence.
+
+The psychological toll of this existence is tracked through **Cognitive Load**, **Desensitization**, and **Psychological Burn**. As players witness atrocities or compromise their morals for survival, their Cognitive Load increases. If unmanaged, this escalating Load hardens into Desensitization, permanently stripping away their humanity and empathy. Reaching critical mass results in Psychological Burn, where the character suffers a complete, debilitating breakdown in the face of the crushing bureaucratic nightmare they are trapped within.
+
+## Metadata Exhaust
+
+Metadata Exhaust complements Cognitive Load perfectly. While Cognitive Load represents *internal* psychological deterioration, Metadata Exhaust represents *external* systemic heat. Every time a player uses a digital tool, engages in combat, or utilizes a Tie, they generate Metadata Exhaust. When a player's Exhaust exceeds their Technical Attribute, the GM automatically gains a "Parallel Construction" token—allowing the GM to suddenly freeze bank accounts, revoke digital access, or deploy a corporate hit squad.
+
+**The Grey-Market Wash (Scrubbing Exhaust):**
+To scrub Metadata Exhaust, players must physically interact with the game's Analogue Mechanics during Downtime. A player can hand physical **Analogue Market tokens** (representing untraceable cash or physical favors) to the GM to "pay off" a data scrubber at a 1-to-1 ratio (1 token = 1 Exhaust removed). 
+
+If the player is out of physical tokens, they can still scrub their Exhaust, but they must explicitly write a new, permanent line item in their physical **Debt Ledger** (e.g., "Owe Apex-Sovereign one favor - $50,000 equivalent"). The physical act of writing the debt permanently binds the character to the corporations they are fighting. For every new debt written, they reduce their Metadata Exhaust by 1.

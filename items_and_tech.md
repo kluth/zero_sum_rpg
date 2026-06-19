@@ -17,7 +17,7 @@ In the modern world, information is a weapon, and your smartphone is a tracking 
 Guns are loud, leave forensic evidence, and escalate the Heat Level immediately.
 * **Concealed Handguns (e.g., Glock 19, Sig P365):** The most common weapons. Easy to hide, but firing one without a suppressor guarantees a police response within minutes in an urban area.
 * **Untraceable "Ghost Guns":** 3D-printed receivers combined with standard parts. No serial numbers. Expensive to acquire on the black market, but vital for deniable operations.
-* **Trauma Kits:** Since hospitals are required to report gunshot wounds, players must rely on military-grade trauma kits (tourniquets, QuikClot, chest seals) and underground doctors to survive.
+* **Psychological Burn Kits:** Since hospitals are required to report gunshot wounds, players must rely on military-grade psychological burn kits (tourniquets, QuikClot, chest seals) and underground doctors to survive.
 
 ## Financial Tools
 * **Monero / Privacy Coins:** The only way to move money anonymously. Bitcoin is entirely traceable by forensic accountants.
