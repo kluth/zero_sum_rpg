@@ -209,3 +209,16 @@ footer {
     font-size: 0.8rem;
     text-align: center;
 }
+
+.brutalist-btn.active-playing {
+    border-color: var(--accent-red);
+    background-color: rgba(211, 47, 47, 0.1);
+}
+.brutalist-btn.active-playing .btn-title,
+.brutalist-btn.active-playing .btn-sub {
+    color: var(--accent-red);
+}
+.brutalist-btn.active-playing::before {
+    transform: scaleX(0.02);
+    opacity: 0.5;
+}

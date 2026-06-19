@@ -9,17 +9,30 @@ const audioMap = {
     'btn-cpem-eval': 'audio/cpem_eval.mp3'
 };
 
-function playSound(buttonId) {
+const activeAudio = {};
+
+function toggleSound(buttonId) {
     const audioPath = audioMap[buttonId];
     if (!audioPath) {
         alert("Error: Button ID not recognized.");
         return;
     }
 
+    if (activeAudio[buttonId]) {
+        activeAudio[buttonId].pause();
+        activeAudio[buttonId].currentTime = 0;
+        delete activeAudio[buttonId];
+        document.getElementById(buttonId).classList.remove('active-playing');
+        return;
+    }
+
     const audio = new Audio(audioPath);
+    audio.loop = true;
     
     audio.play().then(() => {
-        console.log(`Successfully playing: ${audioPath}`);
+        console.log(`Successfully looping: ${audioPath}`);
+        activeAudio[buttonId] = audio;
+        document.getElementById(buttonId).classList.add('active-playing');
     }).catch(e => {
         console.error('Playback failed:', e);
         // This will pop up if the MP3 file doesn't exist (404) or if autoplay is blocked
@@ -29,6 +42,6 @@ function playSound(buttonId) {
 
 document.querySelectorAll('.brutalist-btn').forEach(btn => {
     btn.addEventListener('click', function() {
-        playSound(this.id);
+        toggleSound(this.id);
     });
 });
