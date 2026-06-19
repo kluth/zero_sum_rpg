@@ -4,7 +4,7 @@ In *Zero Sum*, the puppeteers are global. The horror of these figures is their u
 
 ## The Tech Titans (US / Global)
 * **Elias Vance (The Erratic Visionary):** An aerospace engineer and defense contractor. Owner of the micro-blogging platform "Echo" and low-orbit surveillance satellites. He is unpredictable, using his platform to manipulate global markets and incite political violence on a whim, treating the world like a simulation he owns.
-* **Arthur Zuck (The Data Baron):** His "Aether" VR headsets and social platforms are the ultimate biometric panopticon. He views human emotion strictly as data to be harvested and sold to intelligence agencies.
+* **Arthur Zuck (The Data Baron):** His "Aether" data-broker platforms and social networks are the ultimate biometric panopticon. He views human emotion strictly as data to be harvested and sold to intelligence agencies.
 
 ## The Global Autocrats & Oligarchs
 * **Viktor Petrov (The Siloviki Mastermind):** A composite of Eastern European oligarchs. He doesn't just run an energy conglomerate; he runs a global mafia. He utilizes PMC "Valkyrie Group" for plausible deniability, assassinating dissidents across Europe with exotic nerve agents. The horror is his absolute impunity.

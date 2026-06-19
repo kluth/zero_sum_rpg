@@ -14,7 +14,7 @@ Corporate medical dispensers and ammo kiosks are monitored by advanced biometric
 - **Surge Mechanic:** If a player is bleeding out and stumbles to a kiosk, the machine’s biometric sensors detect their elevated heart rate, adrenaline, and desperation. The algorithm automatically triggers "Surge Pricing," raising the cost of bandages, coagulants, and stims by up to 400% in real-time. Survival is a luxury priced for the desperate.
 
 ## 3. DRM & Subscription Gear
-![DRM Locked Weapon](assets/drm_locked_weapon_1781869487367.jpg)
+![DRM Locked Weapon](assets/drm_locked_rifle_abstract_1781871048330.jpg)
 
 You do not own your firearm or your water purifier; you license them. 
 - **Digital Rights Management:** Weapons feature corporate DRM. If you miss a subscription payment, or if you attempt to shoot a Board executive (violating the Terms of Service), the gun's smart-trigger "bricks" itself via Bluetooth.

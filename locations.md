@@ -4,7 +4,7 @@ The modern thriller doesn't take place in dungeons; it takes place in boardrooms
 
 ## The Geneva Freeports (Switzerland)
 
-![Geneva](assets/geneva_freeport_monochrome.jpg)
+![Geneva](assets/geneva_freeport_abstract_1781871128049.jpg)
 
 A massive, ultra-secure warehousing complex near the Geneva airport. Technically an international zone where no customs duties or taxes apply. 
 * **The Reality:** It is a black hole for global wealth. Billionaires store stolen art, gold bullion, and highly sensitive physical servers here. 
@@ -12,7 +12,7 @@ A massive, ultra-secure warehousing complex near the Geneva airport. Technically
 
 ## The Data Centers (Ashburn, Virginia, USA)
 
-![Ashburn](assets/ashburn_data_center_monochrome.jpg)
+![Ashburn](assets/ashburn_data_center_abstract_1781871038595.jpg)
 
 Ashburn is the "bullseye of the internet," where up to 70% of global internet traffic flows through massive, nondescript warehouses.
 * **The Reality:** These locations are fortified like military bases, with retinal scanners, armed guards, and physical air-gaps.
@@ -20,7 +20,7 @@ Ashburn is the "bullseye of the internet," where up to 70% of global internet tr
 
 ## "K Street" Lobbying Firms (Washington D.C.)
 
-![K Street](assets/k_street_firm_monochrome.jpg)
+![K Street](assets/k_street_firm_abstract_1781871137605.jpg)
 
 Where corporate interests are turned into national law. High-end restaurants, secure conference rooms, and private clubs.
 * **The Reality:** Deals worth billions are made over $500 dinners. Blackmail material is the primary currency.
@@ -28,7 +28,7 @@ Where corporate interests are turned into national law. High-end restaurants, se
 
 ## The Transnistria Smuggling Hubs (Eastern Europe)
 
-![Transnistria](assets/transnistria_monochrome.jpg)
+![Transnistria](assets/transnistria_abstract_1781871148910.jpg)
 
 An unrecognized breakaway state between Moldova and Ukraine. It is a haven for organized crime, arms smuggling, and unregulated tech infrastructure.
 * **The Reality:** A place where international law simply does not apply.

@@ -20,7 +20,7 @@ The game takes place in a world reeling from **The Paradigm Shift (2022-2026)**,
 - **The Factions:**
   - **The Board:** The ultimate, faceless corporate oligarchy that controls the remnants of civilization.
   - **The Null-State Insurgents:** Radical anarchists attempting to break the system through violent, unpredictable means.
-  - **Black Market Cartels (The Syndicate):** Opportunists who control the flow of illicit goods, illegal cybernetics, and forbidden information.
+  - **Black Market Cartels (The Syndicate):** Opportunists who control the flow of illicit goods, illegal surveillance tech, and forbidden information.
   - **The Harvesters:** Paranormal entities drawn to intense human misery and debt.
 
 ## 4. Key NPCs & Locations
