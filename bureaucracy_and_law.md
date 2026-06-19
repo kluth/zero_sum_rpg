@@ -4,7 +4,7 @@
 In *Zero Sum*, the most dangerous adversaries do not carry firearms. They carry clipboards, injunctions, and itemized billing software. Combat against the system is fought through litigation, metadata scraping, and leveraging secrets.
 
 ## 1. The Auditors
-![The Auditor](assets/auditor_faceless_1781869450046.jpg)
+![The Auditor](assets/auditor_abstract_1781870063698.jpg)
 
 The Auditors are corporate accountants flanked by heavily armed, private military contractors. They represent the apex predators of the financial ecosystem. 
 - **Modus Operandi:** Auditors do not shoot; they arrive mid-firefight or shortly after to serve immediate legal injunctions.

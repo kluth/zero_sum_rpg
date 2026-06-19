@@ -19,7 +19,7 @@ Scarcity is a core theme. Numbers on a page are easily ignored, but physical tok
 - **Handing Over Tokens:** When a player fires their weapon, they must physically hand a token back to the GM. When they are out of tokens, they are out of ammo. This creates a tactile, rising panic as players watch their physical pile of survival resources dwindle.
 
 ## 4. The Analogue Market Crash Table
-![The Black Market Kiosk](assets/black_market_kiosk_1781869460850.jpg)
+![The Black Market Kiosk](assets/black_market_kiosk_abstract_1781870027489.jpg)
 
 Instead of a digital ticker, the GM rolls for Market Fluctuations in front of the players at the start of every session (or whenever they visit a vendor).
 - **The Market Roll:** Roll a D100 on the **Market Crash Table**.

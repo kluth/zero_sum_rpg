@@ -3,7 +3,7 @@
 In *Zero Sum*, the economy is the deadliest enemy in the game. Combat shouldn't just drain hit points; it should bankrupt you. Logistics are not a background mechanic—they are the primary driver of horror.
 
 ## 1. Generational Debt (The Guarantor Act)
-![Corporate Debt Notice](assets/corporate_debt_notice_1781869441742.jpg)
+![Corporate Debt Notice](assets/corporate_debt_notice_abstract_1781870015495.jpg)
 
 Characters do not start at zero; they start with crippling debt (housing, medical, oxygen taxes). **Debt is a core stat.**
 - **The Transfer:** If a character dies or their Trauma maxes out, they aren't simply removed from the game. Due to the "Guarantor Act," their negative balance is legally transferred to their designated emergency contact.
