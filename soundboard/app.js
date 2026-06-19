@@ -1,5 +1,3 @@
-// Map button IDs to their respective audio files.
-// Place these .mp3 (or .wav) files in the "audio/" folder.
 const audioMap = {
     'btn-cognitive-load': 'audio/cognitive_load.mp3',
     'btn-metadata-exhaust': 'audio/metadata_exhaust.mp3',
@@ -11,28 +9,24 @@ const audioMap = {
     'btn-cpem-eval': 'audio/cpem_eval.mp3'
 };
 
-// Store active audio objects to allow overlapping or stopping
-const activeAudio = {};
-
 function playSound(buttonId) {
     const audioPath = audioMap[buttonId];
-    if (!audioPath) return;
+    if (!audioPath) {
+        alert("Error: Button ID not recognized.");
+        return;
+    }
 
-    // Create a new Audio object so multiple presses can overlap
     const audio = new Audio(audioPath);
     
-    // Add an error listener in case the file is missing
-    audio.addEventListener('error', () => {
-        console.error(`ERROR: Audio file missing: ${audioPath}. Please add it to the audio/ directory.`);
-        alert(`Missing audio file: ${audioPath}\nPlease drop this file into the soundboard/audio/ directory.`);
-    });
-
-    audio.play().catch(e => {
-        console.warn('Playback prevented or failed:', e);
+    audio.play().then(() => {
+        console.log(`Successfully playing: ${audioPath}`);
+    }).catch(e => {
+        console.error('Playback failed:', e);
+        // This will pop up if the MP3 file doesn't exist (404) or if autoplay is blocked
+        alert(`ERROR playing ${audioPath}\n\nReason: ${e.message}\n\nDid you remember to upload the MP3 file to the 'audio/' folder on GitHub?`);
     });
 }
 
-// Event Listeners
 document.querySelectorAll('.brutalist-btn').forEach(btn => {
     btn.addEventListener('click', function() {
         playSound(this.id);
