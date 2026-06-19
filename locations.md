@@ -3,21 +3,33 @@
 The modern thriller doesn't take place in dungeons; it takes place in boardrooms, server farms, and transit hubs.
 
 ## The Geneva Freeports (Switzerland)
+
+![Geneva](assets/geneva_freeport_monochrome.jpg)
+
 A massive, ultra-secure warehousing complex near the Geneva airport. Technically an international zone where no customs duties or taxes apply. 
 * **The Reality:** It is a black hole for global wealth. Billionaires store stolen art, gold bullion, and highly sensitive physical servers here. 
 * **In-Game Use:** The ultimate heist location. To get a piece of physical evidence, players must navigate diplomatic immunity, private security armies, and biometric vaults.
 
 ## The Data Centers (Ashburn, Virginia, USA)
+
+![Ashburn](assets/ashburn_data_center_monochrome.jpg)
+
 Ashburn is the "bullseye of the internet," where up to 70% of global internet traffic flows through massive, nondescript warehouses.
 * **The Reality:** These locations are fortified like military bases, with retinal scanners, armed guards, and physical air-gaps.
 * **In-Game Use:** To sever a surveillance feed or steal a specific dataset, players can't just hack it from afar; they need to physically breach the facility and plug a device directly into a server rack.
 
 ## "K Street" Lobbying Firms (Washington D.C.)
+
+![K Street](assets/k_street_firm_monochrome.jpg)
+
 Where corporate interests are turned into national law. High-end restaurants, secure conference rooms, and private clubs.
 * **The Reality:** Deals worth billions are made over $500 dinners. Blackmail material is the primary currency.
 * **In-Game Use:** A prime location for social engineering. Players must forge credentials, adopt aliases, and navigate high society to plant listening devices or extract a whistleblower.
 
 ## The Transnistria Smuggling Hubs (Eastern Europe)
+
+![Transnistria](assets/transnistria_monochrome.jpg)
+
 An unrecognized breakaway state between Moldova and Ukraine. It is a haven for organized crime, arms smuggling, and unregulated tech infrastructure.
 * **The Reality:** A place where international law simply does not apply.
 * **In-Game Use:** A harsh, lawless zone where players must go to acquire illegal hardware (like a Stingray device or military weaponry) or to disappear completely.

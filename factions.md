@@ -13,6 +13,9 @@ Corporate equivalents of intelligence agencies, offering deniable operations to 
 * **Vanguard Solutions:** Purveyors of military-grade spyware (similar to Pegasus/NSO Group). They sell zero-click smartphone exploits to authoritarian regimes and nervous billionaires.
 
 ## 3. High Finance & "Dark Money"
+
+![Dark Money](assets/dark_money_syndicate_monochrome.jpg)
+
 The people who actually run the world. They don't use guns; they use algorithmic trading and offshore tax havens.
 * **The Sovereign Wealth Syndicates:** Trillions of dollars hidden in shell companies across the Cayman Islands, Delaware, and Swiss Freeports. They will eliminate anyone who threatens their financial secrecy.
 * **The "Fixers":** Law firms and wealth managers in London and New York who specialize in hiding assets and legally harassing journalists into silence.
