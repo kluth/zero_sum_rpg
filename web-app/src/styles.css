@@ -1,0 +1,60 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #0A0F14;
+  color: #FFFFFF;
+  font-family: 'Inter', 'Roboto', sans-serif;
+  overflow-x: hidden;
+}
+
+.glass-panel {
+  background: rgba(0, 229, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+h1, h2, h3 {
+  color: #00E5FF;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.text-neon-red {
+  color: #FF2A2A;
+}
+
+.text-neon-blue {
+  color: #00E5FF;
+}
+
+.flex-container {
+  display: flex;
+  gap: 20px;
+}
+
+.flex-item {
+  flex: 1;
+}
+
+.roll-card {
+  background: rgba(255, 42, 42, 0.1);
+  border-left: 4px solid #FF2A2A;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.map-room {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(0, 229, 255, 0.3);
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+}
+
+.map-room.objective {
+  border-color: #FF2A2A;
+  background: rgba(255, 42, 42, 0.1);
+}
