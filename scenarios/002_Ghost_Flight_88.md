@@ -1,6 +1,6 @@
 # Zero Sum RPG Scenario: 002 - Ghost Flight 88
 
-![ghost_flight_monochrome](/home/matthias/.gemini/antigravity-cli/brain/886fd2e1-5ee6-43d8-868f-50c9af6b6a95/ghost_flight_monochrome_1781900358630.jpg)
+![ghost_flight_monochrome](../assets/general/ghost_flight_monochrome_1781900358630.jpg)
 
 ## Real-World Inspiration
 Based on the rise of autonomous drone cargo flights and GPS-spoofing incidents in commercial aviation.

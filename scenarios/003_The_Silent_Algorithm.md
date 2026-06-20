@@ -1,6 +1,6 @@
 # Zero Sum RPG Scenario: 003 - The Silent Algorithm
 
-![hft_server_room_monochrome](/home/matthias/.gemini/antigravity-cli/brain/886fd2e1-5ee6-43d8-868f-50c9af6b6a95/hft_server_room_monochrome_1781930954012.jpg)
+![hft_server_room_monochrome](../assets/general/hft_server_room_monochrome_1781930954012.jpg)
 
 ## Real-World Inspiration
 Based on the highly secretive world of High Frequency Trading (HFT) and the risk of algorithmic "flash crashes" engineered by hostile state actors.

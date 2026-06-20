@@ -1,6 +1,6 @@
 # Zero Sum RPG Scenario: 004 - Subnautica Taps
 
-![deep_sea_cable_monochrome](/home/matthias/.gemini/antigravity-cli/brain/886fd2e1-5ee6-43d8-868f-50c9af6b6a95/deep_sea_cable_monochrome_1781930964183.jpg)
+![deep_sea_cable_monochrome](../assets/general/deep_sea_cable_monochrome_1781930964183.jpg)
 
 ## Real-World Inspiration
 Inspired by geopolitical concerns over the vulnerability of deep-sea transatlantic fiber-optic cables to sabotage by autonomous military submarines.

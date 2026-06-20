@@ -1,6 +1,6 @@
 # Zero Sum RPG Scenario: 001 - The Lithium Bleed
 
-![lithium_refinery_monochrome](/home/matthias/.gemini/antigravity-cli/brain/886fd2e1-5ee6-43d8-868f-50c9af6b6a95/lithium_refinery_monochrome_1781900330647.jpg)
+![lithium_refinery_monochrome](../assets/general/lithium_refinery_monochrome_1781900330647.jpg)
 
 ## Real-World Inspiration
 Based on the massive supply-chain bottlenecks and geopolitical corporate sabotage seen in the 2026 EV battery sector.
