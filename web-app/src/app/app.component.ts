@@ -1,6 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { io, Socket } from 'socket.io-client';
+import { initializeApp } from 'firebase/app';
+import { getDatabase, ref, onValue } from 'firebase/database';
+
+const firebaseConfig = {
+  projectId: "zero-sum-rpg-2026",
+  appId: "1:941946145190:web:89539148cced56ecf42767",
+  storageBucket: "zero-sum-rpg-2026.firebasestorage.app",
+  apiKey: "AIzaSyCAPKXPuhtVJ48dXIP5ZlEXk5jI_3fpWd0",
+  authDomain: "zero-sum-rpg-2026.firebaseapp.com",
+  messagingSenderId: "941946145190",
+  databaseURL: "https://zero-sum-rpg-2026-default-rtdb.firebaseio.com"
+};
 
 @Component({
   selector: 'app-root',
@@ -10,7 +21,7 @@ import { io, Socket } from 'socket.io-client';
     <div style="padding: 20px;">
       <header class="glass-panel" style="display: flex; justify-content: space-between; align-items: center;">
         <h1 style="margin: 0;">ZERO SUM <span class="text-neon-red">SPECTATOR VIEW</span></h1>
-        <div style="font-size: 14px; color: gray;">TWITCH INTEGRATION ACTIVE 🔴</div>
+        <div style="font-size: 14px; color: gray;">TWITCH FIREBASE ACTIVE 🔴</div>
       </header>
 
       <div class="flex-container">
@@ -72,14 +83,20 @@ import { io, Socket } from 'socket.io-client';
   `
 })
 export class AppComponent implements OnInit {
-  private socket!: Socket;
   gameState: any = { recentRolls: [], characters: {}, map: null };
 
   ngOnInit() {
-    this.socket = io('http://localhost:3000');
-    
-    this.socket.on('stateSync', (state: any) => {
-      this.gameState = state;
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const stateRef = ref(db, 'gameState');
+    onValue(stateRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        this.gameState = {
+          ...this.gameState,
+          ...data
+        };
+      }
     });
   }
 

@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import kotlin.random.Random
 
 val NeonRed = Color(0xFFFF2A2A)
@@ -28,6 +29,18 @@ val GlassBackground = Color(0x3300E5FF)
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        NetworkManager.connect("http://10.0.2.2:3000") // 10.0.2.2 is Android Emulator localhost loopback
+        
+        // Broadcast character profile
+        val profile = JSONObject().apply {
+            put("id", "char_1")
+            put("name", "KAIRO 'GHOST' CHEN")
+            put("role", "CYBER-INFILTRATOR")
+            put("hp", 78)
+            put("stealth", 85)
+        }
+        NetworkManager.socket?.emit("updateCharacter", profile)
+        
         setContent {
             MaterialTheme(
                 colorScheme = darkColorScheme(
@@ -45,6 +58,11 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        NetworkManager.disconnect()
     }
 }
 
@@ -90,16 +108,7 @@ fun HeaderSection() {
             letterSpacing = 2.sp
         )
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Icon(
-                painter = androidx.compose.ui.res.painterResource(id = android.R.drawable.ic_btn_speak_now),
-                contentDescription = "Mic",
-                tint = NeonBlue
-            )
-            Icon(
-                painter = androidx.compose.ui.res.painterResource(id = android.R.drawable.ic_menu_camera),
-                contentDescription = "Camera",
-                tint = NeonRed
-            )
+            Text("LIVE SERVER SYNC", color = NeonRed, fontSize = 12.sp, modifier = Modifier.align(Alignment.CenterVertically))
         }
     }
 }
@@ -161,7 +170,13 @@ fun StatBar(label: String, current: Int, max: Int, color: Color) {
 @Composable
 fun DiceRollerSection(modifier: Modifier = Modifier) {
     val coroutineScope = rememberCoroutineScope()
-    var rollResult by remember { mutableStateOf("READY") }
+    val gameState by NetworkManager.gameState.collectAsState()
+    
+    // Check if there are any recent rolls from the network
+    val latestNetworkRoll = gameState?.optJSONArray("recentRolls")?.let { rolls ->
+        if (rolls.length() > 0) rolls.getJSONObject(0).optInt("result") else null
+    }
+
     var isRolling by remember { mutableStateOf(false) }
 
     Column(
@@ -180,7 +195,6 @@ fun DiceRollerSection(modifier: Modifier = Modifier) {
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            // Mocking a 3D dice area
             Text(if (isRolling) "ROLLING..." else "D20", color = NeonRed, fontSize = 48.sp, fontWeight = FontWeight.Bold)
         }
         
@@ -188,8 +202,9 @@ fun DiceRollerSection(modifier: Modifier = Modifier) {
             onClick = {
                 coroutineScope.launch {
                     isRolling = true
-                    delay(1000)
-                    rollResult = "RESULT: ${Random.nextInt(1, 21)}"
+                    delay(500) // fake animation
+                    val result = Random.nextInt(1, 21)
+                    NetworkManager.rollDice(result) // emit to server
                     isRolling = false
                 }
             },
@@ -203,7 +218,11 @@ fun DiceRollerSection(modifier: Modifier = Modifier) {
         }
         
         Spacer(modifier = Modifier.height(16.dp))
-        Text(rollResult, color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+        if (latestNetworkRoll != null) {
+            Text("RESULT: $latestNetworkRoll", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+        } else {
+            Text("READY", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+        }
     }
 }
 
@@ -216,10 +235,10 @@ fun RemoteCommsSection(modifier: Modifier = Modifier) {
             .border(1.dp, NeonBlue.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
             .padding(16.dp)
     ) {
-        Text("REMOTE COMMS (AGORA)", color = Color.Gray, fontSize = 12.sp)
+        Text("REMOTE COMMS (AGORA RTC)", color = Color.Gray, fontSize = 12.sp)
         Spacer(modifier = Modifier.height(16.dp))
         
-        // Mock video feeds
+        // Real-world this would be an AndroidView wrapping io.agora.rtc.video.VideoCanvas
         VideoFeedCard("PLAYER 2 (RAVEN)", true)
         Spacer(modifier = Modifier.height(8.dp))
         VideoFeedCard("PLAYER 3 (DEX)", false)

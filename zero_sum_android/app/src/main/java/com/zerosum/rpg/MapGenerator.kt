@@ -14,6 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.json.JSONArray
+import org.json.JSONObject
 import kotlin.random.Random
 
 // --- Data Models ---
@@ -22,13 +24,58 @@ data class RoomNode(
     val name: String,
     val complication: String,
     val isObjective: Boolean
-)
+) {
+    fun toJson(): JSONObject {
+        return JSONObject().apply {
+            put("id", id)
+            put("name", name)
+            put("complication", complication)
+            put("isObjective", isObjective)
+        }
+    }
+
+    companion object {
+        fun fromJson(json: JSONObject): RoomNode {
+            return RoomNode(
+                id = json.optInt("id"),
+                name = json.optString("name"),
+                complication = json.optString("complication"),
+                isObjective = json.optBoolean("isObjective")
+            )
+        }
+    }
+}
 
 data class FacilityMap(
     val archetype: String,
     val layoutStructure: String,
     val rooms: List<RoomNode>
-)
+) {
+    fun toJson(): JSONObject {
+        return JSONObject().apply {
+            put("archetype", archetype)
+            put("layoutStructure", layoutStructure)
+            val jsonRooms = JSONArray()
+            rooms.forEach { jsonRooms.put(it.toJson()) }
+            put("rooms", jsonRooms)
+        }
+    }
+
+    companion object {
+        fun fromJson(json: JSONObject?): FacilityMap? {
+            if (json == null) return null
+            val archetype = json.optString("archetype", "")
+            if (archetype.isEmpty()) return null
+            val layout = json.optString("layoutStructure", "")
+            val roomsArray = json.optJSONArray("rooms") ?: JSONArray()
+            val roomsList = mutableListOf<RoomNode>()
+            for (i in 0 until roomsArray.length()) {
+                roomsList.add(RoomNode.fromJson(roomsArray.getJSONObject(i)))
+            }
+            return FacilityMap(archetype, layout, roomsList)
+        }
+    }
+}
 
 // --- Generator Logic ---
 object MapGeneratorLogic {
@@ -44,7 +91,7 @@ object MapGeneratorLogic {
     fun generateMap(): FacilityMap {
         val archetype = archetypes.random()
         val layout = layouts.random()
-        val roomCount = Random.nextInt(5, 9) // 5 to 8 rooms
+        val roomCount = Random.nextInt(5, 9)
         
         val rooms = mutableListOf<RoomNode>()
         for (i in 1..roomCount) {
@@ -86,7 +133,10 @@ object MapGeneratorLogic {
 // --- UI Components ---
 @Composable
 fun MapGeneratorSection(modifier: Modifier = Modifier) {
-    var currentMap by remember { mutableStateOf<FacilityMap?>(null) }
+    val gameState by NetworkManager.gameState.collectAsState()
+    
+    // Parse map from game state
+    val currentMap = FacilityMap.fromJson(gameState?.optJSONObject("map"))
 
     Column(
         modifier = modifier
@@ -102,7 +152,10 @@ fun MapGeneratorSection(modifier: Modifier = Modifier) {
         ) {
             Text("TACTICAL MAP", color = Color.Gray, fontSize = 12.sp)
             Button(
-                onClick = { currentMap = MapGeneratorLogic.generateMap() },
+                onClick = { 
+                    val newMap = MapGeneratorLogic.generateMap()
+                    NetworkManager.syncMap(newMap.toJson())
+                },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                 modifier = Modifier.border(1.dp, NeonBlue, RoundedCornerShape(4.dp)),
                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)

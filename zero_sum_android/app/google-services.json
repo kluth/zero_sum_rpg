@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "941946145190",
+    "project_id": "zero-sum-rpg-2026",
+    "storage_bucket": "zero-sum-rpg-2026.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:941946145190:android:0bded73170d83f57f42767",
+        "android_client_info": {
+          "package_name": "com.zerosum.rpg"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAu8ZR3KKptgB_hzY0XjLD4TOisGKu-C_4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
