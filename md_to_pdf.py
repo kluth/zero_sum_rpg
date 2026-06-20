@@ -1,8 +1,19 @@
+import os
 import glob
 import markdown
 from weasyprint import HTML
 
-for f in glob.glob("*.md"):
+# Find all markdown files recursively
+md_files = []
+for root, dirs, files in os.walk("."):
+    # Skip hidden directories like .git and .agents
+    if "/." in root or root.startswith(".agents"):
+        continue
+    for file in files:
+        if file.endswith(".md"):
+            md_files.append(os.path.join(root, file))
+
+for f in md_files:
     with open(f, "r") as file:
         md_text = file.read()
     
@@ -26,5 +37,7 @@ for f in glob.glob("*.md"):
     """
     
     pdf_filename = f.replace(".md", ".pdf")
-    HTML(string=html, base_url=".").write_pdf(pdf_filename)
+    # Base URL is the directory of the file so images load properly
+    base_url = os.path.dirname(os.path.abspath(f))
+    HTML(string=html, base_url=base_url).write_pdf(pdf_filename)
     print(f"Generated {pdf_filename}")
