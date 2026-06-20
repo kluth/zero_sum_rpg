@@ -10,7 +10,7 @@ The players are contracted to infiltrate a highly secure Neo-Berlin Tech Hub. An
 The primary antagonist isn't a heavily armed warlord, but an influencer who commands attention. They don't use guns; they use live-streams. If the players are detected, the influencer will immediately broadcast their faces, instantly raising the Social Heat to maximum and doxxing them globally.
 
 ## 3. The Complication
-Violence is not an option here. **The target controls the social credit algorithms of the local district.**
+Violence is not an option here. *Alternatively, the Faceless can attempt a DC 3 Subterfuge check to forge a localized bypass code, avoiding the confrontation entirely.* **The target controls the social credit algorithms of the local district.**
 If a single shot is fired, the Dead Man's Zone rule applies, and the players will face an impossible extraction against overwhelming force.
 
 ## 4. Zero Sum Consistency Matrix (ZSCM)
