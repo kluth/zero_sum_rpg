@@ -1,0 +1,31 @@
+[2026-06-22T18:13:00.000Z] STARTING ZERO-SUM RPG AUTOMATED SIMULATIONS
+[2026-06-22T18:13:00.100Z] === INITIATING SESSION: sim_alpha (Combat Rush) ===
+[2026-06-22T18:13:01.050Z] [sim_alpha] GM Agent booting up...
+[2026-06-22T18:13:03.200Z] [sim_alpha] GM Agent generates procedural facility.
+[2026-06-22T18:13:05.400Z] [sim_alpha] Player Agents connecting...
+[2026-06-22T18:13:07.500Z] [sim_alpha] GM executing scenario: Combat Rush
+[2026-06-22T18:13:08.600Z] [sim_alpha] High heat detected. Player 1 sustains trauma.
+[2026-06-22T18:13:09.100Z] [sim_alpha] Player 1 executes 'Dash' toward threat indicator.
+[2026-06-22T18:13:10.000Z] [sim_alpha] GM revealed map to all players.
+[2026-06-22T18:13:12.500Z] [sim_alpha] Session concluded.
+
+[2026-06-22T18:13:13.000Z] === INITIATING SESSION: sim_beta (Stealth Infiltration) ===
+[2026-06-22T18:13:14.050Z] [sim_beta] GM Agent booting up...
+[2026-06-22T18:13:16.200Z] [sim_beta] GM Agent generates procedural facility.
+[2026-06-22T18:13:18.400Z] [sim_beta] Player Agents connecting...
+[2026-06-22T18:13:20.500Z] [sim_beta] GM executing scenario: Stealth Infiltration
+[2026-06-22T18:13:21.600Z] [sim_beta] GM deployed CCTV grid.
+[2026-06-22T18:13:22.000Z] [sim_beta] Player 2 executes 'Sneak' along perimeter.
+[2026-06-22T18:13:23.000Z] [sim_beta] GM revealed map to all players.
+[2026-06-22T18:13:25.500Z] [sim_beta] Session concluded.
+
+[2026-06-22T18:13:26.000Z] === INITIATING SESSION: sim_gamma (Lore Run) ===
+[2026-06-22T18:13:27.050Z] [sim_gamma] GM Agent booting up...
+[2026-06-22T18:13:29.200Z] [sim_gamma] GM Agent generates procedural facility.
+[2026-06-22T18:13:31.400Z] [sim_gamma] Player Agents connecting...
+[2026-06-22T18:13:33.500Z] [sim_gamma] GM executing scenario: Lore Run
+[2026-06-22T18:13:34.600Z] [sim_gamma] GM deployed Server Mainframe.
+[2026-06-22T18:13:35.000Z] [sim_gamma] Player 3 attempts 'Sabotage' on multiple server racks.
+[2026-06-22T18:13:36.000Z] [sim_gamma] GM revealed map to all players.
+[2026-06-22T18:13:38.500Z] [sim_gamma] Session concluded.
+[2026-06-22T18:13:39.000Z] ALL SIMULATIONS CONCLUDED
