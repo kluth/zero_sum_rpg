@@ -171,9 +171,14 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
           const x = cx + offsetX + 0.5;
           const z = cy + offsetZ + 0.5;
           
-          const wallGeo = new THREE.BoxGeometry(cellSize, cellSize, cellSize);
+          let wallHeight = 1;
+          if (cell.room_id && rooms[cell.room_id]) {
+             wallHeight = rooms[cell.room_id].metadata?.zHeight || 1;
+          }
+          
+          const wallGeo = new THREE.BoxGeometry(cellSize, wallHeight, cellSize);
           const wall = new THREE.Mesh(wallGeo, wallMaterial);
-          wall.position.set(x, cellSize / 2, z);
+          wall.position.set(x, wallHeight / 2, z);
           this.mapGroup.add(wall);
           
           // Edge glow

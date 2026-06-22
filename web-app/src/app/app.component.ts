@@ -164,6 +164,10 @@ const firebaseConfig = {
                      <option value="medium">Medium</option>
                      <option value="critical">Critical</option>
                    </select>
+
+                   <label style="color: gray; font-size: 12px;">Room Height (3D)</label>
+                   <input type="number" [ngModel]="getRoomHeight()" (ngModelChange)="updateRoomHeight($event)" min="1" max="10" step="1" style="background: black; color: white; border: 1px solid gray; padding: 5px; width: 100%; margin-bottom: 10px;" />
+
                    <button class="cyber-button" style="border-color: #FF2A2A; color: #FF2A2A; width: 100%; margin-top: 20px;" (click)="publishMap()">SYNC ROOM STATE TO RTDB</button>
                  </div>
                  <ng-template #noSelection>
@@ -665,6 +669,19 @@ export class AppComponent implements OnInit {
     if (roomId) {
        const room = this.gridStore.rooms()[roomId];
        const updatedRoom = { ...room, metadata: { ...room.metadata, threat } };
+       this.gridStore.updateRoom(roomId, updatedRoom);
+    }
+  }
+
+  getRoomHeight() {
+    const roomId = this.selectedRoomId();
+    return roomId ? this.gridStore.rooms()[roomId]?.metadata?.zHeight || 1 : 1;
+  }
+  updateRoomHeight(zHeight: number) {
+    const roomId = this.selectedRoomId();
+    if (roomId) {
+       const room = this.gridStore.rooms()[roomId];
+       const updatedRoom = { ...room, metadata: { ...room.metadata, zHeight: Number(zHeight) } };
        this.gridStore.updateRoom(roomId, updatedRoom);
     }
   }
