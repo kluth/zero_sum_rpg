@@ -1,4 +1,4 @@
-# LIVE DEPLOYMENT DEBRIEF: Remote Simulation Session 0G9DRA
+# LIVE DEPLOYMENT DEBRIEF: Remote Simulation Session 0G9DRA (Pre-Overhaul)
 
 The fully randomized Playwright session connected directly to the production Firebase Hosting (`https://zero-sum-rpg-2026.web.app`) to verify that all architectures, map parsing, threat clocks, trauma logging, and equivalent-exchange heal functions are operational in the cloud.
 
@@ -16,5 +16,22 @@ Below are the raw screenshots captured during the automated test sequence:
 
 ![Player 1 Android/Mobile View: Equivalent Exchange Initiated](../test_suite/remote_session/session_0G9DRA/06_player1_post_heal.png)
 
+---
 
-**MISSION ACCOMPLISHED.** All 10 AAA TTRPG pillars (D&D, Pathfinder, Call of Cthulhu, Cyberpunk RED, Blades in the Dark, Mork Borg, Vampire: The Masquerade, Shadowrun, Lancer, Paranoia) have been mathematically extracted, reverse-engineered, and flawlessly integrated into the project's source code and live Firebase ecosystem.
+# PSYCHO-TERROR IMMERSION OVERHAUL: Session BU9225
+
+After consulting the UX Psychology, Immersive Design, and Neon Art Director agents, we deployed the **Brutalist Psycho-Terror Interface** to production. The aesthetic shifted from "clean and polite" to "oppressive, hostile, and actively degrading."
+
+![Brutalist GM Map Generation](../test_suite/remote_session/session_BU9225/01_gm_map_generation.png)
+
+![Brutalist Chaos Engine Triggered](../test_suite/remote_session/session_BU9225/02_gm_chaos_view.png)
+
+![Brutalist Spectator Dashboard (Twitch Twitch Chaos Market)](../test_suite/remote_session/session_BU9225/03_spectator_chaos_view.png)
+
+![Brutalist GM View: Post-Equivalent Exchange Heal](../test_suite/remote_session/session_BU9225/04_gm_post_heal.png)
+
+![Brutalist Spectator Trauma & Heat Alert](../test_suite/remote_session/session_BU9225/05_spectator_trauma_alert.png)
+
+![Brutalist Player Uplink: Heavy Glitching & Cyberpsychosis](../test_suite/remote_session/session_BU9225/06_player1_post_heal.png)
+
+**MISSION ACCOMPLISHED.** All 10 AAA TTRPG pillars (D&D, Pathfinder, Call of Cthulhu, Cyberpunk RED, Blades in the Dark, Mork Borg, Vampire: The Masquerade, Shadowrun, Lancer, Paranoia) have been mathematically extracted, reverse-engineered, and flawlessly integrated into the project's source code and live Firebase ecosystem. The final aesthetic overhaul pushes the game into a completely unique space.
