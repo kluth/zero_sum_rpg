@@ -127,6 +127,12 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
             }
         });
     });
+
+    // Hydrate the view if state arrived before initialization completed
+    const dim = this.gridStore.dimensions();
+    if (dim) {
+       this.renderMap(dim, this.gridStore.grid(), this.gridStore.rooms());
+    }
   }
 
   private hasLineOfSight(x0: number, y0: number, x1: number, y1: number, grid: any): boolean {

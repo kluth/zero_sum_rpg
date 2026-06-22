@@ -325,6 +325,12 @@ const firebaseConfig = {
               <h2 class="header-brutalist text-acid-green" style="font-size: 32px; margin: 0;">UPLINK // {{ getPlayerName() }}</h2>
               <div class="data-mono" style="color: #39FF14; font-size: 20px; border: 2px solid #39FF14; padding: 5px 10px; background: rgba(57,255,20,0.1);">ROLE: {{ getPlayerRole() }}</div>
               
+              <div *ngIf="myCharStats()" style="display: flex; gap: 15px;">
+                  <div class="data-mono" style="color: #39FF14; font-size: 20px; border: 2px solid #39FF14; padding: 5px 10px; background: rgba(57,255,20,0.1);">HP: {{ myCharStats().hp_current }}</div>
+                  <div class="data-mono" style="color: #FFB000; font-size: 20px; border: 2px solid #FFB000; padding: 5px 10px; background: rgba(255,176,0,0.1);">STR: {{ myCharStats().stress_current }}</div>
+                  <div class="data-mono" style="color: #00F0FF; font-size: 20px; border: 2px solid #00F0FF; padding: 5px 10px; background: rgba(0,240,255,0.1);">STL: {{ myCharStats().stealth_total }}</div>
+              </div>
+              
               <button class="cyber-button" style="border: 4px solid #FFB000; color: #FFB000; font-size: 16px; margin: 0; padding: 10px 20px; background: repeating-linear-gradient(45deg, rgba(255,176,0,0.1), rgba(255,176,0,0.1) 10px, transparent 10px, transparent 20px);" (click)="triggerEmergencyHeal()">⚠️ [ZERO SUM] EMERGENCY HEAL ⚠️</button>
               
               <div class="data-mono" style="color: #FF003C; font-size: 20px; font-weight: bold; border: 2px solid #FF003C; padding: 5px 10px; background: rgba(255,0,60,0.1);">HEAT: {{ heatLevel() }}</div>
@@ -350,6 +356,13 @@ export class AppComponent implements OnInit {
     if (keys.length === 0) return 100;
     const total = keys.reduce((acc, key) => acc + (chars[key].stats?.hp_current || 0), 0);
     return Math.floor(total / keys.length);
+  });
+
+  myCharStats = computed(() => {
+    const chars = this.gameState()?.characters || {};
+    const me = this.activePlayerId();
+    if (me && chars[me]) return chars[me].stats;
+    return null;
   });
 
   squadStressAvg = computed(() => {
