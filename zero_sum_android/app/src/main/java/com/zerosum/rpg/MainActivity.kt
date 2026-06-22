@@ -29,7 +29,13 @@ val GlassBackground = Color(0x3300E5FF)
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        NetworkManager.connect("http://10.0.2.2:3000") // 10.0.2.2 is Android Emulator localhost loopback
+        val isTestLab = android.provider.Settings.System.getString(contentResolver, "firebase.test.lab") == "true"
+        if (isTestLab) {
+            NetworkManager.connect()
+        } else {
+            NetworkManager.connect("http://10.0.2.2:9000")
+        }
+        NetworkManager.resetState()
         
         // Broadcast character profile
         val profile = JSONObject().apply {
@@ -39,7 +45,7 @@ class MainActivity : ComponentActivity() {
             put("hp", 78)
             put("stealth", 85)
         }
-        NetworkManager.socket?.emit("updateCharacter", profile)
+        NetworkManager.updateCharacter(profile)
         
         setContent {
             MaterialTheme(
@@ -75,15 +81,15 @@ fun ZeroSumApp() {
     ) {
         HeaderSection()
         Spacer(modifier = Modifier.height(16.dp))
-        Row(modifier = Modifier.weight(1f)) {
+        Column(modifier = Modifier.weight(1f)) {
             CharacterSheetSection(modifier = Modifier.weight(1f))
-            Spacer(modifier = Modifier.width(16.dp))
-            Column(modifier = Modifier.weight(1f)) {
+            Spacer(modifier = Modifier.height(16.dp))
+            Column(modifier = Modifier.weight(2f)) {
                 DiceRollerSection(modifier = Modifier.weight(1f))
                 Spacer(modifier = Modifier.height(16.dp))
-                MapGeneratorSection(modifier = Modifier.weight(2f))
+                MapGeneratorSection(modifier = Modifier.weight(1.5f))
             }
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             RemoteCommsSection(modifier = Modifier.weight(1f))
         }
     }
@@ -115,6 +121,17 @@ fun HeaderSection() {
 
 @Composable
 fun CharacterSheetSection(modifier: Modifier = Modifier) {
+    val gameState by NetworkManager.gameState.collectAsState()
+    val characters = gameState?.optJSONObject("characters")
+    val character = characters?.optJSONObject("char_1") ?: characters?.keys()?.run {
+        if (hasNext()) characters.optJSONObject(next()) else null
+    }
+
+    val name = character?.optString("name") ?: "KAIRO 'GHOST' CHEN"
+    val role = character?.optString("role") ?: "CYBER-INFILTRATOR"
+    val hp = character?.optInt("hp") ?: 78
+    val stealth = character?.optInt("stealth") ?: 85
+
     Column(
         modifier = modifier
             .fillMaxHeight()
@@ -124,13 +141,13 @@ fun CharacterSheetSection(modifier: Modifier = Modifier) {
     ) {
         Text("CHARACTER SHEET", color = Color.Gray, fontSize = 12.sp)
         Spacer(modifier = Modifier.height(16.dp))
-        Text("KAIRO 'GHOST' CHEN", color = Color.White, fontWeight = FontWeight.Bold)
-        Text("CYBER-INFILTRATOR", color = NeonRed, fontSize = 12.sp)
+        Text(name, color = Color.White, fontWeight = FontWeight.Bold)
+        Text(role, color = NeonRed, fontSize = 12.sp)
         
         Spacer(modifier = Modifier.height(24.dp))
-        StatBar("HEALTH", 78, 100, NeonBlue)
+        StatBar("HEALTH", hp, 100, NeonBlue)
         Spacer(modifier = Modifier.height(16.dp))
-        StatBar("STEALTH", 85, 100, NeonBlue)
+        StatBar("STEALTH", stealth, 100, NeonBlue)
         
         Spacer(modifier = Modifier.height(24.dp))
         Text("ASSETS", color = Color.Gray, fontSize = 12.sp)

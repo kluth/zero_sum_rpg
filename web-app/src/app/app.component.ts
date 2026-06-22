@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { initializeApp } from 'firebase/app';
-import { getDatabase, ref, onValue } from 'firebase/database';
+import { getDatabase, ref, onValue, connectDatabaseEmulator } from 'firebase/database';
 
 const firebaseConfig = {
   projectId: "zero-sum-rpg-2026",
@@ -10,7 +10,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyCAPKXPuhtVJ48dXIP5ZlEXk5jI_3fpWd0",
   authDomain: "zero-sum-rpg-2026.firebaseapp.com",
   messagingSenderId: "941946145190",
-  databaseURL: "https://zero-sum-rpg-2026-default-rtdb.firebaseio.com"
+  databaseURL: "https://zero-sum-rpg-2026-default-rtdb.europe-west1.firebasedatabase.app"
 };
 
 @Component({
@@ -88,6 +88,9 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+      connectDatabaseEmulator(db, 'localhost', 9000);
+    }
     const stateRef = ref(db, 'gameState');
     onValue(stateRef, (snapshot) => {
       const data = snapshot.val();

@@ -10,20 +10,61 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 object NetworkManager {
-    private val database = FirebaseDatabase.getInstance().reference
+    private val database = FirebaseDatabase.getInstance("https://zero-sum-rpg-2026-default-rtdb.europe-west1.firebasedatabase.app").reference
 
     private val _gameState = MutableStateFlow<JSONObject?>(null)
     val gameState: StateFlow<JSONObject?> = _gameState
 
+    fun resetState() {
+        try {
+            database.child("gameState/map").removeValue()
+            database.child("gameState/recentRolls").removeValue()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun wrapValue(value: Any?): Any? {
+        return when (value) {
+            is Map<*, *> -> {
+                val json = JSONObject()
+                for ((k, v) in value) {
+                    if (k is String) {
+                        json.put(k, wrapValue(v))
+                    }
+                }
+                json
+            }
+            is List<*> -> {
+                val array = JSONArray()
+                for (v in value) {
+                    array.put(wrapValue(v))
+                }
+                array
+            }
+            else -> value
+        }
+    }
+
     fun connect(url: String = "") {
+        if (url.isNotEmpty()) {
+            try {
+                val uri = java.net.URI(url)
+                val host = uri.host ?: "10.0.2.2"
+                val port = if (uri.port != -1) uri.port else 9000
+                database.database.useEmulator(host, port)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
         database.child("gameState").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     try {
                         val stateMap = snapshot.value as? Map<*, *>
                         if (stateMap != null) {
-                            val jsonString = JSONObject(stateMap).toString()
-                            _gameState.value = JSONObject(jsonString)
+                            val json = wrapValue(stateMap) as? JSONObject
+                            _gameState.value = json
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -35,6 +76,19 @@ object NetworkManager {
                 error.toException().printStackTrace()
             }
         })
+    }
+
+    fun updateCharacter(profile: JSONObject) {
+        val characterId = profile.optString("id").takeIf { it.isNotEmpty() } ?: profile.optString("characterId")
+        if (characterId.isNotEmpty()) {
+            val charData = mapOf(
+                "name" to profile.optString("name"),
+                "role" to profile.optString("role"),
+                "hp" to profile.optInt("hp"),
+                "stealth" to profile.optInt("stealth")
+            )
+            database.child("gameState/characters/$characterId").setValue(charData)
+        }
     }
 
     fun rollDice(result: Int) {

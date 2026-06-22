@@ -1,0 +1,4 @@
+09:31:59.944 [NamespaceSystem-akka.actor.default-dispatcher-5] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started
+09:32:00.746 [main] INFO com.firebase.server.forge.App$ - Listening at 127.0.0.1:9000
+09:32:02.319 [NamespaceSystem-akka.actor.default-dispatcher-6] INFO com.firebase.core.namespace.NamespaceActor - zero-sum-rpg-2026-default-rtdb successfully activated FBKV (SurveyIdle(0)) wait: 539ms, init: 0ms
+09:32:02.549 [NamespaceSystem-blocking-namespace-operation-dispatcher-7] INFO com.firebase.core.namespace.StateManager - Namespace zero-sum-rpg-2026-default-rtdb status Active to Active
