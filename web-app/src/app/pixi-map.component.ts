@@ -19,6 +19,7 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
   @Output() cellClicked = new EventEmitter<{x: number, y: number}>();
   @Output() roomClicked = new EventEmitter<string>();
   @Output() cellPainted = new EventEmitter<{x: number, y: number, type: string}>();
+  @Output() playerMoved = new EventEmitter<{x: number, y: number}>();
 
   private app!: PIXI.Application;
   private viewport!: Viewport;
@@ -101,8 +102,14 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
     this.viewport.on('pointerupoutside', () => isPainting = false);
 
     this.viewport.on('clicked', (e) => {
-      if (this.mode !== 'gm' || this.paintMode) return;
       const worldPos = this.viewport.toWorld(e.screen);
+      if (this.mode === 'player') {
+        const subX = worldPos.x / 32;
+        const subY = worldPos.y / 32;
+        this.playerMoved.emit({x: subX, y: subY});
+        return;
+      }
+      if (this.mode !== 'gm' || this.paintMode) return;
       const x = Math.floor(worldPos.x / 32);
       const y = Math.floor(worldPos.y / 32);
       if (x >= 0 && y >= 0 && x < 50 && y < 30) {

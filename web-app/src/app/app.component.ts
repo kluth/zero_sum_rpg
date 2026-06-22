@@ -365,13 +365,27 @@ const firebaseConfig = {
               <button class="cyber-button" style="border-color: #FF00FF; color: #FF00FF; font-size: 16px; margin: 0; padding: 10px 20px; background: rgba(255,0,255,0.1);" (click)="show3d.set(!show3d())">3D / 2D</button>
             </div>
             
-            <div style="flex: 1; position: relative; border: 3px solid #39FF14; box-shadow: inset 0 0 50px rgba(57,255,20,0.1);">
+            <div style="flex: 1; position: relative; border: 3px solid #39FF14; box-shadow: inset 0 0 50px rgba(57,255,20,0.1);" (dragover)="$event.preventDefault()" (drop)="onDropItem($event)">
                <ng-container *ngIf="!show3d(); else threeDViewPlayer">
-                 <app-pixi-map [mode]="'player'" [characters]="gameState().characters || {}" [activePlayerId]="activePlayerId()"></app-pixi-map>
+                 <app-pixi-map [mode]="'player'" [characters]="gameState().characters || {}" [activePlayerId]="activePlayerId()" (playerMoved)="onPlayerMoved($event)"></app-pixi-map>
                </ng-container>
                <ng-template #threeDViewPlayer>
                  <app-threejs-map [characters]="gameState().characters || {}" [mode]="'player'"></app-threejs-map>
                </ng-template>
+            </div>
+            
+            <div class="inventory-panel" style="display: flex; gap: 10px; padding: 10px; background: rgba(0,0,0,0.9); border-top: 2px solid #39FF14;">
+              <span style="color: #39FF14; font-size: 12px; align-self: center; font-weight: bold;">INVENTORY:</span>
+              <div draggable="true" (dragstart)="onDragStart($event, 'usb_drive')" style="padding: 5px 15px; border: 1px solid #00F0FF; color: #00F0FF; cursor: grab; background: rgba(0,240,255,0.1); font-family: 'JetBrains Mono', monospace; font-size: 14px;">USB DRIVE</div>
+              <div draggable="true" (dragstart)="onDragStart($event, 'c4_explosive')" style="padding: 5px 15px; border: 1px solid #FF003C; color: #FF003C; cursor: grab; background: rgba(255,0,60,0.1); font-family: 'JetBrains Mono', monospace; font-size: 14px;">C4 CHARGE</div>
+            </div>
+            
+            <div class="action-hotbar" style="display: flex; gap: 10px; padding: 10px; background: rgba(0,0,0,0.8); border-top: 2px solid #39FF14; overflow-x: auto;">
+              <button class="cyber-button hotbar-btn" (click)="playerAction('attack')" style="flex: 1; min-width: 100px; font-size: 14px; padding: 10px; border-color: #FF003C; color: #FF003C;">⚔️ ATTACK</button>
+              <button class="cyber-button hotbar-btn" (click)="playerAction('sneak')" style="flex: 1; min-width: 100px; font-size: 14px; padding: 10px; border-color: #00F0FF; color: #00F0FF;">🥷 SNEAK</button>
+              <button class="cyber-button hotbar-btn" (click)="playerAction('dash')" style="flex: 1; min-width: 100px; font-size: 14px; padding: 10px; border-color: #FFB000; color: #FFB000;">⚡ DASH</button>
+              <button class="cyber-button hotbar-btn" (click)="playerAction('investigate')" style="flex: 1; min-width: 100px; font-size: 14px; padding: 10px; border-color: #39FF14; color: #39FF14;">🔍 INVEST</button>
+              <button class="cyber-button hotbar-btn" (click)="playerAction('sabotage')" style="flex: 1; min-width: 100px; font-size: 14px; padding: 10px; border-color: #FF00FF; color: #FF00FF;">💥 SABOTAGE</button>
             </div>
         </div>
       }
@@ -1109,6 +1123,65 @@ export class AppComponent implements OnInit {
          this.terminalLogs.update(logs => [...logs, `LLM-ICE: Connected to ${device.name}. Proximity verified. Mainframe access granted.`]);
      } catch (error: any) {
          this.terminalLogs.update(logs => [...logs, `LLM-ICE: Air-gap connection failed. ${error.message}`]);
+     }
+  }
+  
+  
+  onPlayerMoved(pos: {x: number, y: number}) {
+    const pid = this.activePlayerId();
+    if (!pid || !this.sessionId()) return;
+    const db = getDatabase();
+    set(ref(db, `sessions/${this.sessionId()}/characters/${pid}/x`), pos.x);
+    set(ref(db, `sessions/${this.sessionId()}/characters/${pid}/y`), pos.y);
+  }
+  
+  playerAction(action: string) {
+    if (!this.sessionId() || !this.activePlayerId()) return;
+    const db = getDatabase();
+    push(ref(db, `sessions/${this.sessionId()}/rolls`), {
+       player: this.getPlayerName(),
+       result: `Executed action: ${action.toUpperCase()}`,
+       timestamp: Date.now()
+    });
+  }
+  
+  onDragStart(event: DragEvent, itemId: string) {
+     event.dataTransfer?.setData('text/plain', itemId);
+  }
+  
+  onDropItem(event: DragEvent) {
+     event.preventDefault();
+     const itemId = event.dataTransfer?.getData('text/plain');
+     if (!itemId) return;
+     
+     // Note: Real world position from screen would need Pixi viewport coordinates.
+     // For this simulation, we simulate the drop resolution based on the active player's position
+     // since they must be near the object to interact anyway!
+     const pid = this.activePlayerId();
+     const chars = this.gameState()?.characters || {};
+     const myChar = chars[pid!];
+     if (!myChar) return;
+     
+     // Expand the hitbox: check a 1.5 radius around the player instead of strict integer match
+     const grid = this.gameState()?.map?.grid || {};
+     let interacted = false;
+     
+     // Audit and expand interaction bounding boxes to accommodate drag-and-drop (1.5 radius)
+     const radius = 1.5;
+     for (const [key, cell] of Object.entries(grid) as [string, any][]) {
+        if (cell.type === 'server_rack' || cell.type === 'cupboard' || cell.type === 'storage_box') {
+            const [cx, cy] = key.split(',').map(Number);
+            const dist = Math.sqrt(Math.pow(myChar.x - cx, 2) + Math.pow(myChar.y - cy, 2));
+            if (dist <= radius) {
+                interacted = true;
+                this.playerAction(`Used ${itemId} on ${cell.type} at ${cx},${cy}`);
+                break;
+            }
+        }
+     }
+     
+     if (!interacted) {
+         this.playerAction(`Dropped ${itemId} on the floor.`);
      }
   }
 }
