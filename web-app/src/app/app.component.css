@@ -158,3 +158,68 @@
   animation: glitch-anim 3s infinite linear alternate-reverse;
 }
 
+/* --- RESPONSIVE LAYOUTS --- */
+.billboard-stats-panel {
+  display: flex;
+  gap: 40px;
+  margin-top: 40px;
+  width: 90%;
+  justify-content: space-around;
+  max-height: 70%;
+  box-sizing: border-box;
+}
+
+.spectator-grid {
+  grid-template-columns: 350px 1fr 350px;
+}
+
+.spectator-grid-cams {
+  grid-template-columns: 280px 320px 1fr 320px;
+}
+
+/* Standard Desktops (Laptops, 1080p, smaller screens) */
+@media (max-width: 1600px) {
+  .dashboard-grid {
+    grid-template-columns: 280px 1fr 280px;
+    gap: 15px;
+  }
+  .spectator-grid {
+    grid-template-columns: 280px 1fr 280px;
+  }
+  .spectator-grid-cams {
+    grid-template-columns: 220px 280px 1fr 280px;
+  }
+}
+
+/* Small Desktops and Tablets */
+@media (max-width: 1200px) {
+  .dashboard-grid {
+    grid-template-columns: 240px 1fr 240px;
+    gap: 10px;
+  }
+  .spectator-grid {
+    grid-template-columns: 240px 1fr 240px;
+  }
+  .spectator-grid-cams {
+    grid-template-columns: 180px 220px 1fr 220px;
+  }
+  .billboard-stats-panel {
+    flex-direction: column;
+    gap: 20px;
+    max-height: none;
+    overflow-y: auto;
+  }
+}
+
+/* Fallback for ultra tight widths */
+@media (max-width: 900px) {
+  .dashboard-grid, .spectator-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: 250px 1fr 250px;
+  }
+  .spectator-grid-cams {
+    grid-template-columns: 1fr;
+    grid-template-rows: 200px 200px 1fr 200px;
+  }
+}
+

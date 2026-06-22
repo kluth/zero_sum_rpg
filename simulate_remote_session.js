@@ -34,8 +34,11 @@ function generatePin() {
       });
       await gmPage.waitForSelector('.gm-panel', { timeout: 10000 });
 
-      await specPage.goto(`https://zero-sum-rpg-2026.web.app/?session=${pin}&mode=spectator`);
-      await p1Page.goto(`https://zero-sum-rpg-2026.web.app/?session=${pin}&mode=player&player=p1`);
+      const specToken = Buffer.from(JSON.stringify({s: pin, m: 'spectator'})).toString('base64');
+      const p1Token = Buffer.from(JSON.stringify({s: pin, m: 'player', p: 'p1'})).toString('base64');
+
+      await specPage.goto(`https://zero-sum-rpg-2026.web.app/?token=${specToken}`);
+      await p1Page.goto(`https://zero-sum-rpg-2026.web.app/?token=${p1Token}`);
       
       await gmPage.waitForTimeout(2000);
 

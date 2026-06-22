@@ -177,7 +177,7 @@ const firebaseConfig = {
                 LIFE SUPPORT REDIRECTED.<br/>CASUALTY: {{ recentTrauma().civilian }}
             </h2>
             
-            <div *ngIf="!recentTrauma()" style="display: flex; gap: 40px; margin-top: 40px; width: 90%; justify-content: space-around; max-height: 70%; box-sizing: border-box;">
+            <div *ngIf="!recentTrauma()" class="billboard-stats-panel">
                <!-- OPERATIVE STATUS METRICS -->
                <div class="glass-panel" style="flex: 1; border: 4px solid #39FF14; background: rgba(57,255,20,0.05); padding: 30px;">
                   <h3 class="header-brutalist text-acid-green" style="font-size: 36px; border-bottom: 2px solid #39FF14; margin-bottom: 20px;">OPERATIVE STATUS</h3>
@@ -254,7 +254,7 @@ const firebaseConfig = {
               </div>
             </div>
             
-            <div [ngStyle]="{'grid-template-columns': showWebcamPanel() ? '300px 350px 1fr 350px' : '350px 1fr 350px'}" style="display: grid; gap: 20px; flex: 1; overflow: hidden;">
+            <div [class]="showWebcamPanel() ? 'spectator-grid-cams' : 'spectator-grid'" style="display: grid; gap: 20px; flex: 1; overflow: hidden;">
               <!-- Webcams (Optional) -->
               <div *ngIf="showWebcamPanel()" class="glass-panel webcam-pane" style="display: flex; flex-direction: column; overflow-y: auto; padding: 15px; border-color: #39FF14;">
                 <h3 class="header-brutalist text-acid-green" style="margin-top: 0; font-size: 20px; border-bottom: 2px solid #39FF14; padding-bottom: 5px;">WEBCAM FEEDS</h3>
@@ -490,9 +490,22 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
-      const session = params.get('session');
-      const m = params.get('mode');
-      const player = params.get('player');
+      const token = params.get('token');
+      
+      let session = params.get('session');
+      let m = params.get('mode');
+      let player = params.get('player');
+      
+      if (token) {
+        try {
+          const decoded = JSON.parse(atob(token));
+          session = decoded.s;
+          m = decoded.m;
+          player = decoded.p;
+        } catch(e) {
+          console.error('Invalid token');
+        }
+      }
       
       if (session) {
         this.sessionId.set(session);
@@ -650,8 +663,11 @@ export class AppComponent implements OnInit {
     const pin = this.sessionPinInput().toUpperCase();
     if (!pin || pin.length < 4) return;
     
-    let url = `/?session=${pin}&mode=${mode}`;
-    if (playerId) url += `&player=${playerId}`;
+    const payload: any = { s: pin, m: mode };
+    if (playerId) payload.p = playerId;
+    
+    const encoded = btoa(JSON.stringify(payload));
+    const url = `/?token=${encoded}`;
     
     if (mode === 'gm' && this.twitchChannelInput()) {
       const dbRef = ref(this.db, `sessions/${pin}/gameState/twitchChannel`);
