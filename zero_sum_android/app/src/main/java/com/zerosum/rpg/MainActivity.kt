@@ -42,10 +42,11 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.content.Context
 
-val NeonRed = Color(0xFFFF2A2A)
-val NeonBlue = Color(0xFF00E5FF)
-val DarkBackground = Color(0xFF0A0F14)
-val GlassBackground = Color(0x3300E5FF)
+val NeonRed = Color(0xFFFF003C)
+val NeonBlue = Color(0xFF00F0FF)
+val AcidGreen = Color(0xFF39FF14)
+val DarkBackground = Color(0xFF0A0A0C)
+val GlassBackground = Color(0x0500F0FF)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -329,13 +330,14 @@ fun CharacterSheetSection(modifier: Modifier = Modifier) {
         Random.nextInt(1, 15)
     } else hp
 
-    val glitchOffset by animateFloatAsState(if (isCyberpsychosis) Random.nextInt(-10, 10).toFloat() else 0f)
+    val glitchOffset by animateFloatAsState(if (isCyberpsychosis) Random.nextInt(-30, 30).toFloat() else 0f)
+    val glitchOffsetY by animateFloatAsState(if (isCyberpsychosis) Random.nextInt(-10, 10).toFloat() else 0f)
 
     LaunchedEffect(isCyberpsychosis) {
         if (isCyberpsychosis) {
             while (true) {
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                delay(100)
+                delay(50)
             }
         }
     }
@@ -343,10 +345,10 @@ fun CharacterSheetSection(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxHeight()
-            .offset(x = glitchOffset.dp)
-            .background(GlassBackground, RoundedCornerShape(8.dp))
-            .border(1.dp, NeonBlue.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
-            .padding(16.dp)
+            .offset(x = glitchOffset.dp, y = glitchOffsetY.dp)
+            .background(GlassBackground)
+            .border(4.dp, if (isCyberpsychosis) NeonRed else NeonBlue)
+            .padding(20.dp)
     ) {
         Text("CHARACTER SHEET", color = Color.Gray, fontSize = 12.sp)
         Text("HEART RATE: $mockHeartRate BPM", color = if (mockHeartRate > 120) NeonRed else NeonBlue, fontSize = 10.sp)
@@ -355,17 +357,17 @@ fun CharacterSheetSection(modifier: Modifier = Modifier) {
         Text(role, color = NeonRed, fontSize = 12.sp)
         
         Spacer(modifier = Modifier.height(24.dp))
-        StatBar("HEALTH", displayHp, 100, if (displayHp < 20) NeonRed else NeonBlue)
-        Spacer(modifier = Modifier.height(8.dp))
-        StatBar("STEALTH", stealth, 100, NeonBlue)
-        Spacer(modifier = Modifier.height(8.dp))
-        StatBar("HACKING", hacking, 100, NeonBlue)
-        Spacer(modifier = Modifier.height(8.dp))
-        StatBar("REFLEXES", reflexes, 100, NeonBlue)
-        Spacer(modifier = Modifier.height(8.dp))
-        StatBar("TECH", tech, 100, NeonBlue)
-        Spacer(modifier = Modifier.height(8.dp))
-        StatBar("STRESS (ALLOSTATIC LOAD)", stress, 100, NeonRed)
+        StatBar("HEALTH // BIOMETRIC", displayHp, 100, if (displayHp < 20) NeonRed else AcidGreen)
+        Spacer(modifier = Modifier.height(12.dp))
+        StatBar("STEALTH // OBFUSCATION", stealth, 100, NeonBlue)
+        Spacer(modifier = Modifier.height(12.dp))
+        StatBar("HACKING // ICE", hacking, 100, NeonBlue)
+        Spacer(modifier = Modifier.height(12.dp))
+        StatBar("REFLEXES // KINETIC", reflexes, 100, NeonBlue)
+        Spacer(modifier = Modifier.height(12.dp))
+        StatBar("TECH // ENG", tech, 100, NeonBlue)
+        Spacer(modifier = Modifier.height(12.dp))
+        StatBar("STRESS // ALLOSTATIC LOAD", stress, 100, NeonRed)
         
         Spacer(modifier = Modifier.height(16.dp))
         Button(
@@ -395,27 +397,23 @@ fun CharacterSheetSection(modifier: Modifier = Modifier) {
 @Composable
 fun StatBar(label: String, current: Int, max: Int, color: Color) {
     Column {
-        Text(label, color = Color.White, fontSize = 14.sp)
+        Text(label, color = color, fontSize = 16.sp, fontWeight = FontWeight.Black, letterSpacing = 2.sp)
         Spacer(modifier = Modifier.height(4.dp))
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(20.dp)
-                .background(Color.DarkGray, RoundedCornerShape(4.dp))
+                .height(30.dp)
+                .background(Color.Black)
+                .border(2.dp, color.copy(alpha = 0.5f))
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth(current.toFloat() / max.toFloat())
                     .fillMaxHeight()
-                    .background(
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(color.copy(alpha = 0.5f), color)
-                        ),
-                        shape = RoundedCornerShape(4.dp)
-                    )
+                    .background(color)
             )
         }
-        Text("$current/$max", color = color, fontSize = 12.sp, modifier = Modifier.align(Alignment.End))
+        Text("$current/$max", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold, modifier = Modifier.align(Alignment.End))
     }
 }
 

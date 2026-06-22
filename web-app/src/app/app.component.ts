@@ -31,16 +31,16 @@ const firebaseConfig = {
     
     <!-- LOBBY SCREEN -->
     <div *ngIf="!sessionId()" class="lobby-container">
-      <h1 class="text-neon-blue" style="font-size: 64px; margin-bottom: 10px;">ZERO SUM</h1>
-      <div style="color: gray; letter-spacing: 5px; margin-bottom: 40px;">UPLINK TERMINAL</div>
+      <h1 class="text-neon-blue glitch-text header-brutalist" data-text="ZERO SUM" style="font-size: 100px; margin-bottom: 10px; font-weight: 900;">ZERO SUM</h1>
+      <div class="data-mono" style="color: gray; letter-spacing: 15px; margin-bottom: 40px; font-size: 24px;">UPLINK TERMINAL</div>
       
-      <input type="text" class="pin-input" placeholder="SESSION PIN" maxlength="6" (input)="onPinInput($event)" />
+      <input type="text" class="pin-input data-mono" placeholder="SESSION PIN" maxlength="6" (input)="onPinInput($event)" />
       
-      <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+      <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-top: 40px;">
         <button class="cyber-button" (click)="joinSession('spectator')">SPECTATE</button>
-        <button class="cyber-button" style="border-color: #FF2A2A; color: #FF2A2A" (click)="joinSession('gm')">GM OVERRIDE</button>
-        <button class="cyber-button" style="border-color: #00E5FF; color: #00E5FF" (click)="joinSession('billboard')">CORPORATE BILLBOARD</button>
-        <button class="cyber-button" style="border-color: #00FF00; color: #00FF00" (click)="joinSession('netrunner')">NETRUNNER SHELL</button>
+        <button class="cyber-button" style="border-color: #FF003C; color: #FF003C; background: rgba(255,0,60,0.1);" (click)="joinSession('gm')">GM OVERRIDE</button>
+        <button class="cyber-button" style="border-color: #FFB000; color: #FFB000; background: rgba(255,176,0,0.1);" (click)="joinSession('billboard')">CORPORATE BILLBOARD</button>
+        <button class="cyber-button" style="border-color: #39FF14; color: #39FF14; background: rgba(57,255,20,0.1);" (click)="joinSession('netrunner')">NETRUNNER SHELL</button>
       </div>
 
       <div style="margin-top: 30px; font-size: 14px; color: gray;">PROTAGONIST UPLINKS</div>
@@ -53,15 +53,15 @@ const firebaseConfig = {
     <div *ngIf="sessionId()" style="padding: 20px; height: 100vh; box-sizing: border-box; display: flex; flex-direction: column;">
       
       <!-- Pulsating Alert Bar -->
-      <div *ngIf="heatLevel() >= 8 || recentTrauma()" class="pulsating-alert-bar" style="background: #FF2A2A; color: white; padding: 10px; font-weight: bold; text-align: center; border: 2px solid #FFFFFF; margin-bottom: 15px; font-family: monospace;">
+      <div *ngIf="heatLevel() >= 8 || recentTrauma()" class="pulsating-alert-bar header-brutalist chromatic" style="color: white; padding: 15px; font-size: 28px; text-align: center; border: 4px solid #FFFFFF; margin-bottom: 15px;">
         ⚠️ CRITICAL ALERT: {{ heatLevel() >= 8 ? 'HIGH HEAT LEVEL DETECTED (' + heatLevel() + '/10). ' : '' }} {{ recentTrauma() ? 'LIFE SUPPORT SYSTEM FAILURE: ' + recentTrauma().civilian : '' }}
       </div>
 
       @defer (when isGmMode()) {
         <!-- GM Map Builder Logic here -->
         <header class="glass-panel gm-panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-          <h1 style="margin: 0;">ZERO SUM <span class="text-neon-red">GM OVERRIDE</span></h1>
-          <div style="font-size: 14px; color: gray;">SESSION: <strong style="color: white">{{ sessionId() }}</strong></div>
+          <h1 class="header-brutalist" style="margin: 0; font-size: 32px;">ZERO SUM <span class="text-neon-red">GM OVERRIDE</span></h1>
+          <div class="data-mono" style="font-size: 18px; color: gray;">SESSION: <strong style="color: white; font-size: 24px;">{{ sessionId() }}</strong></div>
         </header>
         
         <div class="dashboard-grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; flex: 1; overflow: hidden; height: 100%;">
@@ -161,91 +161,94 @@ const firebaseConfig = {
       
       @defer (when isBillboardMode()) {
         <!-- CORPORATE BILLBOARD TV -->
-        <div class="billboard-container" [ngClass]="{'alarm-mode': heatLevel() >= 8 || recentTrauma()}" style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-            <h1 [style.color]="heatLevel() >= 8 ? '#FF2A2A' : '#00E5FF'" style="font-size: 120px; margin: 0; animation: blink 2s infinite;">GLOBAL HEAT: {{ heatLevel() }}</h1>
-            <h2 *ngIf="recentTrauma()" style="color: #FF2A2A; font-size: 64px; animation: blink 0.5s infinite; text-align: center; background: rgba(255,42,42,0.1); padding: 20px; border: 4px solid #FF2A2A;">
+        <div class="billboard-container" [ngClass]="{'alarm-mode': heatLevel() >= 8 || recentTrauma()}" style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative;">
+            <div *ngIf="heatLevel() >= 8 || recentTrauma()" style="position: absolute; top:0; left:0; width:100%; height:100%; background: radial-gradient(circle, transparent 20%, rgba(255,0,60,0.5) 100%); pointer-events:none;"></div>
+            <h1 class="header-brutalist chromatic" [style.color]="heatLevel() >= 8 ? '#FF003C' : '#00F0FF'" style="font-size: 140px; margin: 0; animation: blink 2s infinite; text-transform: uppercase;">GLOBAL HEAT: {{ heatLevel() }}</h1>
+            <h2 class="header-brutalist" *ngIf="recentTrauma()" style="color: #FF003C; font-size: 80px; animation: blink 0.5s infinite; text-align: center; background: rgba(255,0,60,0.1); padding: 30px; border: 8px solid #FF003C; text-shadow: 2px 2px 0px white;">
                 LIFE SUPPORT REDIRECTED.<br/>CASUALTY: {{ recentTrauma().civilian }}
             </h2>
-            <div style="margin-top: 50px; border: 2px solid #00E5FF; padding: 20px; width: 80%; background: rgba(0,229,255,0.05);">
-                <h3 style="color: #00E5FF; text-align: center; font-size: 48px;">TWITCH CHAOS MARKET: $ {{ chaosMarketValue() }}</h3>
+            <div class="glass-panel" style="margin-top: 50px; border: 4px solid #00F0FF; padding: 30px; width: 80%;">
+                <h3 class="header-brutalist text-neon-blue" style="text-align: center; font-size: 64px;">TWITCH CHAOS MARKET: $ {{ chaosMarketValue() }}</h3>
             </div>
         </div>
       }
       
       @defer (when isNetrunnerMode()) {
         <!-- NETRUNNER ICE TERMINAL -->
-        <div class="terminal" style="background: black; color: #00FF00; font-family: monospace; height: 100%; padding: 20px; border: 2px solid #00FF00; box-shadow: 0 0 20px rgba(0,255,0,0.2);">
-          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #00FF00; padding-bottom: 10px;">
-            <h2 style="margin: 0;">INFOSEC MAINFRAME // AI-DRIVEN ICE</h2>
-            <button class="cyber-button" style="border-color: #00FF00; color: #00FF00; padding: 5px 10px; margin: 0; font-size: 12px;" (click)="connectBleBeacon()">[BLE AIR-GAP] CONNECT BEACON</button>
+        <div class="terminal glass-panel" style="background: rgba(0,255,0,0.05); color: #39FF14; font-family: 'JetBrains Mono', monospace; height: 100%; border: 3px solid #39FF14;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #39FF14; padding-bottom: 10px;">
+            <h2 class="header-brutalist text-acid-green" style="margin: 0; font-size: 32px;">INFOSEC MAINFRAME // AI-DRIVEN ICE</h2>
+            <button class="cyber-button" style="border-color: #39FF14; color: #39FF14; padding: 5px 10px; margin: 0; font-size: 14px;" (click)="connectBleBeacon()">[BLE AIR-GAP] CONNECT BEACON</button>
           </div>
-          <div style="height: 80%; overflow-y: auto; margin-top: 10px; margin-bottom: 20px;" id="terminalOutput">
+          <div style="height: 80%; overflow-y: auto; margin-top: 10px; margin-bottom: 20px; font-size: 18px; line-height: 1.5;" id="terminalOutput" class="data-mono">
             <div *ngFor="let log of terminalLogs()">> {{ log }}</div>
           </div>
-          <div style="display: flex; align-items: center;">
-            <span style="font-size: 18px; margin-right: 10px;">$</span>
-            <input type="text" [(ngModel)]="terminalCommand" (keyup.enter)="executeIceCommand()" style="background: black; color: #00FF00; border: none; outline: none; width: 100%; font-size: 18px;" placeholder="grep the mainframe..." autofocus />
+          <div style="display: flex; align-items: center; background: rgba(57,255,20,0.1); padding: 10px; border: 2px solid #39FF14;">
+            <span style="font-size: 24px; margin-right: 10px; color: #39FF14;">$</span>
+            <input type="text" [(ngModel)]="terminalCommand" (keyup.enter)="executeIceCommand()" style="background: transparent; color: #39FF14; border: none; outline: none; width: 100%; font-size: 24px; font-family: 'JetBrains Mono', monospace;" placeholder="grep the mainframe..." autofocus />
           </div>
         </div>
       }
       
       @defer (when isSpectatorMode()) {
-        <div class="glass-panel" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; border-color: #00E5FF;">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #00E5FF; padding-bottom: 10px; margin-bottom: 15px;">
-              <h2 class="text-neon-blue" style="font-size: 24px; margin: 0;">SPECTATOR UPLINK // TWITCH</h2>
+        <div class="glass-panel" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; border-color: #00F0FF;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid #00F0FF; padding-bottom: 15px; margin-bottom: 15px;">
+              <h2 class="header-brutalist text-neon-blue" style="font-size: 36px; margin: 0;">SPECTATOR UPLINK // TWITCH</h2>
               <div style="display: flex; gap: 20px; align-items: center;">
-                <button class="cyber-button donation-btn" style="border-color: #FF00FF; color: #FF00FF; font-size: 14px; margin-top: 0; padding: 5px 15px;" (click)="simulateTwitchDonation()">SIMULATE TWITCH DONATION</button>
-                <div style="color: #00E5FF; font-size: 24px; font-weight: bold;">Market Value: $ {{ chaosMarketValue() }}</div>
-                <div style="color: #FF2A2A; font-size: 24px; font-weight: bold;">Heat Level: {{ heatLevel() }}</div>
+                <button class="cyber-button donation-btn" style="border-color: #FF00FF; color: #FF00FF; font-size: 16px; margin-top: 0; padding: 10px 20px; background: rgba(255,0,255,0.1);" (click)="simulateTwitchDonation()">SIMULATE TWITCH DONATION</button>
+                <div class="data-mono" style="color: #00F0FF; font-size: 28px; font-weight: bold; background: rgba(0,240,255,0.1); padding: 5px 15px; border: 2px solid #00F0FF;">MARKET: $ {{ chaosMarketValue() }}</div>
+                <div class="data-mono" style="color: #FF003C; font-size: 28px; font-weight: bold; background: rgba(255,0,60,0.1); padding: 5px 15px; border: 2px solid #FF003C;">HEAT: {{ heatLevel() }}</div>
               </div>
             </div>
             
-            <div style="display: grid; grid-template-columns: 300px 1fr 300px; gap: 20px; flex: 1; overflow: hidden;">
+            <div style="display: grid; grid-template-columns: 350px 1fr 350px; gap: 20px; flex: 1; overflow: hidden;">
               <!-- Left column: Scrolling logs panel -->
-              <div class="glass-panel left-pane" style="display: flex; flex-direction: column; overflow: hidden; border-color: #00E5FF; padding: 10px;">
-                <h3 class="text-neon-blue" style="margin-top: 0; font-size: 16px; border-bottom: 1px solid #00E5FF; padding-bottom: 5px;">LIVE FEED & DONATIONS</h3>
-                <div style="flex: 1; overflow-y: auto; font-family: monospace; font-size: 12px; color: #00FF00;" class="scrolling-logs">
-                  <div *ngFor="let roll of gameState().recentRolls || []" style="border-bottom: 1px dashed rgba(0,255,0,0.2); padding: 5px 0;">
+              <div class="glass-panel left-pane" style="display: flex; flex-direction: column; overflow: hidden; padding: 15px;">
+                <h3 class="header-brutalist text-neon-blue" style="margin-top: 0; font-size: 20px; border-bottom: 2px solid #00F0FF; padding-bottom: 5px;">LIVE FEED & DONATIONS</h3>
+                <div style="flex: 1; overflow-y: auto; font-family: 'JetBrains Mono', monospace; font-size: 14px; color: #39FF14; margin-top: 10px;" class="scrolling-logs">
+                  <div *ngFor="let roll of gameState().recentRolls || []" style="border-bottom: 1px dashed rgba(57,255,20,0.3); padding: 8px 0;">
                     [{{ roll.timestamp | date:'HH:mm:ss' }}] ROLL: {{ roll.player }} rolled D20 -> {{ roll.result }}
                   </div>
-                  <div *ngIf="chaosMarketValue() > 0" style="color: #FF00FF; padding: 5px 0; border-bottom: 1px dashed rgba(255,0,255,0.2);">
-                    [TWITCH] Anonymous donation received! Market value: $ {{ chaosMarketValue() }}
+                  <div *ngIf="chaosMarketValue() > 0" style="color: #FF00FF; padding: 8px 0; border-bottom: 1px dashed rgba(255,0,255,0.3); font-weight: bold; font-size: 16px;">
+                    [TWITCH] FUNDS INJECTED! Market: $ {{ chaosMarketValue() }}
                   </div>
                 </div>
               </div>
               
               <!-- Center column: PixiJS map canvas -->
-              <div style="position: relative; display: flex; flex-direction: column; overflow: hidden;">
+              <div style="position: relative; display: flex; flex-direction: column; overflow: hidden; border: 3px solid #00F0FF; box-shadow: inset 0 0 50px rgba(0,240,255,0.1);">
                 <div style="flex: 1; position: relative;">
                   <app-pixi-map [mode]="'spectator'" [characters]="gameState().characters || {}"></app-pixi-map>
                 </div>
               </div>
               
               <!-- Right column: Squad status cards and Clocks -->
-              <div class="glass-panel right-pane" style="display: flex; flex-direction: column; overflow-y: auto; border-color: #00E5FF; padding: 10px;">
-                <h3 class="text-neon-blue" style="margin-top: 0; font-size: 16px; border-bottom: 1px solid #00E5FF; padding-bottom: 5px;">THREAT CLOCKS</h3>
-                <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+              <div class="glass-panel right-pane" style="display: flex; flex-direction: column; overflow-y: auto; padding: 15px;">
+                <h3 class="header-brutalist text-neon-blue" style="margin-top: 0; font-size: 20px; border-bottom: 2px solid #00F0FF; padding-bottom: 5px;">THREAT CLOCKS</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px; margin-top: 10px;">
                   <app-progress-clock *ngFor="let clock of getPublicClocks()" 
                       [name]="clock.name" [segments]="clock.segments" [filled]="clock.filled" [color]="clock.color">
                   </app-progress-clock>
-                  <div *ngIf="getPublicClocks().length === 0" style="color: gray; font-style: italic;">No active threats.</div>
+                  <div class="data-mono" *ngIf="getPublicClocks().length === 0" style="color: gray; font-style: italic;">SYSTEM SECURE.</div>
                 </div>
                 
-                <h3 class="text-neon-blue" style="margin-top: 0; font-size: 16px; border-bottom: 1px solid #00E5FF; padding-bottom: 5px;">SQUAD STATUS</h3>
-                <div style="display: flex; flex-direction: column; gap: 10px;">
-                  <div *ngFor="let key of getCharacterKeys()" class="squad-card" style="border: 1px solid #00E5FF; padding: 8px; background: rgba(0,229,255,0.05); font-family: monospace; font-size: 11px;">
-                    <div style="color: #00FF00; font-weight: bold; border-bottom: 1px solid #00E5FF; padding-bottom: 3px; margin-bottom: 5px;">
+                <h3 class="header-brutalist text-neon-blue" style="margin-top: 0; font-size: 20px; border-bottom: 2px solid #00F0FF; padding-bottom: 5px;">SQUAD STATUS</h3>
+                <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 10px;">
+                  <div *ngFor="let key of getCharacterKeys()" class="squad-card" [ngStyle]="{'background': (gameState().characters[key].stats?.hp_current || 100) <= 0 ? 'rgba(255,0,60,0.1)' : 'rgba(0,240,255,0.05)'}" style="border: 2px solid #00F0FF; padding: 10px; font-family: 'JetBrains Mono', monospace; font-size: 14px; position: relative; overflow: hidden;">
+                    
+                    <div *ngIf="(gameState().characters[key].stats?.hp_current || 100) <= 0" style="position: absolute; top:0; left:0; width:100%; height:100%; background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,0,60,0.2) 10px, rgba(255,0,60,0.2) 20px); pointer-events: none;"></div>
+                    <div [style.color]="(gameState().characters[key].stats?.hp_current || 100) <= 0 ? 'gray' : '#39FF14'" [style.text-decoration]="(gameState().characters[key].stats?.hp_current || 100) <= 0 ? 'line-through #FF003C 3px' : 'none'" style="font-weight: 900; font-size: 16px; border-bottom: 2px solid #00F0FF; padding-bottom: 5px; margin-bottom: 8px;">
                       {{ gameState().characters[key].name }}
                     </div>
-                    <div style="color: gray; margin-bottom: 2px;">ROLE: {{ gameState().characters[key].role }}</div>
-                    <div style="display: flex; justify-content: space-between;">
-                      <span [style.color]="(gameState().characters[key].stats?.hp_current || 100) < 30 ? '#FF2A2A' : '#FFFFFF'">HP: {{ gameState().characters[key].stats?.hp_current || 100 }}%</span>
-                      <span [style.color]="(gameState().characters[key].stats?.stealth_total || 0) >= 50 ? '#00FF00' : '#FF2A2A'">Stealth: {{ gameState().characters[key].stats?.stealth_total || 0 }}</span>
-                      <span [style.color]="(gameState().characters[key].stats?.stress_current || 0) >= 70 ? '#FF2A2A' : '#FFFFFF'">Stress: {{ gameState().characters[key].stats?.stress_current || 0 }}</span>
+                    <div style="color: gray; margin-bottom: 5px; font-size: 12px;">ROLE: {{ gameState().characters[key].role }}</div>
+                    <div style="display: flex; justify-content: space-between; font-weight: bold;">
+                      <span [style.color]="(gameState().characters[key].stats?.hp_current || 100) < 30 ? '#FF003C' : '#FFFFFF'">HP: {{ gameState().characters[key].stats?.hp_current || 100 }}%</span>
+                      <span [style.color]="(gameState().characters[key].stats?.stealth_total || 0) >= 50 ? '#39FF14' : '#FF003C'">STL: {{ gameState().characters[key].stats?.stealth_total || 0 }}</span>
+                      <span [style.color]="(gameState().characters[key].stats?.stress_current || 0) >= 70 ? '#FF003C' : '#FFFFFF'">STR: {{ gameState().characters[key].stats?.stress_current || 0 }}</span>
                     </div>
                   </div>
                   <div *ngIf="getCharacterKeys().length === 0" style="color: gray; font-style: italic;">
-                    No active characters.
+                    NO ACTIVE SIGNALS.
                   </div>
                 </div>
               </div>
@@ -254,15 +257,17 @@ const firebaseConfig = {
       }
 
       @defer (when isPlayerMode()) {
-        <div class="glass-panel" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
-            <h2 class="text-neon-blue" style="font-size: 24px;">UPLINK // {{ getPlayerName() }}</h2>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-              <div style="color: #00FF00; font-size: 18px;">ROLE: {{ getPlayerRole() }}</div>
-              <button class="cyber-button" style="border-color: #FF00FF; color: #FF00FF; font-size: 12px; margin: 0; padding: 5px 15px;" (click)="triggerEmergencyHeal()">[ZERO SUM] EMERGENCY HEAL</button>
-              <div style="color: #FF2A2A; font-size: 18px;">Heat Level: {{ heatLevel() }}</div>
+        <div class="glass-panel" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; border-color: #39FF14; background: rgba(57,255,20,0.02);">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid #39FF14; padding-bottom: 10px; margin-bottom: 15px;">
+              <h2 class="header-brutalist text-acid-green" style="font-size: 32px; margin: 0;">UPLINK // {{ getPlayerName() }}</h2>
+              <div class="data-mono" style="color: #39FF14; font-size: 20px; border: 2px solid #39FF14; padding: 5px 10px; background: rgba(57,255,20,0.1);">ROLE: {{ getPlayerRole() }}</div>
+              
+              <button class="cyber-button" style="border: 4px solid #FFB000; color: #FFB000; font-size: 16px; margin: 0; padding: 10px 20px; background: repeating-linear-gradient(45deg, rgba(255,176,0,0.1), rgba(255,176,0,0.1) 10px, transparent 10px, transparent 20px);" (click)="triggerEmergencyHeal()">⚠️ [ZERO SUM] EMERGENCY HEAL ⚠️</button>
+              
+              <div class="data-mono" style="color: #FF003C; font-size: 20px; font-weight: bold; border: 2px solid #FF003C; padding: 5px 10px; background: rgba(255,0,60,0.1);">HEAT: {{ heatLevel() }}</div>
             </div>
             
-            <div style="flex: 1; position: relative;">
+            <div style="flex: 1; position: relative; border: 3px solid #39FF14; box-shadow: inset 0 0 50px rgba(57,255,20,0.1);">
               <app-pixi-map [mode]="'player'" [characters]="gameState().characters || {}" [activePlayerId]="activePlayerId()"></app-pixi-map>
             </div>
         </div>
