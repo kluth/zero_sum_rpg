@@ -101,11 +101,28 @@
   transform: translate(-2px, 0);
 }
 
+.main-dashboard-wrapper {
+  padding: 20px;
+  height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
 .dashboard-grid {
   display: grid;
   grid-template-columns: 350px 1fr 350px;
   gap: 20px;
   height: calc(100vh - 120px);
+}
+
+.gm-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  flex: 1;
+  overflow: hidden;
+  height: 100%;
 }
 
 /* GM Dashboard Additions */
@@ -185,6 +202,13 @@
   box-sizing: border-box;
 }
 
+.spectator-grid, .spectator-grid-cams {
+  display: grid;
+  gap: 20px;
+  flex: 1;
+  overflow: hidden;
+}
+
 .spectator-grid {
   grid-template-columns: 350px 1fr 350px;
 }
@@ -235,13 +259,35 @@
 
 /* Fallback for ultra tight widths */
 @media (max-width: 900px) {
+  .main-dashboard-wrapper {
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto;
+  }
+  
+  .gm-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: 50vh auto;
+    overflow: visible;
+    height: auto;
+  }
+
   .dashboard-grid, .spectator-grid {
     grid-template-columns: 1fr;
-    grid-template-rows: 250px 1fr 250px;
+    grid-template-rows: 300px 50vh auto;
+    overflow: visible;
+    height: auto;
   }
+  
   .spectator-grid-cams {
     grid-template-columns: 1fr;
-    grid-template-rows: 200px 200px 1fr 200px;
+    grid-template-rows: 250px 300px 50vh auto;
+    overflow: visible;
+    height: auto;
+  }
+  
+  .left-pane, .right-pane, .webcam-pane {
+    overflow-y: visible !important;
   }
 }
 

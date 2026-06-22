@@ -51,7 +51,7 @@ const firebaseConfig = {
     </div>
 
     <!-- MAIN DASHBOARD -->
-    <div *ngIf="sessionId()" style="padding: 20px; height: 100vh; box-sizing: border-box; display: flex; flex-direction: column;">
+    <div *ngIf="sessionId()" class="main-dashboard-wrapper">
       
       <!-- Pulsating Alert Bar -->
       <div *ngIf="heatLevel() >= 8 || recentTrauma()" class="pulsating-alert-bar header-brutalist chromatic" style="color: white; padding: 15px; font-size: 28px; text-align: center; border: 4px solid #FFFFFF; margin-bottom: 15px;">
@@ -60,12 +60,12 @@ const firebaseConfig = {
 
       @defer (when isGmMode()) {
         <!-- GM Map Builder Logic here -->
-        <header class="glass-panel gm-panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <header class="glass-panel gm-panel" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
           <h1 class="header-brutalist" style="margin: 0; font-size: 32px;">ZERO SUM <span class="text-neon-red">GM OVERRIDE</span></h1>
           <div class="data-mono" style="font-size: 18px; color: gray;">SESSION: <strong style="color: white; font-size: 24px;">{{ sessionId() }}</strong></div>
         </header>
         
-        <div class="dashboard-grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; flex: 1; overflow: hidden; height: 100%;">
+        <div class="gm-grid">
             <!-- PANE A: PixiJS Canvas Viewport -->
             <div class="glass-panel gm-panel" style="flex: 1; padding: 0; position: relative;">
                <app-pixi-map 
@@ -245,16 +245,16 @@ const firebaseConfig = {
       
       @defer (when isSpectatorMode()) {
         <div class="glass-panel" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; border-color: #00F0FF;">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid #00F0FF; padding-bottom: 15px; margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-bottom: 4px solid #00F0FF; padding-bottom: 15px; margin-bottom: 15px;">
               <h2 class="header-brutalist text-neon-blue" style="font-size: 36px; margin: 0;">SPECTATOR UPLINK // TWITCH</h2>
-              <div style="display: flex; gap: 20px; align-items: center;">
+              <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
                 <button class="cyber-button" style="border-color: #39FF14; color: #39FF14; font-size: 16px; margin-top: 0; padding: 10px 20px; background: rgba(57,255,20,0.1);" (click)="showWebcamPanel.set(!showWebcamPanel())">TOGGLE WEBCAMS</button>
-                <div class="data-mono" style="color: #00F0FF; font-size: 28px; font-weight: bold; background: rgba(0,240,255,0.1); padding: 5px 15px; border: 2px solid #00F0FF;">MARKET: $ {{ chaosMarketValue() }}</div>
-                <div class="data-mono" style="color: #FF003C; font-size: 28px; font-weight: bold; background: rgba(255,0,60,0.1); padding: 5px 15px; border: 2px solid #FF003C;">HEAT: {{ heatLevel() }}</div>
+                <div class="data-mono" style="color: #00F0FF; font-size: clamp(16px, 3vw, 28px); font-weight: bold; background: rgba(0,240,255,0.1); padding: 5px 15px; border: 2px solid #00F0FF;">MARKET: $ {{ chaosMarketValue() }}</div>
+                <div class="data-mono" style="color: #FF003C; font-size: clamp(16px, 3vw, 28px); font-weight: bold; background: rgba(255,0,60,0.1); padding: 5px 15px; border: 2px solid #FF003C;">HEAT: {{ heatLevel() }}</div>
               </div>
             </div>
             
-            <div [class]="showWebcamPanel() ? 'spectator-grid-cams' : 'spectator-grid'" style="display: grid; gap: 20px; flex: 1; overflow: hidden;">
+            <div [class]="showWebcamPanel() ? 'spectator-grid-cams' : 'spectator-grid'">
               <!-- Webcams (Optional) -->
               <div *ngIf="showWebcamPanel()" class="glass-panel webcam-pane" style="display: flex; flex-direction: column; overflow-y: auto; padding: 15px; border-color: #39FF14;">
                 <h3 class="header-brutalist text-acid-green" style="margin-top: 0; font-size: 20px; border-bottom: 2px solid #39FF14; padding-bottom: 5px;">WEBCAM FEEDS</h3>
@@ -321,14 +321,14 @@ const firebaseConfig = {
 
       @defer (when isPlayerMode()) {
         <div class="glass-panel" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; border-color: #39FF14; background: rgba(57,255,20,0.02);">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid #39FF14; padding-bottom: 10px; margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-bottom: 4px solid #39FF14; padding-bottom: 10px; margin-bottom: 15px;">
               <h2 class="header-brutalist text-acid-green" style="font-size: 32px; margin: 0;">UPLINK // {{ getPlayerName() }}</h2>
               <div class="data-mono" style="color: #39FF14; font-size: 20px; border: 2px solid #39FF14; padding: 5px 10px; background: rgba(57,255,20,0.1);">ROLE: {{ getPlayerRole() }}</div>
               
-              <div *ngIf="myCharStats()" style="display: flex; gap: 15px;">
-                  <div class="data-mono" style="color: #39FF14; font-size: 20px; border: 2px solid #39FF14; padding: 5px 10px; background: rgba(57,255,20,0.1);">HP: {{ myCharStats().hp_current }}</div>
-                  <div class="data-mono" style="color: #FFB000; font-size: 20px; border: 2px solid #FFB000; padding: 5px 10px; background: rgba(255,176,0,0.1);">STR: {{ myCharStats().stress_current }}</div>
-                  <div class="data-mono" style="color: #00F0FF; font-size: 20px; border: 2px solid #00F0FF; padding: 5px 10px; background: rgba(0,240,255,0.1);">STL: {{ myCharStats().stealth_total }}</div>
+              <div *ngIf="myCharStats()" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                  <div class="data-mono" style="color: #39FF14; font-size: clamp(14px, 2vw, 20px); border: 2px solid #39FF14; padding: 5px 10px; background: rgba(57,255,20,0.1);">HP: {{ myCharStats().hp_current }}</div>
+                  <div class="data-mono" style="color: #FFB000; font-size: clamp(14px, 2vw, 20px); border: 2px solid #FFB000; padding: 5px 10px; background: rgba(255,176,0,0.1);">STR: {{ myCharStats().stress_current }}</div>
+                  <div class="data-mono" style="color: #00F0FF; font-size: clamp(14px, 2vw, 20px); border: 2px solid #00F0FF; padding: 5px 10px; background: rgba(0,240,255,0.1);">STL: {{ myCharStats().stealth_total }}</div>
               </div>
               
               <button class="cyber-button" style="border: 4px solid #FFB000; color: #FFB000; font-size: 16px; margin: 0; padding: 10px 20px; background: repeating-linear-gradient(45deg, rgba(255,176,0,0.1), rgba(255,176,0,0.1) 10px, transparent 10px, transparent 20px);" (click)="triggerEmergencyHeal()">⚠️ [ZERO SUM] EMERGENCY HEAL ⚠️</button>
