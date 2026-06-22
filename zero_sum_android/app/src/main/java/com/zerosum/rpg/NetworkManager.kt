@@ -9,11 +9,13 @@ import kotlinx.coroutines.flow.StateFlow
 import org.json.JSONArray
 import org.json.JSONObject
 
+data class PlayerState(val json: JSONObject? = null)
+
 object NetworkManager {
     private val database = FirebaseDatabase.getInstance("https://zero-sum-rpg-2026-default-rtdb.europe-west1.firebasedatabase.app").reference
 
-    private val _gameState = MutableStateFlow<JSONObject?>(null)
-    val gameState: StateFlow<JSONObject?> = _gameState
+    private val _uiState = MutableStateFlow(PlayerState())
+    val uiState: StateFlow<PlayerState> = _uiState
 
     private var sessionId: String = "DEFAULT"
     private var valueEventListener: ValueEventListener? = null
@@ -75,7 +77,7 @@ object NetworkManager {
             database.child("sessions/$sessionId/gameState").removeEventListener(it)
         }
         sessionId = newSessionId
-        _gameState.value = null
+        _uiState.value = PlayerState(null)
         
         val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -84,7 +86,7 @@ object NetworkManager {
                         val stateMap = snapshot.value as? Map<*, *>
                         if (stateMap != null) {
                             val json = wrapValue(stateMap) as? JSONObject
-                            _gameState.value = json
+                            _uiState.value = PlayerState(json)
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -117,17 +119,21 @@ object NetworkManager {
 
     fun logTrauma(player: String, amount: Int) {
         val traumaRef = database.child("sessions/$sessionId/gameState/traumaLog").push()
-        val civilians = listOf("S. Nakamura", "R. Vance", "M. Klement", "J. Doe", "L. Chen")
+        val names = listOf("ELIAS VANCE", "S. NAKAMURA", "R. VANCE", "M. KLEMENT", "J. DOE", "L. CHEN")
+        val ages = (18..75).random()
+        val jobs = listOf("MAINTENANCE", "CLERK", "TEACHER", "ENGINEER", "MEDIC", "UNEMPLOYED")
+        val family = listOf("SURVIVED BY 2 DAUGHTERS", "NO KNOWN NEXT OF KIN", "SURVIVED BY SPOUSE", "SURVIVED BY 1 SON")
+        val victimDossier = "${names.random()}, $ages. ${jobs.random()}. ${family.random()}."
         traumaRef.setValue(mapOf(
             "player" to player,
             "amount" to amount,
             "timestamp" to System.currentTimeMillis(),
-            "civilian" to civilians.random()
+            "civilian" to victimDossier
         ))
     }
 
     fun rollDice(result: Int) {
-        val currentRolls = _gameState.value?.optJSONArray("recentRolls") ?: JSONArray()
+        val currentRolls = _uiState.value.json?.optJSONArray("recentRolls") ?: JSONArray()
         val newRoll = JSONObject().apply {
             put("player", "Ghost")
             put("result", result)
@@ -173,5 +179,9 @@ object NetworkManager {
 
     fun disconnect() {
         // Firebase handles this automatically, but we can remove listeners if needed
+    }
+
+    fun incrementHeatLevel() {
+        database.child("sessions/$sessionId/gameState/heatLevel").setValue(com.google.firebase.database.ServerValue.increment(1))
     }
 }

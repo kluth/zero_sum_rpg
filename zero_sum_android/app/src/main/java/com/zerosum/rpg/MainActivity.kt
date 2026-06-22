@@ -22,6 +22,15 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.Dispatchers
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat
+import android.media.MediaRecorder
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.json.JSONObject
 import kotlin.random.Random
 import androidx.compose.material3.OutlinedTextField
@@ -147,7 +156,16 @@ fun LobbyScreen(onHost: () -> Unit, onJoin: (String) -> Unit) {
 
 @Composable
 fun GameScreen(sessionId: String) {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    var hasMicPermission by remember { 
+        mutableStateOf(ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) 
+    }
+    val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { hasMicPermission = it }
+
     LaunchedEffect(Unit) {
+        if (!hasMicPermission) {
+            permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+        }
         NetworkManager.resetState()
         val profile = JSONObject().apply {
             put("id", "char_1")
@@ -158,6 +176,48 @@ fun GameScreen(sessionId: String) {
             put("stress", 60)
         }
         NetworkManager.updateCharacter(profile)
+    }
+
+    DisposableEffect(hasMicPermission) {
+        var recorder: MediaRecorder? = null
+        var job: kotlinx.coroutines.Job? = null
+        if (hasMicPermission) {
+            try {
+                recorder = MediaRecorder().apply {
+                    setAudioSource(MediaRecorder.AudioSource.MIC)
+                    setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+                    setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+                    setOutputFile(context.cacheDir.absolutePath + "/devnull.3gp")
+                    prepare()
+                    start()
+                }
+                job = kotlinx.coroutines.CoroutineScope(Dispatchers.IO).launch {
+                    var highAmplitudeCount = 0
+                    while (isActive) {
+                        delay(1000)
+                        val maxAmplitude = recorder?.maxAmplitude ?: 0
+                        if (maxAmplitude > 10000) {
+                            highAmplitudeCount++
+                            if (highAmplitudeCount >= 3) {
+                                NetworkManager.incrementHeatLevel()
+                                highAmplitudeCount = 0
+                            }
+                        } else {
+                            highAmplitudeCount = 0
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        onDispose {
+            job?.cancel()
+            try {
+                recorder?.stop()
+                recorder?.release()
+            } catch (e: Exception) { }
+        }
     }
 
     Column(
@@ -209,8 +269,8 @@ fun HeaderSection(sessionId: String) {
 
 @Composable
 fun CharacterSheetSection(modifier: Modifier = Modifier) {
-    val gameState by NetworkManager.gameState.collectAsState()
-    val characters = gameState?.optJSONObject("characters")
+    val uiState by NetworkManager.uiState.collectAsStateWithLifecycle()
+    val characters = uiState.json?.optJSONObject("characters")
     val character = characters?.optJSONObject("char_1") ?: characters?.keys()?.run {
         if (hasNext()) characters.optJSONObject(next()) else null
     }
@@ -222,20 +282,41 @@ fun CharacterSheetSection(modifier: Modifier = Modifier) {
     val stealth = character?.optInt("stealth") ?: 85
     val stress = character?.optInt("stress") ?: 60
 
+    var mockHeartRate by remember { mutableStateOf(80) }
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(2000)
+            mockHeartRate = Random.nextInt(60, 140)
+        }
+    }
+
     val isCyberpsychosis = stress > 75
     val displayHp = if (isCyberpsychosis && Random.nextFloat() > 0.7f) {
         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         Random.nextInt(1, 15)
     } else hp
 
+    val glitchOffset by animateFloatAsState(if (isCyberpsychosis) Random.nextInt(-10, 10).toFloat() else 0f)
+
+    LaunchedEffect(isCyberpsychosis) {
+        if (isCyberpsychosis) {
+            while (true) {
+                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                delay(100)
+            }
+        }
+    }
+
     Column(
         modifier = modifier
             .fillMaxHeight()
+            .offset(x = glitchOffset.dp)
             .background(GlassBackground, RoundedCornerShape(8.dp))
             .border(1.dp, NeonBlue.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
             .padding(16.dp)
     ) {
         Text("CHARACTER SHEET", color = Color.Gray, fontSize = 12.sp)
+        Text("HEART RATE: $mockHeartRate BPM", color = if (mockHeartRate > 120) NeonRed else NeonBlue, fontSize = 10.sp)
         Spacer(modifier = Modifier.height(16.dp))
         Text(name, color = Color.White, fontWeight = FontWeight.Bold)
         Text(role, color = NeonRed, fontSize = 12.sp)
@@ -263,7 +344,8 @@ fun CharacterSheetSection(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                val newStress = Math.min(100, stress + 10)
+                val stressMultiplier = if (mockHeartRate > 120) 2 else 1
+                val newStress = Math.min(100, stress + (10 * stressMultiplier))
                 NetworkManager.updateCharacter(JSONObject().apply { put("id", "char_1"); put("stress", newStress) })
             },
             colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
@@ -308,6 +390,7 @@ fun DiceRollerSection(modifier: Modifier = Modifier) {
     var isCalculating by remember { mutableStateOf(false) }
     var snrResult by remember { mutableStateOf<String?>(null) }
     var acousticRange by remember { mutableStateOf<String?>(null) }
+    var raycastMaterial by remember { mutableStateOf<String?>(null) }
 
     Column(
         modifier = modifier
@@ -329,6 +412,7 @@ fun DiceRollerSection(modifier: Modifier = Modifier) {
                 if (snrResult != null) {
                     Text("SNR: $snrResult", color = NeonBlue, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                     Text("AUDIBLE RANGE: $acousticRange", color = NeonRed, fontSize = 14.sp)
+                    Text("RAYCAST HIT: $raycastMaterial", color = Color.Gray, fontSize = 12.sp)
                 } else {
                     Text("WAITING FOR SIGNAL", color = Color.DarkGray, fontSize = 18.sp)
                 }
@@ -342,12 +426,19 @@ fun DiceRollerSection(modifier: Modifier = Modifier) {
                     isCalculating = true
                     delay(300)
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    // Math: SNR = P_signal / P_noise. Gunshot is 140dB. Inverse square law drops 6dB per doubling of distance.
+                    val materials = listOf(
+                        Pair("Drywall", 3),
+                        Pair("Concrete", 15),
+                        Pair("Glass", 2),
+                        Pair("None", 0)
+                    )
+                    val raycastHit = materials.random()
+                    raycastMaterial = "${raycastHit.first} (-${raycastHit.second}dB)"
+
                     val ambientDb = Random.nextInt(40, 60)
                     val gunshotDb = 140
-                    val dropRequired = gunshotDb - ambientDb
-                    // distance = 2 ^ (dropRequired / 6)
-                    val distanceMeters = Math.pow(2.0, dropRequired / 6.0).toInt()
+                    val dropRequired = gunshotDb - ambientDb - raycastHit.second
+                    val distanceMeters = if (dropRequired <= 0) 1 else Math.pow(2.0, dropRequired / 6.0).toInt()
                     
                     val stealthScore = Random.nextInt(50, 95)
                     val pSignal = Math.pow(10.0, (100 - stealthScore) / 10.0)
