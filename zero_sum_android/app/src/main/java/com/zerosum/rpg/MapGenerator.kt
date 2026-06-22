@@ -20,72 +20,19 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 // --- Data Models ---
-data class RoomNode(
+data class RoomData(
+    val id: String,
+    val tag: String,
+    val bounds: JSONObject,
+    val metadata: JSONObject
+)
+
+data class GridCellData(
     val x: Int,
     val y: Int,
-    val name: String,
-    val complication: String,
-    val revealedTo: JSONObject,
-    val visibleTo: JSONObject,
-    val entities: JSONArray
-) {
-    fun toJson(): JSONObject {
-        return JSONObject().apply {
-            put("x", x)
-            put("y", y)
-            put("name", name)
-            put("complication", complication)
-            put("revealedTo", revealedTo)
-            put("visibleTo", visibleTo)
-            put("entities", entities)
-        }
-    }
-
-    companion object {
-        fun fromJson(json: JSONObject): RoomNode {
-            return RoomNode(
-                x = json.optInt("x"),
-                y = json.optInt("y"),
-                name = json.optString("name"),
-                complication = json.optString("complication"),
-                revealedTo = json.optJSONObject("revealedTo") ?: JSONObject(),
-                visibleTo = json.optJSONObject("visibleTo") ?: JSONObject(),
-                entities = json.optJSONArray("entities") ?: JSONArray()
-            )
-        }
-    }
-}
-
-data class FacilityMap(
-    val archetype: String,
-    val layoutStructure: String,
-    val rooms: List<RoomNode>
-) {
-    fun toJson(): JSONObject {
-        return JSONObject().apply {
-            put("archetype", archetype)
-            put("layoutStructure", layoutStructure)
-            val jsonRooms = JSONArray()
-            rooms.forEach { jsonRooms.put(it.toJson()) }
-            put("rooms", jsonRooms)
-        }
-    }
-
-    companion object {
-        fun fromJson(json: JSONObject?): FacilityMap? {
-            if (json == null) return null
-            val archetype = json.optString("archetype", "")
-            if (archetype.isEmpty()) return null
-            val layout = json.optString("layoutStructure", "")
-            val roomsArray = json.optJSONArray("rooms") ?: JSONArray()
-            val roomsList = mutableListOf<RoomNode>()
-            for (i in 0 until roomsArray.length()) {
-                roomsList.add(RoomNode.fromJson(roomsArray.getJSONObject(i)))
-            }
-            return FacilityMap(archetype, layout, roomsList)
-        }
-    }
-}
+    val type: String,
+    val roomId: String?
+)
 
 // --- Selective Border Modifier ---
 fun Modifier.selectiveBorder(top: Boolean, bottom: Boolean, left: Boolean, right: Boolean, color: Color, strokeWidth: Float): Modifier = this.drawBehind {
@@ -100,7 +47,8 @@ fun Modifier.selectiveBorder(top: Boolean, bottom: Boolean, left: Boolean, right
 fun MapGeneratorSection(modifier: Modifier = Modifier) {
     val uiState by NetworkManager.uiState.collectAsStateWithLifecycle()
     
-    val currentMap = FacilityMap.fromJson(uiState.json?.optJSONObject("map"))
+    val gridJson = uiState.json?.optJSONObject("grid")
+    val roomsJson = uiState.json?.optJSONObject("rooms")
 
     Column(
         modifier = modifier
@@ -119,34 +67,34 @@ fun MapGeneratorSection(modifier: Modifier = Modifier) {
         
         Spacer(modifier = Modifier.height(16.dp))
 
-        currentMap?.let { map ->
-            Text("TARGET: ${map.archetype.uppercase()}", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
-            Text("LAYOUT: ${map.layoutStructure.uppercase()}", color = NeonRed, fontSize = 12.sp)
+        if (gridJson != null && roomsJson != null) {
+            Text("TARGET: CUSTOM FACILITY", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+            Text("LAYOUT: GRID-BASED", color = NeonRed, fontSize = 12.sp)
             Spacer(modifier = Modifier.height(12.dp))
             
-            val roomsList = map.rooms
-            
             LazyVerticalGrid(
-                columns = GridCells.Fixed(8),
+                columns = GridCells.Fixed(10), // Increased slightly to show more of the 50x30 grid
                 modifier = Modifier.fillMaxWidth().aspectRatio(1f),
                 horizontalArrangement = Arrangement.spacedBy(0.dp),
                 verticalArrangement = Arrangement.spacedBy(0.dp)
             ) {
-                items(64) { index ->
-                    val x = index % 8
-                    val y = index / 8
-                    val room = roomsList.find { it.x == x && it.y == y }
+                items(100) { index ->
+                    val x = index % 10
+                    val y = index / 10
+                    val cellKey = "$x,$y"
+                    val cell = gridJson.optJSONObject(cellKey)
+                    val roomId = cell?.optString("room_id")
+                    val room = if (roomId != null) roomsJson.optJSONObject(roomId) else null
                     
                     // FOG OF WAR LOGIC: Is it revealed to char_1?
-                    val isRevealed = room?.revealedTo?.optBoolean("char_1", false) ?: false
-                    val isVisible = room?.visibleTo?.optBoolean("char_1", false) ?: false
+                    val isRevealed = room?.optJSONObject("metadata")?.optJSONObject("revealedTo")?.optBoolean("char_1", false) ?: false
 
-                    if (room != null && isRevealed) {
-                        // Check neighbors for auto-tiling borders (only check revealed neighbors!)
-                        val hasN = roomsList.find { it.x == x && it.y == y - 1 && it.revealedTo.optBoolean("char_1") } != null
-                        val hasS = roomsList.find { it.x == x && it.y == y + 1 && it.revealedTo.optBoolean("char_1") } != null
-                        val hasE = roomsList.find { it.x == x + 1 && it.y == y && it.revealedTo.optBoolean("char_1") } != null
-                        val hasW = roomsList.find { it.x == x - 1 && it.y == y && it.revealedTo.optBoolean("char_1") } != null
+                    if (cell != null && isRevealed) {
+                        // Check neighbors for auto-tiling
+                        val hasN = gridJson.has("$x,${y-1}") && roomsJson.optJSONObject(gridJson.optJSONObject("$x,${y-1}")?.optString("room_id"))?.optJSONObject("metadata")?.optJSONObject("revealedTo")?.optBoolean("char_1", false) == true
+                        val hasS = gridJson.has("$x,${y+1}") && roomsJson.optJSONObject(gridJson.optJSONObject("$x,${y+1}")?.optString("room_id"))?.optJSONObject("metadata")?.optJSONObject("revealedTo")?.optBoolean("char_1", false) == true
+                        val hasE = gridJson.has("${x+1},$y") && roomsJson.optJSONObject(gridJson.optJSONObject("${x+1},$y")?.optString("room_id"))?.optJSONObject("metadata")?.optJSONObject("revealedTo")?.optBoolean("char_1", false) == true
+                        val hasW = gridJson.has("${x-1},$y") && roomsJson.optJSONObject(gridJson.optJSONObject("${x-1},$y")?.optString("room_id"))?.optJSONObject("metadata")?.optJSONObject("revealedTo")?.optBoolean("char_1", false) == true
 
                         Box(
                             modifier = Modifier
@@ -156,15 +104,8 @@ fun MapGeneratorSection(modifier: Modifier = Modifier) {
                             contentAlignment = Alignment.Center
                         ) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                if (room.complication != "Clear") {
+                                if (room?.optJSONObject("metadata")?.optString("threat") == "critical") {
                                     Text("!", color = NeonRed, fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                                }
-                                if (isVisible && room.entities.length() > 0) {
-                                    Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                                        for (i in 0 until room.entities.length()) {
-                                            Box(modifier = Modifier.size(4.dp).background(Color(0xFF00FF00), RoundedCornerShape(2.dp)))
-                                        }
-                                    }
                                 }
                             }
                         }
@@ -184,9 +125,9 @@ fun MapGeneratorSection(modifier: Modifier = Modifier) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(modifier = Modifier.size(10.dp).background(NeonRed))
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("HOSTILE COMPLICATION DETECTED", color = Color.Gray, fontSize = 10.sp)
+                Text("CRITICAL THREAT DETECTED", color = Color.Gray, fontSize = 10.sp)
             }
-        } ?: run {
+        } else {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text("AWAITING INTEL...", color = Color.DarkGray, fontSize = 14.sp)
             }

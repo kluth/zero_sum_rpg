@@ -1,8 +1,10 @@
-import { Component, OnInit, signal, computed, effect, Injector } from '@angular/core';
+import { Component, OnInit, signal, computed, effect, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { initializeApp } from 'firebase/app';
-import { getDatabase, ref, onValue, set, connectDatabaseEmulator, push } from 'firebase/database';
+import { getDatabase, ref, onValue, set, connectDatabaseEmulator, push, get } from 'firebase/database';
+import { PixiMapComponent } from './pixi-map.component';
+import { GridStore, RoomData } from './grid.store';
 
 const firebaseConfig = {
   projectId: "zero-sum-rpg-2026",
@@ -17,7 +19,7 @@ const firebaseConfig = {
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PixiMapComponent],
   styleUrls: ['./app.component.css'],
   template: `
     <div class="crt-overlay"></div>
@@ -47,78 +49,76 @@ const firebaseConfig = {
           <div style="font-size: 14px; color: gray;">SESSION: <strong style="color: white">{{ sessionId() }}</strong></div>
         </header>
         
-        <div class="dashboard-grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; flex: 1; overflow: hidden;">
-            <div class="glass-panel gm-panel" style="flex: 1; overflow-y: auto;">
-              <h2 class="text-neon-red">Graphical Map Builder & Sub-Sector Routing</h2>
-              <input type="text" [(ngModel)]="builderMapArchetype" placeholder="Archetype" style="background: black; color: white; border: 1px solid #FF2A2A; padding: 5px; width: 100%; margin-bottom: 10px;" />
-              
-              <!-- 2D Grid Builder -->
-              <div style="display: grid; gap: 2px; background: #111; padding: 5px; width: 100%; max-width: 400px; margin: 0 auto; margin-bottom: 20px;"
-                   [ngStyle]="{'grid-template-columns': 'repeat(' + gridSize + ', 1fr)'}">
-                <div *ngFor="let cell of gridCells" 
-                     (click)="toggleCell(cell)"
-                     (contextmenu)="selectCell(cell, $event)"
-                     [ngStyle]="getBorders(cell)"
-                     [ngClass]="{'active-cell': cell.active, 'selected-cell': selectedCell === cell}"
-                     style="aspect-ratio: 1; background: #222; cursor: pointer; position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                   <span *ngIf="cell.active" style="color: rgba(255,255,255,0.5); font-size: 10px;">{{ cell.x }},{{ cell.y }}</span>
-                   <div style="display: flex; gap: 2px; flex-wrap: wrap; justify-content: center;">
-                      <span *ngFor="let ent of cell.entities" style="width: 4px; height: 4px; background: #00FF00; border-radius: 50%;"></span>
-                   </div>
-                </div>
-              </div>
-
-              <div *ngIf="selectedCell" style="background: rgba(0,0,0,0.5); border: 1px solid #FF2A2A; padding: 15px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px;">
-                <h4 style="margin: 0; color: #FF2A2A;">Sector Data: [{{selectedCell.x}}, {{selectedCell.y}}]</h4>
-                <div style="display: flex; gap: 10px; align-items: center;">
-                  <input type="text" [(ngModel)]="selectedCell.name" placeholder="Sector Name" style="background: black; color: white; border: 1px solid gray; padding: 5px; flex: 1;" />
-                  <input type="text" [(ngModel)]="selectedCell.complication" placeholder="Complication" style="background: black; color: white; border: 1px solid gray; padding: 5px; flex: 1;" />
-                </div>
-                
-                <div style="border-top: 1px dashed gray; padding-top: 10px; margin-top: 5px;">
-                  <h5 style="margin: 0 0 10px 0; color: #00E5FF;">FOG OF WAR & LINE OF SIGHT</h5>
-                  <div *ngFor="let charKey of getCharacterKeys()" style="margin-bottom: 5px; display: flex; gap: 15px; align-items: center;">
-                    <span class="text-neon-blue" style="width: 100px; font-size: 12px;">{{ gameState().characters[charKey]?.name || charKey }}</span>
-                    <label style="color: white; font-size: 12px; cursor: pointer;">
-                      <input type="checkbox" [checked]="selectedCell.revealedTo[charKey]" (change)="toggleReveal(selectedCell, charKey, $event)" /> Revealed
-                    </label>
-                    <label style="color: white; font-size: 12px; cursor: pointer;">
-                      <input type="checkbox" [checked]="selectedCell.visibleTo[charKey]" (change)="toggleVisible(selectedCell, charKey, $event)" /> LoS Inside
-                    </label>
-                  </div>
-                </div>
-
-                <div style="border-top: 1px dashed gray; padding-top: 10px; margin-top: 5px;">
-                  <h5 style="margin: 0 0 10px 0; color: #00FF00;">ENTITIES</h5>
-                  <div style="display: flex; gap: 10px;">
-                    <input type="text" [(ngModel)]="newEntityName" placeholder="Entity..." style="background: black; color: white; border: 1px solid gray; padding: 5px; flex: 1;" />
-                    <button class="cyber-button" style="padding: 5px 10px; margin: 0;" (click)="addEntity(selectedCell)">ADD</button>
-                  </div>
-                  <div style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 5px;">
-                    <span *ngFor="let ent of selectedCell.entities; let i = index" style="background: rgba(0,255,0,0.2); border: 1px solid #00FF00; padding: 2px 5px; font-size: 10px; color: #00FF00;">
-                      {{ ent.name }} <span style="cursor: pointer; color: red; margin-left: 5px;" (click)="removeEntity(selectedCell, i)">X</span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <button class="cyber-button" style="border-color: #FF2A2A; color: #FF2A2A; width: 100%; margin-top: 20px;" (click)="publishMap()">PUBLISH MAP TO RTDB</button>
-
-              <h2 class="text-neon-red" style="margin-top: 20px;">Twitch Webhook Control</h2>
-              <button class="cyber-button" style="border-color: #00FF00; color: #00FF00;" (click)="simulateTwitchDonation()">SIMULATE CHAOS INJECTION (TWITCH BITS)</button>
-              
-              <h2 class="text-neon-red">Global Heat Level</h2>
-              <button class="cyber-button" (click)="updateHeat(-1)">-</button>
-              <span style="font-size: 24px; color: #FF2A2A; font-weight: bold; margin: 0 15px;">{{ heatLevel() }}</span>
-              <button class="cyber-button" (click)="updateHeat(1)">+</button>
+        <div class="dashboard-grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; flex: 1; overflow: hidden; height: 100%;">
+            <!-- PANE A: PixiJS Canvas Viewport -->
+            <div class="glass-panel gm-panel" style="flex: 1; padding: 0; position: relative;">
+               <app-pixi-map 
+                  [mode]="'gm'"
+                  (cellClicked)="onCanvasCellClicked($event)" 
+                  (roomClicked)="onCanvasRoomClicked($event)">
+               </app-pixi-map>
             </div>
             
-            <div class="glass-panel" style="flex: 1; overflow-y: auto; border-color: #FF2A2A;">
-              <h2 class="text-neon-red">Zero-Sum Transfer Log (Procedural Guilt)</h2>
-              <div *ngFor="let t of getTraumaLog()" style="padding: 10px; border-left: 2px solid #FF2A2A; margin-bottom: 5px; background: rgba(255,42,42,0.1);">
-                <strong style="color: white;">{{ t.player }} HEALED +{{ t.amount }}</strong>
-                <div style="color: #FF2A2A; font-size: 12px; margin-top: 4px;">CIVILIAN CASUALTY: <strong>{{ t.civilian }}</strong></div>
-              </div>
+            <!-- PANE B: Construction Toolkit -->
+            <div class="glass-panel" style="flex: 1; overflow-y: auto; border-color: #FF2A2A; display: flex; flex-direction: column;">
+               <div style="display: flex; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid #FF2A2A; padding-bottom: 10px;">
+                 <button class="cyber-button" [ngClass]="{'active': activeTab() === 'blocks'}" (click)="activeTab.set('blocks')">BUILDING BLOCKS</button>
+                 <button class="cyber-button" [ngClass]="{'active': activeTab() === 'properties'}" (click)="activeTab.set('properties')">PROPERTIES</button>
+               </div>
+
+               <div *ngIf="activeTab() === 'blocks'" style="flex: 1;">
+                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h3 class="text-neon-blue">Block Pool</h3>
+                    <span [ngStyle]="{'color': blockPoolUsed() >= 50 ? 'red' : 'white'}">{{ blockPoolUsed() }} / 50 USED</span>
+                 </div>
+                 
+                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+                    <div class="prefab-block" (click)="selectPrefab('corridor')" [ngClass]="{'selected': activePrefab() === 'corridor'}" style="padding: 10px; border: 1px solid gray; cursor: pointer;">Corridor</div>
+                    <div class="prefab-block" (click)="selectPrefab('l_junction')" [ngClass]="{'selected': activePrefab() === 'l_junction'}" style="padding: 10px; border: 1px solid gray; cursor: pointer;">L-Junction</div>
+                    <div class="prefab-block" (click)="selectPrefab('medbay')" [ngClass]="{'selected': activePrefab() === 'medbay'}" style="padding: 10px; border: 1px solid gray; cursor: pointer;">MedBay</div>
+                    <div class="prefab-block" (click)="selectPrefab('data_terminal')" [ngClass]="{'selected': activePrefab() === 'data_terminal'}" style="padding: 10px; border: 1px solid gray; cursor: pointer;">Data Terminal</div>
+                 </div>
+
+                 <button class="cyber-button" style="width: 100%; border-color: #00E5FF; color: #00E5FF;" (click)="generateSqueeze()">GENERATE SQUEEZE (WFC)</button>
+                 <p *ngIf="wfcError()" style="color: red; font-size: 12px; margin-top: 5px;">{{ wfcError() }}</p>
+
+                 <div style="margin-top: 20px; border-top: 1px dashed gray; padding-top: 10px;">
+                    <h3 class="text-neon-red">Global Heat Level</h3>
+                    <button class="cyber-button" (click)="updateHeat(-1)">-</button>
+                    <span style="font-size: 24px; color: #FF2A2A; font-weight: bold; margin: 0 15px;">{{ heatLevel() }}</span>
+                    <button class="cyber-button" (click)="updateHeat(1)">+</button>
+                 </div>
+                 
+                 <button class="cyber-button" style="border-color: #FF2A2A; color: #FF2A2A; width: 100%; margin-top: 20px;" (click)="publishMap()">SYNC GRID TO RTDB</button>
+               </div>
+
+               <div *ngIf="activeTab() === 'properties'" style="flex: 1;">
+                 <div *ngIf="selectedRoomId(); else noSelection">
+                   <h3 class="text-neon-red">Room: {{ selectedRoomId() }}</h3>
+                   
+                   <label style="color: gray; font-size: 12px;">Metadata Tag</label>
+                   <input type="text" [ngModel]="getRoomTag()" (ngModelChange)="updateRoomTag($event)" style="background: black; color: white; border: 1px solid gray; padding: 5px; width: 100%; margin-bottom: 10px;" />
+
+                   <label style="color: gray; font-size: 12px;">Dynamic VFX</label>
+                   <select [ngModel]="getRoomVfx()" (ngModelChange)="updateRoomVfx($event)" style="background: black; color: white; border: 1px solid gray; padding: 5px; width: 100%; margin-bottom: 10px;">
+                     <option value="none">None</option>
+                     <option value="flash_red_alert">Security Alarm (Red Pulse)</option>
+                     <option value="flicker_blue_data">Data Stream (Blue Flicker)</option>
+                     <option value="glitch">Glitch Effect</option>
+                   </select>
+
+                   <label style="color: gray; font-size: 12px;">Threat Level</label>
+                   <select [ngModel]="getRoomThreat()" (ngModelChange)="updateRoomThreat($event)" style="background: black; color: white; border: 1px solid gray; padding: 5px; width: 100%; margin-bottom: 10px;">
+                     <option value="low">Low</option>
+                     <option value="medium">Medium</option>
+                     <option value="critical">Critical</option>
+                   </select>
+                   <button class="cyber-button" style="border-color: #FF2A2A; color: #FF2A2A; width: 100%; margin-top: 20px;" (click)="publishMap()">SYNC ROOM STATE TO RTDB</button>
+                 </div>
+                 <ng-template #noSelection>
+                    <div style="color: gray; font-style: italic;">Select a room on the canvas to view properties.</div>
+                 </ng-template>
+               </div>
             </div>
         </div>
       }
@@ -154,25 +154,15 @@ const firebaseConfig = {
       }
       
       @defer (when isSpectatorMode()) {
-        <div class="glass-panel" style="flex: 1; display: flex; flex-direction: column;">
+        <div class="glass-panel" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
             <h2 class="text-neon-blue" style="font-size: 24px;">SPECTATOR UPLINK // TWITCH</h2>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
               <div style="color: #00E5FF; font-size: 32px;">Market Value: $ {{ chaosMarketValue() }}</div>
               <div style="color: #FF2A2A; font-size: 32px;">Heat Level: {{ heatLevel() }}</div>
             </div>
             
-            <div style="display: grid; gap: 2px; background: #111; padding: 5px; width: 100%; max-width: 400px; margin: 20px auto;"
-                 [ngStyle]="{'grid-template-columns': 'repeat(' + gridSize + ', 1fr)'}">
-              <div *ngFor="let cell of getSpectatorGrid()" 
-                   [ngStyle]="getSpectatorBorders(cell)"
-                   style="aspect-ratio: 1; background: #222; position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2px;">
-                <ng-container *ngIf="cell.active">
-                  <span style="font-size: 8px; font-weight: bold; color: white; text-align: center; word-break: break-all;">{{ cell.name }}</span>
-                  <div style="display: flex; gap: 2px; flex-wrap: wrap; justify-content: center; margin-top: 2px;">
-                    <span *ngFor="let ent of cell.entities" style="font-size: 8px; color: #00FF00;">[{{ ent.name }}]</span>
-                  </div>
-                </ng-container>
-              </div>
+            <div style="flex: 1; position: relative;">
+              <app-pixi-map [mode]="'spectator'"></app-pixi-map>
             </div>
         </div>
       }
@@ -202,13 +192,16 @@ export class AppComponent implements OnInit {
   
   recentTrauma = signal<any>(null);
 
-  gridSize = 8;
-  gridCells: any[] = [];
-  selectedCell: any = null;
-  newEntityName = '';
+  // Architect Store and UI State
+  gridStore = inject(GridStore);
+  activeTab = signal<'blocks' | 'properties'>('blocks');
+  activePrefab = signal<string>('corridor');
+  selectedRoomId = signal<string | null>(null);
+  selectedCell = signal<{x: number, y: number} | null>(null);
+  blockPoolUsed = computed(() => Object.keys(this.gridStore.grid() || {}).length);
+  wfcError = signal<string | null>(null);
 
   constructor() {
-    this.initGrid();
     
     // IoT Web Audio API Siren Effect
     effect(() => {
@@ -246,100 +239,99 @@ export class AppComponent implements OnInit {
     }
   }
 
-  initGrid() {
-    this.gridCells = [];
-    for (let y = 0; y < this.gridSize; y++) {
-      for (let x = 0; x < this.gridSize; x++) {
-        this.gridCells.push({ x, y, active: false, name: '', complication: 'Clear', revealedTo: {}, visibleTo: {}, entities: [] });
+  // --- PixiJS & WFC Builder Methods ---
+  
+  onCanvasCellClicked(pos: {x: number, y: number}) {
+    if (this.blockPoolUsed() >= 50) return; // 50 block limit
+    this.selectedRoomId.set(null);
+    this.activeTab.set('blocks');
+    
+    // Instantiate prefab at clicked location
+    const roomId = `room_${Math.random().toString(36).substr(2, 6)}`;
+    const prefabType = this.activePrefab();
+    
+    // Create new structure based on prefab (simulated 2x2 for simplicity)
+    const newRoomData: RoomData = {
+      tag: prefabType.toUpperCase(),
+      bounds: { x: pos.x, y: pos.y, w: 2, h: 2 },
+      metadata: { vfx: 'none', threat: 'low' }
+    };
+    
+    this.gridStore.updateRoom(roomId, newRoomData);
+    
+    // Occupy grid cells
+    for(let dx=0; dx<2; dx++) {
+      for(let dy=0; dy<2; dy++) {
+         this.gridStore.updateCell(pos.x + dx, pos.y + dy, { type: 'structure_wall', room_id: roomId });
       }
     }
   }
 
-  getCell(x: number, y: number) {
-    return this.gridCells.find(c => c.x === x && c.y === y);
+  onCanvasRoomClicked(roomId: string) {
+    this.selectedRoomId.set(roomId);
+    this.activeTab.set('properties');
   }
 
-  toggleCell(cell: any) {
-    cell.active = !cell.active;
-    if (cell.active) {
-      this.selectedCell = cell;
-    } else if (this.selectedCell === cell) {
-      this.selectedCell = null;
-    }
-  }
-  
-  selectCell(cell: any, event: Event) {
-    event.preventDefault();
-    if (cell.active) {
-      this.selectedCell = cell;
-    }
+  selectPrefab(prefabName: string) {
+    this.activePrefab.set(prefabName);
   }
 
-  toggleReveal(cell: any, charKey: string, event: any) {
-    cell.revealedTo[charKey] = event.target.checked;
-  }
-  
-  toggleVisible(cell: any, charKey: string, event: any) {
-    cell.visibleTo[charKey] = event.target.checked;
-  }
-
-  addEntity(cell: any) {
-    if (this.newEntityName) {
-      cell.entities.push({ id: Math.random().toString(), name: this.newEntityName });
-      this.newEntityName = '';
-    }
-  }
-
-  removeEntity(cell: any, index: number) {
-    cell.entities.splice(index, 1);
-  }
-
-  getBorders(cell: any) {
-    if (!cell.active) return {};
-    const n = this.getCell(cell.x, cell.y - 1)?.active;
-    const s = this.getCell(cell.x, cell.y + 1)?.active;
-    const e = this.getCell(cell.x + 1, cell.y)?.active;
-    const w = this.getCell(cell.x - 1, cell.y)?.active;
+  generateSqueeze() {
+    this.wfcError.set(null);
+    let attempts = 0;
+    const maxAttempts = 500;
     
-    return {
-      'border-top': !n ? '2px solid #00E5FF' : 'none',
-      'border-bottom': !s ? '2px solid #00E5FF' : 'none',
-      'border-left': !w ? '2px solid #00E5FF' : 'none',
-      'border-right': !e ? '2px solid #00E5FF' : 'none',
-    };
-  }
-  
-  getSpectatorGrid() {
-    let grid = [];
-    for (let y = 0; y < this.gridSize; y++) {
-      for (let x = 0; x < this.gridSize; x++) {
-        let room = this.gameState()?.map?.rooms?.find((r:any) => r.x === x && r.y === y);
-        if (room) {
-          grid.push({ ...room, active: true });
-        } else {
-          grid.push({ x, y, active: false });
-        }
+    while(attempts < maxAttempts) {
+      // Mock WFC generation logic
+      attempts++;
+      if (Math.random() > 0.99) { // 1% chance of success in mock
+         // Success
+         this.wfcError.set("WFC Generated successfully.");
+         return;
       }
     }
-    return grid;
+    
+    this.wfcError.set("WFC generation failed: Maximum recursion depth reached. Reverted.");
   }
 
-  getSpectatorBorders(cell: any) {
-    if (!cell.active) return {};
-    const rooms = this.gameState()?.map?.rooms || [];
-    const n = rooms.find((r:any) => r.x === cell.x && r.y === cell.y - 1);
-    const s = rooms.find((r:any) => r.x === cell.x && r.y === cell.y + 1);
-    const e = rooms.find((r:any) => r.x === cell.x + 1 && r.y === cell.y);
-    const w = rooms.find((r:any) => r.x === cell.x - 1 && r.y === cell.y);
-    
-    return {
-      'border-top': !n ? '2px solid #00E5FF' : 'none',
-      'border-bottom': !s ? '2px solid #00E5FF' : 'none',
-      'border-left': !w ? '2px solid #00E5FF' : 'none',
-      'border-right': !e ? '2px solid #00E5FF' : 'none',
-      'background': 'rgba(0, 229, 255, 0.2)'
-    };
+  getRoomTag() {
+    const roomId = this.selectedRoomId();
+    return roomId ? this.gridStore.rooms()[roomId]?.tag || '' : '';
   }
+  updateRoomTag(tag: string) {
+    const roomId = this.selectedRoomId();
+    if (roomId) {
+       const room = { ...this.gridStore.rooms()[roomId], tag };
+       this.gridStore.updateRoom(roomId, room);
+    }
+  }
+
+  getRoomVfx() {
+    const roomId = this.selectedRoomId();
+    return roomId ? this.gridStore.rooms()[roomId]?.metadata?.vfx || 'none' : 'none';
+  }
+  updateRoomVfx(vfx: string) {
+    const roomId = this.selectedRoomId();
+    if (roomId) {
+       const room = this.gridStore.rooms()[roomId];
+       const updatedRoom = { ...room, metadata: { ...room.metadata, vfx } };
+       this.gridStore.updateRoom(roomId, updatedRoom);
+    }
+  }
+
+  getRoomThreat() {
+    const roomId = this.selectedRoomId();
+    return roomId ? this.gridStore.rooms()[roomId]?.metadata?.threat || 'low' : 'low';
+  }
+  updateRoomThreat(threat: string) {
+    const roomId = this.selectedRoomId();
+    if (roomId) {
+       const room = this.gridStore.rooms()[roomId];
+       const updatedRoom = { ...room, metadata: { ...room.metadata, threat } };
+       this.gridStore.updateRoom(roomId, updatedRoom);
+    }
+  }
+
 
   getCharacterKeys() {
     return this.gameState() && this.gameState().characters ? Object.keys(this.gameState().characters) : [];
@@ -366,21 +358,12 @@ export class AppComponent implements OnInit {
       const data = snapshot.val();
       if (data) {
         this.gameState.set(data);
-        // Populate builder if GM
-        if (this.isGmMode() && data.map && this.gridCells.every(c => !c.active)) {
-            this.builderMapArchetype = data.map.archetype;
-            const rooms = data.map.rooms || [];
-            rooms.forEach((r: any) => {
-              const cell = this.getCell(r.x, r.y);
-              if (cell) {
-                cell.active = true;
-                cell.name = r.name;
-                cell.complication = r.complication;
-                cell.revealedTo = r.revealedTo || {};
-                cell.visibleTo = r.visibleTo || {};
-                cell.entities = r.entities || [];
-              }
-            });
+        if (data.grid && data.rooms) {
+           this.gridStore.setState({
+             grid: data.grid || {},
+             rooms: data.rooms || {},
+             dimensions: data.dimensions || { width: 50, height: 30 }
+           });
         }
       }
     });
@@ -399,19 +382,11 @@ export class AppComponent implements OnInit {
 
   publishMap() {
     if (!this.db || !this.sessionId()) return;
-    const activeRooms = this.gridCells.filter(c => c.active).map(c => ({
-      x: c.x,
-      y: c.y,
-      name: c.name,
-      complication: c.complication,
-      revealedTo: c.revealedTo,
-      visibleTo: c.visibleTo,
-      entities: c.entities
-    }));
-    set(ref(this.db, `sessions/${this.sessionId()}/gameState/map`), {
-      archetype: this.builderMapArchetype,
-      layoutStructure: 'Grid-Based Modular',
-      rooms: activeRooms
+    set(ref(this.db, `sessions/${this.sessionId()}/gameState`), {
+      ...this.gameState(),
+      dimensions: this.gridStore.dimensions(),
+      grid: this.gridStore.grid(),
+      rooms: this.gridStore.rooms()
     });
   }
 

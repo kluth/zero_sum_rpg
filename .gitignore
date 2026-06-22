@@ -7,3 +7,11 @@ zero_sum_android/app/build/
 .agents/
 *.img
 *.apk
+node_modules/
+dist/
+.angular/
+build/
+.gradle/
+*.png
+*.jpg
+capture_screenshots*.js
