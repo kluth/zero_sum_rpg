@@ -75,6 +75,20 @@ The GM manually escalates the Global Heat Level to Critical (9), triggering visu
 ![Billboard Phase 2](../screenshots/screenshot_phase2_3_billboard.png)
 ![Netrunner Phase 2](../screenshots/screenshot_phase2_4_netrunner.png)
 
+### Phase 3: Massive 7-Protagonist Chaos Session
+The GM activates the Global Chaos engine, deploying 7 distinct protagonist tokens across the map. Each character independently randomizes their movement every 1.5 seconds via real-time Firebase syncs.
+
+The engine correctly parses completely distinct Fog of War calculations based on each player's individual visual radius. Notice how Player 1 (Combat Specialist) and Player 2 (Infiltrator) have completely different rendered views of the same state.
+
+**GM View (All 7 Protagonists Running Wild):**
+![GM 7 Players](../screenshots/screenshot_phase3_1_gm_chaos.png)
+
+**Player 1 View (S. Nakamura / Combat):**
+![Player 1 FoW](../screenshots/screenshot_phase3_2_player1.png)
+
+**Player 2 View (E. Vance / Infiltrator):**
+![Player 2 FoW](../screenshots/screenshot_phase3_3_player2.png)
+
 ---
 
 <!-- Android mock removed as requested -->

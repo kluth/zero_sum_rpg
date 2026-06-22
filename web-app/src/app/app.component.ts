@@ -37,6 +37,11 @@ const firebaseConfig = {
         <button class="cyber-button" style="border-color: #00E5FF; color: #00E5FF" (click)="joinSession('billboard')">CORPORATE BILLBOARD</button>
         <button class="cyber-button" style="border-color: #00FF00; color: #00FF00" (click)="joinSession('netrunner')">NETRUNNER SHELL</button>
       </div>
+
+      <div style="margin-top: 30px; font-size: 14px; color: gray;">PROTAGONIST UPLINKS</div>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
+        <button *ngFor="let p of protagonistList" class="cyber-button" style="border-color: #00FF00; color: #00FF00" (click)="joinSession('player', p.id)">{{p.name}} ({{p.role}})</button>
+      </div>
     </div>
 
     <!-- MAIN DASHBOARD -->
@@ -54,6 +59,8 @@ const firebaseConfig = {
             <div class="glass-panel gm-panel" style="flex: 1; padding: 0; position: relative;">
                <app-pixi-map 
                   [mode]="'gm'"
+                  [characters]="gameState().characters || {}"
+                  [activePlayerId]="activePlayerId()"
                   (cellClicked)="onCanvasCellClicked($event)" 
                   (roomClicked)="onCanvasRoomClicked($event)">
                </app-pixi-map>
@@ -90,6 +97,7 @@ const firebaseConfig = {
                  </div>
                  
                  <button class="cyber-button" style="border-color: #FF2A2A; color: #FF2A2A; width: 100%; margin-top: 20px;" (click)="publishMap()">SYNC GRID TO RTDB</button>
+                 <button class="cyber-button" style="border-color: #FF00FF; color: #FF00FF; width: 100%; margin-top: 20px;" (click)="simulateChaos()">SIMULATE 7-PLAYER CHAOS</button>
                </div>
 
                <div *ngIf="activeTab() === 'properties'" style="flex: 1;">
@@ -162,7 +170,21 @@ const firebaseConfig = {
             </div>
             
             <div style="flex: 1; position: relative;">
-              <app-pixi-map [mode]="'spectator'"></app-pixi-map>
+              <app-pixi-map [mode]="'spectator'" [characters]="gameState().characters || {}"></app-pixi-map>
+            </div>
+        </div>
+      }
+
+      @defer (when isPlayerMode()) {
+        <div class="glass-panel" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+            <h2 class="text-neon-blue" style="font-size: 24px;">UPLINK // {{ getPlayerName() }}</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <div style="color: #00FF00; font-size: 18px;">ROLE: {{ getPlayerRole() }}</div>
+              <div style="color: #FF2A2A; font-size: 18px;">Heat Level: {{ heatLevel() }}</div>
+            </div>
+            
+            <div style="flex: 1; position: relative;">
+              <app-pixi-map [mode]="'player'" [characters]="gameState().characters || {}" [activePlayerId]="activePlayerId()"></app-pixi-map>
             </div>
         </div>
       }
@@ -177,14 +199,37 @@ export class AppComponent implements OnInit {
   
   sessionId = signal<string | null>(null);
   mode = signal<string | null>(null);
+  activePlayerId = signal<string | null>(null);
   
   isGmMode = computed(() => this.mode() === 'gm');
   isBillboardMode = computed(() => this.mode() === 'billboard');
   isNetrunnerMode = computed(() => this.mode() === 'netrunner');
   isSpectatorMode = computed(() => this.mode() === 'spectator');
+  isPlayerMode = computed(() => this.mode() === 'player');
+
+  protagonistList = [
+     { id: 'p1', name: 'S. Nakamura', role: 'Combat' },
+     { id: 'p2', name: 'E. Vance', role: 'Infiltrator' },
+     { id: 'p3', name: 'J. Doe', role: 'Ghost' },
+     { id: 'p4', name: 'K. Quinn', role: 'Tech' },
+     { id: 'p5', name: 'R. Doberman', role: 'Heavy' },
+     { id: 'p6', name: 'Dr. Mercer', role: 'Medic' },
+     { id: 'p7', name: 'V. Solis', role: 'Sniper' }
+  ];
+
+  getPlayerName() {
+     const p = this.protagonistList.find(x => x.id === this.activePlayerId());
+     return p ? p.name : 'UNKNOWN';
+  }
+
+  getPlayerRole() {
+     const p = this.protagonistList.find(x => x.id === this.activePlayerId());
+     return p ? p.role : 'UNKNOWN';
+  }
 
   inputPin: string = '';
   private db: any;
+  private chaosInterval: any;
   
   builderMapArchetype = 'Custom Facility';
   terminalCommand = '';
@@ -230,13 +275,19 @@ export class AppComponent implements OnInit {
       const params = new URLSearchParams(window.location.search);
       const session = params.get('session');
       const m = params.get('mode');
+      const player = params.get('player');
       
       if (session) {
         this.sessionId.set(session);
         this.mode.set(m);
+        if (player) this.activePlayerId.set(player);
         this.connectFirebase();
       }
     }
+  }
+
+  ngOnDestroy() {
+     if (this.chaosInterval) clearInterval(this.chaosInterval);
   }
 
   // --- PixiJS & WFC Builder Methods ---
@@ -341,10 +392,50 @@ export class AppComponent implements OnInit {
     this.inputPin = event.target.value;
   }
 
-  joinSession(selectedMode: string) {
+  joinSession(selectedMode: string, playerId?: string) {
     if (this.inputPin.length >= 4) {
-      window.location.href = `/?session=${this.inputPin}&mode=${selectedMode}`;
+      let url = `/?session=${this.inputPin}&mode=${selectedMode}`;
+      if (playerId) url += `&player=${playerId}`;
+      window.location.href = url;
     }
+  }
+
+  simulateChaos() {
+      if (!this.db || !this.sessionId()) return;
+      const chars: Record<string, any> = {};
+      
+      // Spawn players somewhat centrally (e.g. 20-30 range on 50x30 map)
+      this.protagonistList.forEach((p, idx) => {
+         chars[p.id] = { 
+            id: p.id, 
+            name: p.name, 
+            role: p.role, 
+            x: 20 + Math.floor(Math.random()*10), 
+            y: 10 + Math.floor(Math.random()*10), 
+            fowRadius: 5 + Math.floor(Math.random()*4) 
+         };
+      });
+      set(ref(this.db, `sessions/${this.sessionId()}/gameState/characters`), chars);
+
+      // Random move interval
+      if (this.chaosInterval) clearInterval(this.chaosInterval);
+      this.chaosInterval = setInterval(() => {
+         const currentChars = this.gameState().characters;
+         if (currentChars) {
+            const updated = { ...currentChars };
+            Object.values(updated).forEach((c: any) => {
+               // Random walk
+               if (Math.random() > 0.3) {
+                   c.x += Math.floor(Math.random() * 3) - 1;
+                   c.y += Math.floor(Math.random() * 3) - 1;
+                   // keep in bounds roughly
+                   if (c.x < 0) c.x = 0; if (c.x > 49) c.x = 49;
+                   if (c.y < 0) c.y = 0; if (c.y > 29) c.y = 29;
+               }
+            });
+            set(ref(this.db, `sessions/${this.sessionId()}/gameState/characters`), updated);
+         }
+      }, 1500);
   }
 
   connectFirebase() {
