@@ -44,6 +44,8 @@
   padding: 20px;
   backdrop-filter: blur(4px);
   position: relative;
+  flex-shrink: 0;
+  min-height: fit-content;
 }
 /* Add subtle data noise background */
 .glass-panel::before {
@@ -160,13 +162,14 @@
 
 /* --- RESPONSIVE LAYOUTS --- */
 .billboard-container {
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   padding: 20px;
   box-sizing: border-box;
 }
@@ -177,7 +180,9 @@
   margin-top: 40px;
   width: 90%;
   justify-content: space-around;
-  max-height: 70%;
+  max-height: none;
+  min-height: fit-content;
+  flex-shrink: 0;
   box-sizing: border-box;
 }
 
