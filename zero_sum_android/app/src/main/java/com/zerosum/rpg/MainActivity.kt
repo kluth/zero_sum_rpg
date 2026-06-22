@@ -155,6 +155,7 @@ fun GameScreen(sessionId: String) {
             put("role", "CYBER-INFILTRATOR")
             put("hp", 78)
             put("stealth", 85)
+            put("stress", 60)
         }
         NetworkManager.updateCharacter(profile)
     }
@@ -214,10 +215,18 @@ fun CharacterSheetSection(modifier: Modifier = Modifier) {
         if (hasNext()) characters.optJSONObject(next()) else null
     }
 
+    val haptic = LocalHapticFeedback.current
     val name = character?.optString("name") ?: "KAIRO 'GHOST' CHEN"
     val role = character?.optString("role") ?: "CYBER-INFILTRATOR"
     val hp = character?.optInt("hp") ?: 78
     val stealth = character?.optInt("stealth") ?: 85
+    val stress = character?.optInt("stress") ?: 60
+
+    val isCyberpsychosis = stress > 75
+    val displayHp = if (isCyberpsychosis && Random.nextFloat() > 0.7f) {
+        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+        Random.nextInt(1, 15)
+    } else hp
 
     Column(
         modifier = modifier
@@ -232,15 +241,36 @@ fun CharacterSheetSection(modifier: Modifier = Modifier) {
         Text(role, color = NeonRed, fontSize = 12.sp)
         
         Spacer(modifier = Modifier.height(24.dp))
-        StatBar("HEALTH", hp, 100, NeonBlue)
+        StatBar("HEALTH", displayHp, 100, if (displayHp < 20) NeonRed else NeonBlue)
         Spacer(modifier = Modifier.height(16.dp))
         StatBar("STEALTH", stealth, 100, NeonBlue)
+        Spacer(modifier = Modifier.height(16.dp))
+        StatBar("STRESS (ALLOSTATIC LOAD)", stress, 100, NeonRed)
         
-        Spacer(modifier = Modifier.height(24.dp))
-        Text("ASSETS", color = Color.Gray, fontSize = 12.sp)
-        Text("• MONOFILAMENT BLADE", color = NeonBlue, fontSize = 14.sp)
-        Text("• NETRUNNER RIG", color = NeonBlue, fontSize = 14.sp)
-        Text("• CREDITS: 12,500", color = NeonBlue, fontSize = 14.sp)
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(
+            onClick = {
+                val newHp = Math.min(100, hp + 25)
+                NetworkManager.updateCharacter(JSONObject().apply { put("id", "char_1"); put("hp", newHp) })
+                NetworkManager.logTrauma(name, 25)
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = NeonRed.copy(alpha = 0.2f)),
+            modifier = Modifier.fillMaxWidth().border(1.dp, NeonRed, RoundedCornerShape(4.dp))
+        ) {
+            Text("EMERGENCY HEAL", color = NeonRed, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+        }
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(
+            onClick = {
+                val newStress = Math.min(100, stress + 10)
+                NetworkManager.updateCharacter(JSONObject().apply { put("id", "char_1"); put("stress", newStress) })
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+            modifier = Modifier.fillMaxWidth().border(1.dp, NeonRed, RoundedCornerShape(4.dp))
+        ) {
+            Text("INJECT STRESS SIMULATION", color = NeonRed, fontSize = 10.sp)
+        }
     }
 }
 
@@ -275,24 +305,19 @@ fun StatBar(label: String, current: Int, max: Int, color: Color) {
 fun DiceRollerSection(modifier: Modifier = Modifier) {
     val coroutineScope = rememberCoroutineScope()
     val haptic = LocalHapticFeedback.current
-    val gameState by NetworkManager.gameState.collectAsState()
-    
-    // Check if there are any recent rolls from the network
-    val latestNetworkRoll = gameState?.optJSONArray("recentRolls")?.let { rolls ->
-        if (rolls.length() > 0) rolls.getJSONObject(0).optInt("result") else null
-    }
-
-    var isRolling by remember { mutableStateOf(false) }
+    var isCalculating by remember { mutableStateOf(false) }
+    var snrResult by remember { mutableStateOf<String?>(null) }
+    var acousticRange by remember { mutableStateOf<String?>(null) }
 
     Column(
         modifier = modifier
             .fillMaxHeight()
             .background(GlassBackground, RoundedCornerShape(8.dp))
-            .border(1.dp, NeonRed.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
+            .border(1.dp, NeonBlue.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("3D DICE ROLLER", color = Color.Gray, fontSize = 12.sp, modifier = Modifier.align(Alignment.Start))
+        Text("ACOUSTIC PHYSICS & SNR CALC", color = Color.Gray, fontSize = 12.sp, modifier = Modifier.align(Alignment.Start))
         
         Box(
             modifier = Modifier
@@ -300,43 +325,59 @@ fun DiceRollerSection(modifier: Modifier = Modifier) {
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            Text(if (isRolling) "ROLLING..." else "D20", color = NeonRed, fontSize = 48.sp, fontWeight = FontWeight.Bold)
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                if (snrResult != null) {
+                    Text("SNR: $snrResult", color = NeonBlue, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    Text("AUDIBLE RANGE: $acousticRange", color = NeonRed, fontSize = 14.sp)
+                } else {
+                    Text("WAITING FOR SIGNAL", color = Color.DarkGray, fontSize = 18.sp)
+                }
+            }
         }
         
         Button(
             onClick = {
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 coroutineScope.launch {
-                    isRolling = true
-                    delay(200) 
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    isCalculating = true
                     delay(300)
-                    val result = Random.nextInt(1, 21)
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    NetworkManager.rollDice(result) // emit to server
-                    isRolling = false
+                    // Math: SNR = P_signal / P_noise. Gunshot is 140dB. Inverse square law drops 6dB per doubling of distance.
+                    val ambientDb = Random.nextInt(40, 60)
+                    val gunshotDb = 140
+                    val dropRequired = gunshotDb - ambientDb
+                    // distance = 2 ^ (dropRequired / 6)
+                    val distanceMeters = Math.pow(2.0, dropRequired / 6.0).toInt()
+                    
+                    val stealthScore = Random.nextInt(50, 95)
+                    val pSignal = Math.pow(10.0, (100 - stealthScore) / 10.0)
+                    val pNoise = Math.pow(10.0, ambientDb / 10.0)
+                    val snr = String.format("%.2f", pSignal / pNoise)
+                    
+                    snrResult = snr
+                    acousticRange = "$distanceMeters METERS"
+                    isCalculating = false
                 }
             },
             colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
             modifier = Modifier
                 .fillMaxWidth()
-                .border(2.dp, NeonRed, RoundedCornerShape(8.dp)),
+                .border(2.dp, NeonBlue, RoundedCornerShape(8.dp)),
             shape = RoundedCornerShape(8.dp)
         ) {
-            Text("ROLL", color = NeonRed, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-        }
-        
-        Spacer(modifier = Modifier.height(16.dp))
-        if (latestNetworkRoll != null) {
-            Text("RESULT: $latestNetworkRoll", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-        } else {
-            Text("READY", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Text(if (isCalculating) "CALCULATING..." else "SOLVE PHYSICS", color = NeonBlue, fontWeight = FontWeight.Bold, fontSize = 16.sp)
         }
     }
 }
 
 @Composable
 fun RemoteCommsSection(modifier: Modifier = Modifier) {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val nfcManager = context.getSystemService(android.content.Context.NFC_SERVICE) as? android.nfc.NfcManager
+    val nfcAdapter = nfcManager?.defaultAdapter
+    val hasNfc = nfcAdapter != null
+    val nfcEnabled = nfcAdapter?.isEnabled == true
+
     Column(
         modifier = modifier
             .fillMaxHeight()
@@ -344,15 +385,25 @@ fun RemoteCommsSection(modifier: Modifier = Modifier) {
             .border(1.dp, NeonBlue.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
             .padding(16.dp)
     ) {
-        Text("REMOTE COMMS (AGORA RTC)", color = Color.Gray, fontSize = 12.sp)
+        Text("INFOSEC KINETIC HACKING", color = Color.Gray, fontSize = 12.sp)
         Spacer(modifier = Modifier.height(16.dp))
         
-        // Real-world this would be an AndroidView wrapping io.agora.rtc.video.VideoCanvas
-        VideoFeedCard("PLAYER 2 (RAVEN)", true)
-        Spacer(modifier = Modifier.height(8.dp))
-        VideoFeedCard("PLAYER 3 (DEX)", false)
-        Spacer(modifier = Modifier.height(8.dp))
-        VideoFeedCard("DM (NEXUS)", true)
+        if (hasNfc) {
+            if (nfcEnabled) {
+                Text("NFC HARDWARE: ONLINE", color = NeonBlue, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                Text("Awaiting physical NFC Air-Gap contact...", color = Color.Gray, fontSize = 12.sp)
+            } else {
+                Text("NFC HARDWARE: OFFLINE", color = NeonRed, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                Text("Enable NFC to execute Air-Gap hacks.", color = Color.Gray, fontSize = 12.sp)
+            }
+        } else {
+            Text("NFC HARDWARE: NOT DETECTED", color = NeonRed, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+        }
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        Text("ADVERSARIAL FASHION & GAIT", color = Color.White, fontSize = 12.sp)
+        Text("STATUS: CV DAZZLE ACTIVE", color = NeonBlue, fontSize = 10.sp)
+        Text("AI CLASSIFICATION: TOYOTA COROLLA", color = Color.Gray, fontSize = 10.sp)
     }
 }
 

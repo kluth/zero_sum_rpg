@@ -103,14 +103,27 @@ object NetworkManager {
     fun updateCharacter(profile: JSONObject) {
         val characterId = profile.optString("id").takeIf { it.isNotEmpty() } ?: profile.optString("characterId")
         if (characterId.isNotEmpty()) {
-            val charData = mapOf(
-                "name" to profile.optString("name"),
-                "role" to profile.optString("role"),
-                "hp" to profile.optInt("hp"),
-                "stealth" to profile.optInt("stealth")
-            )
-            database.child("sessions/$sessionId/gameState/characters/$characterId").setValue(charData)
+            val charData = mutableMapOf<String, Any>()
+            val keys = profile.keys()
+            while (keys.hasNext()) {
+                val key = keys.next()
+                if (key != "id" && key != "characterId") {
+                    charData[key] = profile.get(key)
+                }
+            }
+            database.child("sessions/$sessionId/gameState/characters/$characterId").updateChildren(charData)
         }
+    }
+
+    fun logTrauma(player: String, amount: Int) {
+        val traumaRef = database.child("sessions/$sessionId/gameState/traumaLog").push()
+        val civilians = listOf("S. Nakamura", "R. Vance", "M. Klement", "J. Doe", "L. Chen")
+        traumaRef.setValue(mapOf(
+            "player" to player,
+            "amount" to amount,
+            "timestamp" to System.currentTimeMillis(),
+            "civilian" to civilians.random()
+        ))
     }
 
     fun rollDice(result: Int) {

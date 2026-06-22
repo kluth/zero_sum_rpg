@@ -1,46 +1,49 @@
 package com.zerosum.rpg
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.json.JSONArray
 import org.json.JSONObject
-import kotlin.random.Random
 
 // --- Data Models ---
 data class RoomNode(
-    val id: Int,
+    val x: Int,
+    val y: Int,
     val name: String,
     val complication: String,
-    val isObjective: Boolean
+    val revealedTo: JSONObject
 ) {
     fun toJson(): JSONObject {
         return JSONObject().apply {
-            put("id", id)
+            put("x", x)
+            put("y", y)
             put("name", name)
             put("complication", complication)
-            put("isObjective", isObjective)
+            put("revealedTo", revealedTo)
         }
     }
 
     companion object {
         fun fromJson(json: JSONObject): RoomNode {
             return RoomNode(
-                id = json.optInt("id"),
+                x = json.optInt("x"),
+                y = json.optInt("y"),
                 name = json.optString("name"),
                 complication = json.optString("complication"),
-                isObjective = json.optBoolean("isObjective")
+                revealedTo = json.optJSONObject("revealedTo") ?: JSONObject()
             )
         }
     }
@@ -77,57 +80,12 @@ data class FacilityMap(
     }
 }
 
-// --- Generator Logic ---
-object MapGeneratorLogic {
-    private val archetypes = listOf(
-        "Data Vault", "Executive Skyscraper", "Black-Site Laboratory",
-        "Industrial Logistics Hub", "Underground Syndicate Den", "Abandoned Infrastructure"
-    )
-
-    private val layouts = listOf(
-        "Linear Spoke", "Grid Matrix", "Vertical Descent", "Labyrinthine"
-    )
-
-    fun generateMap(): FacilityMap {
-        val archetype = archetypes.random()
-        val layout = layouts.random()
-        val roomCount = Random.nextInt(5, 9)
-        
-        val rooms = mutableListOf<RoomNode>()
-        for (i in 1..roomCount) {
-            val isObjective = i == roomCount
-            rooms.add(generateRoom(i, isObjective))
-        }
-        
-        return FacilityMap(archetype, layout, rooms)
-    }
-
-    private fun generateRoom(id: Int, forceObjective: Boolean): RoomNode {
-        val roomTypeRoll = Random.nextInt(1, 21)
-        val name = when {
-            forceObjective -> "The Vault / Primary Objective"
-            roomTypeRoll <= 4 -> "Open-Plan Workspace"
-            roomTypeRoll <= 7 -> "Security Checkpoint"
-            roomTypeRoll <= 10 -> "Maintenance Corridors"
-            roomTypeRoll <= 13 -> "Executive Offices"
-            roomTypeRoll <= 16 -> "Server Farm"
-            roomTypeRoll <= 18 -> "Breakroom / Cafeteria"
-            roomTypeRoll == 19 -> "Power/Generator Room"
-            else -> "The Vault / Primary Objective"
-        }
-
-        val compRoll = Random.nextInt(1, 11)
-        val complication = when {
-            compRoll <= 5 -> "Clear"
-            compRoll == 6 -> "Automated Turret"
-            compRoll == 7 -> "Biometric Lockdown"
-            compRoll == 8 -> "Patrol Squad"
-            compRoll == 9 -> "Environmental Hazard"
-            else -> "Civilian Presence"
-        }
-
-        return RoomNode(id, name, complication, forceObjective || roomTypeRoll == 20)
-    }
+// --- Selective Border Modifier ---
+fun Modifier.selectiveBorder(top: Boolean, bottom: Boolean, left: Boolean, right: Boolean, color: Color, strokeWidth: Float): Modifier = this.drawBehind {
+    if (top) drawLine(color, Offset(0f, 0f), Offset(size.width, 0f), strokeWidth)
+    if (bottom) drawLine(color, Offset(0f, size.height), Offset(size.width, size.height), strokeWidth)
+    if (left) drawLine(color, Offset(0f, 0f), Offset(0f, size.height), strokeWidth)
+    if (right) drawLine(color, Offset(size.width, 0f), Offset(size.width, size.height), strokeWidth)
 }
 
 // --- UI Components ---
@@ -135,14 +93,13 @@ object MapGeneratorLogic {
 fun MapGeneratorSection(modifier: Modifier = Modifier) {
     val gameState by NetworkManager.gameState.collectAsState()
     
-    // Parse map from game state
     val currentMap = FacilityMap.fromJson(gameState?.optJSONObject("map"))
 
     Column(
         modifier = modifier
             .fillMaxHeight()
             .background(GlassBackground, RoundedCornerShape(8.dp))
-            .border(1.dp, NeonBlue.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
+            .selectiveBorder(true, true, true, true, NeonBlue.copy(alpha = 0.3f), 2f)
             .padding(16.dp)
     ) {
         Row(
@@ -150,18 +107,7 @@ fun MapGeneratorSection(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("TACTICAL MAP", color = Color.Gray, fontSize = 12.sp)
-            Button(
-                onClick = { 
-                    val newMap = MapGeneratorLogic.generateMap()
-                    NetworkManager.syncMap(newMap.toJson())
-                },
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                modifier = Modifier.border(1.dp, NeonBlue, RoundedCornerShape(4.dp)),
-                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
-            ) {
-                Text("GENERATE", color = NeonBlue, fontSize = 10.sp, fontWeight = FontWeight.Bold)
-            }
+            Text("TACTICAL MAP UPLINK", color = Color.Gray, fontSize = 12.sp)
         }
         
         Spacer(modifier = Modifier.height(16.dp))
@@ -171,47 +117,61 @@ fun MapGeneratorSection(modifier: Modifier = Modifier) {
             Text("LAYOUT: ${map.layoutStructure.uppercase()}", color = NeonRed, fontSize = 12.sp)
             Spacer(modifier = Modifier.height(12.dp))
             
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+            val roomsList = map.rooms
+            
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(8),
+                modifier = Modifier.fillMaxWidth().aspectRatio(1f),
+                horizontalArrangement = Arrangement.spacedBy(0.dp),
+                verticalArrangement = Arrangement.spacedBy(0.dp)
             ) {
-                items(map.rooms) { room ->
-                    RoomCard(room)
+                items(64) { index ->
+                    val x = index % 8
+                    val y = index / 8
+                    val room = roomsList.find { it.x == x && it.y == y }
+                    
+                    // FOG OF WAR LOGIC: Is it revealed to char_1?
+                    val isRevealed = room?.revealedTo?.optBoolean("char_1", false) ?: false
+
+                    if (room != null && isRevealed) {
+                        // Check neighbors for auto-tiling borders (only check revealed neighbors!)
+                        val hasN = roomsList.find { it.x == x && it.y == y - 1 && it.revealedTo.optBoolean("char_1") } != null
+                        val hasS = roomsList.find { it.x == x && it.y == y + 1 && it.revealedTo.optBoolean("char_1") } != null
+                        val hasE = roomsList.find { it.x == x + 1 && it.y == y && it.revealedTo.optBoolean("char_1") } != null
+                        val hasW = roomsList.find { it.x == x - 1 && it.y == y && it.revealedTo.optBoolean("char_1") } != null
+
+                        Box(
+                            modifier = Modifier
+                                .aspectRatio(1f)
+                                .background(NeonBlue.copy(alpha = 0.15f))
+                                .selectiveBorder(!hasN, !hasS, !hasW, !hasE, NeonBlue, 4f),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            if (room.complication != "Clear") {
+                                Text("!", color = NeonRed, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                            }
+                        }
+                    } else {
+                        // Empty/Fog of War Grid Cell
+                        Box(
+                            modifier = Modifier
+                                .aspectRatio(1f)
+                                .background(Color(0xFF111111))
+                                .selectiveBorder(true, true, true, true, Color.DarkGray.copy(alpha=0.2f), 1f)
+                        )
+                    }
                 }
+            }
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(modifier = Modifier.size(10.dp).background(NeonRed))
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("HOSTILE COMPLICATION DETECTED", color = Color.Gray, fontSize = 10.sp)
             }
         } ?: run {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text("AWAITING INTEL...", color = Color.DarkGray, fontSize = 14.sp)
-            }
-        }
-    }
-}
-
-@Composable
-fun RoomCard(room: RoomNode) {
-    val borderColor = if (room.isObjective) NeonRed else NeonBlue.copy(alpha = 0.5f)
-    val bgColor = if (room.isObjective) NeonRed.copy(alpha = 0.1f) else Color.Transparent
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(bgColor, RoundedCornerShape(4.dp))
-            .border(1.dp, borderColor, RoundedCornerShape(4.dp))
-            .padding(12.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = "[0${room.id}]",
-            color = if (room.isObjective) NeonRed else NeonBlue,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.width(36.dp)
-        )
-        Column {
-            Text(room.name, color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
-            if (room.complication != "Clear") {
-                Text("WARN: ${room.complication}", color = NeonRed, fontSize = 10.sp)
-            } else {
-                Text("STATUS: CLEAR", color = Color.Gray, fontSize = 10.sp)
             }
         }
     }

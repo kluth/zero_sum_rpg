@@ -1,0 +1,406 @@
+{
+    "TPK": 10352,
+    "Success": 89648,
+    "Deadly_Loadouts": [
+        {
+            "stealth": 62,
+            "hacking": 55
+        },
+        {
+            "stealth": 62,
+            "hacking": 56
+        },
+        {
+            "stealth": 50,
+            "hacking": 57
+        },
+        {
+            "stealth": 55,
+            "hacking": 87
+        },
+        {
+            "stealth": 51,
+            "hacking": 60
+        },
+        {
+            "stealth": 50,
+            "hacking": 59
+        },
+        {
+            "stealth": 54,
+            "hacking": 78
+        },
+        {
+            "stealth": 54,
+            "hacking": 84
+        },
+        {
+            "stealth": 56,
+            "hacking": 89
+        },
+        {
+            "stealth": 56,
+            "hacking": 74
+        },
+        {
+            "stealth": 56,
+            "hacking": 58
+        },
+        {
+            "stealth": 53,
+            "hacking": 70
+        },
+        {
+            "stealth": 61,
+            "hacking": 70
+        },
+        {
+            "stealth": 50,
+            "hacking": 41
+        },
+        {
+            "stealth": 51,
+            "hacking": 63
+        },
+        {
+            "stealth": 54,
+            "hacking": 70
+        },
+        {
+            "stealth": 56,
+            "hacking": 77
+        },
+        {
+            "stealth": 58,
+            "hacking": 74
+        },
+        {
+            "stealth": 52,
+            "hacking": 68
+        },
+        {
+            "stealth": 50,
+            "hacking": 75
+        },
+        {
+            "stealth": 50,
+            "hacking": 90
+        },
+        {
+            "stealth": 51,
+            "hacking": 68
+        },
+        {
+            "stealth": 54,
+            "hacking": 59
+        },
+        {
+            "stealth": 55,
+            "hacking": 89
+        },
+        {
+            "stealth": 50,
+            "hacking": 69
+        },
+        {
+            "stealth": 50,
+            "hacking": 83
+        },
+        {
+            "stealth": 50,
+            "hacking": 90
+        },
+        {
+            "stealth": 59,
+            "hacking": 65
+        },
+        {
+            "stealth": 56,
+            "hacking": 60
+        },
+        {
+            "stealth": 55,
+            "hacking": 77
+        },
+        {
+            "stealth": 54,
+            "hacking": 65
+        },
+        {
+            "stealth": 56,
+            "hacking": 90
+        },
+        {
+            "stealth": 51,
+            "hacking": 74
+        },
+        {
+            "stealth": 50,
+            "hacking": 59
+        },
+        {
+            "stealth": 53,
+            "hacking": 72
+        },
+        {
+            "stealth": 52,
+            "hacking": 84
+        },
+        {
+            "stealth": 53,
+            "hacking": 89
+        },
+        {
+            "stealth": 50,
+            "hacking": 53
+        },
+        {
+            "stealth": 55,
+            "hacking": 41
+        },
+        {
+            "stealth": 59,
+            "hacking": 40
+        },
+        {
+            "stealth": 54,
+            "hacking": 66
+        },
+        {
+            "stealth": 60,
+            "hacking": 85
+        },
+        {
+            "stealth": 62,
+            "hacking": 80
+        },
+        {
+            "stealth": 50,
+            "hacking": 71
+        },
+        {
+            "stealth": 59,
+            "hacking": 73
+        },
+        {
+            "stealth": 54,
+            "hacking": 87
+        },
+        {
+            "stealth": 50,
+            "hacking": 72
+        },
+        {
+            "stealth": 62,
+            "hacking": 88
+        },
+        {
+            "stealth": 58,
+            "hacking": 74
+        },
+        {
+            "stealth": 57,
+            "hacking": 51
+        },
+        {
+            "stealth": 50,
+            "hacking": 89
+        },
+        {
+            "stealth": 63,
+            "hacking": 57
+        },
+        {
+            "stealth": 53,
+            "hacking": 90
+        },
+        {
+            "stealth": 56,
+            "hacking": 82
+        },
+        {
+            "stealth": 53,
+            "hacking": 84
+        },
+        {
+            "stealth": 54,
+            "hacking": 71
+        },
+        {
+            "stealth": 54,
+            "hacking": 67
+        },
+        {
+            "stealth": 50,
+            "hacking": 41
+        },
+        {
+            "stealth": 52,
+            "hacking": 89
+        },
+        {
+            "stealth": 54,
+            "hacking": 48
+        },
+        {
+            "stealth": 53,
+            "hacking": 64
+        },
+        {
+            "stealth": 64,
+            "hacking": 60
+        },
+        {
+            "stealth": 53,
+            "hacking": 86
+        },
+        {
+            "stealth": 53,
+            "hacking": 64
+        },
+        {
+            "stealth": 51,
+            "hacking": 47
+        },
+        {
+            "stealth": 62,
+            "hacking": 41
+        },
+        {
+            "stealth": 53,
+            "hacking": 40
+        },
+        {
+            "stealth": 56,
+            "hacking": 49
+        },
+        {
+            "stealth": 52,
+            "hacking": 47
+        },
+        {
+            "stealth": 57,
+            "hacking": 83
+        },
+        {
+            "stealth": 51,
+            "hacking": 90
+        },
+        {
+            "stealth": 53,
+            "hacking": 48
+        },
+        {
+            "stealth": 56,
+            "hacking": 51
+        },
+        {
+            "stealth": 58,
+            "hacking": 64
+        },
+        {
+            "stealth": 58,
+            "hacking": 65
+        },
+        {
+            "stealth": 50,
+            "hacking": 78
+        },
+        {
+            "stealth": 61,
+            "hacking": 86
+        },
+        {
+            "stealth": 52,
+            "hacking": 78
+        },
+        {
+            "stealth": 51,
+            "hacking": 45
+        },
+        {
+            "stealth": 58,
+            "hacking": 55
+        },
+        {
+            "stealth": 60,
+            "hacking": 81
+        },
+        {
+            "stealth": 53,
+            "hacking": 81
+        },
+        {
+            "stealth": 50,
+            "hacking": 69
+        },
+        {
+            "stealth": 51,
+            "hacking": 44
+        },
+        {
+            "stealth": 50,
+            "hacking": 72
+        },
+        {
+            "stealth": 52,
+            "hacking": 56
+        },
+        {
+            "stealth": 50,
+            "hacking": 75
+        },
+        {
+            "stealth": 52,
+            "hacking": 77
+        },
+        {
+            "stealth": 53,
+            "hacking": 61
+        },
+        {
+            "stealth": 52,
+            "hacking": 89
+        },
+        {
+            "stealth": 50,
+            "hacking": 84
+        },
+        {
+            "stealth": 59,
+            "hacking": 48
+        },
+        {
+            "stealth": 59,
+            "hacking": 79
+        },
+        {
+            "stealth": 50,
+            "hacking": 89
+        },
+        {
+            "stealth": 50,
+            "hacking": 53
+        },
+        {
+            "stealth": 62,
+            "hacking": 75
+        },
+        {
+            "stealth": 60,
+            "hacking": 48
+        },
+        {
+            "stealth": 51,
+            "hacking": 77
+        },
+        {
+            "stealth": 57,
+            "hacking": 53
+        },
+        {
+            "stealth": 53,
+            "hacking": 57
+        }
+    ]
+}
