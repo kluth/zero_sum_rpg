@@ -159,6 +159,18 @@
 }
 
 /* --- RESPONSIVE LAYOUTS --- */
+.billboard-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
 .billboard-stats-panel {
   display: flex;
   gap: 40px;
@@ -207,7 +219,13 @@
     flex-direction: column;
     gap: 20px;
     max-height: none;
+    overflow-y: visible;
+  }
+  .billboard-container {
+    height: auto;
+    min-height: 100vh;
     overflow-y: auto;
+    justify-content: flex-start;
   }
 }
 
@@ -221,5 +239,11 @@
     grid-template-columns: 1fr;
     grid-template-rows: 200px 200px 1fr 200px;
   }
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
 }
 

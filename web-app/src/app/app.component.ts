@@ -168,7 +168,7 @@ const firebaseConfig = {
       
       @defer (when isBillboardMode()) {
         <!-- CORPORATE BILLBOARD TV -->
-        <div class="billboard-container" [ngClass]="{'alarm-mode': heatLevel() >= 8 || recentTrauma()}" style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: hidden; padding: 20px;">
+        <div class="billboard-container" [ngClass]="{'alarm-mode': heatLevel() >= 8 || recentTrauma()}">
             <div *ngIf="heatLevel() >= 8 || recentTrauma()" style="position: absolute; top:0; left:0; width:100%; height:100%; background: radial-gradient(circle, transparent 20%, rgba(255,0,60,0.5) 100%); pointer-events:none;"></div>
             
             <h1 class="header-brutalist chromatic" [style.color]="heatLevel() >= 8 ? '#FF003C' : '#00F0FF'" style="font-size: clamp(60px, 8vw, 140px); margin: 0; animation: blink 2s infinite; text-transform: uppercase;">GLOBAL HEAT: {{ heatLevel() }}</h1>
