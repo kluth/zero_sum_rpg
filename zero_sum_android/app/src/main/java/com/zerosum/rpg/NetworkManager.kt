@@ -20,6 +20,10 @@ object NetworkManager {
     private var sessionId: String = "DEFAULT"
     private var valueEventListener: ValueEventListener? = null
 
+    fun mockStateForPaparazzi(state: JSONObject) {
+        _uiState.value = PlayerState(state)
+    }
+
     fun resetState() {
         try {
             database.child("sessions/$sessionId/gameState/map").removeValue()

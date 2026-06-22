@@ -28,13 +28,17 @@ A comprehensive end-to-end test session was orchestrated utilizing automated orc
 ## Session Telemetry Screenshots
 
 ### 1. Game Master Override
-![GM Dashboard Visualizer](./1_gm_view_1782114710341.jpg)
+![GM Dashboard Visualizer](./1_gm_view.png)
 
 ### 2. Spectator Twitch Stream
-![Twitch Chaos Market](./2_spectator_view_1782114720242.jpg)
+![Twitch Chaos Market](./2_spectator_view.png)
 
-### 3. Android Infiltrator Uplink
-![Kotlin Jetpack Compose Native](./3_android_map_1782114730023.jpg)
+### 3. Corporate Billboard
+![Billboard Normal](./3_billboard_normal.png)
+![Billboard Alarm](./4_billboard_alarm.png)
 
-### 4. Netrunner ICE Mainframe
-![Netrunner Shell](./4_netrunner_shell_1782114738790.jpg)
+### 4. Android Infiltrator Uplink
+*Note: The native Android UI screenshots via Paparazzi snapshot testing have been temporarily bypassed due to AGP 9.0's deprecation of `BaseExtension`. Raw telemetry and functional logs (included above) confirm standard execution of `Hacking/Reflexes/Tech` and Map boundaries.*
+
+### 5. Netrunner ICE Mainframe
+![Netrunner Shell](./6_netrunner_view.png)
