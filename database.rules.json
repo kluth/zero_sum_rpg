@@ -1,6 +1,32 @@
 {
   "rules": {
-    ".read": true,
-    ".write": true
+    "sessions": {
+      "$session_id": {
+        ".read": true,
+        ".write": true,
+        "darknet": {
+          "$channel_id": {
+            ".read": "auth != null && $channel_id.contains(auth.uid)",
+            ".write": "auth != null && $channel_id.contains(auth.uid)"
+          }
+        },
+        "clocks": {
+          ".read": true,
+          ".write": "auth != null && root.child('users/'+auth.uid+'/isGM').val() == true"
+        },
+        "flashbacks": {
+          ".read": true,
+          ".write": "auth != null"
+        },
+        "gameState": {
+          ".read": true,
+          ".write": true,
+          "narrativeContext": {
+            ".read": true,
+            ".write": "auth != null && root.child('users/'+auth.uid+'/isGM').val() == true"
+          }
+        }
+      }
+    }
   }
 }
