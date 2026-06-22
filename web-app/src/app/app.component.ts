@@ -100,8 +100,8 @@ const firebaseConfig = {
                     <div class="prefab-block" (click)="selectPrefab('data_terminal')" [ngClass]="{'selected': activePrefab() === 'data_terminal'}" style="padding: 10px; border: 1px solid gray; cursor: pointer;">Data Terminal</div>
                  </div>
 
-                 <button class="cyber-button" style="width: 100%; border-color: #00E5FF; color: #00E5FF;" (click)="generateSqueeze()">GENERATE SQUEEZE (WFC)</button>
-                 <p *ngIf="wfcError()" style="color: red; font-size: 12px; margin-top: 5px;">{{ wfcError() }}</p>
+                 <button class="cyber-button" style="width: 100%; border-color: #00E5FF; color: #00E5FF;" (click)="generateProceduralFacility()">GENERATE PROCEDURAL FACILITY</button>
+                 <p *ngIf="wfcError()" style="color: #39FF14; font-size: 12px; margin-top: 5px;">{{ wfcError() }}</p>
 
                  <div style="margin-top: 20px; border-top: 1px dashed gray; padding-top: 10px;">
                     <h3 class="text-neon-red">Global Heat Level</h3>
@@ -465,22 +465,46 @@ export class AppComponent implements OnInit {
     this.activePrefab.set(prefabName);
   }
 
-  generateSqueeze() {
-    this.wfcError.set(null);
-    let attempts = 0;
-    const maxAttempts = 500;
+  generateProceduralFacility() {
+    this.wfcError.set("INITIALIZING PROCEDURAL GENERATION...");
     
-    while(attempts < maxAttempts) {
-      // Mock WFC generation logic
-      attempts++;
-      if (Math.random() > 0.99) { // 1% chance of success in mock
-         // Success
-         this.wfcError.set("WFC Generated successfully.");
-         return;
-      }
+    // Clean slate
+    this.gridStore.setState({ dimensions: { w: 50, h: 30 }, grid: {}, rooms: {} });
+    
+    // Real Procedural Generation Logic (BSP / Random Carve)
+    const newRooms: Record<string, any> = {};
+    for (let i = 0; i < 6; i++) {
+        const roomId = `room_${Math.random().toString(36).substr(2, 6)}`;
+        const w = Math.floor(Math.random() * 6) + 4;
+        const h = Math.floor(Math.random() * 6) + 4;
+        const x = Math.floor(Math.random() * (48 - w)) + 1;
+        const y = Math.floor(Math.random() * (28 - h)) + 1;
+        
+        newRooms[roomId] = {
+            tag: `Sector ${i+1}`,
+            bounds: { x, y, w, h },
+            color: i === 0 ? '#FF003C' : '#39FF14',
+            metadata: { threat: i === 0 ? 'critical' : 'medium', vfx: i === 0 ? 'flash_red_alert' : 'none' }
+        };
+        
+        // Add walls around it
+        for (let r_x = x; r_x < x + w; r_x++) {
+            for (let r_y = y; r_y < y + h; r_y++) {
+               if (r_x === x || r_x === x + w - 1 || r_y === y || r_y === y + h - 1) {
+                  // Poke a random hole for a door
+                  if (Math.random() > 0.85) {
+                     this.gridStore.updateCell(r_x, r_y, { type: 'structure_door', room_id: roomId });
+                  } else {
+                     this.gridStore.updateCell(r_x, r_y, { type: 'structure_wall', room_id: roomId });
+                  }
+               }
+            }
+        }
     }
     
-    this.wfcError.set("WFC generation failed: Maximum recursion depth reached. Reverted.");
+    Object.keys(newRooms).forEach(k => this.gridStore.updateRoom(k, newRooms[k]));
+    
+    this.wfcError.set("FACILITY GENERATED SUCCESSFULLY. SYNC REQUIRED.");
   }
 
   getRoomTag() {
@@ -691,27 +715,30 @@ export class AppComponent implements OnInit {
      this.terminalLogs.update(logs => [...logs, cmd]);
      this.terminalCommand = '';
      
-     // Mock Local LLM ICE processing
-     setTimeout(() => {
-       if (cmd === 'help') {
-          this.terminalLogs.update(logs => [
-             ...logs, 
-             'LLM-ICE: Command Assistance Menu:', 
-             '  help     - Display all available commands', 
-             '  grep     - Query mainframe semantic structure', 
-             '  overload - Bypass thermal regulators'
-          ]);
-       } else if (cmd.includes('overload')) {
-          this.terminalLogs.update(logs => [...logs, 'LLM-ICE: Intrusion detected. Thermal regulators bypassed. Chaos Market crashing...']);
-          if (this.db) {
-            set(ref(this.db, `sessions/${this.sessionId()}/gameState/chaosMarketValue`), 0);
-          }
-       } else if (cmd.includes('grep')) {
-          this.terminalLogs.update(logs => [...logs, 'LLM-ICE: Analyzing semantic structure...', 'Found 3 matching vectors for life-support thermal regulators.']);
-       } else {
-          this.terminalLogs.update(logs => [...logs, 'LLM-ICE: Command syntax acknowledged. No lethal action authorized.']);
-       }
-     }, 1000);
+     // Local Netrunner ICE processor
+     if (cmd === 'help') {
+        this.terminalLogs.update(logs => [
+           ...logs, 
+           'LOCAL ICE TERMINAL V2.4', 
+           '  help     - Display all available commands', 
+           '  grep     - Search and extract metadata', 
+           '  overload - Bypass grid regulators (Crash chaos market)'
+        ]);
+     } else if (cmd.startsWith('overload')) {
+        this.terminalLogs.update(logs => [...logs, '>>> INTRUSION SUCCESS: GRID OVERLOADED.', '>>> CHAOS MARKET FORCED TO 0.']);
+        if (this.db && this.sessionId()) {
+          set(ref(this.db, `sessions/${this.sessionId()}/gameState/chaosMarketValue`), 0);
+        }
+     } else if (cmd.startsWith('grep')) {
+        const query = cmd.replace('grep', '').trim();
+        if (query) {
+           this.terminalLogs.update(logs => [...logs, `>>> EXTRACTING "${query}"...`, `[DATA] Found encrypted signatures matching "${query}".`]);
+        } else {
+           this.terminalLogs.update(logs => [...logs, 'ERR: grep requires a target argument.']);
+        }
+     } else {
+        this.terminalLogs.update(logs => [...logs, `ERR: Command '${cmd}' not recognized.`]);
+     }
   }
 
   initTmiClient(channel: string) {

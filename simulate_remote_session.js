@@ -45,7 +45,7 @@ function generatePin() {
       // Step 1: GM builds a random map
       console.log(`[${sessionIndex}] GM is generating map...`);
       await gmPage.evaluate(() => {
-         const btn = Array.from(document.querySelectorAll('.cyber-button')).find(b => b.innerText.includes('GENERATE SQUEEZE'));
+         const btn = Array.from(document.querySelectorAll('.cyber-button')).find(b => b.innerText.includes('GENERATE PROCEDURAL FACILITY'));
          if(btn) btn.click();
       });
       await gmPage.waitForTimeout(1000);
