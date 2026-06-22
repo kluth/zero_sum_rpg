@@ -168,14 +168,60 @@ const firebaseConfig = {
       
       @defer (when isBillboardMode()) {
         <!-- CORPORATE BILLBOARD TV -->
-        <div class="billboard-container" [ngClass]="{'alarm-mode': heatLevel() >= 8 || recentTrauma()}" style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative;">
+        <div class="billboard-container" [ngClass]="{'alarm-mode': heatLevel() >= 8 || recentTrauma()}" style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: hidden; padding: 20px;">
             <div *ngIf="heatLevel() >= 8 || recentTrauma()" style="position: absolute; top:0; left:0; width:100%; height:100%; background: radial-gradient(circle, transparent 20%, rgba(255,0,60,0.5) 100%); pointer-events:none;"></div>
+            
             <h1 class="header-brutalist chromatic" [style.color]="heatLevel() >= 8 ? '#FF003C' : '#00F0FF'" style="font-size: 140px; margin: 0; animation: blink 2s infinite; text-transform: uppercase;">GLOBAL HEAT: {{ heatLevel() }}</h1>
-            <h2 class="header-brutalist" *ngIf="recentTrauma()" style="color: #FF003C; font-size: 80px; animation: blink 0.5s infinite; text-align: center; background: rgba(255,0,60,0.1); padding: 30px; border: 8px solid #FF003C; text-shadow: 2px 2px 0px white;">
+            
+            <h2 class="header-brutalist" *ngIf="recentTrauma()" style="color: #FF003C; font-size: 80px; animation: blink 0.5s infinite; text-align: center; background: rgba(255,0,60,0.1); padding: 30px; border: 8px solid #FF003C; text-shadow: 2px 2px 0px white; z-index: 10;">
                 LIFE SUPPORT REDIRECTED.<br/>CASUALTY: {{ recentTrauma().civilian }}
             </h2>
-            <div class="glass-panel" style="margin-top: 50px; border: 4px solid #00F0FF; padding: 30px; width: 80%;">
-                <h3 class="header-brutalist text-neon-blue" style="text-align: center; font-size: 64px;">TWITCH CHAOS MARKET: $ {{ chaosMarketValue() }}</h3>
+            
+            <div *ngIf="!recentTrauma()" style="display: flex; gap: 40px; margin-top: 40px; width: 90%; justify-content: space-around; max-height: 70%; box-sizing: border-box;">
+               <!-- OPERATIVE STATUS METRICS -->
+               <div class="glass-panel" style="flex: 1; border: 4px solid #39FF14; background: rgba(57,255,20,0.05); padding: 30px;">
+                  <h3 class="header-brutalist text-acid-green" style="font-size: 36px; border-bottom: 2px solid #39FF14; margin-bottom: 20px;">OPERATIVE STATUS</h3>
+                  
+                  <div style="margin-bottom: 20px;">
+                     <div style="color: #39FF14; font-size: 20px; font-weight: bold;">SQUAD VITALITY (HP)</div>
+                     <div class="data-mono" style="font-size: 48px; color: #FFFFFF;">{{ squadHpAvg() }}%</div>
+                     <div style="font-size: 12px; color: gray;">Measures the average physical integrity of active operatives.</div>
+                  </div>
+                  
+                  <div style="margin-bottom: 20px;">
+                     <div style="color: #FFB000; font-size: 20px; font-weight: bold;">ALLOSTATIC LOAD (STRESS)</div>
+                     <div class="data-mono" style="font-size: 48px; color: #FFFFFF;">{{ squadStressAvg() }}%</div>
+                     <div style="font-size: 12px; color: gray;">Average psychological deterioration. High levels lead to cyberpsychosis.</div>
+                  </div>
+                  
+                  <div>
+                     <div style="color: #FF003C; font-size: 20px; font-weight: bold;">CONFIRMED CASUALTIES</div>
+                     <div class="data-mono" style="font-size: 48px; color: #FFFFFF;">{{ traumaCount() }}</div>
+                     <div style="font-size: 12px; color: gray;">Collateral civilian damage logged by corporate oversight.</div>
+                  </div>
+               </div>
+               
+               <!-- TWITCH CHAOS INTERACTION INSTRUCTIONS -->
+               <div class="glass-panel" style="flex: 1; border: 4px solid #00F0FF; background: rgba(0,240,255,0.05); padding: 30px; display: flex; flex-direction: column; justify-content: center;">
+                  <h3 class="header-brutalist text-neon-blue" style="font-size: 36px; border-bottom: 2px solid #00F0FF; margin-bottom: 20px;">SPECTATOR OVERRIDE</h3>
+                  
+                  <div style="font-size: 18px; color: #00F0FF; margin-bottom: 30px; font-weight: bold;">
+                    YOU ARE AUTHORIZED TO INFLUENCE THE OPERATION. USE TWITCH CHAT TO INJECT CHAOS INTO THE MARKET. THE GAME MASTER WILL USE MARKET FUNDS AGAINST THE SQUAD.
+                  </div>
+                  
+                  <div style="display: flex; flex-direction: column; gap: 20px;">
+                     <div style="background: rgba(0,240,255,0.1); padding: 15px; border-left: 5px solid #00F0FF;">
+                        <span style="font-size: 24px; font-weight: bold; color: white;">TYPE <span style="color: #00F0FF;">!chaos</span> IN CHAT</span><br/>
+                        <span style="font-size: 16px; color: #00F0FF;">Adds $10 to the Chaos Market. FREE.</span>
+                     </div>
+                     <div style="background: rgba(255,0,255,0.1); padding: 15px; border-left: 5px solid #FF00FF;">
+                        <span style="font-size: 24px; font-weight: bold; color: white;">CHEER BITS</span><br/>
+                        <span style="font-size: 16px; color: #FF00FF;">Adds proportional Chaos to the Market.</span>
+                     </div>
+                  </div>
+                  
+                  <h3 class="header-brutalist text-neon-blue" style="text-align: center; font-size: 48px; margin-top: 30px; border: 2px dashed #00F0FF; padding: 20px;">MARKET: $ {{ chaosMarketValue() }}</h3>
+               </div>
             </div>
         </div>
       }
@@ -297,6 +343,26 @@ export class AppComponent implements OnInit {
   gameState = signal<any>({ characters: {}, map: null, traumaLog: {}, clocks: {}, flashbacks: {} });
   heatLevel = computed(() => this.gameState().heatLevel || 1);
   chaosMarketValue = computed(() => this.gameState()?.chaosMarketValue || 0);
+
+  squadHpAvg = computed(() => {
+    const chars = this.gameState()?.characters || {};
+    const keys = Object.keys(chars);
+    if (keys.length === 0) return 100;
+    const total = keys.reduce((acc, key) => acc + (chars[key].stats?.hp_current || 0), 0);
+    return Math.floor(total / keys.length);
+  });
+
+  squadStressAvg = computed(() => {
+    const chars = this.gameState()?.characters || {};
+    const keys = Object.keys(chars);
+    if (keys.length === 0) return 0;
+    const total = keys.reduce((acc, key) => acc + (chars[key].stats?.stress_current || 0), 0);
+    return Math.floor(total / keys.length);
+  });
+  
+  traumaCount = computed(() => {
+    return Object.keys(this.gameState()?.traumaLog || {}).length;
+  });
 
   tmiClient: any = null;
   
