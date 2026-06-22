@@ -37,23 +37,23 @@ The following screenshots are **100% authentic, real browser captures** taken vi
 
 ### A. The Universal Lobby
 Every user starts here, entering their session PIN before choosing their stakeholder role.
-![Lobby](screenshot_0_lobby.png)
+![Lobby](../screenshots/screenshot_0_lobby.png)
 
 ### B. Game Master (GM Override)
 The GM UI running the new WebGL engine. Notice the Architect Construction Toolkit on the right sidebar for dynamic room manipulation and WFC Squeeze generation.
-![GM View](screenshot_1_gm_view_real.png)
+![GM View](../screenshots/screenshot_1_gm_view_real.png)
 
 ### C. Twitch Spectator View
 The public viewing portal. It uses the exact same PixiJS canvas as the GM but tightly applies the `revealedTo` Fog of War algorithm to hide unrevealed map sectors.
-![Spectator View](screenshot_2_spectator_view_real.png)
+![Spectator View](../screenshots/screenshot_2_spectator_view_real.png)
 
 ### D. Corporate Billboard
 The physical/digital ("Phygital") monitor view intended for TV screens in the physical room. Flashes alarms and tracks Global Heat and Civilian Casualties.
-![Billboard View](screenshot_3_billboard_view_real.png)
+![Billboard View](../screenshots/screenshot_3_billboard_view_real.png)
 
 ### E. Netrunner Shell
 The dedicated CLI view for the hacker class, bypassing the graphical map entirely in favor of an AI-driven, declarative Terminal interface.
-![Netrunner View](screenshot_4_netrunner_view_real.png)
+![Netrunner View](../screenshots/screenshot_4_netrunner_view_real.png)
 
 ---
 
@@ -63,7 +63,7 @@ While the web clients handle macro-level management and spectating, the Android 
 
 The Android client was successfully verified to parse the new O(1) dictionary layout (`gameState/grid` and `gameState/rooms`). Here is the high-fidelity mock of the updated Android interface, built entirely with native Jetpack Compose, showing a single player's Fog of War view:
 
-![Android Player Uplink](android_uplink_phase5_1782116860063.jpg)
+![Android Player Uplink](../screenshots/android_uplink_phase5_1782116860063.jpg)
 
 ---
 
