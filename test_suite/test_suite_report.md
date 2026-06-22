@@ -28,13 +28,13 @@ A comprehensive end-to-end test session was orchestrated utilizing automated orc
 ## Session Telemetry Screenshots
 
 ### 1. Game Master Override
-![GM Dashboard Visualizer](/home/matthias/.gemini/antigravity-cli/brain/5d20c266-f3bf-43ba-b50f-a0640a3ef24d/1_gm_view_1782114710341.jpg)
+![GM Dashboard Visualizer](./1_gm_view_1782114710341.jpg)
 
 ### 2. Spectator Twitch Stream
-![Twitch Chaos Market](/home/matthias/.gemini/antigravity-cli/brain/5d20c266-f3bf-43ba-b50f-a0640a3ef24d/2_spectator_view_1782114720242.jpg)
+![Twitch Chaos Market](./2_spectator_view_1782114720242.jpg)
 
 ### 3. Android Infiltrator Uplink
-![Kotlin Jetpack Compose Native](/home/matthias/.gemini/antigravity-cli/brain/5d20c266-f3bf-43ba-b50f-a0640a3ef24d/3_android_map_1782114730023.jpg)
+![Kotlin Jetpack Compose Native](./3_android_map_1782114730023.jpg)
 
 ### 4. Netrunner ICE Mainframe
-![Netrunner Shell](/home/matthias/.gemini/antigravity-cli/brain/5d20c266-f3bf-43ba-b50f-a0640a3ef24d/4_netrunner_shell_1782114738790.jpg)
+![Netrunner Shell](./4_netrunner_shell_1782114738790.jpg)
