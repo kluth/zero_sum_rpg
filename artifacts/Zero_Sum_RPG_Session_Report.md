@@ -17,8 +17,8 @@ The architecture consists of an Angular-based client relying heavily on PixiJS (
   - Threat escalated rapidly.
   - Player 1 executed a forward 'Dash' to close distance immediately.
 - **Visual Evidence**: 
-  - ![GM Map Generation](screenshots/01_gm_map_generation.png)
-  - ![Spectator Trauma Alert](screenshots/05_spectator_trauma_alert.png)
+  - ![GM Map Generation](screenshots/sim_alpha_02_gm_generated.png)
+  - ![Spectator Trauma Alert](screenshots/sim_alpha_06_p1_final.png)
 
 ### Session 2: Stealth Infiltration
 - **Scenario**: GM deployed a "Storage Area" filled with Tech Scrap and painted an active CCTV node sweeping the room.
@@ -27,8 +27,8 @@ The architecture consists of an Angular-based client relying heavily on PixiJS (
   - GM painted a CCTV node over the inventory items.
   - Player 2 attempted a peripheral 'Sneak' maneuver along the walls to avoid detection.
 - **Visual Evidence**:
-  - ![GM Chaos View](screenshots/02_gm_chaos_view.png)
-  - ![Spectator Chaos View](screenshots/03_spectator_chaos_view.png)
+  - ![GM Chaos View](screenshots/sim_beta_05_gm_final.png)
+  - ![Spectator Chaos View](screenshots/sim_beta_06_p1_final.png)
 
 ### Session 3: Lore Run
 - **Scenario**: GM deployed the newly implemented "Server Mainframe" room, containing multiple 4K textured server racks.
@@ -37,8 +37,8 @@ The architecture consists of an Angular-based client relying heavily on PixiJS (
   - GM revealed the highly detailed server racks.
   - Player 3 attempted to break the interaction logic by spam-clicking racks and abusing the inventory drag-and-drop system.
 - **Visual Evidence**:
-  - ![GM View Real](screenshots/screenshot_1_gm_view_real.png)
-  - ![Spectator View Real](screenshots/screenshot_2_spectator_view_real.png)
+  - ![GM View Real](screenshots/sim_gamma_05_gm_final.png)
+  - ![Spectator View Real](screenshots/sim_gamma_06_p1_final.png)
 
 > [!NOTE]
 > The full sequential runtime log containing exact chronological timestamps can be found at `artifacts/simulation_log.txt`.

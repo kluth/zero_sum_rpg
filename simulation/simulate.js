@@ -19,6 +19,7 @@ async function runSession(sessionId, scenario) {
     logEvent(`\n=== INITIATING SESSION: ${sessionId} (${scenario}) ===`);
     
     const browser = await puppeteer.launch({
+        executablePath: '/usr/bin/chromium',
         args: ['--no-sandbox', '--disable-setuid-sandbox', '--window-size=1280,800'],
         headless: 'new', // Use new headless mode
     });
