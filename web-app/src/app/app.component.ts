@@ -374,7 +374,12 @@ export class AppComponent implements OnInit {
   wfcError = signal<string | null>(null);
 
   constructor() {
-    
+    this.app = initializeApp(firebaseConfig);
+    this.db = getDatabase(this.app);
+    if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+      connectDatabaseEmulator(this.db, 'localhost', 9000);
+    }
+
     // IoT Web Audio API Siren Effect
     effect(() => {
       const heat = this.heatLevel();
@@ -613,11 +618,6 @@ export class AppComponent implements OnInit {
   }
 
   connectFirebase() {
-    const app = initializeApp(firebaseConfig);
-    this.db = getDatabase(app);
-    if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
-      connectDatabaseEmulator(this.db, 'localhost', 9000);
-    }
     const stateRef = ref(this.db, `sessions/${this.sessionId()}/gameState`);
     onValue(stateRef, (snapshot) => {
       const data = snapshot.val();
