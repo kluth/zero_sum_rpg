@@ -195,13 +195,24 @@ const firebaseConfig = {
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid #00F0FF; padding-bottom: 15px; margin-bottom: 15px;">
               <h2 class="header-brutalist text-neon-blue" style="font-size: 36px; margin: 0;">SPECTATOR UPLINK // TWITCH</h2>
               <div style="display: flex; gap: 20px; align-items: center;">
+                <button class="cyber-button" style="border-color: #39FF14; color: #39FF14; font-size: 16px; margin-top: 0; padding: 10px 20px; background: rgba(57,255,20,0.1);" (click)="showWebcamPanel.set(!showWebcamPanel())">TOGGLE WEBCAMS</button>
                 <button class="cyber-button donation-btn" style="border-color: #FF00FF; color: #FF00FF; font-size: 16px; margin-top: 0; padding: 10px 20px; background: rgba(255,0,255,0.1);" (click)="simulateTwitchDonation()">SIMULATE TWITCH DONATION</button>
                 <div class="data-mono" style="color: #00F0FF; font-size: 28px; font-weight: bold; background: rgba(0,240,255,0.1); padding: 5px 15px; border: 2px solid #00F0FF;">MARKET: $ {{ chaosMarketValue() }}</div>
                 <div class="data-mono" style="color: #FF003C; font-size: 28px; font-weight: bold; background: rgba(255,0,60,0.1); padding: 5px 15px; border: 2px solid #FF003C;">HEAT: {{ heatLevel() }}</div>
               </div>
             </div>
             
-            <div style="display: grid; grid-template-columns: 350px 1fr 350px; gap: 20px; flex: 1; overflow: hidden;">
+            <div [ngStyle]="{'grid-template-columns': showWebcamPanel() ? '300px 350px 1fr 350px' : '350px 1fr 350px'}" style="display: grid; gap: 20px; flex: 1; overflow: hidden;">
+              <!-- Webcams (Optional) -->
+              <div *ngIf="showWebcamPanel()" class="glass-panel webcam-pane" style="display: flex; flex-direction: column; overflow-y: auto; padding: 15px; border-color: #39FF14;">
+                <h3 class="header-brutalist text-acid-green" style="margin-top: 0; font-size: 20px; border-bottom: 2px solid #39FF14; padding-bottom: 5px;">WEBCAM FEEDS</h3>
+                <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 10px;">
+                  <div *ngFor="let key of getCharacterKeys()" style="aspect-ratio: 16/9; border: 2px dashed #39FF14; background: rgba(57,255,20,0.05); position: relative; display: flex; justify-content: center; align-items: center;">
+                    <div style="color: white; font-family: 'JetBrains Mono', monospace; font-size: 12px; position: absolute; top: 5px; left: 5px; background: black; padding: 2px 5px; border: 1px solid #39FF14; z-index: 2;">{{ gameState().characters[key].name }}</div>
+                    <div style="color: #39FF14; font-family: 'JetBrains Mono', monospace; font-size: 14px; opacity: 0.5;">[ OBS CAPTURE ]</div>
+                  </div>
+                </div>
+              </div>
               <!-- Left column: Scrolling logs panel -->
               <div class="glass-panel left-pane" style="display: flex; flex-direction: column; overflow: hidden; padding: 15px;">
                 <h3 class="header-brutalist text-neon-blue" style="margin-top: 0; font-size: 20px; border-bottom: 2px solid #00F0FF; padding-bottom: 5px;">LIVE FEED & DONATIONS</h3>
@@ -309,6 +320,7 @@ export class AppComponent implements OnInit {
   sessionId = signal<string | null>(null);
   mode = signal<string | null>(null);
   activePlayerId = signal<string | null>(null);
+  showWebcamPanel = signal<boolean>(false);
   
   isGmMode = computed(() => this.mode() === 'gm');
   isBillboardMode = computed(() => this.mode() === 'billboard');
