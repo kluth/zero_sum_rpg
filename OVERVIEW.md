@@ -26,14 +26,18 @@ The system recently underwent a massive architectural refactor to support hyper-
 
 - **The Core Engine**: The entire ecosystem uses **Firebase Realtime Database (RTDB)** as the single source of truth, creating a zero-latency WebSocket connection across all frontends.
 - **Dynamic Namespaces**: Connections are no longer tied to a global `/gameState`. Users enter a 6-digit Lobby PIN, routing all state synchronization to dynamically isolated namespaces (e.g., `sessions/A1B2C3/gameState`).
-- **2D Auto-Tiling & Individual Fog of War**: The map is no longer a linear list. The GM builds facilities on a 2D grid. Crucially, visibility is tracked via a `revealedTo` dictionary mapped to specific `char_id`s. When a player logs in (Web or Android), the client parses the grid and runs an auto-tiling algorithm to render a seamless neon floorplan composed *only* of the sectors they are personally authorized to see.
+- **PixiJS Tactical Map Engine ([pixi-map.component.ts](https://github.com/kluth/zero_sum_rpg/blob/master/web-app/src/app/pixi-map.component.ts))**: The HTML grid has been completely replaced with a high-performance WebGL 2D canvas utilizing `PixiJS` and `pixi-viewport`. It provides massive 50x30 grids with pinch, zoom, and drag functionality.
+- **Granular Tile Painter & WFC Generator ([app.component.ts](https://github.com/kluth/zero_sum_rpg/blob/master/web-app/src/app/app.component.ts))**: The Game Master can procedurally generate rooms via the Wave Function Collapse algorithm OR manually click-and-drag to paint Neon Walls, Locked Doors, CCTV Nodes, and Furniture.
+- **True Line of Sight (Bresenham Raycasting)**: Fog of War is no longer a simple distance radius. The system calculates true Line of Sight using a customized Bresenham raycaster. Painted walls and locked doors physically block player visibility calculations, forcing tactical exploration.
+- **Dense Spectator Broadcast View**: The Twitch spectator view is engineered as a robust 3-column CSS Grid. It tracks live dice rolls, monitors the live Chaos Market value which responds to Twitch Donations, and provides real-time Squad Status cards with stealth and stress indicators.
 - **Acoustic Physics & SNR**: The Android app replaces standard dice rolls with a Signal-to-Noise Ratio (SNR) physics calculator. It uses the Inverse Square Law against ambient dB vs gunshot dB to calculate exact audio drop-off ranges.
 - **Psychological Trauma & Cyberpsychosis**: Characters track "Allostatic Load" (Stress) alongside HP. If Stress crosses 75%, the Android UI glitches out via Jetpack Compose animations and the device issues physical Haptic feedback tremors, simulating Cyberpsychosis.
 - **Zero-Sum Mechanics**: The core philosophical mechanic. Players have an "Emergency Heal" button. Pressing it restores 25 HP, but mathematically deducts life support from a randomly generated civilian in the facility, logging the irreversible casualty permanently in the GM's Trauma Ledger.
 
 ## 4. Technology Used
 - **Android Companion App**: Native Kotlin and Jetpack Compose. Utilizes the Firebase Android SDK for database bindings, `LocalHapticFeedback` for analog tremors, and the Android NFC API for physical "Air-Gap" hacks.
-- **Web App**: Angular 17, TypeScript, and raw HTML/CSS. The design relies heavily on Cyberpunk glassmorphism, CRT scanline VFX, CSS Grid (for the Map Builder), and `ngSwitch` routing for the 5 isolated views. It entirely eschews bloated frameworks like Tailwind for highly tailored, hyper-optimized Vanilla CSS.
+- **Web App**: Angular 17, TypeScript, and raw HTML/CSS. The design relies heavily on Cyberpunk glassmorphism, CRT scanline VFX, and CSS Grid. It entirely eschews bloated frameworks like Tailwind for highly tailored, hyper-optimized Vanilla CSS.
+- **Automated E2E Testing ([capture_screenshots_playwright.js](https://github.com/kluth/zero_sum_rpg/blob/master/capture_screenshots_playwright.js))**: The project heavily relies on a custom Playwright test suite to automatically boot up headless browsers, simulate multi-user sessions, execute netrunner commands, draw maps, and capture 24 distinct screenshot milestones to validate UI correctness.
 - **Build & Pipeline**: Google Firebase Hosting for instantaneous web deployment, and Gradle Configuration Caching for Android.
 
 ## 5. Compile Times
@@ -49,7 +53,7 @@ The repository recently underwent a brutal git history rewrite and asset compres
 | `zero_sum_android` | **< 200MB** | Android Studio project (Build caches and artifacts successfully stripped from source control) |
 | `web-app` | **< 150MB** | Angular project (`node_modules` successfully ignored) |
 | `assets` | **~ 150MB** | High-fidelity imagery (Strictly compressed to lightweight `.webp` formats via `tools/convert_assets.py`) |
-| `scenarios` | **~ 20MB** | Markdown narrative scripts and procedural parameters |
+| `scenarios` | **~ 20MB** | Markdown narrative scripts, procedural parameters, and [map_and_playthrough_review.md](https://github.com/kluth/zero_sum_rpg/blob/master/map_and_playthrough_review.md) |
+| `test_suite` | **~ 20MB** | End-to-end testing scripts and automated UI screenshots |
 | `tools` | **< 10MB** | Custom Python algorithms (Monte Carlo, Chaos Monkey, Asset Converter) |
-| `docs` | **< 5MB** | Developer documentation |
 | `server` | **Deprecated** | Legacy Node.js socket server (Removed in favor of Firebase) |
