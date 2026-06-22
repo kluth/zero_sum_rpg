@@ -129,7 +129,8 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.05;
-    this.controls.maxPolarAngle = Math.PI / 2 - 0.05; // Keep camera above ground
+    this.controls.screenSpacePanning = true;
+    this.controls.maxPolarAngle = Math.PI; // Allow full rotation, even under the floor
 
     // Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
@@ -199,6 +200,13 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
       metalness: 0.5,
     });
 
+    const breakableWallMaterial = new THREE.MeshStandardMaterial({
+      color: 0xaa5522, // Rusty / weakened color
+      map: wallTex,
+      roughness: 0.9,
+      metalness: 0.1,
+    });
+
     // Floor Grid Surface
     const floorGeometry = new THREE.PlaneGeometry(width, height, width, height);
     const floor = new THREE.Mesh(floorGeometry, floorMaterial);
@@ -207,10 +215,10 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
     floor.userData = { isFloor: true };
     this.mapGroup.add(floor);
 
-    // Walls
+    // Walls & Structures
     if (grid) {
       Object.entries(grid).forEach(([key, cell]) => {
-        if (cell && (cell.type === 'wall' || cell.type === 'structure_wall' || cell.type === 'door_locked' || cell.type === 'door_open' || cell.isWall === true)) {
+        if (cell && (cell.type === 'wall' || cell.type === 'structure_wall' || cell.type === 'door_locked' || cell.type === 'door_open' || cell.type === 'breakable_wall' || cell.isWall === true)) {
           const [cx, cy] = key.split(',').map(Number);
           const x = cx + offsetX + 0.5;
           const z = cy + offsetZ + 0.5;
@@ -226,7 +234,12 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
             else wallHeight = Math.max(0.5, wallHeight * 0.8);
           }
           
-          const mat = isDoor ? (cell.type === 'door_locked' ? new THREE.MeshStandardMaterial({ color: 0xff003c, roughness: 0.2, metalness: 0.8, emissive: 0x330000 }) : new THREE.MeshStandardMaterial({ color: 0x00ff66, roughness: 0.8 })) : wallMaterial;
+          let mat = wallMaterial;
+          if (isDoor) {
+             mat = cell.type === 'door_locked' ? new THREE.MeshStandardMaterial({ color: 0xff003c, roughness: 0.2, metalness: 0.8, emissive: 0x330000 }) : new THREE.MeshStandardMaterial({ color: 0x00ff66, roughness: 0.8 });
+          } else if (cell.type === 'breakable_wall') {
+             mat = breakableWallMaterial;
+          }
 
           const wallGeo = new THREE.BoxGeometry(cellSize, wallHeight, cellSize);
           const wall = new THREE.Mesh(wallGeo, mat);
@@ -250,6 +263,24 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
           const furnitureClone = this.furnitureModel.clone();
           furnitureClone.position.set(x, 0.4, z);
           this.mapGroup.add(furnitureClone);
+        }
+
+        // Cupboards (Tall Storage)
+        if (cell && cell.type === 'cupboard') {
+          const cupboardGeo = new THREE.BoxGeometry(0.8, 1.5, 0.8);
+          const cupboardMat = new THREE.MeshStandardMaterial({ color: 0x444444, metalness: 0.3, roughness: 0.9 });
+          const cupboard = new THREE.Mesh(cupboardGeo, cupboardMat);
+          cupboard.position.set(x, 0.75, z);
+          this.mapGroup.add(cupboard);
+        }
+
+        // Storage Boxes
+        if (cell && cell.type === 'storage_box' && this.inventoryModel) {
+          const boxClone = this.inventoryModel.clone();
+          // Scale it slightly bigger than a floating item
+          boxClone.scale.set(0.4, 0.4, 0.4);
+          boxClone.position.set(x, 0.4, z); // Sits on the floor
+          this.mapGroup.add(boxClone);
         }
 
         // Inventory Items

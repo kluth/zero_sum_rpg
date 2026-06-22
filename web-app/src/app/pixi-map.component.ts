@@ -215,6 +215,24 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
               baseGrid.stroke({ color: 0x222222, width: 1 });
               baseGrid.rect(x * 32 + 4, y * 32 + 4, 24, 24);
               baseGrid.fill({ color: 0x888888 });
+           } else if (cell.type === 'breakable_wall') {
+              baseGrid.rect(x * 32, y * 32, 32, 32);
+              baseGrid.fill({ color: 0x111111 });
+              baseGrid.stroke({ color: 0xaa5522, width: 2 });
+              // Draw a dashed inner box to indicate breakable
+              baseGrid.moveTo(x * 32 + 4, y * 32 + 4);
+              baseGrid.lineTo(x * 32 + 28, y * 32 + 28);
+              baseGrid.stroke({ color: 0xaa5522, width: 1 });
+           } else if (cell.type === 'cupboard') {
+              baseGrid.rect(x * 32, y * 32, 32, 32);
+              baseGrid.fill({ color: 0x444444 });
+              baseGrid.stroke({ color: 0x222222, width: 1 });
+           } else if (cell.type === 'storage_box') {
+              baseGrid.rect(x * 32, y * 32, 32, 32);
+              baseGrid.fill({ color: 0x111111 });
+              baseGrid.stroke({ color: 0x666666, width: 2 });
+              baseGrid.rect(x * 32 + 8, y * 32 + 8, 16, 16);
+              baseGrid.fill({ color: 0x666666 });
            }
         }
       }
