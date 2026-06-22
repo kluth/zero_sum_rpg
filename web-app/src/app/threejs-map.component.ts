@@ -36,6 +36,8 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
   private animationFrameId: number | null = null;
   private mapGroup!: THREE.Group;
   private flickeringLights: THREE.PointLight[] = [];
+  private targetCameraPos: THREE.Vector3 | null = null;
+  private targetControlsPos: THREE.Vector3 | null = null;
 
   constructor() {
     // Setup effect to react to grid store changes
@@ -66,6 +68,7 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
     }
     window.removeEventListener('resize', this.onWindowResize.bind(this));
     if (this.renderer) {
+      this.renderer.domElement.removeEventListener('dblclick', this.onDoubleClick.bind(this));
       this.renderer.dispose();
     }
   }
@@ -97,10 +100,10 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
     this.controls.maxPolarAngle = Math.PI / 2 - 0.05; // Keep camera above ground
 
     // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
     this.scene.add(ambientLight);
 
-    const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
     dirLight.position.set(20, 40, 20);
     this.scene.add(dirLight);
 
@@ -113,6 +116,7 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
 
     // Resize listener
     window.addEventListener('resize', this.onWindowResize.bind(this));
+    this.renderer.domElement.addEventListener('dblclick', this.onDoubleClick.bind(this));
 
     this.animate();
   }
@@ -160,6 +164,7 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
     const floor = new THREE.Mesh(floorGeometry, floorMaterial);
     floor.rotation.x = -Math.PI / 2;
     floor.position.set(0, 0, 0);
+    floor.userData = { isFloor: true };
     this.mapGroup.add(floor);
 
     // Walls
@@ -200,7 +205,8 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
 
     // Rooms
     if (rooms) {
-      Object.values(rooms).forEach((room: any, index) => {
+      Object.keys(rooms).forEach((key, index) => {
+        const room = rooms[key];
         if (!room.bounds) return;
         const roomW = room.bounds.w || 3;
         const roomH = room.bounds.h || 3;
@@ -223,6 +229,7 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
         const roomMesh = new THREE.Mesh(roomGeo, roomMat);
         roomMesh.rotation.x = -Math.PI / 2;
         roomMesh.position.set(roomX, 0.05, roomZ); // Slightly elevated to prevent z-fighting
+        roomMesh.userData = { roomId: key };
         this.mapGroup.add(roomMesh);
 
         // Add Room Lighting based on Threat Level
@@ -254,7 +261,8 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
 
     // Focus camera
     const maxDim = Math.max(width, height) || 20;
-    this.camera.position.set(0, maxDim * 0.8, maxDim * 0.8);
+    const distance = (maxDim / 2) / Math.tan(Math.PI / 6); // FOV 60 degrees
+    this.camera.position.set(0, distance * 0.8, distance * 0.8);
     this.controls.target.set(0, 0, 0);
     this.controls.update();
   }
@@ -271,11 +279,50 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
     this.renderer.setSize(width, height);
   }
 
+  private onDoubleClick(event: MouseEvent): void {
+    if (!this.camera || !this.scene) return;
+    
+    const container = this.mapContainer.nativeElement;
+    const rect = container.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+    
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(new THREE.Vector2(x, y), this.camera);
+    
+    const intersects = raycaster.intersectObjects(this.mapGroup.children, true);
+    for (let i = 0; i < intersects.length; i++) {
+        const obj = intersects[i].object;
+        if (obj.userData?.['roomId']) {
+            const roomCenter = obj.position;
+            this.targetControlsPos = roomCenter.clone();
+            this.targetCameraPos = roomCenter.clone().add(new THREE.Vector3(0, 10, 15));
+            return;
+        } else if (obj.userData?.['isFloor']) {
+            const dimensions = this.gridStore.dimensions();
+            const maxDim = Math.max(dimensions.width, dimensions.height) || 20;
+            const distance = (maxDim / 2) / Math.tan(Math.PI / 6);
+            this.targetControlsPos = new THREE.Vector3(0, 0, 0);
+            this.targetCameraPos = new THREE.Vector3(0, distance * 0.8, distance * 0.8);
+            return;
+        }
+    }
+  }
+
   private animate(): void {
     this.animationFrameId = requestAnimationFrame(this.animate.bind(this));
     
     if (this.controls) {
       this.controls.update();
+    }
+
+    if (this.targetCameraPos && this.targetControlsPos) {
+       this.camera.position.lerp(this.targetCameraPos, 0.05);
+       this.controls.target.lerp(this.targetControlsPos, 0.05);
+       if (this.camera.position.distanceTo(this.targetCameraPos) < 0.1) {
+           this.targetCameraPos = null;
+           this.targetControlsPos = null;
+       }
     }
 
     // Flickering logic for emergency lights
