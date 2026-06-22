@@ -12,7 +12,7 @@ export type GridCell = {
 export type RoomData = {
   tag: string;
   bounds: { x: number, y: number, w: number, h: number };
-  metadata: { vfx?: string, threat?: string, revealedTo?: any, visibleTo?: any };
+  metadata: { vfx?: string, threat?: string, revealedTo?: any, visibleTo?: any, zHeight?: number };
 };
 
 export type GameState = {
