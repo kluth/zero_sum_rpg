@@ -52,9 +52,9 @@ function generatePin() {
       await gmPage.screenshot({ path: `${sessionDir}/01_gm_map_generation.png` });
 
       // Step 2: GM simulates 7-player chaos
-      console.log(`[${sessionIndex}] Triggering 7-Player Chaos Agent...`);
+      console.log(`[${sessionIndex}] Triggering Squad Deployment...`);
       await gmPage.evaluate(() => {
-         const btn = Array.from(document.querySelectorAll('.cyber-button')).find(b => b.innerText.includes('SIMULATE 7-PLAYER CHAOS'));
+         const btn = Array.from(document.querySelectorAll('.cyber-button')).find(b => b.innerText.includes('DEPLOY SQUAD TO GRID'));
          if(btn) btn.click();
       });
       await gmPage.waitForTimeout(1500); // Wait for chaos to propagate
@@ -62,9 +62,9 @@ function generatePin() {
       await specPage.screenshot({ path: `${sessionDir}/03_spectator_chaos_view.png` });
 
       // Step 3: Twitch Donation triggers heat spike
-      console.log(`[${sessionIndex}] Simulating Twitch Donation Heat Spike...`);
-      await specPage.evaluate(() => {
-         const btn = Array.from(document.querySelectorAll('.cyber-button')).find(b => b.innerText.includes('SIMULATE TWITCH DONATION'));
+      console.log(`[${sessionIndex}] Triggering GM Cyberpsychosis...`);
+      await gmPage.evaluate(() => {
+         const btn = Array.from(document.querySelectorAll('.cyber-button')).find(b => b.innerText.includes('INFLICT CYBERPSYCHOSIS'));
          if(btn) btn.click();
       });
       await gmPage.waitForTimeout(1000);

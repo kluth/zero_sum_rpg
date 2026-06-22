@@ -111,8 +111,14 @@ const firebaseConfig = {
                  </div>
                  
                  <button class="cyber-button" style="border-color: #FF2A2A; color: #FF2A2A; width: 100%; margin-top: 20px;" (click)="publishMap()">SYNC GRID TO RTDB</button>
-                 <button class="cyber-button" style="border-color: #FF00FF; color: #FF00FF; width: 100%; margin-top: 10px;" (click)="simulateChaos()">SIMULATE 7-PLAYER CHAOS</button>
-                 <button class="cyber-button donation-btn" style="border-color: #FF00FF; color: #FF00FF; width: 100%; margin-top: 10px;" (click)="simulateTwitchDonation()">SIMULATE TWITCH DONATION</button>
+                 
+                 <div style="border-top: 2px solid #FF003C; margin-top: 20px; padding-top: 15px;">
+                    <h3 class="header-brutalist text-neon-red" style="font-size: 20px; border-bottom: 2px solid #FF003C; padding-bottom: 5px;">COMMAND DASHBOARD</h3>
+                    <button class="cyber-button" style="border-color: #00F0FF; color: #00F0FF; width: 100%; margin-top: 10px;" (click)="deploySquad()">DEPLOY SQUAD TO GRID</button>
+                    <button class="cyber-button" style="border-color: #FF003C; color: #FF003C; width: 100%; margin-top: 10px; background: rgba(255,0,60,0.1);" (click)="dealDamageToSquad()">DEAL 20 HP DAMAGE TO SQUAD</button>
+                    <button class="cyber-button" style="border-color: #FF00FF; color: #FF00FF; width: 100%; margin-top: 10px; background: rgba(255,0,255,0.1);" (click)="inflictStressToSquad()">INFLICT CYBERPSYCHOSIS (+20 STRESS)</button>
+                    <button class="cyber-button" style="border-color: #FFFF00; color: #FFFF00; width: 100%; margin-top: 10px; background: rgba(255,255,0,0.1);" (click)="spawnTraumaEvent()">LOG TRAUMA CASUALTY</button>
+                 </div>
                </div>
 
                <div *ngIf="activeTab() === 'paint'" style="flex: 1;">
@@ -197,7 +203,6 @@ const firebaseConfig = {
               <h2 class="header-brutalist text-neon-blue" style="font-size: 36px; margin: 0;">SPECTATOR UPLINK // TWITCH</h2>
               <div style="display: flex; gap: 20px; align-items: center;">
                 <button class="cyber-button" style="border-color: #39FF14; color: #39FF14; font-size: 16px; margin-top: 0; padding: 10px 20px; background: rgba(57,255,20,0.1);" (click)="showWebcamPanel.set(!showWebcamPanel())">TOGGLE WEBCAMS</button>
-                <button class="cyber-button donation-btn" style="border-color: #FF00FF; color: #FF00FF; font-size: 16px; margin-top: 0; padding: 10px 20px; background: rgba(255,0,255,0.1);" (click)="simulateTwitchDonation()">SIMULATE TWITCH DONATION</button>
                 <div class="data-mono" style="color: #00F0FF; font-size: 28px; font-weight: bold; background: rgba(0,240,255,0.1); padding: 5px 15px; border: 2px solid #00F0FF;">MARKET: $ {{ chaosMarketValue() }}</div>
                 <div class="data-mono" style="color: #FF003C; font-size: 28px; font-weight: bold; background: rgba(255,0,60,0.1); padding: 5px 15px; border: 2px solid #FF003C;">HEAT: {{ heatLevel() }}</div>
               </div>
@@ -555,7 +560,7 @@ export class AppComponent implements OnInit {
     }
   }
 
-  simulateChaos() {
+  deploySquad() {
       if (!this.db || !this.sessionId()) return;
       const chars: Record<string, any> = {};
       
@@ -577,11 +582,11 @@ export class AppComponent implements OnInit {
             y: cy, 
             fowRadius: 5 + Math.floor(Math.random()*4),
             stats: {
-                hp_current: 50 + Math.floor(Math.random() * 51),
+                hp_current: 100,
                 hp_max: 100,
-                stealth_base: 20 + Math.floor(Math.random() * 81),
-                stealth_total: 20 + Math.floor(Math.random() * 81),
-                stress_current: Math.floor(Math.random() * 101),
+                stealth_base: 50,
+                stealth_total: 50,
+                stress_current: 0,
                 stress_max: 100,
                 snr_threshold_base: 10,
                 snr_threshold_total: 10
@@ -591,31 +596,41 @@ export class AppComponent implements OnInit {
          };
       });
       set(ref(this.db, `sessions/${this.sessionId()}/gameState/characters`), chars);
+  }
 
-      // Random move interval
-      if (this.chaosInterval) clearInterval(this.chaosInterval);
-      this.chaosInterval = setInterval(() => {
-         const currentChars = this.gameState().characters;
-         if (currentChars) {
-            const updated = { ...currentChars };
-            Object.values(updated).forEach((c: any) => {
-               // Random walk
-               if (Math.random() > 0.3) {
-                   c.x += Math.floor(Math.random() * 3) - 1;
-                   c.y += Math.floor(Math.random() * 3) - 1;
-                   // keep in bounds roughly
-                   if (c.x < 0) c.x = 0; if (c.x > 49) c.x = 49;
-                   if (c.y < 0) c.y = 0; if (c.y > 29) c.y = 29;
-               }
-               // Fluctuate stats
-               if (!c.stats) c.stats = { hp_current: 100, hp_max: 100, stealth_total: 50, stealth_base: 50, stress_current: 0, stress_max: 100, snr_threshold_base: 10, snr_threshold_total: 10 };
-               c.stats.hp_current = Math.max(0, Math.min(100, (c.stats.hp_current || 80) + Math.floor(Math.random() * 11) - 5));
-               c.stats.stealth_total = Math.max(0, Math.min(100, (c.stats.stealth_total || 60) + Math.floor(Math.random() * 21) - 10));
-               c.stats.stress_current = Math.max(0, Math.min(100, (c.stats.stress_current || 20) + Math.floor(Math.random() * 21) - 10));
-            });
-            set(ref(this.db, `sessions/${this.sessionId()}/gameState/characters`), updated);
-         }
-      }, 1500);
+  dealDamageToSquad() {
+     if (!this.db || !this.sessionId()) return;
+     const chars = this.gameState().characters || {};
+     const updated = { ...chars };
+     Object.keys(updated).forEach(key => {
+        if (!updated[key].stats) return;
+        updated[key].stats.hp_current = Math.max(0, updated[key].stats.hp_current - 20);
+     });
+     set(ref(this.db, `sessions/${this.sessionId()}/gameState/characters`), updated);
+  }
+
+  inflictStressToSquad() {
+     if (!this.db || !this.sessionId()) return;
+     const chars = this.gameState().characters || {};
+     const updated = { ...chars };
+     Object.keys(updated).forEach(key => {
+        if (!updated[key].stats) return;
+        updated[key].stats.stress_current = Math.min(100, updated[key].stats.stress_current + 20);
+     });
+     set(ref(this.db, `sessions/${this.sessionId()}/gameState/characters`), updated);
+  }
+
+  spawnTraumaEvent() {
+     if (!this.db || !this.sessionId()) return;
+     const eventId = `evt_${Date.now()}`;
+     const names = ["Corporate Guard", "Maintenance Tech 44", "Bystander", "Data Courier", "Unknown Civilian"];
+     const logEntry = {
+        timestamp: Date.now(),
+        civilian: names[Math.floor(Math.random() * names.length)],
+        severity: "FATAL"
+     };
+     set(ref(this.db, `sessions/${this.sessionId()}/gameState/traumaLog/${eventId}`), logEntry);
+     this.updateHeat(1);
   }
 
   connectFirebase() {
@@ -729,13 +744,6 @@ export class AppComponent implements OnInit {
       const current = snapshot.val() || 0;
       set(ref(this.db, `sessions/${this.sessionId()}/gameState/chaosMarketValue`), current + amount);
     });
-  }
-
-  simulateTwitchDonation() {
-     if (!this.db || !this.sessionId()) return;
-     const current = this.chaosMarketValue();
-     const newValue = current + Math.floor(Math.random() * 50) + 10;
-     set(ref(this.db, `sessions/${this.sessionId()}/gameState/chaosMarketValue`), newValue);
   }
 
   triggerEmergencyHeal() {
