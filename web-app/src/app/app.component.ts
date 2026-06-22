@@ -456,12 +456,15 @@ export class AppComponent implements OnInit {
     onValue(stateRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
+        data.characters = data.characters || {};
+        data.traumaLog = data.traumaLog || {};
         this.gameState.set(data);
-        if (data.grid && data.rooms) {
+        
+        if (data.map) {
            this.gridStore.setState({
-             grid: data.grid || {},
-             rooms: data.rooms || {},
-             dimensions: data.dimensions || { width: 50, height: 30 }
+             grid: data.map.grid || {},
+             rooms: data.map.rooms || {},
+             dimensions: data.map.dimensions || { width: 50, height: 30 }
            });
         }
       }
