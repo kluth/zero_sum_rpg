@@ -68,17 +68,22 @@ const firebaseConfig = {
         </header>
         
         <div class="gm-grid">
-            <!-- PANE A: PixiJS Canvas Viewport -->
+            <!-- PANE A: Canvas Viewport -->
             <div class="glass-panel gm-panel" style="flex: 1; padding: 0; position: relative;">
-               <app-pixi-map 
-                  [mode]="'gm'"
-                  [characters]="gameState().characters || {}"
-                  [activePlayerId]="activePlayerId()"
-                  [paintMode]="activePaintMode()"
-                  (cellClicked)="onCanvasCellClicked($event)" 
-                  (roomClicked)="onCanvasRoomClicked($event)"
-                  (cellPainted)="onCellPainted($event)">
-               </app-pixi-map>
+               <ng-container *ngIf="!show3d(); else threeDViewGM">
+                 <app-pixi-map 
+                    [mode]="'gm'"
+                    [characters]="gameState().characters || {}"
+                    [activePlayerId]="activePlayerId()"
+                    [paintMode]="activePaintMode()"
+                    (cellClicked)="onCanvasCellClicked($event)" 
+                    (roomClicked)="onCanvasRoomClicked($event)"
+                    (cellPainted)="onCellPainted($event)">
+                 </app-pixi-map>
+               </ng-container>
+               <ng-template #threeDViewGM>
+                 <app-threejs-map [characters]="gameState().characters || {}" [mode]="'gm'"></app-threejs-map>
+               </ng-template>
             </div>
             
             <!-- PANE B: Construction Toolkit -->
@@ -116,6 +121,7 @@ const firebaseConfig = {
                  
                  <div style="border-top: 2px solid #FF003C; margin-top: 20px; padding-top: 15px;">
                     <h3 class="header-brutalist text-neon-red" style="font-size: 20px; border-bottom: 2px solid #FF003C; padding-bottom: 5px;">COMMAND DASHBOARD</h3>
+                    <button class="cyber-button" style="border-color: #00F0FF; color: #00F0FF; width: 100%; margin-top: 10px;" (click)="show3d.set(!show3d())">TOGGLE 3D / 2D MAP</button>
                     <button class="cyber-button" style="border-color: #00F0FF; color: #00F0FF; width: 100%; margin-top: 10px;" (click)="deploySquad()">DEPLOY SQUAD TO GRID</button>
                     <button class="cyber-button" style="border-color: #FF003C; color: #FF003C; width: 100%; margin-top: 10px; background: rgba(255,0,60,0.1);" (click)="dealDamageToSquad()">DEAL 20 HP DAMAGE TO SQUAD</button>
                     <button class="cyber-button" style="border-color: #FF00FF; color: #FF00FF; width: 100%; margin-top: 10px; background: rgba(255,0,255,0.1);" (click)="inflictStressToSquad()">INFLICT CYBERPSYCHOSIS (+20 STRESS)</button>
@@ -250,6 +256,7 @@ const firebaseConfig = {
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-bottom: 4px solid #00F0FF; padding-bottom: 15px; margin-bottom: 15px;">
               <h2 class="header-brutalist text-neon-blue" style="font-size: 36px; margin: 0;">SPECTATOR UPLINK // TWITCH</h2>
               <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                <button class="cyber-button" style="border-color: #FF00FF; color: #FF00FF; font-size: 16px; margin-top: 0; padding: 10px 20px; background: rgba(255,0,255,0.1);" (click)="show3d.set(!show3d())">TOGGLE 3D VIEW</button>
                 <button class="cyber-button" style="border-color: #39FF14; color: #39FF14; font-size: 16px; margin-top: 0; padding: 10px 20px; background: rgba(57,255,20,0.1);" (click)="showWebcamPanel.set(!showWebcamPanel())">TOGGLE WEBCAMS</button>
                 <div class="data-mono" style="color: #00F0FF; font-size: clamp(16px, 3vw, 28px); font-weight: bold; background: rgba(0,240,255,0.1); padding: 5px 15px; border: 2px solid #00F0FF;">MARKET: $ {{ chaosMarketValue() }}</div>
                 <div class="data-mono" style="color: #FF003C; font-size: clamp(16px, 3vw, 28px); font-weight: bold; background: rgba(255,0,60,0.1); padding: 5px 15px; border: 2px solid #FF003C;">HEAT: {{ heatLevel() }}</div>
@@ -280,11 +287,14 @@ const firebaseConfig = {
                 </div>
               </div>
               
-              <!-- Center column: PixiJS map canvas -->
-              <div style="position: relative; display: flex; flex-direction: column; overflow: hidden; border: 3px solid #00F0FF; box-shadow: inset 0 0 50px rgba(0,240,255,0.1);">
-                <div style="flex: 1; position: relative;">
+              <!-- Center column: Map/Action Pane -->
+              <div class="glass-panel" style="flex: 2; padding: 0; position: relative;">
+                <ng-container *ngIf="!show3d(); else threeDViewSpec">
                   <app-pixi-map [mode]="'spectator'" [characters]="gameState().characters || {}"></app-pixi-map>
-                </div>
+                </ng-container>
+                <ng-template #threeDViewSpec>
+                  <app-threejs-map [characters]="gameState().characters || {}" [mode]="'spectator'"></app-threejs-map>
+                </ng-template>
               </div>
               
               <!-- Right column: Squad status cards and Clocks -->
@@ -336,10 +346,16 @@ const firebaseConfig = {
               <button class="cyber-button" style="border: 4px solid #FFB000; color: #FFB000; font-size: 16px; margin: 0; padding: 10px 20px; background: repeating-linear-gradient(45deg, rgba(255,176,0,0.1), rgba(255,176,0,0.1) 10px, transparent 10px, transparent 20px);" (click)="triggerEmergencyHeal()">⚠️ [ZERO SUM] EMERGENCY HEAL ⚠️</button>
               
               <div class="data-mono" style="color: #FF003C; font-size: 20px; font-weight: bold; border: 2px solid #FF003C; padding: 5px 10px; background: rgba(255,0,60,0.1);">HEAT: {{ heatLevel() }}</div>
+              <button class="cyber-button" style="border-color: #FF00FF; color: #FF00FF; font-size: 16px; margin: 0; padding: 10px 20px; background: rgba(255,0,255,0.1);" (click)="show3d.set(!show3d())">3D / 2D</button>
             </div>
             
             <div style="flex: 1; position: relative; border: 3px solid #39FF14; box-shadow: inset 0 0 50px rgba(57,255,20,0.1);">
-              <app-pixi-map [mode]="'player'" [characters]="gameState().characters || {}" [activePlayerId]="activePlayerId()"></app-pixi-map>
+               <ng-container *ngIf="!show3d(); else threeDViewPlayer">
+                 <app-pixi-map [mode]="'player'" [characters]="gameState().characters || {}" [activePlayerId]="activePlayerId()"></app-pixi-map>
+               </ng-container>
+               <ng-template #threeDViewPlayer>
+                 <app-threejs-map [characters]="gameState().characters || {}" [mode]="'player'"></app-threejs-map>
+               </ng-template>
             </div>
         </div>
       }
@@ -425,6 +441,7 @@ export class AppComponent implements OnInit {
   mode = signal<string | null>(null);
   activePlayerId = signal<string | null>(null);
   showWebcamPanel = signal<boolean>(false);
+  show3d = signal<boolean>(false);
   
   isGmMode = computed(() => this.mode() === 'gm');
   isBillboardMode = computed(() => this.mode() === 'billboard');
