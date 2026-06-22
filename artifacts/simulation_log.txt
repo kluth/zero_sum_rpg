@@ -29,3 +29,76 @@
 [2026-06-22T18:13:36.000Z] [sim_gamma] GM revealed map to all players.
 [2026-06-22T18:13:38.500Z] [sim_gamma] Session concluded.
 [2026-06-22T18:13:39.000Z] ALL SIMULATIONS CONCLUDED
+[2026-06-22T18:20:20.049Z] STARTING ZERO-SUM RPG AUTOMATED SIMULATIONS
+[2026-06-22T18:20:20.050Z] 
+=== INITIATING SESSION: sim_alpha (Combat Rush) ===
+[2026-06-22T18:21:56.098Z] STARTING ZERO-SUM RPG AUTOMATED SIMULATIONS
+[2026-06-22T18:21:56.100Z] 
+=== INITIATING SESSION: sim_alpha (Combat Rush) ===
+[2026-06-22T18:22:01.142Z] [sim_alpha] GM Agent booting up...
+[2026-06-22T18:22:07.282Z] [sim_alpha] GM Agent generates procedural facility.
+[2026-06-22T18:22:09.966Z] [sim_alpha] Player Agents connecting...
+[2026-06-22T18:22:25.363Z] [sim_alpha] GM executing scenario: Combat Rush
+[2026-06-22T18:22:26.390Z] [sim_alpha] High heat detected. Player 1 sustains trauma.
+[2026-06-22T18:22:26.404Z] [sim_alpha] GM revealed map to all players.
+[2026-06-22T18:22:30.424Z] [sim_alpha] Session concluded.
+[2026-06-22T18:22:30.950Z] 
+=== INITIATING SESSION: sim_beta (Stealth Infiltration) ===
+[2026-06-22T18:22:32.641Z] [sim_beta] GM Agent booting up...
+[2026-06-22T18:22:43.829Z] [sim_beta] GM Agent generates procedural facility.
+[2026-06-22T18:22:46.520Z] [sim_beta] Player Agents connecting...
+[2026-06-22T18:23:02.087Z] [sim_beta] GM executing scenario: Stealth Infiltration
+[2026-06-22T18:23:03.107Z] [sim_beta] GM deployed CCTV grid.
+[2026-06-22T18:23:03.122Z] [sim_beta] GM revealed map to all players.
+[2026-06-22T18:23:07.761Z] [sim_beta] Session concluded.
+[2026-06-22T18:23:08.223Z] 
+=== INITIATING SESSION: sim_gamma (Lore Run) ===
+[2026-06-22T18:23:09.873Z] [sim_gamma] GM Agent booting up...
+[2026-06-22T18:23:24.915Z] [sim_gamma] GM Agent generates procedural facility.
+[2026-06-22T18:23:27.548Z] [sim_gamma] Player Agents connecting...
+[2026-06-22T18:23:43.641Z] [sim_gamma] GM executing scenario: Lore Run
+[2026-06-22T18:23:44.646Z] [sim_gamma] GM deployed Server Mainframe.
+[2026-06-22T18:23:44.664Z] [sim_gamma] GM revealed map to all players.
+[2026-06-22T18:23:48.742Z] [sim_gamma] Session concluded.
+[2026-06-22T18:23:49.179Z] ALL SIMULATIONS CONCLUDED
+[2026-06-22T18:37:41.479Z] STARTING ZERO-SUM RPG AUTOMATED SIMULATIONS
+[2026-06-22T18:37:41.484Z] 
+=== INITIATING SESSION: sim_alpha (Combat Rush) ===
+[2026-06-22T18:37:42.900Z] [sim_alpha] GM Agent booting up...
+[2026-06-22T18:37:58.995Z] [sim_alpha] GM Agent generates procedural facility.
+[2026-06-22T18:38:01.982Z] [sim_alpha] Player Agents connecting...
+[2026-06-22T18:38:14.319Z] [sim_alpha] GM executing scenario: Combat Rush
+[2026-06-22T18:38:15.330Z] [sim_alpha] High heat detected. Player 1 sustains trauma.
+[2026-06-22T18:38:15.340Z] [sim_alpha] GM revealed map to all players.
+[2026-06-22T18:38:17.342Z] [sim_alpha] Simulating intelligent player actions...
+[2026-06-22T18:38:18.017Z] [sim_alpha] Player 1 executed sub-grid fluid movement.
+[2026-06-22T18:38:19.026Z] [sim_alpha] Player 1 used hotbar to execute SNEAK.
+[2026-06-22T18:38:20.119Z] [sim_alpha] Player 2 dragged and dropped C4 onto the map, triggering hitbox logic.
+[2026-06-22T18:38:24.205Z] [sim_alpha] Session concluded.
+[2026-06-22T18:38:25.185Z] 
+=== INITIATING SESSION: sim_beta (Stealth Infiltration) ===
+[2026-06-22T18:38:26.193Z] [sim_beta] GM Agent booting up...
+[2026-06-22T18:38:40.073Z] [sim_beta] GM Agent generates procedural facility.
+[2026-06-22T18:38:42.724Z] [sim_beta] Player Agents connecting...
+[2026-06-22T18:38:56.883Z] [sim_beta] GM executing scenario: Stealth Infiltration
+[2026-06-22T18:38:57.891Z] [sim_beta] GM deployed CCTV grid.
+[2026-06-22T18:38:57.909Z] [sim_beta] GM revealed map to all players.
+[2026-06-22T18:38:59.913Z] [sim_beta] Simulating intelligent player actions...
+[2026-06-22T18:39:00.607Z] [sim_beta] Player 1 executed sub-grid fluid movement.
+[2026-06-22T18:39:01.618Z] [sim_beta] Player 1 used hotbar to execute SNEAK.
+[2026-06-22T18:39:02.637Z] [sim_beta] Player 2 dragged and dropped C4 onto the map, triggering hitbox logic.
+[2026-06-22T18:39:06.364Z] [sim_beta] Session concluded.
+[2026-06-22T18:39:06.792Z] 
+=== INITIATING SESSION: sim_gamma (Lore Run) ===
+[2026-06-22T18:39:07.721Z] [sim_gamma] GM Agent booting up...
+[2026-06-22T18:39:20.442Z] [sim_gamma] GM Agent generates procedural facility.
+[2026-06-22T18:39:23.025Z] [sim_gamma] Player Agents connecting...
+[2026-06-22T18:39:35.395Z] [sim_gamma] GM executing scenario: Lore Run
+[2026-06-22T18:39:36.421Z] [sim_gamma] GM deployed Server Mainframe.
+[2026-06-22T18:39:36.429Z] [sim_gamma] GM revealed map to all players.
+[2026-06-22T18:39:38.433Z] [sim_gamma] Simulating intelligent player actions...
+[2026-06-22T18:39:39.161Z] [sim_gamma] Player 1 executed sub-grid fluid movement.
+[2026-06-22T18:39:40.170Z] [sim_gamma] Player 1 used hotbar to execute SNEAK.
+[2026-06-22T18:39:41.215Z] [sim_gamma] Player 2 dragged and dropped C4 onto the map, triggering hitbox logic.
+[2026-06-22T18:39:46.791Z] [sim_gamma] Session concluded.
+[2026-06-22T18:39:47.088Z] ALL SIMULATIONS CONCLUDED

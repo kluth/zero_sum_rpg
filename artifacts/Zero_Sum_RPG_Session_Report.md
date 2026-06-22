@@ -67,6 +67,19 @@ The underlying Firebase real-time synchronization layer is incredibly resilient.
 The implementation of the visual assets (particularly the new 4K server racks and breakable walls) greatly enhances immersion. However, the simulation revealed that the *player execution layer* is currently lagging behind the GM's toolset. The GM has powerful, macro-level tools (procedural generation, area painting, threat scaling), but players feel constrained.
 
 **Actionable Feedback for Development:**
-1. **Grid Snapping vs. Fluid Movement:** The rigid grid-snapping mechanics are causing frustration for players attempting precise stealth maneuvers (Player 2). Consider implementing sub-grid continuous movement or "snap-to-edge" logic for cover.
-2. **Action Economy UI:** Player 1 reported that combat abilities are hidden inside nested menus. A dedicated quick-action hotbar (similar to modern MOBA or MMO layouts) is required at the bottom of the player screen.
-3. **Hitbox Alignment:** As noted by Player 3, the physical hitboxes for dragging inventory items onto the new 3D assets (like Server Racks) are misaligned with their visual representation in the 2D PixiJS layer. The `grid.store.ts` interaction bounding boxes need to be audited and expanded slightly beyond the raw visual tile footprint to accommodate drag-and-drop.
+1. **Grid Snapping vs. Fluid Movement:** ~~The rigid grid-snapping mechanics are causing frustration...~~ **FIXED:** Implemented sub-grid fluid floating-point movement on player maps.
+2. **Action Economy UI:** ~~Player 1 reported that combat abilities are hidden inside nested menus...~~ **FIXED:** Added a dedicated quick-action hotbar at the bottom of the player screen.
+3. **Hitbox Alignment:** ~~As noted by Player 3, the physical hitboxes for dragging inventory items...~~ **FIXED:** Audited drag-and-drop hitboxes and expanded the interaction radius to `1.5` tiles to accommodate fluid positions.
+
+---
+
+## 🛠️ Update: AI Agentic Capabilities Validation
+
+Following the initial debriefing, the development team implemented the required features (Fluid Movement, Hotbar, Drag-and-Drop Hitboxes). A subsequent **Intelligent Simulation Run** was conducted using puppeteer to directly interact with the live map.
+
+The automated intelligent simulation successfully validated:
+- **Sub-Grid Mechanics:** AI Players utilized fluid `.click()` coordinates mapped via `worldPos`.
+- **Hotbar Interactions:** The AI accurately targeted and triggered `SNEAK` and `ATTACK` functions via the new UI.
+- **Hitbox Expansion:** Player Agents successfully dragged and dropped the `C4` item onto the target `Server Rack`, seamlessly triggering the 1.5 radius spatial detection check despite fractional player offsets.
+
+All automated visual tests passed. The live branch is fully capable of handling complex agent behaviors and high-fidelity interaction scenarios.

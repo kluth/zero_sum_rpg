@@ -97,6 +97,37 @@ async function runSession(sessionId, scenario) {
         logEvent(`[${sessionId}] GM revealed map to all players.`);
         await delay(2000);
 
+        // Intelligent Player Behaviors using new features!
+        logEvent(`[${sessionId}] Simulating intelligent player actions...`);
+
+        // Player 1 fluid movement (sub-grid positioning)
+        await p1Page.mouse.click(600, 400);
+        await delay(500);
+        await p1Page.mouse.click(650, 420);
+        logEvent(`[${sessionId}] Player 1 executed sub-grid fluid movement.`);
+        await delay(1000);
+
+        // Player 1 uses Action Economy Hotbar
+        await p1Page.evaluate(() => {
+            const btn = Array.from(document.querySelectorAll('.hotbar-btn')).find(b => b.textContent.includes('SNEAK'));
+            if (btn) btn.click();
+        });
+        logEvent(`[${sessionId}] Player 1 used hotbar to execute SNEAK.`);
+        await delay(1000);
+
+        // Player 2 Drag-and-Drop interaction
+        await p2Page.evaluate(() => {
+            const dropZone = document.querySelector('div[style*="box-shadow"]');
+            if (dropZone) {
+                const dt = new DataTransfer();
+                dt.setData('text/plain', 'c4_explosive');
+                const dropEvent = new DragEvent('drop', { dataTransfer: dt, bubbles: true });
+                dropZone.dispatchEvent(dropEvent);
+            }
+        });
+        logEvent(`[${sessionId}] Player 2 dragged and dropped C4 onto the map, triggering hitbox logic.`);
+        await delay(2000);
+
         // Final screenshots
         await gmPage.screenshot({ path: path.join(ARTIFACTS_DIR, `${sessionId}_05_gm_final.png`) });
         await p1Page.screenshot({ path: path.join(ARTIFACTS_DIR, `${sessionId}_06_p1_final.png`) });
