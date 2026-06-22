@@ -44,5 +44,11 @@ This guide provides the official framework for synchronizing physical "analog" t
 - **Paper Clocks:** Draw circles on index cards, divided into 4, 6, or 8 segments. Fill them in with a marker.
 - **Parity:** The GM's digital interface allows them to manually tick clocks. Ticking a digital clock will flash the VTT screens; the GM then physically shades in the analog clock on the table.
 
+## 7. Multiple Levels & Outdoor Environments
+**Digital:** The GM interface allows instantly toggling between Z-levels (Level 1, Level 2, etc.) and rendering outdoor terrain (streets, grass, water). The Grid Store maps coordinates via an `X,Y,Z` signature.
+**Analog Synchronization:**
+- **Layered Blueprints:** The GM should use multiple physical pages or transparent overlay sheets (acetate) to represent different floors of a building.
+- **Parity:** When the party ascends a physical stairwell, the GM simply presses the `[LEVEL 2]` toggle on the digital app to snap the AR view to the new Z-axis, perfectly matching the physical map page being flipped on the table.
+
 ---
 *All analog rulebooks and digital codebases are maintained in parity. Every digital action has a physical analog, and every physical roll can be ingested by the digital engine.*

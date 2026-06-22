@@ -76,6 +76,7 @@ const firebaseConfig = {
                     [characters]="gameState().characters || {}"
                     [activePlayerId]="activePlayerId()"
                     [paintMode]="activePaintMode()"
+                    [currentLevel]="currentLevel()"
                     (cellClicked)="onCanvasCellClicked($event)" 
                     (roomClicked)="onCanvasRoomClicked($event)"
                     (cellPainted)="onCellPainted($event)">
@@ -108,6 +109,10 @@ const firebaseConfig = {
                  </div>
 
                  <button class="cyber-button" style="width: 100%; border-color: #00E5FF; color: #00E5FF;" (click)="generateProceduralFacility()">GENERATE PROCEDURAL FACILITY</button>
+                 <div style="display: flex; gap: 5px; margin-top: 10px;">
+                    <button class="cyber-button" style="flex: 1; padding: 5px; border-color: #555; color: #fff;" [style.background]="currentLevel() === 1 ? '#555' : 'transparent'" (click)="currentLevel.set(1)">LEVEL 1</button>
+                    <button class="cyber-button" style="flex: 1; padding: 5px; border-color: #555; color: #fff;" [style.background]="currentLevel() === 2 ? '#555' : 'transparent'" (click)="currentLevel.set(2)">LEVEL 2</button>
+                 </div>
                  <p *ngIf="wfcError()" style="color: #39FF14; font-size: 12px; margin-top: 5px;">{{ wfcError() }}</p>
 
                  <div style="margin-top: 20px; border-top: 1px dashed gray; padding-top: 10px;">
@@ -134,7 +139,10 @@ const firebaseConfig = {
                  <p style="color: gray; font-size: 12px; margin-bottom: 10px;">Drag on the canvas to paint individual grid cells. Note: Walls and Locked Doors will block player Line of Sight.</p>
                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 20px;">
                     <div class="prefab-block" (click)="activePaintMode.set('wall')" [ngClass]="{'selected': activePaintMode() === 'wall'}" style="padding: 10px; border: 1px solid #00E5FF; cursor: pointer; color: #00E5FF; text-align: center;">Neon Wall</div>
-                    <div class="prefab-block" (click)="activePaintMode.set('breakable_wall')" [ngClass]="{'selected': activePaintMode() === 'breakable_wall'}" style="padding: 10px; border: 1px solid #aa5522; cursor: pointer; color: #aa5522; text-align: center;">Breakable Wall</div>
+                    <button class="tool-btn" [class.active]="activePaintMode() === 'breakable_wall'" (click)="activePaintMode.set('breakable_wall')" style="color: #aa5522; border-color: #aa5522;">Breakable</button>
+                  <button class="tool-btn" [class.active]="activePaintMode() === 'grass'" (click)="activePaintMode.set('grass')" style="color: #00FF00; border-color: #00FF00;">Grass</button>
+                  <button class="tool-btn" [class.active]="activePaintMode() === 'street'" (click)="activePaintMode.set('street')" style="color: #444444; border-color: #444444;">Street</button>
+                  <button class="tool-btn" [class.active]="activePaintMode() === 'water'" (click)="activePaintMode.set('water')" style="color: #0088FF; border-color: #0088FF;">Water</button>
                     <div class="prefab-block" (click)="activePaintMode.set('door_locked')" [ngClass]="{'selected': activePaintMode() === 'door_locked'}" style="padding: 10px; border: 1px solid #FF003C; cursor: pointer; color: #FF003C; text-align: center;">Locked Door</div>
                     <div class="prefab-block" (click)="activePaintMode.set('door_open')" [ngClass]="{'selected': activePaintMode() === 'door_open'}" style="padding: 10px; border: 1px solid #00FF66; cursor: pointer; color: #00FF66; text-align: center;">Open Door</div>
                     <div class="prefab-block" (click)="activePaintMode.set('cctv')" [ngClass]="{'selected': activePaintMode() === 'cctv'}" style="padding: 10px; border: 1px solid #FFFF00; cursor: pointer; color: #FFFF00; text-align: center;">CCTV Node</div>
@@ -306,7 +314,7 @@ const firebaseConfig = {
               <!-- Center column: Map/Action Pane -->
               <div class="glass-panel" style="flex: 2; padding: 0; position: relative;">
                 <ng-container *ngIf="!show3d(); else threeDViewSpec">
-                  <app-pixi-map [mode]="'spectator'" [characters]="gameState().characters || {}"></app-pixi-map>
+                  <app-pixi-map [mode]="'spectator'" [characters]="gameState().characters || {}" [currentLevel]="currentLevel()"></app-pixi-map>
                 </ng-container>
                 <ng-template #threeDViewSpec>
                   <app-threejs-map [characters]="gameState().characters || {}" [mode]="'spectator'"></app-threejs-map>
@@ -367,7 +375,7 @@ const firebaseConfig = {
             
             <div style="flex: 1; position: relative; border: 3px solid #39FF14; box-shadow: inset 0 0 50px rgba(57,255,20,0.1);" (dragover)="$event.preventDefault()" (drop)="onDropItem($event)">
                <ng-container *ngIf="!show3d(); else threeDViewPlayer">
-                 <app-pixi-map [mode]="'player'" [characters]="gameState().characters || {}" [activePlayerId]="activePlayerId()" (playerMoved)="onPlayerMoved($event)"></app-pixi-map>
+                 <app-pixi-map [mode]="'player'" [characters]="gameState().characters || {}" [activePlayerId]="activePlayerId()" [currentLevel]="currentLevel()" (playerMoved)="onPlayerMoved($event)"></app-pixi-map>
                </ng-container>
                <ng-template #threeDViewPlayer>
                  <app-threejs-map [characters]="gameState().characters || {}" [mode]="'player'"></app-threejs-map>
@@ -507,6 +515,7 @@ export class AppComponent implements OnInit {
   builderMapArchetype = 'Custom Facility';
   terminalCommand = '';
   terminalLogs = signal<string[]>(['System Ready. Declarative Web MCP initialized.', 'Local LLM ICE loaded.', 'Awaiting command...']);
+  currentLevel = signal<number>(1);
   
   recentTrauma = signal<any>(null);
 
@@ -605,7 +614,7 @@ export class AppComponent implements OnInit {
     // Occupy grid cells
     for(let dx=0; dx<2; dx++) {
       for(let dy=0; dy<2; dy++) {
-         this.gridStore.updateCell(pos.x + dx, pos.y + dy, { type: 'structure_wall', room_id: roomId });
+         this.updateCell(pos.x + dx, pos.y + dy, { type: 'structure_wall', room_id: roomId });
       }
     }
   }
@@ -622,43 +631,95 @@ export class AppComponent implements OnInit {
   generateProceduralFacility() {
     this.wfcError.set("INITIALIZING PROCEDURAL GENERATION...");
     
-    // Clean slate
-    this.gridStore.setState({ dimensions: { width: 50, height: 30 }, grid: {}, rooms: {} });
+    // Clean slate for current level
+    const currentZ = this.currentLevel();
+    // Keep other levels intact, only clear this level's cells and rooms (simplification: we'll just clear rooms for now)
+    this.gridStore.setState({ dimensions: { width: 50, height: 30 } }); // state is preserved, we just overwrite
     
-    // Real Procedural Generation Logic (BSP / Random Carve)
+    // BSP / Sequential Connected Rooms
     const newRooms: Record<string, any> = {};
+    const roomCenters: {x: number, y: number}[] = [];
+    
     for (let i = 0; i < 6; i++) {
         const roomId = `room_${Math.random().toString(36).substr(2, 6)}`;
-        const w = Math.floor(Math.random() * 6) + 4;
-        const h = Math.floor(Math.random() * 6) + 4;
+        const w = Math.floor(Math.random() * 6) + 5;
+        const h = Math.floor(Math.random() * 6) + 5;
         const x = Math.floor(Math.random() * (48 - w)) + 1;
         const y = Math.floor(Math.random() * (28 - h)) + 1;
         
         newRooms[roomId] = {
             tag: `Sector ${i+1}`,
-            bounds: { x, y, w, h },
+            bounds: { x, y, z: currentZ, w, h },
             color: i === 0 ? '#FF003C' : '#39FF14',
             metadata: { threat: i === 0 ? 'critical' : 'medium', vfx: i === 0 ? 'flash_red_alert' : 'none' }
         };
         
-        // Add walls around it
+        // Fill floor
+        for (let r_x = x + 1; r_x < x + w - 1; r_x++) {
+            for (let r_y = y + 1; r_y < y + h - 1; r_y++) {
+               this.updateCell(r_x, r_y, { type: 'floor', room_id: roomId });
+            }
+        }
+        
+        // Add walls
         for (let r_x = x; r_x < x + w; r_x++) {
             for (let r_y = y; r_y < y + h; r_y++) {
                if (r_x === x || r_x === x + w - 1 || r_y === y || r_y === y + h - 1) {
-                  // Poke a random hole for a door
-                  if (Math.random() > 0.85) {
-                     this.gridStore.updateCell(r_x, r_y, { type: 'door_locked', room_id: roomId });
-                  } else {
-                     this.gridStore.updateCell(r_x, r_y, { type: 'structure_wall', room_id: roomId });
-                  }
+                   this.updateCell(r_x, r_y, { type: 'structure_wall', room_id: roomId });
                }
+            }
+        }
+        
+        roomCenters.push({ x: Math.floor(x + w/2), y: Math.floor(y + h/2) });
+    }
+    
+    // Connect rooms sequentially to guarantee traversability
+    for (let i = 1; i < roomCenters.length; i++) {
+        const c1 = roomCenters[i-1];
+        const c2 = roomCenters[i];
+        
+        // Draw L-shaped corridor
+        let cx = c1.x;
+        let cy = c1.y;
+        while (cx !== c2.x) {
+            cx += cx < c2.x ? 1 : -1;
+            // Carve floor and doors
+            const cell = this.gridStore.grid()[`${cx},${cy},${currentZ}`];
+            if (cell && cell.type === 'structure_wall') {
+                this.updateCell(cx, cy, { type: Math.random() > 0.5 ? 'door_locked' : 'breakable_wall' });
+            } else if (!cell || cell.type === 'empty') {
+                this.updateCell(cx, cy, { type: 'floor' });
+                // Add corridor walls if empty
+                if (!this.gridStore.grid()[`${cx},${cy-1},${currentZ}`]) this.updateCell(cx, cy-1, { type: 'structure_wall' });
+                if (!this.gridStore.grid()[`${cx},${cy+1},${currentZ}`]) this.updateCell(cx, cy+1, { type: 'structure_wall' });
+            }
+        }
+        while (cy !== c2.y) {
+            cy += cy < c2.y ? 1 : -1;
+            const cell = this.gridStore.grid()[`${cx},${cy},${currentZ}`];
+            if (cell && cell.type === 'structure_wall') {
+                this.updateCell(cx, cy, { type: Math.random() > 0.5 ? 'door_locked' : 'door_open' });
+            } else if (!cell || cell.type === 'empty') {
+                this.updateCell(cx, cy, { type: 'floor' });
+                if (!this.gridStore.grid()[`${cx-1},${cy},${currentZ}`]) this.updateCell(cx-1, cy, { type: 'structure_wall' });
+                if (!this.gridStore.grid()[`${cx+1},${cy},${currentZ}`]) this.updateCell(cx+1, cy, { type: 'structure_wall' });
+            }
+        }
+    }
+    
+    // Add outdoor grass/street near edges
+    for (let x = 0; x < 50; x++) {
+        for (let y = 0; y < 30; y++) {
+            if (!this.gridStore.grid()[`${x},${y},${currentZ}`]) {
+                if (Math.random() > 0.95) this.updateCell(x, y, { type: 'grass' });
+                else if (Math.random() > 0.98) this.updateCell(x, y, { type: 'street' });
             }
         }
     }
     
     Object.keys(newRooms).forEach(k => this.gridStore.updateRoom(k, newRooms[k]));
     
-    this.wfcError.set("FACILITY GENERATED SUCCESSFULLY. SYNC REQUIRED.");
+    this.wfcError.set("FACILITY GENERATED SUCCESSFULLY. ALL ROOMS CONNECTED.");
   }
 
   getRoomTag() {
@@ -723,19 +784,19 @@ export class AppComponent implements OnInit {
     // Clear interior
     for (let r_x = x + 1; r_x < x + w - 1; r_x++) {
         for (let r_y = y + 1; r_y < y + h - 1; r_y++) {
-            this.gridStore.updateCell(r_x, r_y, { type: 'floor', room_id: roomId } as any);
+            this.updateCell(r_x, r_y, { type: 'floor', room_id: roomId } as any);
         }
     }
 
     if (templateName === 'office') {
        this.updateRoomTag("Corporate Office");
        // Place cupboards (lockers) in corners
-       this.gridStore.updateCell(x + 1, y + 1, { type: 'cupboard', room_id: roomId } as any);
-       this.gridStore.updateCell(x + w - 2, y + h - 2, { type: 'cupboard', room_id: roomId } as any);
+       this.updateCell(x + 1, y + 1, { type: 'cupboard', room_id: roomId } as any);
+       this.updateCell(x + w - 2, y + h - 2, { type: 'cupboard', room_id: roomId } as any);
        // Add a center terminal
-       this.gridStore.updateCell(x + Math.floor(w/2), y + Math.floor(h/2), { type: 'furniture', room_id: roomId } as any);
+       this.updateCell(x + Math.floor(w/2), y + Math.floor(h/2), { type: 'furniture', room_id: roomId } as any);
        // Add data pad
-       this.gridStore.updateCell(x + Math.floor(w/2) + 1, y + Math.floor(h/2), { type: 'floor', room_id: roomId, inventory: [{ id: 'datapad', name: 'Secure Datapad' }] } as any);
+       this.updateCell(x + Math.floor(w/2) + 1, y + Math.floor(h/2), { type: 'floor', room_id: roomId, inventory: [{ id: 'datapad', name: 'Secure Datapad' }] } as any);
     } 
     else if (templateName === 'storage') {
        this.updateRoomTag("Storage Area");
@@ -744,14 +805,14 @@ export class AppComponent implements OnInit {
            for (let r_y = y + 1; r_y < y + h - 1; r_y++) {
                const rand = Math.random();
                if (rand > 0.8) {
-                   this.gridStore.updateCell(r_x, r_y, { type: 'storage_box', room_id: roomId } as any);
+                   this.updateCell(r_x, r_y, { type: 'storage_box', room_id: roomId } as any);
                } else if (rand > 0.6) {
-                   this.gridStore.updateCell(r_x, r_y, { type: 'floor', room_id: roomId, inventory: [{ id: 'scrap', name: 'Tech Scrap' }] } as any);
+                   this.updateCell(r_x, r_y, { type: 'floor', room_id: roomId, inventory: [{ id: 'scrap', name: 'Tech Scrap' }] } as any);
                }
            }
        }
        // Make one of the surrounding walls breakable for a secret hideout
-       this.gridStore.updateCell(x + Math.floor(w/2), y, { type: 'breakable_wall', room_id: roomId } as any);
+       this.updateCell(x + Math.floor(w/2), y, { type: 'breakable_wall', room_id: roomId } as any);
     }
     else if (templateName === 'server_room') {
        this.updateRoomTag("Server Mainframe");
@@ -761,7 +822,7 @@ export class AppComponent implements OnInit {
        for (let r_x = x + 2; r_x < x + w - 2; r_x += 2) {
            for (let r_y = y + 1; r_y < y + h - 1; r_y++) {
                if (r_y !== y + Math.floor(h/2)) { // Leave a center aisle
-                   this.gridStore.updateCell(r_x, r_y, { type: 'server_rack', room_id: roomId } as any);
+                   this.updateCell(r_x, r_y, { type: 'server_rack', room_id: roomId } as any);
                }
            }
        }
@@ -772,8 +833,8 @@ export class AppComponent implements OnInit {
        this.updateRoomThreat('critical');
        // Place beds along the wall
        for (let r_x = x + 1; r_x < x + w - 1; r_x += 2) {
-           this.gridStore.updateCell(r_x, y + 1, { type: 'furniture', room_id: roomId } as any);
-           this.gridStore.updateCell(r_x, y + 2, { type: 'floor', room_id: roomId, inventory: [{ id: 'medkit', name: 'Emergency Medkit' }] } as any);
+           this.updateCell(r_x, y + 1, { type: 'furniture', room_id: roomId } as any);
+           this.updateCell(r_x, y + 2, { type: 'floor', room_id: roomId, inventory: [{ id: 'medkit', name: 'Emergency Medkit' }] } as any);
        }
     }
 
@@ -790,7 +851,7 @@ export class AppComponent implements OnInit {
         }
     }
     if (!hasDoor) {
-       this.gridStore.updateCell(x + Math.floor(w/2), y, { type: 'door_locked', room_id: roomId } as any);
+       this.updateCell(x + Math.floor(w/2), y, { type: 'door_locked', room_id: roomId } as any);
     }
   }
   setTab(tab: 'blocks' | 'paint' | 'properties') {
@@ -802,12 +863,16 @@ export class AppComponent implements OnInit {
     }
   }
 
+  updateCell(x: number, y: number, cellData: any) {
+    this.gridStore.updateCell(x, y, this.currentLevel(), cellData);
+  }
+
   onCellPainted(event: {x: number, y: number, type: string}) {
     if (event.type === 'floor') {
       // Treat 'floor' as eraser
-      this.gridStore.updateCell(event.x, event.y, { type: 'empty' } as any);
+      this.updateCell(event.x, event.y, { type: 'empty' } as any);
     } else {
-      this.gridStore.updateCell(event.x, event.y, { type: event.type } as any);
+      this.updateCell(event.x, event.y, { type: event.type } as any);
     }
   }
 

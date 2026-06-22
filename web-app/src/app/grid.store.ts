@@ -1,6 +1,6 @@
 import { signalStore, withState, withMethods, patchState } from '@ngrx/signals';
 
-export type TileType = 'empty' | 'wall' | 'floor' | 'door_open' | 'door_locked' | 'cctv' | 'furniture' | 'structure_wall' | 'breakable_wall' | 'cupboard' | 'storage_box' | 'server_rack';
+export type TileType = 'empty' | 'wall' | 'floor' | 'door_open' | 'door_locked' | 'cctv' | 'furniture' | 'structure_wall' | 'breakable_wall' | 'cupboard' | 'storage_box' | 'server_rack' | 'street' | 'grass' | 'water';
 
 export type GridCell = {
   type: TileType;
@@ -11,7 +11,7 @@ export type GridCell = {
 
 export type RoomData = {
   tag: string;
-  bounds: { x: number, y: number, w: number, h: number };
+  bounds: { x: number, y: number, z?: number, w: number, h: number };
   metadata: { vfx?: string, threat?: string, revealedTo?: any, visibleTo?: any, zHeight?: number };
 };
 
@@ -34,8 +34,8 @@ export const GridStore = signalStore(
     setState(newState: Partial<GameState>) {
       patchState(store, newState);
     },
-    updateCell(x: number, y: number, cellData: GridCell) {
-      const key = `${x},${y}`;
+    updateCell(x: number, y: number, z: number, cellData: GridCell) {
+      const key = `${x},${y},${z}`;
       patchState(store, (state) => ({
         grid: { ...state.grid, [key]: cellData }
       }));

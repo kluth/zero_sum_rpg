@@ -13,6 +13,7 @@ import { GridStore } from './grid.store';
 export class PixiMapComponent implements AfterViewInit, OnDestroy {
   @Input() characters: Record<string, any> = {};
   @Input() activePlayerId: string | null = null;
+  @Input() currentLevel: number = 1;
   @Input() mode: 'gm' | 'spectator' | 'player' | 'billboard' | 'netrunner' = 'gm';
   @Input() paintMode: string | null = null; // TileType
   @ViewChild('pixiContainer') pixiContainer!: ElementRef<HTMLDivElement>;
@@ -113,8 +114,9 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
       const x = Math.floor(worldPos.x / 32);
       const y = Math.floor(worldPos.y / 32);
       if (x >= 0 && y >= 0 && x < 50 && y < 30) {
-        const key = `${x},${y}`;
-        const cell = this.gridStore.grid()[key];
+        const key = `${x},${y},${this.currentLevel}`;
+        const fallbackKey = `${x},${y}`;
+        const cell = this.gridStore.grid()[key] || this.gridStore.grid()[fallbackKey];
         if (cell && cell.room_id) {
           this.roomClicked.emit(cell.room_id);
         } else {
@@ -156,8 +158,8 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
       if (e2 < dx) { err += dx; y0 += sy; }
 
       if (x0 === x1 && y0 === y1) break;
-      const cell = grid[`${x0},${y0}`];
-      if (cell && (cell.type === 'wall' || cell.type === 'door_locked')) {
+      const cell = grid[`${x0},${y0},${this.currentLevel}`] || grid[`${x0},${y0}`];
+      if (cell && (cell.type === 'wall' || cell.type === 'door_locked' || cell.type === 'structure_wall')) {
         return false;
       }
     }
@@ -195,7 +197,7 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
         }
         
         if (isVisible) {
-           const cell = grid[`${x},${y}`];
+           const cell = grid[`${x},${y},${this.currentLevel}`] || grid[`${x},${y}`];
            if (!cell || cell.type === 'empty' || cell.type === 'floor') {
               baseGrid.rect(x * 32, y * 32, 32, 32);
               baseGrid.fill({ color: 0x111111 });
@@ -247,7 +249,29 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
               baseGrid.rect(x * 32 + 4, y * 32 + 2, 24, 28);
               baseGrid.fill({ color: 0x002200 });
               baseGrid.stroke({ color: 0x00FF00, width: 1 });
-           }
+           } else if (cell.type === 'grass') {
+               baseGrid.rect(x * 32, y * 32, 32, 32);
+               baseGrid.fill({ color: 0x051105 });
+               baseGrid.stroke({ color: 0x113311, width: 1 });
+               // some grass blades
+               baseGrid.moveTo(x * 32 + 8, y * 32 + 24); baseGrid.lineTo(x * 32 + 10, y * 32 + 16);
+               baseGrid.stroke({ color: 0x00FF00, width: 1 });
+            } else if (cell.type === 'street') {
+               baseGrid.rect(x * 32, y * 32, 32, 32);
+               baseGrid.fill({ color: 0x1a1a1a });
+               baseGrid.stroke({ color: 0x2a2a2a, width: 1 });
+               if (x % 2 === 0) {
+                   baseGrid.rect(x * 32 + 14, y * 32 + 10, 4, 12);
+                   baseGrid.fill({ color: 0xDDDD00 });
+               }
+            } else if (cell.type === 'water') {
+               baseGrid.rect(x * 32, y * 32, 32, 32);
+               baseGrid.fill({ color: 0x001133 });
+               baseGrid.stroke({ color: 0x002255, width: 1 });
+               // ripples
+               baseGrid.moveTo(x * 32 + 8, y * 32 + 16); baseGrid.lineTo(x * 32 + 24, y * 32 + 16);
+               baseGrid.stroke({ color: 0x0088FF, width: 1 });
+            }
         }
       }
     }
