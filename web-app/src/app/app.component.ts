@@ -355,6 +355,7 @@ export class AppComponent implements OnInit {
   }
 
   private db: any;
+  private app: any;
   private chaosInterval: any;
   
   builderMapArchetype = 'Custom Facility';
