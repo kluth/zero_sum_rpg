@@ -218,6 +218,7 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
 
     // 2. Draw Rooms
     for (const [roomId, room] of Object.entries(rooms) as [string, any][]) {
+      if (!room || !room.bounds) continue;
       let isVisible = true;
       let isMemory = false;
 
@@ -226,14 +227,18 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
          if (!isRevealed) isVisible = false;
       } else if (this.mode === 'player' && myChar) {
          // Determine if room is in FoW
-         const cx = room.bounds.x + room.bounds.w/2;
-         const cy = room.bounds.y + room.bounds.h/2;
+         const cx = Math.floor(room.bounds.x + room.bounds.w/2);
+         const cy = Math.floor(room.bounds.y + room.bounds.h/2);
          const dist = Math.sqrt(Math.pow(cx - myChar.x, 2) + Math.pow(cy - myChar.y, 2));
-         if (dist > (myChar.fowRadius || 6)) {
-            // Out of active FoW. If it was revealed previously, show it as memory
+         const hasLos = dist <= (myChar.fowRadius || 6) && this.hasLineOfSight(Math.floor(myChar.x), Math.floor(myChar.y), cx, cy, grid);
+         if (hasLos) {
+            isVisible = true;
+            isMemory = false;
+         } else {
             const isRevealedToMe = room.metadata?.revealedTo && room.metadata.revealedTo[this.activePlayerId!];
             if (isRevealedToMe) {
                isMemory = true;
+               isVisible = true;
             } else {
                isVisible = false;
             }
@@ -323,6 +328,13 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
           cg.circle(char.x * 32 + 16, char.y * 32 + 16, 12);
           cg.fill({ color });
           cg.stroke({ color: 0xFFFFFF, width: isMe ? 2 : 0 });
+
+          // Draw indicator ring based on stealth: green if >= 50, red if < 50
+          const stealthVal = char.stealth !== undefined ? char.stealth : 100;
+          const ringColor = stealthVal >= 50 ? 0x00FF00 : 0xFF2A2A;
+          cg.circle(char.x * 32 + 16, char.y * 32 + 16, 17);
+          cg.stroke({ color: ringColor, width: 2 });
+
           this.viewport.addChild(cg);
           this.charGraphics[charId] = cg;
 

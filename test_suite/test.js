@@ -3,7 +3,7 @@ const fs = require('fs');
 const { exec } = require('child_process');
 const http = require('http');
 
-const SCREENSHOT_DIR = '/home/matthias/.gemini/antigravity-cli/brain/5d20c266-f3bf-43ba-b50f-a0640a3ef24d';
+const SCREENSHOT_DIR = '/home/matthias/.gemini/antigravity-cli/brain/fb4f10f6-6f8f-4eb9-9c9e-ef3e5bba3581';
 
 async function delay(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 
@@ -30,37 +30,40 @@ async function run() {
   await waitForServer(9000);
   
   console.log("Launching Puppeteer...");
-  const browser = await puppeteer.launch({ headless: 'new', args: ['--no-sandbox'] });
+  const browser = await puppeteer.launch({ 
+    headless: 'new', 
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    executablePath: '/usr/bin/chromium' 
+  });
   
   const PIN = 'TEST_1';
   
+  // Inject initial map state via REST
+  console.log("Injecting mock game state via REST...");
+  const mockState = {
+    map: {
+      rooms: [
+        { x: 0, y: 0, name: "Sector 1", complication: "Clear", revealedTo: { char_1: true }, visibleTo: { char_1: true }, entities: [{ id: "1", name: "Cyber-Turret" }] },
+        { x: 1, y: 0, name: "Sector 2", complication: "Hostile", revealedTo: { char_1: true }, visibleTo: { char_1: false }, entities: [] }
+      ]
+    },
+    traumaLog: {}
+  };
+  const initReq = http.request({
+    hostname: 'localhost', port: 9000, method: 'PUT',
+    path: `/sessions/${PIN}/gameState.json?ns=zero-sum-rpg-2026-default-rtdb`,
+    headers: { 'Content-Type': 'application/json' }
+  });
+  initReq.write(JSON.stringify(mockState));
+  initReq.end();
+  
+  await delay(1000);
+
   // 1. GM MODE
   const gmPage = await browser.newPage();
   await gmPage.goto(`http://localhost:4200/?session=${PIN}&mode=gm`);
   await gmPage.setViewport({ width: 1200, height: 800 });
   await delay(2000);
-  
-  // Click cell [0,0] to open it
-  console.log("GM is building map...");
-  await gmPage.mouse.click(650, 200); // Click somewhere in the grid
-  await delay(500);
-  
-  // Add an entity
-  await gmPage.type('input[placeholder="Entity..."]', 'Cyber-Turret');
-  await gmPage.click('button:has-text("ADD")');
-  await delay(500);
-  
-  // Reveal to char_1
-  const checkboxes = await gmPage.$$('input[type="checkbox"]');
-  if (checkboxes.length >= 2) {
-      await checkboxes[0].click(); // Reveal
-      await checkboxes[1].click(); // VisibleTo
-  }
-  
-  // Publish Map
-  await gmPage.click('button:has-text("PUBLISH MAP TO RTDB")');
-  await delay(1000);
-  
   await gmPage.screenshot({ path: `${SCREENSHOT_DIR}/1_gm_view.png` });
 
   // 2. SPECTATOR MODE

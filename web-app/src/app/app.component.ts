@@ -47,6 +47,11 @@ const firebaseConfig = {
     <!-- MAIN DASHBOARD -->
     <div *ngIf="sessionId()" style="padding: 20px; height: 100vh; box-sizing: border-box; display: flex; flex-direction: column;">
       
+      <!-- Pulsating Alert Bar -->
+      <div *ngIf="heatLevel() >= 8 || recentTrauma()" class="pulsating-alert-bar" style="background: #FF2A2A; color: white; padding: 10px; font-weight: bold; text-align: center; border: 2px solid #FFFFFF; margin-bottom: 15px; font-family: monospace;">
+        ⚠️ CRITICAL ALERT: {{ heatLevel() >= 8 ? 'HIGH HEAT LEVEL DETECTED (' + heatLevel() + '/10). ' : '' }} {{ recentTrauma() ? 'LIFE SUPPORT SYSTEM FAILURE: ' + recentTrauma().civilian : '' }}
+      </div>
+
       @defer (when isGmMode()) {
         <!-- GM Map Builder Logic here -->
         <header class="glass-panel gm-panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -100,7 +105,8 @@ const firebaseConfig = {
                  </div>
                  
                  <button class="cyber-button" style="border-color: #FF2A2A; color: #FF2A2A; width: 100%; margin-top: 20px;" (click)="publishMap()">SYNC GRID TO RTDB</button>
-                 <button class="cyber-button" style="border-color: #FF00FF; color: #FF00FF; width: 100%; margin-top: 20px;" (click)="simulateChaos()">SIMULATE 7-PLAYER CHAOS</button>
+                 <button class="cyber-button" style="border-color: #FF00FF; color: #FF00FF; width: 100%; margin-top: 10px;" (click)="simulateChaos()">SIMULATE 7-PLAYER CHAOS</button>
+                 <button class="cyber-button donation-btn" style="border-color: #FF00FF; color: #FF00FF; width: 100%; margin-top: 10px;" (click)="simulateTwitchDonation()">SIMULATE TWITCH DONATION</button>
                </div>
 
                <div *ngIf="activeTab() === 'paint'" style="flex: 1;">
@@ -179,15 +185,57 @@ const firebaseConfig = {
       }
       
       @defer (when isSpectatorMode()) {
-        <div class="glass-panel" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
-            <h2 class="text-neon-blue" style="font-size: 24px;">SPECTATOR UPLINK // TWITCH</h2>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-              <div style="color: #00E5FF; font-size: 32px;">Market Value: $ {{ chaosMarketValue() }}</div>
-              <div style="color: #FF2A2A; font-size: 32px;">Heat Level: {{ heatLevel() }}</div>
+        <div class="glass-panel" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; border-color: #00E5FF;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #00E5FF; padding-bottom: 10px; margin-bottom: 15px;">
+              <h2 class="text-neon-blue" style="font-size: 24px; margin: 0;">SPECTATOR UPLINK // TWITCH</h2>
+              <div style="display: flex; gap: 20px; align-items: center;">
+                <button class="cyber-button donation-btn" style="border-color: #FF00FF; color: #FF00FF; font-size: 14px; margin-top: 0; padding: 5px 15px;" (click)="simulateTwitchDonation()">SIMULATE TWITCH DONATION</button>
+                <div style="color: #00E5FF; font-size: 24px; font-weight: bold;">Market Value: $ {{ chaosMarketValue() }}</div>
+                <div style="color: #FF2A2A; font-size: 24px; font-weight: bold;">Heat Level: {{ heatLevel() }}</div>
+              </div>
             </div>
             
-            <div style="flex: 1; position: relative;">
-              <app-pixi-map [mode]="'spectator'" [characters]="gameState().characters || {}"></app-pixi-map>
+            <div style="display: grid; grid-template-columns: 300px 1fr 300px; gap: 20px; flex: 1; overflow: hidden;">
+              <!-- Left column: Scrolling logs panel -->
+              <div class="glass-panel left-pane" style="display: flex; flex-direction: column; overflow: hidden; border-color: #00E5FF; padding: 10px;">
+                <h3 class="text-neon-blue" style="margin-top: 0; font-size: 16px; border-bottom: 1px solid #00E5FF; padding-bottom: 5px;">LIVE FEED & DONATIONS</h3>
+                <div style="flex: 1; overflow-y: auto; font-family: monospace; font-size: 12px; color: #00FF00;" class="scrolling-logs">
+                  <div *ngFor="let roll of gameState().recentRolls || []" style="border-bottom: 1px dashed rgba(0,255,0,0.2); padding: 5px 0;">
+                    [{{ roll.timestamp | date:'HH:mm:ss' }}] ROLL: {{ roll.player }} rolled D20 -> {{ roll.result }}
+                  </div>
+                  <div *ngIf="chaosMarketValue() > 0" style="color: #FF00FF; padding: 5px 0; border-bottom: 1px dashed rgba(255,0,255,0.2);">
+                    [TWITCH] Anonymous donation received! Market value: $ {{ chaosMarketValue() }}
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Center column: PixiJS map canvas -->
+              <div style="position: relative; display: flex; flex-direction: column; overflow: hidden;">
+                <div style="flex: 1; position: relative;">
+                  <app-pixi-map [mode]="'spectator'" [characters]="gameState().characters || {}"></app-pixi-map>
+                </div>
+              </div>
+              
+              <!-- Right column: Squad status cards -->
+              <div class="glass-panel right-pane" style="display: flex; flex-direction: column; overflow-y: auto; border-color: #00E5FF; padding: 10px;">
+                <h3 class="text-neon-blue" style="margin-top: 0; font-size: 16px; border-bottom: 1px solid #00E5FF; padding-bottom: 5px;">SQUAD STATUS</h3>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                  <div *ngFor="let key of getCharacterKeys()" class="squad-card" style="border: 1px solid #00E5FF; padding: 8px; background: rgba(0,229,255,0.05); font-family: monospace; font-size: 11px;">
+                    <div style="color: #00FF00; font-weight: bold; border-bottom: 1px solid #00E5FF; padding-bottom: 3px; margin-bottom: 5px;">
+                      {{ gameState().characters[key].name }}
+                    </div>
+                    <div style="color: gray; margin-bottom: 2px;">ROLE: {{ gameState().characters[key].role }}</div>
+                    <div style="display: flex; justify-content: space-between;">
+                      <span [style.color]="gameState().characters[key].hp < 30 ? '#FF2A2A' : '#FFFFFF'">HP: {{ gameState().characters[key].hp || 100 }}%</span>
+                      <span [style.color]="gameState().characters[key].stealth >= 50 ? '#00FF00' : '#FF2A2A'">Stealth: {{ gameState().characters[key].stealth || 0 }}</span>
+                      <span [style.color]="gameState().characters[key].stress >= 70 ? '#FF2A2A' : '#FFFFFF'">Stress: {{ gameState().characters[key].stress || 0 }}</span>
+                    </div>
+                  </div>
+                  <div *ngIf="getCharacterKeys().length === 0" style="color: gray; font-style: italic;">
+                    No active characters.
+                  </div>
+                </div>
+              </div>
             </div>
         </div>
       }
@@ -455,7 +503,10 @@ export class AppComponent implements OnInit {
             role: p.role, 
             x: cx, 
             y: cy, 
-            fowRadius: 5 + Math.floor(Math.random()*4) 
+            fowRadius: 5 + Math.floor(Math.random()*4),
+            hp: 50 + Math.floor(Math.random() * 51),
+            stealth: 20 + Math.floor(Math.random() * 81),
+            stress: Math.floor(Math.random() * 101)
          };
       });
       set(ref(this.db, `sessions/${this.sessionId()}/gameState/characters`), chars);
@@ -475,6 +526,10 @@ export class AppComponent implements OnInit {
                    if (c.x < 0) c.x = 0; if (c.x > 49) c.x = 49;
                    if (c.y < 0) c.y = 0; if (c.y > 29) c.y = 29;
                }
+               // Fluctuate stats
+               c.hp = Math.max(0, Math.min(100, (c.hp || 80) + Math.floor(Math.random() * 11) - 5));
+               c.stealth = Math.max(0, Math.min(100, (c.stealth || 60) + Math.floor(Math.random() * 21) - 10));
+               c.stress = Math.max(0, Math.min(100, (c.stress || 20) + Math.floor(Math.random() * 21) - 10));
             });
             set(ref(this.db, `sessions/${this.sessionId()}/gameState/characters`), updated);
          }
@@ -519,8 +574,7 @@ export class AppComponent implements OnInit {
 
   publishMap() {
     if (!this.db || !this.sessionId()) return;
-    set(ref(this.db, `sessions/${this.sessionId()}/gameState`), {
-      ...this.gameState(),
+    set(ref(this.db, `sessions/${this.sessionId()}/gameState/map`), {
       dimensions: this.gridStore.dimensions(),
       grid: this.gridStore.grid(),
       rooms: this.gridStore.rooms()
@@ -528,13 +582,21 @@ export class AppComponent implements OnInit {
   }
 
   executeIceCommand() {
-     const cmd = this.terminalCommand.toLowerCase();
+     const cmd = this.terminalCommand.toLowerCase().trim();
      this.terminalLogs.update(logs => [...logs, cmd]);
      this.terminalCommand = '';
      
      // Mock Local LLM ICE processing
      setTimeout(() => {
-       if (cmd.includes('overload')) {
+       if (cmd === 'help') {
+          this.terminalLogs.update(logs => [
+             ...logs, 
+             'LLM-ICE: Command Assistance Menu:', 
+             '  help     - Display all available commands', 
+             '  grep     - Query mainframe semantic structure', 
+             '  overload - Bypass thermal regulators'
+          ]);
+       } else if (cmd.includes('overload')) {
           this.terminalLogs.update(logs => [...logs, 'LLM-ICE: Intrusion detected. Thermal regulators bypassed. Chaos Market crashing...']);
           if (this.db) {
             set(ref(this.db, `sessions/${this.sessionId()}/gameState/chaosMarketValue`), 0);
