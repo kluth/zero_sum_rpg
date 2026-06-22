@@ -150,6 +150,14 @@ const firebaseConfig = {
                    <label style="color: gray; font-size: 12px;">Metadata Tag</label>
                    <input type="text" [ngModel]="getRoomTag()" (ngModelChange)="updateRoomTag($event)" style="background: black; color: white; border: 1px solid gray; padding: 5px; width: 100%; margin-bottom: 10px;" />
 
+                   <label style="color: gray; font-size: 12px;">Apply Room Template</label>
+                   <div style="display: flex; gap: 5px; margin-bottom: 15px; flex-wrap: wrap;">
+                     <button class="cyber-button" style="flex: 1; padding: 5px; font-size: 12px;" (click)="applyRoomTemplate('office')">OFFICE</button>
+                     <button class="cyber-button" style="flex: 1; padding: 5px; font-size: 12px;" (click)="applyRoomTemplate('storage')">STORAGE</button>
+                     <button class="cyber-button" style="flex: 1; padding: 5px; font-size: 12px;" (click)="applyRoomTemplate('server_room')">SERVER ROOM</button>
+                     <button class="cyber-button" style="flex: 1; padding: 5px; font-size: 12px;" (click)="applyRoomTemplate('medbay')">MED-BAY</button>
+                   </div>
+
                    <label style="color: gray; font-size: 12px;">Dynamic VFX</label>
                    <select [ngModel]="getRoomVfx()" (ngModelChange)="updateRoomVfx($event)" style="background: black; color: white; border: 1px solid gray; padding: 5px; width: 100%; margin-bottom: 10px;">
                      <option value="none">None</option>
@@ -683,6 +691,86 @@ export class AppComponent implements OnInit {
        const room = this.gridStore.rooms()[roomId];
        const updatedRoom = { ...room, metadata: { ...room.metadata, zHeight: Number(zHeight) } };
        this.gridStore.updateRoom(roomId, updatedRoom);
+    }
+  }
+
+  applyRoomTemplate(templateName: string) {
+    const roomId = this.selectedRoomId();
+    if (!roomId) return;
+    const room = this.gridStore.rooms()[roomId];
+    if (!room || !room.bounds) return;
+
+    const { x, y, w, h } = room.bounds;
+
+    // Clear interior
+    for (let r_x = x + 1; r_x < x + w - 1; r_x++) {
+        for (let r_y = y + 1; r_y < y + h - 1; r_y++) {
+            this.gridStore.updateCell(r_x, r_y, { type: 'floor', room_id: roomId } as any);
+        }
+    }
+
+    if (templateName === 'office') {
+       this.updateRoomTag("Corporate Office");
+       // Place desks in corners
+       this.gridStore.updateCell(x + 1, y + 1, { type: 'furniture', room_id: roomId } as any);
+       this.gridStore.updateCell(x + w - 2, y + h - 2, { type: 'furniture', room_id: roomId } as any);
+       // Add a center terminal
+       this.gridStore.updateCell(x + Math.floor(w/2), y + Math.floor(h/2), { type: 'furniture', room_id: roomId } as any);
+       // Add data pad
+       this.gridStore.updateCell(x + Math.floor(w/2) + 1, y + Math.floor(h/2), { type: 'floor', room_id: roomId, inventory: [{ id: 'datapad', name: 'Secure Datapad' }] } as any);
+    } 
+    else if (templateName === 'storage') {
+       this.updateRoomTag("Storage Area");
+       // Place random clusters of crates (inventory) and large crates (structure_wall)
+       for (let r_x = x + 1; r_x < x + w - 1; r_x++) {
+           for (let r_y = y + 1; r_y < y + h - 1; r_y++) {
+               const rand = Math.random();
+               if (rand > 0.8) {
+                   this.gridStore.updateCell(r_x, r_y, { type: 'structure_wall', room_id: roomId } as any);
+               } else if (rand > 0.6) {
+                   this.gridStore.updateCell(r_x, r_y, { type: 'floor', room_id: roomId, inventory: [{ id: 'scrap', name: 'Tech Scrap' }] } as any);
+               }
+           }
+       }
+    }
+    else if (templateName === 'server_room') {
+       this.updateRoomTag("Server Mainframe");
+       this.updateRoomVfx('flicker_blue_data');
+       this.updateRoomThreat('medium');
+       // Create rows of servers
+       for (let r_x = x + 2; r_x < x + w - 2; r_x += 2) {
+           for (let r_y = y + 1; r_y < y + h - 1; r_y++) {
+               if (r_y !== y + Math.floor(h/2)) { // Leave a center aisle
+                   this.gridStore.updateCell(r_x, r_y, { type: 'furniture', room_id: roomId } as any);
+               }
+           }
+       }
+    }
+    else if (templateName === 'medbay') {
+       this.updateRoomTag("Medical Bay");
+       this.updateRoomVfx('flash_red_alert');
+       this.updateRoomThreat('critical');
+       // Place beds along the wall
+       for (let r_x = x + 1; r_x < x + w - 1; r_x += 2) {
+           this.gridStore.updateCell(r_x, y + 1, { type: 'furniture', room_id: roomId } as any);
+           this.gridStore.updateCell(r_x, y + 2, { type: 'floor', room_id: roomId, inventory: [{ id: 'medkit', name: 'Emergency Medkit' }] } as any);
+       }
+    }
+
+    // Ensure there is at least one door on the border
+    let hasDoor = false;
+    for (let r_x = x; r_x < x + w; r_x++) {
+        for (let r_y = y; r_y < y + h; r_y++) {
+           if (r_x === x || r_x === x + w - 1 || r_y === y || r_y === y + h - 1) {
+              const cell = this.gridStore.grid()[`${r_x},${r_y}`];
+              if (cell && (cell.type === 'door_locked' || cell.type === 'door_open')) {
+                 hasDoor = true;
+              }
+           }
+        }
+    }
+    if (!hasDoor) {
+       this.gridStore.updateCell(x + Math.floor(w/2), y, { type: 'door_locked', room_id: roomId } as any);
     }
   }
   setTab(tab: 'blocks' | 'paint' | 'properties') {
