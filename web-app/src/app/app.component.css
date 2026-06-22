@@ -162,14 +162,13 @@
 
 /* --- RESPONSIVE LAYOUTS --- */
 .billboard-container {
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   position: relative;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
   padding: 20px;
   box-sizing: border-box;
 }
