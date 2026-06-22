@@ -42,12 +42,11 @@ Every user starts here, entering their session PIN before choosing their stakeho
 ### Phase 0: Map Construction Process
 The GM utilizes the new Architect Construction Toolkit to physically draw out the layout of the facility, combining manual prefab placement with the procedural "Squeeze" WFC algorithm.
 
-**Manual Prefab Placement (Corridor & MedBay):**
-![GM Placing Corridor](../screenshots/screenshot_phase0_1_gm_placing.png)
-![GM Placing MedBay](../screenshots/screenshot_phase0_2_gm_placing.png)
-
-**Procedural Generation (WFC Squeeze):**
-![GM Generated Squeeze](../screenshots/screenshot_phase0_3_gm_generated.png)
+**Map Generation:**
+![GM Placing Phase 0](../screenshots/screenshot_phase0_1_gm_placing.png)
+![GM Placing 2 Phase 0](../screenshots/screenshot_phase0_2_gm_placing.png)
+![GM Generated Phase 0](../screenshots/screenshot_phase0_3_gm_generated.png)
+![GM Tile Painting Phase 0](../screenshots/screenshot_phase0_4_gm_painting.png)
 
 ### Phase 1: Post-Sync Baseline
 After construction is complete, the GM syncs the grid to the Real-Time Database, broadcasting the layout to all stakeholders.

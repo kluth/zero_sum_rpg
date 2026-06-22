@@ -14,9 +14,11 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
   @Input() characters: Record<string, any> = {};
   @Input() activePlayerId: string | null = null;
   @Input() mode: 'gm' | 'spectator' | 'player' | 'billboard' | 'netrunner' = 'gm';
+  @Input() paintMode: string | null = null; // TileType
   @ViewChild('pixiContainer') pixiContainer!: ElementRef<HTMLDivElement>;
   @Output() cellClicked = new EventEmitter<{x: number, y: number}>();
   @Output() roomClicked = new EventEmitter<string>();
+  @Output() cellPainted = new EventEmitter<{x: number, y: number, type: string}>();
 
   private app!: PIXI.Application;
   private viewport!: Viewport;
@@ -40,8 +42,25 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnChanges() {
+     if (this.viewport) {
+       if (this.paintMode) {
+         this.viewport.plugins.pause('drag');
+       } else {
+         this.viewport.plugins.resume('drag');
+       }
+     }
      const dim = this.gridStore.dimensions();
      this.renderMap(dim, this.gridStore.grid(), this.gridStore.rooms());
+  }
+
+  private emitPaint(e: any) {
+     if (!this.paintMode) return;
+     const worldPos = this.viewport.toWorld(e.global);
+     const x = Math.floor(worldPos.x / 32);
+     const y = Math.floor(worldPos.y / 32);
+     if (x >= 0 && y >= 0 && x < 50 && y < 30) {
+        this.cellPainted.emit({x, y, type: this.paintMode});
+     }
   }
 
   async ngAfterViewInit() {
@@ -66,8 +85,23 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
     this.app.stage.addChild(this.viewport);
     this.viewport.drag().pinch().wheel().decelerate();
 
+    let isPainting = false;
+    this.viewport.on('pointerdown', (e) => {
+      if (this.mode === 'gm' && this.paintMode) {
+        isPainting = true;
+        this.emitPaint(e);
+      }
+    });
+    this.viewport.on('pointermove', (e) => {
+      if (isPainting && this.mode === 'gm' && this.paintMode) {
+        this.emitPaint(e);
+      }
+    });
+    this.viewport.on('pointerup', () => isPainting = false);
+    this.viewport.on('pointerupoutside', () => isPainting = false);
+
     this.viewport.on('clicked', (e) => {
-      if (this.mode !== 'gm') return;
+      if (this.mode !== 'gm' || this.paintMode) return;
       const worldPos = this.viewport.toWorld(e.screen);
       const x = Math.floor(worldPos.x / 32);
       const y = Math.floor(worldPos.y / 32);
@@ -95,6 +129,28 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
     });
   }
 
+  private hasLineOfSight(x0: number, y0: number, x1: number, y1: number, grid: any): boolean {
+    let dx = Math.abs(x1 - x0);
+    let dy = Math.abs(y1 - y0);
+    let sx = (x0 < x1) ? 1 : -1;
+    let sy = (y0 < y1) ? 1 : -1;
+    let err = dx - dy;
+
+    while (true) {
+      if (x0 === x1 && y0 === y1) break;
+      const e2 = 2 * err;
+      if (e2 > -dy) { err -= dy; x0 += sx; }
+      if (e2 < dx) { err += dx; y0 += sy; }
+
+      if (x0 === x1 && y0 === y1) break;
+      const cell = grid[`${x0},${y0}`];
+      if (cell && (cell.type === 'wall' || cell.type === 'door_locked')) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   private renderMap(dim: any, grid: any, rooms: any) {
     if (!this.viewport || !dim) return;
 
@@ -118,16 +174,42 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
         let isVisible = true;
         if (this.mode === 'player' && myChar) {
            const dist = Math.sqrt(Math.pow(x - myChar.x, 2) + Math.pow(y - myChar.y, 2));
-           if (dist > (myChar.fowRadius || 6)) isVisible = false;
-        } else if (this.mode === 'spectator') {
-           // For spectator, base grid is globally visible just dark.
-           // Optional: dim base grid for spectator. We'll leave it visible.
+           if (dist > (myChar.fowRadius || 6)) {
+               isVisible = false;
+           } else {
+               isVisible = this.hasLineOfSight(Math.floor(myChar.x), Math.floor(myChar.y), x, y, grid);
+           }
         }
         
         if (isVisible) {
-           baseGrid.rect(x * 32, y * 32, 32, 32);
-           baseGrid.fill({ color: 0x111111 });
-           baseGrid.stroke({ color: 0x222222, width: 1 });
+           const cell = grid[`${x},${y}`];
+           if (!cell || cell.type === 'empty' || cell.type === 'floor') {
+              baseGrid.rect(x * 32, y * 32, 32, 32);
+              baseGrid.fill({ color: 0x111111 });
+              baseGrid.stroke({ color: 0x222222, width: 1 });
+           } else if (cell.type === 'wall') {
+              baseGrid.rect(x * 32, y * 32, 32, 32);
+              baseGrid.fill({ color: 0x00E5FF });
+           } else if (cell.type === 'door_locked') {
+              baseGrid.rect(x * 32, y * 32, 32, 32);
+              baseGrid.fill({ color: 0xFF003C });
+           } else if (cell.type === 'door_open') {
+              baseGrid.rect(x * 32, y * 32, 32, 32);
+              baseGrid.fill({ color: 0x111111 });
+              baseGrid.stroke({ color: 0x00FF66, width: 2 });
+           } else if (cell.type === 'cctv') {
+              baseGrid.rect(x * 32, y * 32, 32, 32);
+              baseGrid.fill({ color: 0x111111 });
+              baseGrid.stroke({ color: 0x222222, width: 1 });
+              baseGrid.circle(x * 32 + 16, y * 32 + 16, 8);
+              baseGrid.fill({ color: 0xFFFF00 });
+           } else if (cell.type === 'furniture') {
+              baseGrid.rect(x * 32, y * 32, 32, 32);
+              baseGrid.fill({ color: 0x111111 });
+              baseGrid.stroke({ color: 0x222222, width: 1 });
+              baseGrid.rect(x * 32 + 4, y * 32 + 4, 24, 24);
+              baseGrid.fill({ color: 0x888888 });
+           }
         }
       }
     }

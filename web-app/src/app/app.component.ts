@@ -61,16 +61,19 @@ const firebaseConfig = {
                   [mode]="'gm'"
                   [characters]="gameState().characters || {}"
                   [activePlayerId]="activePlayerId()"
+                  [paintMode]="activePaintMode()"
                   (cellClicked)="onCanvasCellClicked($event)" 
-                  (roomClicked)="onCanvasRoomClicked($event)">
+                  (roomClicked)="onCanvasRoomClicked($event)"
+                  (cellPainted)="onCellPainted($event)">
                </app-pixi-map>
             </div>
             
             <!-- PANE B: Construction Toolkit -->
             <div class="glass-panel" style="flex: 1; overflow-y: auto; border-color: #FF2A2A; display: flex; flex-direction: column;">
                <div style="display: flex; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid #FF2A2A; padding-bottom: 10px;">
-                 <button class="cyber-button" [ngClass]="{'active': activeTab() === 'blocks'}" (click)="activeTab.set('blocks')">BUILDING BLOCKS</button>
-                 <button class="cyber-button" [ngClass]="{'active': activeTab() === 'properties'}" (click)="activeTab.set('properties')">PROPERTIES</button>
+                 <button class="cyber-button" [ngClass]="{'active': activeTab() === 'blocks'}" (click)="setTab('blocks')">BUILDING BLOCKS</button>
+                 <button class="cyber-button" [ngClass]="{'active': activeTab() === 'paint'}" (click)="setTab('paint')">TILE PAINTER</button>
+                 <button class="cyber-button" [ngClass]="{'active': activeTab() === 'properties'}" (click)="setTab('properties')">PROPERTIES</button>
                </div>
 
                <div *ngIf="activeTab() === 'blocks'" style="flex: 1;">
@@ -98,6 +101,20 @@ const firebaseConfig = {
                  
                  <button class="cyber-button" style="border-color: #FF2A2A; color: #FF2A2A; width: 100%; margin-top: 20px;" (click)="publishMap()">SYNC GRID TO RTDB</button>
                  <button class="cyber-button" style="border-color: #FF00FF; color: #FF00FF; width: 100%; margin-top: 20px;" (click)="simulateChaos()">SIMULATE 7-PLAYER CHAOS</button>
+               </div>
+
+               <div *ngIf="activeTab() === 'paint'" style="flex: 1;">
+                 <h3 class="text-neon-blue">Tile Painter</h3>
+                 <p style="color: gray; font-size: 12px; margin-bottom: 10px;">Drag on the canvas to paint individual grid cells. Note: Walls and Locked Doors will block player Line of Sight.</p>
+                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+                    <div class="prefab-block" (click)="activePaintMode.set('wall')" [ngClass]="{'selected': activePaintMode() === 'wall'}" style="padding: 10px; border: 1px solid #00E5FF; cursor: pointer; color: #00E5FF;">Neon Wall</div>
+                    <div class="prefab-block" (click)="activePaintMode.set('door_locked')" [ngClass]="{'selected': activePaintMode() === 'door_locked'}" style="padding: 10px; border: 1px solid #FF003C; cursor: pointer; color: #FF003C;">Locked Door</div>
+                    <div class="prefab-block" (click)="activePaintMode.set('door_open')" [ngClass]="{'selected': activePaintMode() === 'door_open'}" style="padding: 10px; border: 1px solid #00FF66; cursor: pointer; color: #00FF66;">Open Door</div>
+                    <div class="prefab-block" (click)="activePaintMode.set('cctv')" [ngClass]="{'selected': activePaintMode() === 'cctv'}" style="padding: 10px; border: 1px solid #FFFF00; cursor: pointer; color: #FFFF00;">CCTV Node</div>
+                    <div class="prefab-block" (click)="activePaintMode.set('furniture')" [ngClass]="{'selected': activePaintMode() === 'furniture'}" style="padding: 10px; border: 1px solid #888888; cursor: pointer; color: #888888;">Furniture</div>
+                    <div class="prefab-block" (click)="activePaintMode.set('floor')" [ngClass]="{'selected': activePaintMode() === 'floor'}" style="padding: 10px; border: 1px solid gray; cursor: pointer; color: gray;">Eraser (Floor)</div>
+                 </div>
+                 <button class="cyber-button" style="border-color: #FF2A2A; color: #FF2A2A; width: 100%; margin-top: 20px;" (click)="publishMap()">SYNC GRID TO RTDB</button>
                </div>
 
                <div *ngIf="activeTab() === 'properties'" style="flex: 1;">
@@ -239,8 +256,9 @@ export class AppComponent implements OnInit {
 
   // Architect Store and UI State
   gridStore = inject(GridStore);
-  activeTab = signal<'blocks' | 'properties'>('blocks');
+  activeTab = signal<'blocks' | 'paint' | 'properties'>('blocks');
   activePrefab = signal<string>('corridor');
+  activePaintMode = signal<string | null>(null);
   selectedRoomId = signal<string | null>(null);
   selectedCell = signal<{x: number, y: number} | null>(null);
   blockPoolUsed = computed(() => Object.keys(this.gridStore.grid() || {}).length);
@@ -380,6 +398,23 @@ export class AppComponent implements OnInit {
        const room = this.gridStore.rooms()[roomId];
        const updatedRoom = { ...room, metadata: { ...room.metadata, threat } };
        this.gridStore.updateRoom(roomId, updatedRoom);
+    }
+  }
+  setTab(tab: 'blocks' | 'paint' | 'properties') {
+    this.activeTab.set(tab);
+    if (tab === 'paint') {
+      this.activePaintMode.set('wall');
+    } else {
+      this.activePaintMode.set(null);
+    }
+  }
+
+  onCellPainted(event: {x: number, y: number, type: string}) {
+    if (event.type === 'floor') {
+      // Treat 'floor' as eraser
+      this.gridStore.updateCell(event.x, event.y, { type: 'empty' } as any);
+    } else {
+      this.gridStore.updateCell(event.x, event.y, { type: event.type } as any);
     }
   }
 

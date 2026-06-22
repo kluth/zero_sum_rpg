@@ -71,6 +71,24 @@ const fs = require('fs');
   await gmPage.waitForTimeout(500);
   await gmPage.screenshot({ path: '/home/matthias/.gemini/antigravity-cli/brain/5d20c266-f3bf-43ba-b50f-a0640a3ef24d/screenshot_phase0_3_gm_generated.png' });
 
+  // Paint some walls
+  await gmPage.evaluate(() => {
+     const tabs = document.querySelectorAll('.cyber-button');
+     for(let t of tabs) { if(t.innerText.includes('TILE PAINTER')) t.click(); }
+  });
+  await gmPage.waitForTimeout(500);
+  await gmPage.evaluate(() => {
+     const blocks = document.querySelectorAll('.prefab-block');
+     for(let b of blocks) { if(b.innerText.includes('Neon Wall')) b.click(); }
+  });
+  // Simulate drag paint
+  await gmPage.mouse.move(box.x + 400, box.y + 400);
+  await gmPage.mouse.down();
+  await gmPage.mouse.move(box.x + 600, box.y + 400, { steps: 10 });
+  await gmPage.mouse.up();
+  await gmPage.waitForTimeout(500);
+  await gmPage.screenshot({ path: '/home/matthias/.gemini/antigravity-cli/brain/5d20c266-f3bf-43ba-b50f-a0640a3ef24d/screenshot_phase0_4_gm_painting.png' });
+
   // Sync
   await gmPage.evaluate(() => {
      const btn = Array.from(document.querySelectorAll('.cyber-button')).find(b => b.innerText.includes('SYNC GRID'));
