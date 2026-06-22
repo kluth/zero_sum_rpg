@@ -39,33 +39,35 @@ The following screenshots are **100% authentic, real browser captures** taken vi
 Every user starts here, entering their session PIN before choosing their stakeholder role.
 ![Lobby](../screenshots/screenshot_0_lobby.png)
 
-### B. Game Master (GM Override)
-The GM UI running the new WebGL engine. Notice the Architect Construction Toolkit on the right sidebar for dynamic room manipulation and WFC Squeeze generation.
-![GM View](../screenshots/screenshot_1_gm_view_real.png)
+### Phase 1: Initial Setup & Map Generation
+The GM initializes the "Custom Facility" using the WFC block generator, syncing the state to all stakeholders.
 
-### C. Twitch Spectator View
-The public viewing portal. It uses the exact same PixiJS canvas as the GM but tightly applies the `revealedTo` Fog of War algorithm to hide unrevealed map sectors.
-![Spectator View](../screenshots/screenshot_2_spectator_view_real.png)
+**GM Map Builder:**
+![GM Phase 1](../screenshots/screenshot_phase1_1_gm.png)
 
-### D. Corporate Billboard
-The physical/digital ("Phygital") monitor view intended for TV screens in the physical room. Flashes alarms and tracks Global Heat and Civilian Casualties.
-![Billboard View](../screenshots/screenshot_3_billboard_view_real.png)
+**Spectator Fog of War:**
+![Spectator Phase 1](../screenshots/screenshot_phase1_2_spectator.png)
 
-### E. Netrunner Shell
-The dedicated CLI view for the hacker class, bypassing the graphical map entirely in favor of an AI-driven, declarative Terminal interface.
-![Netrunner View](../screenshots/screenshot_4_netrunner_view_real.png)
+**Billboard / Netrunner Baseline:**
+![Billboard Phase 1](../screenshots/screenshot_phase1_3_billboard.png)
+![Netrunner Phase 1](../screenshots/screenshot_phase1_4_netrunner.png)
+
+### Phase 2: Mid-Session Crisis Event
+The GM manually escalates the Global Heat Level to Critical (9), triggering visual alarms on the Billboard. Simultaneously, the Netrunner executes an `overload` command against the ICE mainframe, crashing the Twitch Chaos Market.
+
+**GM Escalation:**
+![GM Phase 2](../screenshots/screenshot_phase2_1_gm.png)
+
+**Spectator Response:**
+![Spectator Phase 2](../screenshots/screenshot_phase2_2_spectator.png)
+
+**Billboard Alert (Red Mode) & Netrunner Intrusion Logs:**
+![Billboard Phase 2](../screenshots/screenshot_phase2_3_billboard.png)
+![Netrunner Phase 2](../screenshots/screenshot_phase2_4_netrunner.png)
 
 ---
 
-## 4. Android Player Uplink (Mobile View)
-
-While the web clients handle macro-level management and spectating, the Android App is designed for individual players at the table to receive localized intel.
-
-The Android client was successfully verified to parse the new O(1) dictionary layout (`gameState/grid` and `gameState/rooms`). Here is the high-fidelity mock of the updated Android interface, built entirely with native Jetpack Compose, showing a single player's Fog of War view:
-
-![Android Player Uplink](../screenshots/android_uplink_phase5_1782116860063.jpg)
-
----
+<!-- Android mock removed as requested -->
 
 ## Conclusion
 The **Zero Sum RPG 2026 Master Directive** has been completely fulfilled. The repository is purged of bloat, the state management is hyper-optimized, the visual engine is hardware-accelerated, and all stakeholders (GM, Spectator, Player, Netrunner) are perfectly synchronized.
