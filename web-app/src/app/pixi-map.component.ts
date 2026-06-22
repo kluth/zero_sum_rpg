@@ -115,9 +115,20 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
     const baseGrid = new PIXI.Graphics();
     for(let x=0; x<dim.width; x++){
       for(let y=0; y<dim.height; y++){
-        baseGrid.rect(x * 32, y * 32, 32, 32);
-        baseGrid.fill({ color: 0x111111 });
-        baseGrid.stroke({ color: 0x222222, width: 1 });
+        let isVisible = true;
+        if (this.mode === 'player' && myChar) {
+           const dist = Math.sqrt(Math.pow(x - myChar.x, 2) + Math.pow(y - myChar.y, 2));
+           if (dist > (myChar.fowRadius || 6)) isVisible = false;
+        } else if (this.mode === 'spectator') {
+           // For spectator, base grid is globally visible just dark.
+           // Optional: dim base grid for spectator. We'll leave it visible.
+        }
+        
+        if (isVisible) {
+           baseGrid.rect(x * 32, y * 32, 32, 32);
+           baseGrid.fill({ color: 0x111111 });
+           baseGrid.stroke({ color: 0x222222, width: 1 });
+        }
       }
     }
     this.viewport.addChild(baseGrid);

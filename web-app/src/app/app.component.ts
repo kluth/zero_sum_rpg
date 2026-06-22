@@ -404,14 +404,22 @@ export class AppComponent implements OnInit {
       if (!this.db || !this.sessionId()) return;
       const chars: Record<string, any> = {};
       
-      // Spawn players somewhat centrally (e.g. 20-30 range on 50x30 map)
+      const rooms = this.gridStore.rooms();
+      const roomKeys = Object.keys(rooms);
+      
       this.protagonistList.forEach((p, idx) => {
+         let cx = 20, cy = 15;
+         if (roomKeys.length > 0) {
+            const r = rooms[roomKeys[idx % roomKeys.length]];
+            cx = r.bounds.x + Math.floor(r.bounds.w / 2);
+            cy = r.bounds.y + Math.floor(r.bounds.h / 2);
+         }
          chars[p.id] = { 
             id: p.id, 
             name: p.name, 
             role: p.role, 
-            x: 20 + Math.floor(Math.random()*10), 
-            y: 10 + Math.floor(Math.random()*10), 
+            x: cx, 
+            y: cy, 
             fowRadius: 5 + Math.floor(Math.random()*4) 
          };
       });
