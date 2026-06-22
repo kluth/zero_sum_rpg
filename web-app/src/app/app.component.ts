@@ -1,5 +1,6 @@
 import { Component, OnInit, signal, computed, effect, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import * as tmi from 'tmi.js';
 import { FormsModule } from '@angular/forms';
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, onValue, set, connectDatabaseEmulator, push, get } from 'firebase/database';
@@ -31,12 +32,12 @@ const firebaseConfig = {
     
     <!-- LOBBY SCREEN -->
     <div *ngIf="!sessionId()" class="lobby-container">
-      <h1 class="text-neon-blue glitch-text header-brutalist" data-text="ZERO SUM" style="font-size: 100px; margin-bottom: 10px; font-weight: 900;">ZERO SUM</h1>
-      <div class="data-mono" style="color: gray; letter-spacing: 15px; margin-bottom: 40px; font-size: 24px;">UPLINK TERMINAL</div>
+      <h2 class="header-brutalist text-neon-blue" style="font-size: 48px; text-shadow: 0 0 20px #00F0FF; margin-bottom: 50px;">ZERO SUM RPG</h2>
       
-      <input type="text" class="pin-input data-mono" placeholder="SESSION PIN" maxlength="6" (input)="onPinInput($event)" />
+      <input class="cyber-input" type="text" placeholder="ENTER SESSION PIN" [value]="sessionPinInput()" (input)="sessionPinInput.set($any($event.target).value)" style="width: 100%; max-width: 300px; padding: 15px; font-size: 24px; background: rgba(0,0,0,0.8); border: 2px solid #00F0FF; color: #00F0FF; text-align: center; margin-bottom: 20px; font-family: 'JetBrains Mono', monospace; text-transform: uppercase;">
+      <input class="cyber-input" type="text" placeholder="TWITCH CHANNEL (OPTIONAL)" [value]="twitchChannelInput()" (input)="twitchChannelInput.set($any($event.target).value)" style="width: 100%; max-width: 300px; padding: 15px; font-size: 16px; background: rgba(0,0,0,0.8); border: 2px solid #39FF14; color: #39FF14; text-align: center; margin-bottom: 40px; font-family: 'JetBrains Mono', monospace;">
       
-      <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-top: 40px;">
+      <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
         <button class="cyber-button" (click)="joinSession('spectator')">SPECTATE</button>
         <button class="cyber-button" style="border-color: #FF003C; color: #FF003C; background: rgba(255,0,60,0.1);" (click)="joinSession('gm')">GM OVERRIDE</button>
         <button class="cyber-button" style="border-color: #FFB000; color: #FFB000; background: rgba(255,176,0,0.1);" (click)="joinSession('billboard')">CORPORATE BILLBOARD</button>
@@ -290,7 +291,9 @@ const firebaseConfig = {
 export class AppComponent implements OnInit {
   gameState = signal<any>({ characters: {}, map: null, traumaLog: {}, clocks: {}, flashbacks: {} });
   heatLevel = computed(() => this.gameState().heatLevel || 1);
-  chaosMarketValue = computed(() => this.gameState().chaosMarketValue || 0);
+  chaosMarketValue = computed(() => this.gameState()?.chaosMarketValue || 0);
+
+  tmiClient: any = null;
   
   getPublicClocks(): any[] {
     const clocks = this.gameState().clocks || {};
@@ -316,6 +319,9 @@ export class AppComponent implements OnInit {
     const active: any = Object.values(fb).find((f: any) => f.status === 'active');
     return active ? active.description : '';
   });
+  
+  sessionPinInput = signal<string>('');
+  twitchChannelInput = signal<string>('');
   
   sessionId = signal<string | null>(null);
   mode = signal<string | null>(null);
@@ -348,7 +354,6 @@ export class AppComponent implements OnInit {
      return p ? p.role : 'UNKNOWN';
   }
 
-  inputPin: string = '';
   private db: any;
   private chaosInterval: any;
   
@@ -527,14 +532,19 @@ export class AppComponent implements OnInit {
     return this.gameState() && this.gameState().characters ? Object.keys(this.gameState().characters) : [];
   }
 
-  onPinInput(event: any) {
-    this.inputPin = event.target.value;
-  }
-
-  joinSession(selectedMode: string, playerId?: string) {
-    if (this.inputPin.length >= 4) {
-      let url = `/?session=${this.inputPin}&mode=${selectedMode}`;
-      if (playerId) url += `&player=${playerId}`;
+  joinSession(mode: string, playerId?: string) {
+    const pin = this.sessionPinInput().toUpperCase();
+    if (!pin || pin.length < 4) return;
+    
+    let url = `/?session=${pin}&mode=${mode}`;
+    if (playerId) url += `&player=${playerId}`;
+    
+    if (mode === 'gm' && this.twitchChannelInput()) {
+      const dbRef = ref(this.db, `sessions/${pin}/gameState/twitchChannel`);
+      set(dbRef, this.twitchChannelInput().toLowerCase()).then(() => {
+         window.location.href = url;
+      });
+    } else {
       window.location.href = url;
     }
   }
@@ -612,6 +622,9 @@ export class AppComponent implements OnInit {
     onValue(stateRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
+        if (this.isGmMode() && data.twitchChannel && !this.tmiClient) {
+          this.initTmiClient(data.twitchChannel);
+        }
         data.characters = data.characters || {};
         data.traumaLog = data.traumaLog || {};
         this.gameState.set(data);
@@ -683,6 +696,38 @@ export class AppComponent implements OnInit {
           this.terminalLogs.update(logs => [...logs, 'LLM-ICE: Command syntax acknowledged. No lethal action authorized.']);
        }
      }, 1000);
+  }
+
+  initTmiClient(channel: string) {
+    this.tmiClient = new tmi.Client({
+      connection: { secure: true, reconnect: true },
+      channels: [ channel ]
+    });
+
+    this.tmiClient.connect().catch(console.error);
+
+    this.tmiClient.on('message', (channelName: string, tags: any, message: string, self: boolean) => {
+      if (self) return;
+      const msg = message.toLowerCase();
+      if (msg.includes('!chaos')) {
+        this.injectChaosFromTwitch(10);
+      }
+    });
+
+    this.tmiClient.on('cheer', (channelName: string, userstate: any, message: string) => {
+      const bits = parseInt(userstate.bits, 10);
+      if (bits > 0) {
+        this.injectChaosFromTwitch(Math.max(10, Math.floor(bits / 10)));
+      }
+    });
+  }
+
+  injectChaosFromTwitch(amount: number) {
+    if (!this.sessionId()) return;
+    get(ref(this.db, `sessions/${this.sessionId()}/gameState/chaosMarketValue`)).then(snapshot => {
+      const current = snapshot.val() || 0;
+      set(ref(this.db, `sessions/${this.sessionId()}/gameState/chaosMarketValue`), current + amount);
+    });
   }
 
   simulateTwitchDonation() {
