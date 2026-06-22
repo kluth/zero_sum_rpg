@@ -469,7 +469,7 @@ export class AppComponent implements OnInit {
     this.wfcError.set("INITIALIZING PROCEDURAL GENERATION...");
     
     // Clean slate
-    this.gridStore.setState({ dimensions: { w: 50, h: 30 }, grid: {}, rooms: {} });
+    this.gridStore.setState({ dimensions: { width: 50, height: 30 }, grid: {}, rooms: {} });
     
     // Real Procedural Generation Logic (BSP / Random Carve)
     const newRooms: Record<string, any> = {};
@@ -493,7 +493,7 @@ export class AppComponent implements OnInit {
                if (r_x === x || r_x === x + w - 1 || r_y === y || r_y === y + h - 1) {
                   // Poke a random hole for a door
                   if (Math.random() > 0.85) {
-                     this.gridStore.updateCell(r_x, r_y, { type: 'structure_door', room_id: roomId });
+                     this.gridStore.updateCell(r_x, r_y, { type: 'door_locked', room_id: roomId });
                   } else {
                      this.gridStore.updateCell(r_x, r_y, { type: 'structure_wall', room_id: roomId });
                   }
