@@ -17,9 +17,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import kotlin.random.Random
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedTextFieldDefaults
 
 val NeonRed = Color(0xFFFF2A2A)
 val NeonBlue = Color(0xFF00E5FF)
@@ -35,17 +42,9 @@ class MainActivity : ComponentActivity() {
         } else {
             NetworkManager.connect("http://10.0.2.2:9000")
         }
-        NetworkManager.resetState()
-        
-        // Broadcast character profile
-        val profile = JSONObject().apply {
-            put("id", "char_1")
-            put("name", "KAIRO 'GHOST' CHEN")
-            put("role", "CYBER-INFILTRATOR")
-            put("hp", 78)
-            put("stealth", 85)
+        if (isTestLab) {
+            NetworkManager.joinSession("TEST")
         }
-        NetworkManager.updateCharacter(profile)
         
         setContent {
             MaterialTheme(
@@ -60,7 +59,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ZeroSumApp()
+                    ZeroSumApp(isTestLab)
                 }
             }
         }
@@ -72,14 +71,100 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+enum class AppScreen { LOBBY, GAME }
+
 @Composable
-fun ZeroSumApp() {
+fun ZeroSumApp(isTestLab: Boolean) {
+    var currentScreen by remember { mutableStateOf(if (isTestLab) AppScreen.GAME else AppScreen.LOBBY) }
+    var sessionId by remember { mutableStateOf(if (isTestLab) "TEST" else "") }
+
+    if (currentScreen == AppScreen.LOBBY) {
+        LobbyScreen(
+            onHost = {
+                sessionId = NetworkManager.hostSession()
+                currentScreen = AppScreen.GAME
+            },
+            onJoin = { pin ->
+                NetworkManager.joinSession(pin)
+                sessionId = pin
+                currentScreen = AppScreen.GAME
+            }
+        )
+    } else {
+        GameScreen(sessionId)
+    }
+}
+
+@Composable
+fun LobbyScreen(onHost: () -> Unit, onJoin: (String) -> Unit) {
+    var joinPin by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier.fillMaxSize().padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text("ZERO SUM", color = NeonBlue, fontSize = 48.sp, fontWeight = FontWeight.Bold, letterSpacing = 4.sp)
+        Spacer(modifier = Modifier.height(64.dp))
+        
+        Button(
+            onClick = onHost,
+            colors = ButtonDefaults.buttonColors(containerColor = NeonRed.copy(alpha = 0.2f)),
+            modifier = Modifier.fillMaxWidth().height(64.dp).border(2.dp, NeonRed, RoundedCornerShape(8.dp)),
+            shape = RoundedCornerShape(8.dp)
+        ) {
+            Text("HOST NEW OPERATION", color = NeonRed, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+        }
+        
+        Spacer(modifier = Modifier.height(32.dp))
+        Text("--- OR ---", color = Color.Gray, fontSize = 16.sp)
+        Spacer(modifier = Modifier.height(32.dp))
+        
+        OutlinedTextField(
+            value = joinPin,
+            onValueChange = { joinPin = it.uppercase().take(6) },
+            label = { Text("ENTER SESSION PIN", color = NeonBlue) },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = NeonBlue,
+                unfocusedBorderColor = NeonBlue.copy(alpha = 0.5f),
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White
+            )
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(
+            onClick = { if (joinPin.length >= 4) onJoin(joinPin) },
+            colors = ButtonDefaults.buttonColors(containerColor = NeonBlue.copy(alpha = 0.2f)),
+            modifier = Modifier.fillMaxWidth().height(64.dp).border(2.dp, NeonBlue, RoundedCornerShape(8.dp)),
+            shape = RoundedCornerShape(8.dp)
+        ) {
+            Text("JOIN SQUAD", color = NeonBlue, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+        }
+    }
+}
+
+@Composable
+fun GameScreen(sessionId: String) {
+    LaunchedEffect(Unit) {
+        NetworkManager.resetState()
+        val profile = JSONObject().apply {
+            put("id", "char_1")
+            put("name", "KAIRO 'GHOST' CHEN")
+            put("role", "CYBER-INFILTRATOR")
+            put("hp", 78)
+            put("stealth", 85)
+        }
+        NetworkManager.updateCharacter(profile)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        HeaderSection()
+        HeaderSection(sessionId)
         Spacer(modifier = Modifier.height(16.dp))
         Column(modifier = Modifier.weight(1f)) {
             CharacterSheetSection(modifier = Modifier.weight(1f))
@@ -96,7 +181,7 @@ fun ZeroSumApp() {
 }
 
 @Composable
-fun HeaderSection() {
+fun HeaderSection(sessionId: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -114,6 +199,8 @@ fun HeaderSection() {
             letterSpacing = 2.sp
         )
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text("SESSION: $sessionId", color = Color.White, fontSize = 12.sp, modifier = Modifier.align(Alignment.CenterVertically))
+            Spacer(modifier = Modifier.width(8.dp))
             Text("LIVE SERVER SYNC", color = NeonRed, fontSize = 12.sp, modifier = Modifier.align(Alignment.CenterVertically))
         }
     }
@@ -187,6 +274,7 @@ fun StatBar(label: String, current: Int, max: Int, color: Color) {
 @Composable
 fun DiceRollerSection(modifier: Modifier = Modifier) {
     val coroutineScope = rememberCoroutineScope()
+    val haptic = LocalHapticFeedback.current
     val gameState by NetworkManager.gameState.collectAsState()
     
     // Check if there are any recent rolls from the network
@@ -217,10 +305,14 @@ fun DiceRollerSection(modifier: Modifier = Modifier) {
         
         Button(
             onClick = {
+                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 coroutineScope.launch {
                     isRolling = true
-                    delay(500) // fake animation
+                    delay(200) 
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    delay(300)
                     val result = Random.nextInt(1, 21)
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     NetworkManager.rollDice(result) // emit to server
                     isRolling = false
                 }

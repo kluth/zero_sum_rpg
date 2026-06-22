@@ -15,10 +15,13 @@ object NetworkManager {
     private val _gameState = MutableStateFlow<JSONObject?>(null)
     val gameState: StateFlow<JSONObject?> = _gameState
 
+    private var sessionId: String = "DEFAULT"
+    private var valueEventListener: ValueEventListener? = null
+
     fun resetState() {
         try {
-            database.child("gameState/map").removeValue()
-            database.child("gameState/recentRolls").removeValue()
+            database.child("sessions/$sessionId/gameState/map").removeValue()
+            database.child("sessions/$sessionId/gameState/recentRolls").removeValue()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -57,7 +60,24 @@ object NetworkManager {
                 e.printStackTrace()
             }
         }
-        database.child("gameState").addValueEventListener(object : ValueEventListener {
+        // Listener moved to joinSession()
+    }
+
+    fun hostSession(): String {
+        val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        val newSessionId = (1..6).map { chars.random() }.joinToString("")
+        joinSession(newSessionId)
+        return newSessionId
+    }
+
+    fun joinSession(newSessionId: String) {
+        valueEventListener?.let {
+            database.child("sessions/$sessionId/gameState").removeEventListener(it)
+        }
+        sessionId = newSessionId
+        _gameState.value = null
+        
+        val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     try {
@@ -75,7 +95,9 @@ object NetworkManager {
             override fun onCancelled(error: DatabaseError) {
                 error.toException().printStackTrace()
             }
-        })
+        }
+        valueEventListener = listener
+        database.child("sessions/$sessionId/gameState").addValueEventListener(listener)
     }
 
     fun updateCharacter(profile: JSONObject) {
@@ -87,7 +109,7 @@ object NetworkManager {
                 "hp" to profile.optInt("hp"),
                 "stealth" to profile.optInt("stealth")
             )
-            database.child("gameState/characters/$characterId").setValue(charData)
+            database.child("sessions/$sessionId/gameState/characters/$characterId").setValue(charData)
         }
     }
 
@@ -111,7 +133,7 @@ object NetworkManager {
             ))
         }
         
-        database.child("gameState/recentRolls").setValue(newRollsList)
+        database.child("sessions/$sessionId/gameState/recentRolls").setValue(newRollsList)
     }
 
     fun syncMap(mapJson: JSONObject) {
@@ -133,7 +155,7 @@ object NetworkManager {
                 list
             }
         )
-        database.child("gameState/map").setValue(mapData)
+        database.child("sessions/$sessionId/gameState/map").setValue(mapData)
     }
 
     fun disconnect() {
