@@ -9,6 +9,10 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "paths": {
+      "@core-domain/*": ["../core-domain/src/*"]
+    },
     "esModuleInterop": true,
     "sourceMap": true,
     "declaration": false,

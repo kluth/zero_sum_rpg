@@ -5,6 +5,8 @@ import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, onValue, set, connectDatabaseEmulator, push, get } from 'firebase/database';
 import { PixiMapComponent } from './pixi-map.component';
 import { GridStore, RoomData } from './grid.store';
+import { executeEmergencyHeal, EmergencyHealCommand } from '@core-domain/ledger/EmergencyHeal';
+import { PlayerCharacter, CivilianEntity } from '@core-domain/ledger/Entities';
 
 const firebaseConfig = {
   projectId: "zero-sum-rpg-2026",
@@ -245,6 +247,7 @@ const firebaseConfig = {
             <h2 class="text-neon-blue" style="font-size: 24px;">UPLINK // {{ getPlayerName() }}</h2>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
               <div style="color: #00FF00; font-size: 18px;">ROLE: {{ getPlayerRole() }}</div>
+              <button class="cyber-button" style="border-color: #FF00FF; color: #FF00FF; font-size: 12px; margin: 0; padding: 5px 15px;" (click)="triggerEmergencyHeal()">[ZERO SUM] EMERGENCY HEAL</button>
               <div style="color: #FF2A2A; font-size: 18px;">Heat Level: {{ heatLevel() }}</div>
             </div>
             
@@ -612,7 +615,56 @@ export class AppComponent implements OnInit {
   simulateTwitchDonation() {
      if (!this.db || !this.sessionId()) return;
      const current = this.chaosMarketValue();
-     set(ref(this.db, `sessions/${this.sessionId()}/gameState/chaosMarketValue`), current + 500);
+     const newValue = current + Math.floor(Math.random() * 50) + 10;
+     set(ref(this.db, `sessions/${this.sessionId()}/gameState/chaosMarketValue`), newValue);
+  }
+
+  triggerEmergencyHeal() {
+    if (!this.db || !this.sessionId() || !this.activePlayerId()) return;
+
+    const chars = this.gameState().characters || {};
+    const myChar = chars[this.activePlayerId()!];
+    if (!myChar) return;
+
+    // Build Hexagonal Adapters (Map JSON state to Domain Entities)
+    const playerEntity: PlayerCharacter = {
+      id: this.activePlayerId()!,
+      hp: myChar.hp || 100,
+      maxHp: 100,
+      isDead: (myChar.hp || 100) <= 0
+    };
+
+    // Dummy civilian population for now (normally fetched from Firebase)
+    const availableCivilians: CivilianEntity[] = [
+      { id: 'civ-1', name: 'Maintenance Tech 44', lifeSupport: 100, isAlive: true },
+      { id: 'civ-2', name: 'Dr. Aris Thorne', lifeSupport: 50, isAlive: true }
+    ];
+
+    const command: EmergencyHealCommand = {
+      playerId: playerEntity.id,
+      requestedHp: 25,
+      player: playerEntity,
+      availableCivilians
+    };
+
+    // Execute Pure Domain Logic
+    const result = executeEmergencyHeal(command);
+
+    if (result.isSuccess()) {
+      const successData = result.value;
+      
+      // Persist State Mutation via Infrastructure Adapter (Firebase)
+      const updates: any = {};
+      updates[`sessions/${this.sessionId()}/gameState/characters/${this.activePlayerId()}/hp`] = successData.newCharacterHp;
+      updates[`sessions/${this.sessionId()}/gameState/traumaLog/${successData.generatedCasualty.eventId}`] = successData.generatedCasualty;
+      
+      import('firebase/database').then(({ update }) => {
+        update(ref(this.db!), updates);
+      });
+      alert(`HEAL SUCCESS. ${successData.actualHpRestored} HP restored. CASUALTY LOGGED: ${successData.generatedCasualty.civilianName}.`);
+    } else {
+      alert(`HEAL FAILED. Error: ${result.error.message}`);
+    }
   }
 
   // IoT Web Audio API Siren
