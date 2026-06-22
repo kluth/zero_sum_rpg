@@ -139,6 +139,7 @@ const firebaseConfig = {
                     <div class="prefab-block" (click)="activePaintMode.set('door_open')" [ngClass]="{'selected': activePaintMode() === 'door_open'}" style="padding: 10px; border: 1px solid #00FF66; cursor: pointer; color: #00FF66; text-align: center;">Open Door</div>
                     <div class="prefab-block" (click)="activePaintMode.set('cctv')" [ngClass]="{'selected': activePaintMode() === 'cctv'}" style="padding: 10px; border: 1px solid #FFFF00; cursor: pointer; color: #FFFF00; text-align: center;">CCTV Node</div>
                     <div class="prefab-block" (click)="activePaintMode.set('furniture')" [ngClass]="{'selected': activePaintMode() === 'furniture'}" style="padding: 10px; border: 1px solid #888888; cursor: pointer; color: #888888; text-align: center;">Terminal</div>
+                    <div class="prefab-block" (click)="activePaintMode.set('server_rack')" [ngClass]="{'selected': activePaintMode() === 'server_rack'}" style="padding: 10px; border: 1px solid #00FF00; cursor: pointer; color: #00FF00; text-align: center;">Server Rack</div>
                     <div class="prefab-block" (click)="activePaintMode.set('cupboard')" [ngClass]="{'selected': activePaintMode() === 'cupboard'}" style="padding: 10px; border: 1px solid #444444; cursor: pointer; color: #888888; text-align: center;">Cupboard</div>
                     <div class="prefab-block" (click)="activePaintMode.set('storage_box')" [ngClass]="{'selected': activePaintMode() === 'storage_box'}" style="padding: 10px; border: 1px solid #666666; cursor: pointer; color: #aaaaaa; text-align: center;">Storage Box</div>
                     <div class="prefab-block" (click)="activePaintMode.set('floor')" [ngClass]="{'selected': activePaintMode() === 'floor'}" style="padding: 10px; border: 1px solid gray; cursor: pointer; color: gray; text-align: center;">Eraser (Floor)</div>
@@ -714,9 +715,9 @@ export class AppComponent implements OnInit {
 
     if (templateName === 'office') {
        this.updateRoomTag("Corporate Office");
-       // Place desks in corners
-       this.gridStore.updateCell(x + 1, y + 1, { type: 'furniture', room_id: roomId } as any);
-       this.gridStore.updateCell(x + w - 2, y + h - 2, { type: 'furniture', room_id: roomId } as any);
+       // Place cupboards (lockers) in corners
+       this.gridStore.updateCell(x + 1, y + 1, { type: 'cupboard', room_id: roomId } as any);
+       this.gridStore.updateCell(x + w - 2, y + h - 2, { type: 'cupboard', room_id: roomId } as any);
        // Add a center terminal
        this.gridStore.updateCell(x + Math.floor(w/2), y + Math.floor(h/2), { type: 'furniture', room_id: roomId } as any);
        // Add data pad
@@ -724,17 +725,19 @@ export class AppComponent implements OnInit {
     } 
     else if (templateName === 'storage') {
        this.updateRoomTag("Storage Area");
-       // Place random clusters of crates (inventory) and large crates (structure_wall)
+       // Place random clusters of crates (inventory) and large storage boxes
        for (let r_x = x + 1; r_x < x + w - 1; r_x++) {
            for (let r_y = y + 1; r_y < y + h - 1; r_y++) {
                const rand = Math.random();
                if (rand > 0.8) {
-                   this.gridStore.updateCell(r_x, r_y, { type: 'structure_wall', room_id: roomId } as any);
+                   this.gridStore.updateCell(r_x, r_y, { type: 'storage_box', room_id: roomId } as any);
                } else if (rand > 0.6) {
                    this.gridStore.updateCell(r_x, r_y, { type: 'floor', room_id: roomId, inventory: [{ id: 'scrap', name: 'Tech Scrap' }] } as any);
                }
            }
        }
+       // Make one of the surrounding walls breakable for a secret hideout
+       this.gridStore.updateCell(x + Math.floor(w/2), y, { type: 'breakable_wall', room_id: roomId } as any);
     }
     else if (templateName === 'server_room') {
        this.updateRoomTag("Server Mainframe");
@@ -744,7 +747,7 @@ export class AppComponent implements OnInit {
        for (let r_x = x + 2; r_x < x + w - 2; r_x += 2) {
            for (let r_y = y + 1; r_y < y + h - 1; r_y++) {
                if (r_y !== y + Math.floor(h/2)) { // Leave a center aisle
-                   this.gridStore.updateCell(r_x, r_y, { type: 'furniture', room_id: roomId } as any);
+                   this.gridStore.updateCell(r_x, r_y, { type: 'server_rack', room_id: roomId } as any);
                }
            }
        }

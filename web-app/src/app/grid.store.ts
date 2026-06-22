@@ -1,6 +1,6 @@
 import { signalStore, withState, withMethods, patchState } from '@ngrx/signals';
 
-export type TileType = 'empty' | 'wall' | 'floor' | 'door_open' | 'door_locked' | 'cctv' | 'furniture' | 'structure_wall' | 'breakable_wall' | 'cupboard' | 'storage_box';
+export type TileType = 'empty' | 'wall' | 'floor' | 'door_open' | 'door_locked' | 'cctv' | 'furniture' | 'structure_wall' | 'breakable_wall' | 'cupboard' | 'storage_box' | 'server_rack';
 
 export type GridCell = {
   type: TileType;

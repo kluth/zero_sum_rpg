@@ -233,6 +233,13 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
               baseGrid.stroke({ color: 0x666666, width: 2 });
               baseGrid.rect(x * 32 + 8, y * 32 + 8, 16, 16);
               baseGrid.fill({ color: 0x666666 });
+           } else if (cell.type === 'server_rack') {
+              baseGrid.rect(x * 32, y * 32, 32, 32);
+              baseGrid.fill({ color: 0x111111 });
+              baseGrid.stroke({ color: 0x333333, width: 1 });
+              baseGrid.rect(x * 32 + 4, y * 32 + 2, 24, 28);
+              baseGrid.fill({ color: 0x002200 });
+              baseGrid.stroke({ color: 0x00FF00, width: 1 });
            }
         }
       }

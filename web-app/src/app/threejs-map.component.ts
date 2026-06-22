@@ -200,11 +200,28 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
       metalness: 0.5,
     });
 
+    const crackedTex = textureLoader.load('assets/textures/cracked_wall.jpg');
     const breakableWallMaterial = new THREE.MeshStandardMaterial({
-      color: 0xaa5522, // Rusty / weakened color
-      map: wallTex,
-      roughness: 0.9,
-      metalness: 0.1,
+      color: 0xcccccc,
+      map: crackedTex,
+      emissive: 0x331100, // Slight orange glow from cracks
+      roughness: 0.8,
+      metalness: 0.2,
+    });
+
+    const lockerTex = textureLoader.load('assets/textures/locker.jpg');
+    const cupboardMat = new THREE.MeshStandardMaterial({
+      map: lockerTex,
+      roughness: 0.4,
+      metalness: 0.8
+    });
+
+    const serverTex = textureLoader.load('assets/textures/server.jpg');
+    const serverMat = new THREE.MeshStandardMaterial({
+      map: serverTex,
+      emissive: 0x003311,
+      roughness: 0.3,
+      metalness: 0.9
     });
 
     // Floor Grid Surface
@@ -268,10 +285,17 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
         // Cupboards (Tall Storage)
         if (cell && cell.type === 'cupboard') {
           const cupboardGeo = new THREE.BoxGeometry(0.8, 1.5, 0.8);
-          const cupboardMat = new THREE.MeshStandardMaterial({ color: 0x444444, metalness: 0.3, roughness: 0.9 });
           const cupboard = new THREE.Mesh(cupboardGeo, cupboardMat);
           cupboard.position.set(x, 0.75, z);
           this.mapGroup.add(cupboard);
+        }
+
+        // Server Racks
+        if (cell && cell.type === 'server_rack') {
+          const serverGeo = new THREE.BoxGeometry(0.8, 1.8, 0.8);
+          const server = new THREE.Mesh(serverGeo, serverMat);
+          server.position.set(x, 0.9, z);
+          this.mapGroup.add(server);
         }
 
         // Storage Boxes
