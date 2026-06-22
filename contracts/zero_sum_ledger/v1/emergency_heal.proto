@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package zero_sum_rpg.ledger.v1;
+
+import "google/protobuf/timestamp.proto";
+
+// Service contract for the ZeroSumLedger boundary.
+// It handles all transactions requiring equivalent exchange.
+service ZeroSumLedgerService {
+  // Submits an emergency heal command. The domain will mathematically
+  // determine the required civilian casualty to satisfy equivalent exchange.
+  rpc SubmitEmergencyHeal (EmergencyHealRequest) returns (EmergencyHealResponse);
+}
+
+// Command: Request an emergency heal for a player character.
+message EmergencyHealRequest {
+  string session_id = 1;
+  string player_character_id = 2;
+  int32 requested_hp_restoration = 3; // The amount of HP requested (e.g., 25).
+  google.protobuf.Timestamp timestamp = 4;
+}
+
+// Result: The state mutation response.
+// By enforcing the Result pattern at the boundary, errors are explicitly typed.
+message EmergencyHealResponse {
+  oneof result {
+    Success success = 1;
+    Failure failure = 2;
+  }
+
+  message Success {
+    int32 actual_hp_restored = 1;
+    int32 new_character_hp = 2;
+    TraumaEvent generated_casualty = 3;
+  }
+
+  message Failure {
+    ErrorCode code = 1;
+    string message = 2;
+  }
+}
+
+enum ErrorCode {
+  ERROR_CODE_UNSPECIFIED = 0;
+  ERROR_CODE_INSUFFICIENT_CIVILIANS = 1; // No civilians left to drain.
+  ERROR_CODE_PLAYER_DEAD = 2;           // Player is already dead.
+  ERROR_CODE_OVERHEAL = 3;              // Player is already at max HP.
+}
+
+// Domain Event: Represents the immutable casualty record.
+message TraumaEvent {
+  string event_id = 1;
+  string civilian_id = 2;
+  string civilian_name = 3;
+  string location = 4;
+  int32 life_support_drained = 5;
+  google.protobuf.Timestamp timestamp = 6;
+}
