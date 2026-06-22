@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, onValue, set, connectDatabaseEmulator, push, get } from 'firebase/database';
 import { PixiMapComponent } from './pixi-map.component';
+import { ProgressClockComponent } from './progress-clock.component';
+import { FlashbackOverlayComponent } from './flashback-overlay.component';
 import { GridStore, RoomData } from './grid.store';
 import { executeEmergencyHeal, EmergencyHealCommand } from '@core-domain/ledger/EmergencyHeal';
 import { PlayerCharacter, CivilianEntity } from '@core-domain/ledger/Entities';
@@ -21,10 +23,11 @@ const firebaseConfig = {
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, PixiMapComponent],
+  imports: [CommonModule, FormsModule, PixiMapComponent, ProgressClockComponent, FlashbackOverlayComponent],
   styleUrls: ['./app.component.css'],
   template: `
     <div class="crt-overlay"></div>
+    <app-flashback-overlay [isActive]="flashbackActive()" [initiatingPlayer]="flashbackPlayer()" [description]="flashbackDescription()"></app-flashback-overlay>
     
     <!-- LOBBY SCREEN -->
     <div *ngIf="!sessionId()" class="lobby-container">
@@ -218,8 +221,16 @@ const firebaseConfig = {
                 </div>
               </div>
               
-              <!-- Right column: Squad status cards -->
+              <!-- Right column: Squad status cards and Clocks -->
               <div class="glass-panel right-pane" style="display: flex; flex-direction: column; overflow-y: auto; border-color: #00E5FF; padding: 10px;">
+                <h3 class="text-neon-blue" style="margin-top: 0; font-size: 16px; border-bottom: 1px solid #00E5FF; padding-bottom: 5px;">THREAT CLOCKS</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+                  <app-progress-clock *ngFor="let clock of getPublicClocks()" 
+                      [name]="clock.name" [segments]="clock.segments" [filled]="clock.filled" [color]="clock.color">
+                  </app-progress-clock>
+                  <div *ngIf="getPublicClocks().length === 0" style="color: gray; font-style: italic;">No active threats.</div>
+                </div>
+                
                 <h3 class="text-neon-blue" style="margin-top: 0; font-size: 16px; border-bottom: 1px solid #00E5FF; padding-bottom: 5px;">SQUAD STATUS</h3>
                 <div style="display: flex; flex-direction: column; gap: 10px;">
                   <div *ngFor="let key of getCharacterKeys()" class="squad-card" style="border: 1px solid #00E5FF; padding: 8px; background: rgba(0,229,255,0.05); font-family: monospace; font-size: 11px;">
@@ -228,9 +239,9 @@ const firebaseConfig = {
                     </div>
                     <div style="color: gray; margin-bottom: 2px;">ROLE: {{ gameState().characters[key].role }}</div>
                     <div style="display: flex; justify-content: space-between;">
-                      <span [style.color]="gameState().characters[key].hp < 30 ? '#FF2A2A' : '#FFFFFF'">HP: {{ gameState().characters[key].hp || 100 }}%</span>
-                      <span [style.color]="gameState().characters[key].stealth >= 50 ? '#00FF00' : '#FF2A2A'">Stealth: {{ gameState().characters[key].stealth || 0 }}</span>
-                      <span [style.color]="gameState().characters[key].stress >= 70 ? '#FF2A2A' : '#FFFFFF'">Stress: {{ gameState().characters[key].stress || 0 }}</span>
+                      <span [style.color]="(gameState().characters[key].stats?.hp_current || 100) < 30 ? '#FF2A2A' : '#FFFFFF'">HP: {{ gameState().characters[key].stats?.hp_current || 100 }}%</span>
+                      <span [style.color]="(gameState().characters[key].stats?.stealth_total || 0) >= 50 ? '#00FF00' : '#FF2A2A'">Stealth: {{ gameState().characters[key].stats?.stealth_total || 0 }}</span>
+                      <span [style.color]="(gameState().characters[key].stats?.stress_current || 0) >= 70 ? '#FF2A2A' : '#FFFFFF'">Stress: {{ gameState().characters[key].stats?.stress_current || 0 }}</span>
                     </div>
                   </div>
                   <div *ngIf="getCharacterKeys().length === 0" style="color: gray; font-style: italic;">
@@ -261,9 +272,34 @@ const firebaseConfig = {
   `
 })
 export class AppComponent implements OnInit {
-  gameState = signal<any>({ characters: {}, map: null, traumaLog: {} });
+  gameState = signal<any>({ characters: {}, map: null, traumaLog: {}, clocks: {}, flashbacks: {} });
   heatLevel = computed(() => this.gameState().heatLevel || 1);
   chaosMarketValue = computed(() => this.gameState().chaosMarketValue || 0);
+  
+  getPublicClocks(): any[] {
+    const clocks = this.gameState().clocks || {};
+    return Object.values(clocks).filter((c: any) => c.isVisible);
+  }
+
+  flashbackActive = computed(() => {
+    const fb = this.gameState().flashbacks || {};
+    const active = Object.values(fb).find((f: any) => f.status === 'active');
+    return !!active;
+  });
+
+  flashbackPlayer = computed(() => {
+    const fb = this.gameState().flashbacks || {};
+    const active: any = Object.values(fb).find((f: any) => f.status === 'active');
+    if (!active) return '';
+    const chars = this.gameState().characters || {};
+    return chars[active.char_id]?.name || active.char_id;
+  });
+
+  flashbackDescription = computed(() => {
+    const fb = this.gameState().flashbacks || {};
+    const active: any = Object.values(fb).find((f: any) => f.status === 'active');
+    return active ? active.description : '';
+  });
   
   sessionId = signal<string | null>(null);
   mode = signal<string | null>(null);
@@ -507,9 +543,18 @@ export class AppComponent implements OnInit {
             x: cx, 
             y: cy, 
             fowRadius: 5 + Math.floor(Math.random()*4),
-            hp: 50 + Math.floor(Math.random() * 51),
-            stealth: 20 + Math.floor(Math.random() * 81),
-            stress: Math.floor(Math.random() * 101)
+            stats: {
+                hp_current: 50 + Math.floor(Math.random() * 51),
+                hp_max: 100,
+                stealth_base: 20 + Math.floor(Math.random() * 81),
+                stealth_total: 20 + Math.floor(Math.random() * 81),
+                stress_current: Math.floor(Math.random() * 101),
+                stress_max: 100,
+                snr_threshold_base: 10,
+                snr_threshold_total: 10
+            },
+            active_conditions: [],
+            modifiers: []
          };
       });
       set(ref(this.db, `sessions/${this.sessionId()}/gameState/characters`), chars);
@@ -530,9 +575,10 @@ export class AppComponent implements OnInit {
                    if (c.y < 0) c.y = 0; if (c.y > 29) c.y = 29;
                }
                // Fluctuate stats
-               c.hp = Math.max(0, Math.min(100, (c.hp || 80) + Math.floor(Math.random() * 11) - 5));
-               c.stealth = Math.max(0, Math.min(100, (c.stealth || 60) + Math.floor(Math.random() * 21) - 10));
-               c.stress = Math.max(0, Math.min(100, (c.stress || 20) + Math.floor(Math.random() * 21) - 10));
+               if (!c.stats) c.stats = { hp_current: 100, hp_max: 100, stealth_total: 50, stealth_base: 50, stress_current: 0, stress_max: 100, snr_threshold_base: 10, snr_threshold_total: 10 };
+               c.stats.hp_current = Math.max(0, Math.min(100, (c.stats.hp_current || 80) + Math.floor(Math.random() * 11) - 5));
+               c.stats.stealth_total = Math.max(0, Math.min(100, (c.stats.stealth_total || 60) + Math.floor(Math.random() * 21) - 10));
+               c.stats.stress_current = Math.max(0, Math.min(100, (c.stats.stress_current || 20) + Math.floor(Math.random() * 21) - 10));
             });
             set(ref(this.db, `sessions/${this.sessionId()}/gameState/characters`), updated);
          }
@@ -561,6 +607,16 @@ export class AppComponent implements OnInit {
            });
         }
       }
+    });
+
+    const clocksRef = ref(this.db, `sessions/${this.sessionId()}/clocks`);
+    onValue(clocksRef, (snapshot) => {
+      this.gameState.update(s => ({ ...s, clocks: snapshot.val() || {} }));
+    });
+
+    const flashbacksRef = ref(this.db, `sessions/${this.sessionId()}/flashbacks`);
+    onValue(flashbacksRef, (snapshot) => {
+      this.gameState.update(s => ({ ...s, flashbacks: snapshot.val() || {} }));
     });
   }
 
@@ -629,9 +685,21 @@ export class AppComponent implements OnInit {
     // Build Hexagonal Adapters (Map JSON state to Domain Entities)
     const playerEntity: PlayerCharacter = {
       id: this.activePlayerId()!,
-      hp: myChar.hp || 100,
-      maxHp: 100,
-      isDead: (myChar.hp || 100) <= 0
+      name: myChar.name || 'Unknown',
+      role: myChar.role || 'Unknown',
+      stats: {
+        hp_current: myChar.stats?.hp_current || 100,
+        hp_max: myChar.stats?.hp_max || 100,
+        stress_current: myChar.stats?.stress_current || 0,
+        stress_max: myChar.stats?.stress_max || 100,
+        stealth_base: myChar.stats?.stealth_base || 10,
+        stealth_total: myChar.stats?.stealth_total || 10,
+        snr_threshold_base: myChar.stats?.snr_threshold_base || 10,
+        snr_threshold_total: myChar.stats?.snr_threshold_total || 10
+      },
+      active_conditions: myChar.active_conditions || [],
+      modifiers: myChar.modifiers || [],
+      isDead: (myChar.stats?.hp_current || 100) <= 0
     };
 
     // Dummy civilian population for now (normally fetched from Firebase)
@@ -655,7 +723,7 @@ export class AppComponent implements OnInit {
       
       // Persist State Mutation via Infrastructure Adapter (Firebase)
       const updates: any = {};
-      updates[`sessions/${this.sessionId()}/gameState/characters/${this.activePlayerId()}/hp`] = successData.newCharacterHp;
+      updates[`sessions/${this.sessionId()}/gameState/characters/${this.activePlayerId()}/stats/hp_current`] = successData.newCharacterHp;
       updates[`sessions/${this.sessionId()}/gameState/traumaLog/${successData.generatedCasualty.eventId}`] = successData.generatedCasualty;
       
       import('firebase/database').then(({ update }) => {

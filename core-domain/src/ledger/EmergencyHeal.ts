@@ -45,11 +45,11 @@ function _executeEmergencyHeal(
 ): Result<EmergencyHealSuccess, EmergencyHealFailure> {
   const { player, requestedHp, availableCivilians } = command;
 
-  if (player.isDead || player.hp <= 0) {
+  if (player.isDead || player.stats.hp_current <= 0) {
     return failure({ code: 'ERROR_CODE_PLAYER_DEAD', message: 'Player is already dead.' });
   }
 
-  if (player.hp >= player.maxHp) {
+  if (player.stats.hp_current >= player.stats.hp_max) {
     return failure({ code: 'ERROR_CODE_OVERHEAL', message: 'Player is already at max HP.' });
   }
 
@@ -64,7 +64,7 @@ function _executeEmergencyHeal(
   const targetCivilian = aliveCivilians[0]; 
   
   // Cap the requested heal by the player's max HP
-  const missingHp = player.maxHp - player.hp;
+  const missingHp = player.stats.hp_max - player.stats.hp_current;
   let actualHeal = Math.min(requestedHp, missingHp);
 
   // Cap the heal by the civilian's remaining life support
@@ -80,7 +80,7 @@ function _executeEmergencyHeal(
 
   return success({
     actualHpRestored: actualHeal,
-    newCharacterHp: player.hp + actualHeal,
+    newCharacterHp: player.stats.hp_current + actualHeal,
     generatedCasualty: casualtyEvent
   });
 }

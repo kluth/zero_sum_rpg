@@ -139,3 +139,28 @@ Configure the test suite to capture native Android screenshots during the simula
 - [ ] Exactly 3 narrative session logs exist in the working directory detailing the scenarios played.
 - [ ] The working directory contains actual screenshot image files (`.png`) that were successfully pulled down from the Firebase Test Lab / GCB execution bucket.
 - [ ] A programmatic validation script asserts that the tests were run in the cloud, the logs exist, and the pulled screenshots are non-empty valid images with Android device dimensions.
+
+## Follow-up — 2026-06-22T11:54:40+02:00
+
+Analyze the most recent zero_sum_rpg playthrough report and screenshots to identify areas for UX/UI improvement and expand the automated screenshot coverage. Additionally, evaluate the current map-building mechanics against traditional pen-and-paper (P&P) RPG standards and propose architectural/design enhancements.
+
+Working directory: /home/matthias/project/zero_sum_rpg
+Integrity mode: development
+
+## Requirements
+
+### R1. Design & Playthrough Review
+Analyze the recent test reports, screenshots, and map builder implementation in the repository. Produce a comprehensive markdown review document (`map_and_playthrough_review.md`). This document must compare the current map-building mechanics against traditional pen-and-paper (P&P) RPG standards, identify specific UX/UI improvements, and list missing scenarios that need automated screenshot coverage.
+
+### R2. Expand Automated Screenshots
+Update the `capture_screenshots_playwright.js` script to automatically capture the missing playthrough scenarios and map-building steps identified in R1.
+
+### R3. Implement Code Enhancements
+Directly implement the highest-priority UI/UX and map-builder code improvements to the `zero_sum_rpg` web app identified in the review. 
+
+## Acceptance Criteria
+
+### Verification & Quality
+- [ ] A `map_and_playthrough_review.md` file exists and contains actionable UI/UX critiques and a P&P mechanics comparison.
+- [ ] Running `node capture_screenshots_playwright.js` completes successfully and generates new image files.
+- [ ] The Angular web app builds (`npm run build` or equivalent) without typescript/compilation errors after the code enhancements are applied.
