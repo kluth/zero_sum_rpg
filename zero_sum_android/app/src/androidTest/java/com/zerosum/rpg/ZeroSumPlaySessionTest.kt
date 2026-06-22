@@ -42,27 +42,34 @@ class ZeroSumPlaySessionTest {
 
     @Test
     fun simulateThreePlaySessions() {
+        // --- Play Session 0: Lobby ---
+        // Click Host New Operation to enter the game
+        composeTestRule.onNodeWithText("HOST NEW OPERATION").assertExists()
+        composeTestRule.onNodeWithText("HOST NEW OPERATION").performClick()
+
         // --- Play Session 1 ---
         // Verify initial state: Health 78, Stealth 85, AWAITING INTEL...
         composeTestRule.onNodeWithText("78/100").assertExists()
         composeTestRule.onNodeWithText("85/100").assertExists()
         composeTestRule.onNodeWithText("AWAITING INTEL...").assertExists()
 
-        // Update character HP to 92 and Stealth to 95 via NetworkManager.updateCharacter()
+        // Update character stats with random values to test state boundaries
+        val randomHp = (1..100).random()
+        val randomStealth = (1..100).random()
         val updatedProfile = JSONObject().apply {
             put("id", "char_1")
             put("name", "KAIRO 'GHOST' CHEN")
             put("role", "CYBER-INFILTRATOR")
-            put("hp", 92)
-            put("stealth", 95)
+            put("hp", randomHp)
+            put("stealth", randomStealth)
         }
         NetworkManager.updateCharacter(updatedProfile)
 
         // Verify the UI reflects these updates (wait for recomposition)
         composeTestRule.waitUntil(timeoutMillis = 5000) {
             try {
-                composeTestRule.onNodeWithText("92/100").assertExists()
-                composeTestRule.onNodeWithText("95/100").assertExists()
+                composeTestRule.onNodeWithText("$randomHp/100").assertExists()
+                composeTestRule.onNodeWithText("$randomStealth/100").assertExists()
                 true
             } catch (e: AssertionError) {
                 false
@@ -73,8 +80,12 @@ class ZeroSumPlaySessionTest {
         captureScreenshot("play_session_1.png")
 
         // --- Play Session 2 ---
-        // Click the "ROLL" button
-        composeTestRule.onNodeWithText("ROLL").performClick()
+        // Click the "ROLL" button a random number of times to stress test haptics & network
+        val rollSpam = (2..6).random()
+        repeat(rollSpam) {
+            composeTestRule.onNodeWithText("ROLL").performClick()
+            Thread.sleep(150) // Rapid fire clicks
+        }
 
         // Advance/wait for recomposition. Verify that the dice roller displays a result (displays "RESULT:")
         composeTestRule.waitUntil(timeoutMillis = 5000) {
@@ -85,8 +96,12 @@ class ZeroSumPlaySessionTest {
         captureScreenshot("play_session_2.png")
 
         // --- Play Session 3 ---
-        // Click the "GENERATE" button
-        composeTestRule.onNodeWithText("GENERATE").performClick()
+        // Click the "GENERATE" button multiple times to stress test the map generation logic
+        val genSpam = (1..3).random()
+        repeat(genSpam) {
+            composeTestRule.onNodeWithText("GENERATE").performClick()
+            Thread.sleep(200)
+        }
 
         // Advance/wait for map sync. Verify that the tactical map shows generated details (e.g. TARGET, LAYOUT, and Room [01] card)
         composeTestRule.waitUntil(timeoutMillis = 5000) {

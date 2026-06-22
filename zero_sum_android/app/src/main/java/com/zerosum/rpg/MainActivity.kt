@@ -75,8 +75,8 @@ enum class AppScreen { LOBBY, GAME }
 
 @Composable
 fun ZeroSumApp(isTestLab: Boolean) {
-    var currentScreen by remember { mutableStateOf(if (isTestLab) AppScreen.GAME else AppScreen.LOBBY) }
-    var sessionId by remember { mutableStateOf(if (isTestLab) "TEST" else "") }
+    var currentScreen by remember { mutableStateOf(AppScreen.LOBBY) }
+    var sessionId by remember { mutableStateOf("") }
 
     if (currentScreen == AppScreen.LOBBY) {
         LobbyScreen(
