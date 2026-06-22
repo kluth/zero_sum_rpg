@@ -24,7 +24,7 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
   
   private sprites: Record<string, PIXI.Sprite | PIXI.Graphics> = {};
   private roomGraphics: Record<string, PIXI.Graphics> = {};
-  private charGraphics: Record<string, PIXI.Graphics> = {};
+  private charGraphics: Record<string, PIXI.Graphics | PIXI.Text> = {};
 
   constructor() {
     effect(() => {
