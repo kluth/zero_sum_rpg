@@ -35,6 +35,7 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
   private controls!: OrbitControls;
   private animationFrameId: number | null = null;
   private mapGroup!: THREE.Group;
+  private flickeringLights: THREE.PointLight[] = [];
 
   constructor() {
     // Setup effect to react to grid store changes
@@ -132,6 +133,7 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
         }
       }
     }
+    this.flickeringLights = [];
 
     const { width, height } = dimensions;
     const cellSize = 1;
@@ -141,17 +143,14 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
     // Shared Materials
     const floorMaterial = new THREE.MeshStandardMaterial({
       color: 0x111122,
-      roughness: 0.8,
-      metalness: 0.2,
-      wireframe: true,
-      emissive: 0x001133,
+      roughness: 0.9,
+      metalness: 0.1,
     });
 
     const wallMaterial = new THREE.MeshStandardMaterial({
-      color: 0x00aaaa,
+      color: 0x444444,
       roughness: 0.3,
-      metalness: 0.8,
-      emissive: 0x003333,
+      metalness: 0.5,
       transparent: true,
       opacity: 0.9,
     });
@@ -203,10 +202,12 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
         const roomColor = new THREE.Color().setHSL((index * 137.5) % 360 / 360, 0.8, 0.5);
         
         const roomGeo = new THREE.PlaneGeometry(roomW - 0.2, roomH - 0.2);
-        const roomMat = new THREE.MeshBasicMaterial({
+        const roomMat = new THREE.MeshStandardMaterial({
           color: roomColor,
+          roughness: 0.5,
+          metalness: 0.2,
           transparent: true,
-          opacity: 0.3,
+          opacity: 0.6,
           side: THREE.DoubleSide,
           depthWrite: false
         });
@@ -215,6 +216,31 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
         roomMesh.rotation.x = -Math.PI / 2;
         roomMesh.position.set(roomX, 0.05, roomZ); // Slightly elevated to prevent z-fighting
         this.mapGroup.add(roomMesh);
+
+        // Add Room Lighting based on Threat Level
+        const threat = room.metadata?.threat || 'low';
+        let lightColor = 0x00ffff;
+        let intensity = 2.0;
+        let distance = Math.max(roomW, roomH) * 1.5;
+        let isEmergency = false;
+
+        if (threat === 'critical') {
+            lightColor = 0xff0000;
+            intensity = 5.0;
+            isEmergency = true;
+        } else if (threat === 'medium') {
+            lightColor = 0xffa500; // Orange
+            intensity = 3.0;
+        }
+
+        const roomLight = new THREE.PointLight(lightColor, intensity, distance);
+        const zHeight = room.metadata?.zHeight || 1;
+        roomLight.position.set(roomX, zHeight * 0.8, roomZ);
+        this.mapGroup.add(roomLight);
+
+        if (isEmergency) {
+            this.flickeringLights.push(roomLight);
+        }
       });
     }
 
@@ -242,6 +268,14 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
     
     if (this.controls) {
       this.controls.update();
+    }
+
+    // Flickering logic for emergency lights
+    if (this.flickeringLights.length > 0) {
+      const time = Date.now() * 0.005;
+      this.flickeringLights.forEach(light => {
+        light.intensity = 2.0 + Math.sin(time * 2.0) * 2.0 + Math.random() * 2.0;
+      });
     }
     
     if (this.renderer && this.scene && this.camera) {
