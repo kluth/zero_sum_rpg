@@ -179,7 +179,7 @@ const firebaseConfig = {
             
             <div *ngIf="!recentTrauma()" class="billboard-stats-panel">
                <!-- OPERATIVE STATUS METRICS -->
-               <div class="glass-panel" style="flex: 1; border: 4px solid #39FF14; background: rgba(57,255,20,0.05); padding: 30px;">
+               <div class="glass-panel" style="flex: 1 1 auto; border: 4px solid #39FF14; background: rgba(57,255,20,0.05); padding: 30px;">
                   <h3 class="header-brutalist text-acid-green" style="font-size: clamp(24px, 3vw, 36px); border-bottom: 2px solid #39FF14; margin-bottom: 20px;">OPERATIVE STATUS</h3>
                   
                   <div style="margin-bottom: 20px;">
@@ -202,7 +202,7 @@ const firebaseConfig = {
                </div>
                
                <!-- TWITCH CHAOS INTERACTION INSTRUCTIONS -->
-               <div class="glass-panel" style="flex: 1; border: 4px solid #00F0FF; background: rgba(0,240,255,0.05); padding: 30px; display: flex; flex-direction: column; justify-content: center;">
+               <div class="glass-panel" style="flex: 1 1 auto; border: 4px solid #00F0FF; background: rgba(0,240,255,0.05); padding: 30px; display: flex; flex-direction: column; justify-content: center;">
                   <h3 class="header-brutalist text-neon-blue" style="font-size: clamp(24px, 3vw, 36px); border-bottom: 2px solid #00F0FF; margin-bottom: 20px;">SPECTATOR OVERRIDE</h3>
                   
                   <div style="font-size: clamp(14px, 1.5vw, 18px); color: #00F0FF; margin-bottom: 30px; font-weight: bold;">
