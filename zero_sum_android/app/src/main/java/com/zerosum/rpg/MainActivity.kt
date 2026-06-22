@@ -282,6 +282,10 @@ fun CharacterSheetSection(modifier: Modifier = Modifier) {
     val stealth = character?.optInt("stealth") ?: 85
     val stress = character?.optInt("stress") ?: 60
 
+    val hacking = character?.optInt("hacking") ?: 90
+    val reflexes = character?.optInt("reflexes") ?: 75
+    val tech = character?.optInt("tech") ?: 80
+
     var mockHeartRate by remember { mutableStateOf(80) }
     LaunchedEffect(Unit) {
         while (true) {
@@ -323,9 +327,15 @@ fun CharacterSheetSection(modifier: Modifier = Modifier) {
         
         Spacer(modifier = Modifier.height(24.dp))
         StatBar("HEALTH", displayHp, 100, if (displayHp < 20) NeonRed else NeonBlue)
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         StatBar("STEALTH", stealth, 100, NeonBlue)
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
+        StatBar("HACKING", hacking, 100, NeonBlue)
+        Spacer(modifier = Modifier.height(8.dp))
+        StatBar("REFLEXES", reflexes, 100, NeonBlue)
+        Spacer(modifier = Modifier.height(8.dp))
+        StatBar("TECH", tech, 100, NeonBlue)
+        Spacer(modifier = Modifier.height(8.dp))
         StatBar("STRESS (ALLOSTATIC LOAD)", stress, 100, NeonRed)
         
         Spacer(modifier = Modifier.height(16.dp))

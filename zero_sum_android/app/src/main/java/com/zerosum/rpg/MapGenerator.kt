@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -24,7 +25,9 @@ data class RoomNode(
     val y: Int,
     val name: String,
     val complication: String,
-    val revealedTo: JSONObject
+    val revealedTo: JSONObject,
+    val visibleTo: JSONObject,
+    val entities: JSONArray
 ) {
     fun toJson(): JSONObject {
         return JSONObject().apply {
@@ -33,6 +36,8 @@ data class RoomNode(
             put("name", name)
             put("complication", complication)
             put("revealedTo", revealedTo)
+            put("visibleTo", visibleTo)
+            put("entities", entities)
         }
     }
 
@@ -43,7 +48,9 @@ data class RoomNode(
                 y = json.optInt("y"),
                 name = json.optString("name"),
                 complication = json.optString("complication"),
-                revealedTo = json.optJSONObject("revealedTo") ?: JSONObject()
+                revealedTo = json.optJSONObject("revealedTo") ?: JSONObject(),
+                visibleTo = json.optJSONObject("visibleTo") ?: JSONObject(),
+                entities = json.optJSONArray("entities") ?: JSONArray()
             )
         }
     }
@@ -91,9 +98,9 @@ fun Modifier.selectiveBorder(top: Boolean, bottom: Boolean, left: Boolean, right
 // --- UI Components ---
 @Composable
 fun MapGeneratorSection(modifier: Modifier = Modifier) {
-    val gameState by NetworkManager.gameState.collectAsState()
+    val uiState by NetworkManager.uiState.collectAsStateWithLifecycle()
     
-    val currentMap = FacilityMap.fromJson(gameState?.optJSONObject("map"))
+    val currentMap = FacilityMap.fromJson(uiState.json?.optJSONObject("map"))
 
     Column(
         modifier = modifier
@@ -132,6 +139,7 @@ fun MapGeneratorSection(modifier: Modifier = Modifier) {
                     
                     // FOG OF WAR LOGIC: Is it revealed to char_1?
                     val isRevealed = room?.revealedTo?.optBoolean("char_1", false) ?: false
+                    val isVisible = room?.visibleTo?.optBoolean("char_1", false) ?: false
 
                     if (room != null && isRevealed) {
                         // Check neighbors for auto-tiling borders (only check revealed neighbors!)
@@ -147,8 +155,17 @@ fun MapGeneratorSection(modifier: Modifier = Modifier) {
                                 .selectiveBorder(!hasN, !hasS, !hasW, !hasE, NeonBlue, 4f),
                             contentAlignment = Alignment.Center
                         ) {
-                            if (room.complication != "Clear") {
-                                Text("!", color = NeonRed, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                if (room.complication != "Clear") {
+                                    Text("!", color = NeonRed, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                                }
+                                if (isVisible && room.entities.length() > 0) {
+                                    Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                                        for (i in 0 until room.entities.length()) {
+                                            Box(modifier = Modifier.size(4.dp).background(Color(0xFF00FF00), RoundedCornerShape(2.dp)))
+                                        }
+                                    }
+                                }
                             }
                         }
                     } else {
