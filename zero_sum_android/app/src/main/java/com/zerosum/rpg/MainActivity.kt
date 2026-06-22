@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
             NetworkManager.connect("http://10.0.2.2:9000")
         }
         if (isTestLab) {
-            NetworkManager.joinSession("TEST")
+            NetworkManager.processIntent(PlayerIntent.JoinSession("TEST"))
         }
         
         setContent {
@@ -90,11 +90,12 @@ fun ZeroSumApp(isTestLab: Boolean) {
     if (currentScreen == AppScreen.LOBBY) {
         LobbyScreen(
             onHost = {
-                sessionId = NetworkManager.hostSession()
+                NetworkManager.processIntent(PlayerIntent.HostSession)
+                sessionId = "HOSTING" // Normally would extract from state, simplified here
                 currentScreen = AppScreen.GAME
             },
             onJoin = { pin ->
-                NetworkManager.joinSession(pin)
+                NetworkManager.processIntent(PlayerIntent.JoinSession(pin))
                 sessionId = pin
                 currentScreen = AppScreen.GAME
             }
@@ -167,15 +168,17 @@ fun GameScreen(sessionId: String) {
             permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
         }
         NetworkManager.resetState()
-        val profile = JSONObject().apply {
-            put("id", "char_1")
-            put("name", "KAIRO 'GHOST' CHEN")
-            put("role", "CYBER-INFILTRATOR")
-            put("hp", 78)
-            put("stealth", 85)
-            put("stress", 60)
-        }
-        NetworkManager.updateCharacter(profile)
+        val initialChar = CharacterState(
+            id = "char_1",
+            name = "KAIRO 'GHOST' CHEN",
+            role = "CYBER-INFILTRATOR",
+            stats = FlatStats(
+                hp_current = 78,
+                stealth_total = 85,
+                stress_current = 60
+            )
+        )
+        NetworkManager.processIntent(PlayerIntent.SetupInitialProfile(initialChar))
     }
 
     DisposableEffect(hasMicPermission) {
@@ -183,7 +186,12 @@ fun GameScreen(sessionId: String) {
         var job: kotlinx.coroutines.Job? = null
         if (hasMicPermission) {
             try {
-                recorder = MediaRecorder().apply {
+                // Use the context constructor to fix deprecation
+                recorder = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                    MediaRecorder(context)
+                } else {
+                    MediaRecorder()
+                }.apply {
                     setAudioSource(MediaRecorder.AudioSource.MIC)
                     setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
                     setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
@@ -270,21 +278,18 @@ fun HeaderSection(sessionId: String) {
 @Composable
 fun CharacterSheetSection(modifier: Modifier = Modifier) {
     val uiState by NetworkManager.uiState.collectAsStateWithLifecycle()
-    val characters = uiState.json?.optJSONObject("characters")
-    val character = characters?.optJSONObject("char_1") ?: characters?.keys()?.run {
-        if (hasNext()) characters.optJSONObject(next()) else null
-    }
+    val character = uiState.character
 
     val haptic = LocalHapticFeedback.current
-    val name = character?.optString("name") ?: "KAIRO 'GHOST' CHEN"
-    val role = character?.optString("role") ?: "CYBER-INFILTRATOR"
-    val hp = character?.optInt("hp") ?: 78
-    val stealth = character?.optInt("stealth") ?: 85
-    val stress = character?.optInt("stress") ?: 60
+    val name = character?.name ?: "KAIRO 'GHOST' CHEN"
+    val role = character?.role ?: "CYBER-INFILTRATOR"
+    val hp = character?.stats?.hp_current ?: 78
+    val stealth = character?.stats?.stealth_total ?: 85
+    val stress = character?.stats?.stress_current ?: 60
 
-    val hacking = character?.optInt("hacking") ?: 90
-    val reflexes = character?.optInt("reflexes") ?: 75
-    val tech = character?.optInt("tech") ?: 80
+    val hacking = character?.hacking ?: 90
+    val reflexes = character?.reflexes ?: 75
+    val tech = character?.tech ?: 80
 
     var mockHeartRate by remember { mutableStateOf(80) }
     LaunchedEffect(Unit) {
@@ -341,9 +346,7 @@ fun CharacterSheetSection(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                val newHp = Math.min(100, hp + 25)
-                NetworkManager.updateCharacter(JSONObject().apply { put("id", "char_1"); put("hp", newHp) })
-                NetworkManager.logTrauma(name, 25)
+                NetworkManager.processIntent(PlayerIntent.EmergencyHeal(25))
             },
             colors = ButtonDefaults.buttonColors(containerColor = NeonRed.copy(alpha = 0.2f)),
             modifier = Modifier.fillMaxWidth().border(1.dp, NeonRed, RoundedCornerShape(4.dp))
@@ -355,8 +358,7 @@ fun CharacterSheetSection(modifier: Modifier = Modifier) {
         Button(
             onClick = {
                 val stressMultiplier = if (mockHeartRate > 120) 2 else 1
-                val newStress = Math.min(100, stress + (10 * stressMultiplier))
-                NetworkManager.updateCharacter(JSONObject().apply { put("id", "char_1"); put("stress", newStress) })
+                NetworkManager.processIntent(PlayerIntent.InjectStress(stressMultiplier))
             },
             colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
             modifier = Modifier.fillMaxWidth().border(1.dp, NeonRed, RoundedCornerShape(4.dp))

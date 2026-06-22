@@ -9,7 +9,46 @@ import kotlinx.coroutines.flow.StateFlow
 import org.json.JSONArray
 import org.json.JSONObject
 
-data class PlayerState(val json: JSONObject? = null)
+data class FlatStats(
+    val hp_current: Int = 100,
+    val hp_max: Int = 100,
+    val stress_current: Int = 0,
+    val stress_max: Int = 100,
+    val stealth_base: Int = 10,
+    val stealth_total: Int = 10,
+    val snr_threshold_base: Int = 10,
+    val snr_threshold_total: Int = 10
+)
+
+data class CharacterState(
+    val id: String = "char_1",
+    val name: String = "KAIRO 'GHOST' CHEN",
+    val role: String = "CYBER-INFILTRATOR",
+    val stats: FlatStats = FlatStats(),
+    val hacking: Int = 90,
+    val reflexes: Int = 75,
+    val tech: Int = 80
+)
+
+data class Roll(
+    val player: String = "",
+    val result: Int = 0,
+    val timestamp: Long = 0L
+)
+
+data class PlayerState(
+    val character: CharacterState? = null,
+    val recentRolls: List<Roll> = emptyList()
+)
+
+sealed class PlayerIntent {
+    data class EmergencyHeal(val amount: Int) : PlayerIntent()
+    data class InjectStress(val stressMultiplier: Int) : PlayerIntent()
+    data class RollDice(val result: Int) : PlayerIntent()
+    data class JoinSession(val sessionId: String) : PlayerIntent()
+    object HostSession : PlayerIntent()
+    data class SetupInitialProfile(val charState: CharacterState) : PlayerIntent()
+}
 
 object NetworkManager {
     private val database = FirebaseDatabase.getInstance("https://zero-sum-rpg-2026-default-rtdb.europe-west1.firebasedatabase.app").reference
@@ -19,41 +58,6 @@ object NetworkManager {
 
     private var sessionId: String = "DEFAULT"
     private var valueEventListener: ValueEventListener? = null
-
-    fun mockStateForPaparazzi(state: JSONObject) {
-        _uiState.value = PlayerState(state)
-    }
-
-    fun resetState() {
-        try {
-            database.child("sessions/$sessionId/gameState/map").removeValue()
-            database.child("sessions/$sessionId/gameState/recentRolls").removeValue()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    private fun wrapValue(value: Any?): Any? {
-        return when (value) {
-            is Map<*, *> -> {
-                val json = JSONObject()
-                for ((k, v) in value) {
-                    if (k is String) {
-                        json.put(k, wrapValue(v))
-                    }
-                }
-                json
-            }
-            is List<*> -> {
-                val array = JSONArray()
-                for (v in value) {
-                    array.put(wrapValue(v))
-                }
-                array
-            }
-            else -> value
-        }
-    }
 
     fun connect(url: String = "") {
         if (url.isNotEmpty()) {
@@ -66,7 +70,85 @@ object NetworkManager {
                 e.printStackTrace()
             }
         }
-        // Listener moved to joinSession()
+    }
+
+    fun resetState() {
+        try {
+            database.child("sessions/$sessionId/gameState/map").removeValue()
+            database.child("sessions/$sessionId/gameState/recentRolls").removeValue()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun processIntent(intent: PlayerIntent) {
+        when (intent) {
+            is PlayerIntent.EmergencyHeal -> {
+                val currentChar = _uiState.value.character ?: return
+                val newHp = Math.min(currentChar.stats.hp_max, currentChar.stats.hp_current + intent.amount)
+                database.child("sessions/$sessionId/gameState/characters/${currentChar.id}/stats/hp_current").setValue(newHp)
+                logTrauma(currentChar.name, intent.amount)
+            }
+            is PlayerIntent.InjectStress -> {
+                val currentChar = _uiState.value.character ?: return
+                val newStress = Math.min(currentChar.stats.stress_max, currentChar.stats.stress_current + (10 * intent.stressMultiplier))
+                database.child("sessions/$sessionId/gameState/characters/${currentChar.id}/stats/stress_current").setValue(newStress)
+            }
+            is PlayerIntent.RollDice -> {
+                rollDice(intent.result)
+            }
+            is PlayerIntent.JoinSession -> {
+                joinSession(intent.sessionId)
+            }
+            is PlayerIntent.HostSession -> {
+                hostSession()
+            }
+            is PlayerIntent.SetupInitialProfile -> {
+                val char = intent.charState
+                val charData = mapOf(
+                    "id" to char.id,
+                    "name" to char.name,
+                    "role" to char.role,
+                    "stats" to mapOf(
+                        "hp_current" to char.stats.hp_current,
+                        "hp_max" to char.stats.hp_max,
+                        "stress_current" to char.stats.stress_current,
+                        "stress_max" to char.stats.stress_max,
+                        "stealth_base" to char.stats.stealth_base,
+                        "stealth_total" to char.stats.stealth_total,
+                        "snr_threshold_base" to char.stats.snr_threshold_base,
+                        "snr_threshold_total" to char.stats.snr_threshold_total
+                    )
+                )
+                database.child("sessions/$sessionId/gameState/characters/${char.id}").setValue(charData)
+            }
+        }
+    }
+
+    private fun parseCharacterState(map: Map<*, *>): CharacterState? {
+        val chars = map["characters"] as? Map<*, *> ?: return null
+        val charId = "char_1"
+        val rawChar = chars[charId] as? Map<*, *> ?: chars.values.firstOrNull() as? Map<*, *> ?: return null
+        val rawId = rawChar["id"] as? String ?: charId
+        
+        val rawStats = rawChar["stats"] as? Map<*, *>
+        val flatStats = FlatStats(
+            hp_current = (rawStats?.get("hp_current") as? Number)?.toInt() ?: (rawChar["hp"] as? Number)?.toInt() ?: 100,
+            hp_max = (rawStats?.get("hp_max") as? Number)?.toInt() ?: 100,
+            stress_current = (rawStats?.get("stress_current") as? Number)?.toInt() ?: (rawChar["stress"] as? Number)?.toInt() ?: 0,
+            stress_max = (rawStats?.get("stress_max") as? Number)?.toInt() ?: 100,
+            stealth_base = (rawStats?.get("stealth_base") as? Number)?.toInt() ?: (rawChar["stealth"] as? Number)?.toInt() ?: 10,
+            stealth_total = (rawStats?.get("stealth_total") as? Number)?.toInt() ?: (rawChar["stealth"] as? Number)?.toInt() ?: 10,
+            snr_threshold_base = (rawStats?.get("snr_threshold_base") as? Number)?.toInt() ?: 10,
+            snr_threshold_total = (rawStats?.get("snr_threshold_total") as? Number)?.toInt() ?: 10
+        )
+        
+        return CharacterState(
+            id = rawId,
+            name = rawChar["name"] as? String ?: "KAIRO 'GHOST' CHEN",
+            role = rawChar["role"] as? String ?: "CYBER-INFILTRATOR",
+            stats = flatStats
+        )
     }
 
     fun hostSession(): String {
@@ -89,8 +171,8 @@ object NetworkManager {
                     try {
                         val stateMap = snapshot.value as? Map<*, *>
                         if (stateMap != null) {
-                            val json = wrapValue(stateMap) as? JSONObject
-                            _uiState.value = PlayerState(json)
+                            val charState = parseCharacterState(stateMap)
+                            _uiState.value = _uiState.value.copy(character = charState)
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -106,22 +188,7 @@ object NetworkManager {
         database.child("sessions/$sessionId/gameState").addValueEventListener(listener)
     }
 
-    fun updateCharacter(profile: JSONObject) {
-        val characterId = profile.optString("id").takeIf { it.isNotEmpty() } ?: profile.optString("characterId")
-        if (characterId.isNotEmpty()) {
-            val charData = mutableMapOf<String, Any>()
-            val keys = profile.keys()
-            while (keys.hasNext()) {
-                val key = keys.next()
-                if (key != "id" && key != "characterId") {
-                    charData[key] = profile.get(key)
-                }
-            }
-            database.child("sessions/$sessionId/gameState/characters/$characterId").updateChildren(charData)
-        }
-    }
-
-    fun logTrauma(player: String, amount: Int) {
+    private fun logTrauma(player: String, amount: Int) {
         val traumaRef = database.child("sessions/$sessionId/gameState/traumaLog").push()
         val names = listOf("ELIAS VANCE", "S. NAKAMURA", "R. VANCE", "M. KLEMENT", "J. DOE", "L. CHEN")
         val ages = (18..75).random()
@@ -136,53 +203,21 @@ object NetworkManager {
         ))
     }
 
-    fun rollDice(result: Int) {
-        val currentRolls = _uiState.value.json?.optJSONArray("recentRolls") ?: JSONArray()
-        val newRoll = JSONObject().apply {
-            put("player", "Ghost")
-            put("result", result)
-            put("timestamp", System.currentTimeMillis())
+    private fun rollDice(result: Int) {
+        val currentRolls = _uiState.value.recentRolls
+        val newRoll = Roll("Ghost", result, System.currentTimeMillis())
+        val newRollsList = mutableListOf(newRoll)
+        newRollsList.addAll(currentRolls.take(9))
+        
+        val newRollsMapList = newRollsList.map { roll ->
+            mapOf("player" to roll.player, "result" to roll.result, "timestamp" to roll.timestamp)
         }
         
-        val newRollsList = mutableListOf<Map<String, Any>>()
-        newRollsList.add(mapOf("player" to "Ghost", "result" to result, "timestamp" to System.currentTimeMillis()))
-        
-        for (i in 0 until minOf(9, currentRolls.length())) {
-            val roll = currentRolls.getJSONObject(i)
-            newRollsList.add(mapOf(
-                "player" to roll.optString("player"),
-                "result" to roll.optInt("result"),
-                "timestamp" to roll.optLong("timestamp")
-            ))
-        }
-        
-        database.child("sessions/$sessionId/gameState/recentRolls").setValue(newRollsList)
-    }
-
-    fun syncMap(mapJson: JSONObject) {
-        // Convert JSONObject to Map for Firebase
-        val mapData = mapOf(
-            "archetype" to mapJson.optString("archetype"),
-            "layoutStructure" to mapJson.optString("layoutStructure"),
-            "rooms" to mapJson.optJSONArray("rooms")?.let { jsonArray ->
-                val list = mutableListOf<Map<String, Any>>()
-                for (i in 0 until jsonArray.length()) {
-                    val room = jsonArray.getJSONObject(i)
-                    list.add(mapOf(
-                        "id" to room.optInt("id"),
-                        "name" to room.optString("name"),
-                        "complication" to room.optString("complication"),
-                        "isObjective" to room.optBoolean("isObjective")
-                    ))
-                }
-                list
-            }
-        )
-        database.child("sessions/$sessionId/gameState/map").setValue(mapData)
+        database.child("sessions/$sessionId/gameState/recentRolls").setValue(newRollsMapList)
     }
 
     fun disconnect() {
-        // Firebase handles this automatically, but we can remove listeners if needed
+        // Firebase handles this automatically
     }
 
     fun incrementHeatLevel() {

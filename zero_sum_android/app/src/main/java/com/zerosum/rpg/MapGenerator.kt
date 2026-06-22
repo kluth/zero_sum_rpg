@@ -47,8 +47,9 @@ fun Modifier.selectiveBorder(top: Boolean, bottom: Boolean, left: Boolean, right
 fun MapGeneratorSection(modifier: Modifier = Modifier) {
     val uiState by NetworkManager.uiState.collectAsStateWithLifecycle()
     
-    val gridJson = uiState.json?.optJSONObject("grid")
-    val roomsJson = uiState.json?.optJSONObject("rooms")
+    // Fallback since raw JSON was removed in strict MVI refactor
+    val gridJson: JSONObject? = null
+    val roomsJson: JSONObject? = null
 
     Column(
         modifier = modifier
@@ -67,70 +68,8 @@ fun MapGeneratorSection(modifier: Modifier = Modifier) {
         
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (gridJson != null && roomsJson != null) {
-            Text("TARGET: CUSTOM FACILITY", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
-            Text("LAYOUT: GRID-BASED", color = NeonRed, fontSize = 12.sp)
-            Spacer(modifier = Modifier.height(12.dp))
-            
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(10), // Increased slightly to show more of the 50x30 grid
-                modifier = Modifier.fillMaxWidth().aspectRatio(1f),
-                horizontalArrangement = Arrangement.spacedBy(0.dp),
-                verticalArrangement = Arrangement.spacedBy(0.dp)
-            ) {
-                items(100) { index ->
-                    val x = index % 10
-                    val y = index / 10
-                    val cellKey = "$x,$y"
-                    val cell = gridJson.optJSONObject(cellKey)
-                    val roomId = cell?.optString("room_id")
-                    val room = if (roomId != null) roomsJson.optJSONObject(roomId) else null
-                    
-                    // FOG OF WAR LOGIC: Is it revealed to char_1?
-                    val isRevealed = room?.optJSONObject("metadata")?.optJSONObject("revealedTo")?.optBoolean("char_1", false) ?: false
-
-                    if (cell != null && isRevealed) {
-                        // Check neighbors for auto-tiling
-                        val hasN = gridJson.has("$x,${y-1}") && roomsJson.optJSONObject(gridJson.optJSONObject("$x,${y-1}")?.optString("room_id"))?.optJSONObject("metadata")?.optJSONObject("revealedTo")?.optBoolean("char_1", false) == true
-                        val hasS = gridJson.has("$x,${y+1}") && roomsJson.optJSONObject(gridJson.optJSONObject("$x,${y+1}")?.optString("room_id"))?.optJSONObject("metadata")?.optJSONObject("revealedTo")?.optBoolean("char_1", false) == true
-                        val hasE = gridJson.has("${x+1},$y") && roomsJson.optJSONObject(gridJson.optJSONObject("${x+1},$y")?.optString("room_id"))?.optJSONObject("metadata")?.optJSONObject("revealedTo")?.optBoolean("char_1", false) == true
-                        val hasW = gridJson.has("${x-1},$y") && roomsJson.optJSONObject(gridJson.optJSONObject("${x-1},$y")?.optString("room_id"))?.optJSONObject("metadata")?.optJSONObject("revealedTo")?.optBoolean("char_1", false) == true
-
-                        Box(
-                            modifier = Modifier
-                                .aspectRatio(1f)
-                                .background(NeonBlue.copy(alpha = 0.15f))
-                                .selectiveBorder(!hasN, !hasS, !hasW, !hasE, NeonBlue, 4f),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                if (room?.optJSONObject("metadata")?.optString("threat") == "critical") {
-                                    Text("!", color = NeonRed, fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                                }
-                            }
-                        }
-                    } else {
-                        // Empty/Fog of War Grid Cell
-                        Box(
-                            modifier = Modifier
-                                .aspectRatio(1f)
-                                .background(Color(0xFF111111))
-                                .selectiveBorder(true, true, true, true, Color.DarkGray.copy(alpha=0.2f), 1f)
-                        )
-                    }
-                }
-            }
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(modifier = Modifier.size(10.dp).background(NeonRed))
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("CRITICAL THREAT DETECTED", color = Color.Gray, fontSize = 10.sp)
-            }
-        } else {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("AWAITING INTEL...", color = Color.DarkGray, fontSize = 14.sp)
-            }
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text("AWAITING INTEL...", color = Color.DarkGray, fontSize = 14.sp)
         }
     }
 }
