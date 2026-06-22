@@ -165,7 +165,7 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
     // Walls
     if (grid) {
       Object.entries(grid).forEach(([key, cell]) => {
-        if (cell && (cell.type === 'wall' || cell.isWall === true)) {
+        if (cell && (cell.type === 'wall' || cell.type === 'structure_wall' || cell.type === 'door_locked' || cell.type === 'door_open' || cell.isWall === true)) {
           const [cx, cy] = key.split(',').map(Number);
           const x = cx + offsetX + 0.5;
           const z = cy + offsetZ + 0.5;
@@ -175,8 +175,16 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
              wallHeight = rooms[cell.room_id].metadata?.zHeight || 1;
           }
           
+          const isDoor = cell.type === 'door_locked' || cell.type === 'door_open';
+          if (isDoor) {
+            if (cell.type === 'door_open') wallHeight = 0.1;
+            else wallHeight = Math.max(0.5, wallHeight * 0.8);
+          }
+          
+          const mat = isDoor ? (cell.type === 'door_locked' ? new THREE.MeshStandardMaterial({ color: 0xff003c, roughness: 0.2, metalness: 0.8, emissive: 0x330000 }) : new THREE.MeshStandardMaterial({ color: 0x00ff66, roughness: 0.8 })) : wallMaterial;
+
           const wallGeo = new THREE.BoxGeometry(cellSize, wallHeight, cellSize);
-          const wall = new THREE.Mesh(wallGeo, wallMaterial);
+          const wall = new THREE.Mesh(wallGeo, mat);
           wall.position.set(x, wallHeight / 2, z);
           this.mapGroup.add(wall);
           
