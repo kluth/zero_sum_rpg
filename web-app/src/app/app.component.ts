@@ -7,6 +7,7 @@ import { getDatabase, ref, onValue, set, connectDatabaseEmulator, push, get } fr
 import { PixiMapComponent } from './pixi-map.component';
 import { ProgressClockComponent } from './progress-clock.component';
 import { FlashbackOverlayComponent } from './flashback-overlay.component';
+import { ThreeJsMapComponent } from './threejs-map.component';
 import { GridStore, RoomData } from './grid.store';
 import { executeEmergencyHeal, EmergencyHealCommand } from '@core-domain/ledger/EmergencyHeal';
 import { PlayerCharacter, CivilianEntity } from '@core-domain/ledger/Entities';
@@ -24,7 +25,7 @@ const firebaseConfig = {
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, PixiMapComponent, ProgressClockComponent, FlashbackOverlayComponent],
+  imports: [CommonModule, FormsModule, PixiMapComponent, ProgressClockComponent, FlashbackOverlayComponent, ThreeJsMapComponent],
   styleUrls: ['./app.component.css'],
   template: `
     <div class="crt-overlay"></div>
@@ -42,6 +43,7 @@ const firebaseConfig = {
         <button class="cyber-button" style="border-color: #FF003C; color: #FF003C; background: rgba(255,0,60,0.1);" (click)="joinSession('gm')">GM OVERRIDE</button>
         <button class="cyber-button" style="border-color: #FFB000; color: #FFB000; background: rgba(255,176,0,0.1);" (click)="joinSession('billboard')">CORPORATE BILLBOARD</button>
         <button class="cyber-button" style="border-color: #39FF14; color: #39FF14; background: rgba(57,255,20,0.1);" (click)="joinSession('netrunner')">NETRUNNER SHELL</button>
+        <button class="cyber-button" style="border-color: #FF00FF; color: #FF00FF;" (click)="joinSession('3d')">3D FLYTHROUGH VIEW</button>
       </div>
 
       <div style="margin-top: 30px; font-size: 14px; color: gray;">PROTAGONIST UPLINKS</div>
@@ -81,10 +83,10 @@ const firebaseConfig = {
             
             <!-- PANE B: Construction Toolkit -->
             <div class="glass-panel" style="flex: 1; overflow-y: auto; border-color: #FF2A2A; display: flex; flex-direction: column;">
-               <div style="display: flex; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid #FF2A2A; padding-bottom: 10px;">
-                 <button class="cyber-button" [ngClass]="{'active': activeTab() === 'blocks'}" (click)="setTab('blocks')">BUILDING BLOCKS</button>
-                 <button class="cyber-button" [ngClass]="{'active': activeTab() === 'paint'}" (click)="setTab('paint')">TILE PAINTER</button>
-                 <button class="cyber-button" [ngClass]="{'active': activeTab() === 'properties'}" (click)="setTab('properties')">PROPERTIES</button>
+               <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid #FF2A2A; padding-bottom: 10px;">
+                 <button class="cyber-button" style="flex: 1; padding: 10px; font-size: clamp(12px, 3vw, 20px);" [ngClass]="{'active': activeTab() === 'blocks'}" (click)="setTab('blocks')">BUILDING BLOCKS</button>
+                 <button class="cyber-button" style="flex: 1; padding: 10px; font-size: clamp(12px, 3vw, 20px);" [ngClass]="{'active': activeTab() === 'paint'}" (click)="setTab('paint')">TILE PAINTER</button>
+                 <button class="cyber-button" style="flex: 1; padding: 10px; font-size: clamp(12px, 3vw, 20px);" [ngClass]="{'active': activeTab() === 'properties'}" (click)="setTab('properties')">PROPERTIES</button>
                </div>
 
                <div *ngIf="activeTab() === 'blocks'" style="flex: 1;">
@@ -124,13 +126,13 @@ const firebaseConfig = {
                <div *ngIf="activeTab() === 'paint'" style="flex: 1;">
                  <h3 class="text-neon-blue">Tile Painter</h3>
                  <p style="color: gray; font-size: 12px; margin-bottom: 10px;">Drag on the canvas to paint individual grid cells. Note: Walls and Locked Doors will block player Line of Sight.</p>
-                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
-                    <div class="prefab-block" (click)="activePaintMode.set('wall')" [ngClass]="{'selected': activePaintMode() === 'wall'}" style="padding: 10px; border: 1px solid #00E5FF; cursor: pointer; color: #00E5FF;">Neon Wall</div>
-                    <div class="prefab-block" (click)="activePaintMode.set('door_locked')" [ngClass]="{'selected': activePaintMode() === 'door_locked'}" style="padding: 10px; border: 1px solid #FF003C; cursor: pointer; color: #FF003C;">Locked Door</div>
-                    <div class="prefab-block" (click)="activePaintMode.set('door_open')" [ngClass]="{'selected': activePaintMode() === 'door_open'}" style="padding: 10px; border: 1px solid #00FF66; cursor: pointer; color: #00FF66;">Open Door</div>
-                    <div class="prefab-block" (click)="activePaintMode.set('cctv')" [ngClass]="{'selected': activePaintMode() === 'cctv'}" style="padding: 10px; border: 1px solid #FFFF00; cursor: pointer; color: #FFFF00;">CCTV Node</div>
-                    <div class="prefab-block" (click)="activePaintMode.set('furniture')" [ngClass]="{'selected': activePaintMode() === 'furniture'}" style="padding: 10px; border: 1px solid #888888; cursor: pointer; color: #888888;">Furniture</div>
-                    <div class="prefab-block" (click)="activePaintMode.set('floor')" [ngClass]="{'selected': activePaintMode() === 'floor'}" style="padding: 10px; border: 1px solid gray; cursor: pointer; color: gray;">Eraser (Floor)</div>
+                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 20px;">
+                    <div class="prefab-block" (click)="activePaintMode.set('wall')" [ngClass]="{'selected': activePaintMode() === 'wall'}" style="padding: 10px; border: 1px solid #00E5FF; cursor: pointer; color: #00E5FF; text-align: center;">Neon Wall</div>
+                    <div class="prefab-block" (click)="activePaintMode.set('door_locked')" [ngClass]="{'selected': activePaintMode() === 'door_locked'}" style="padding: 10px; border: 1px solid #FF003C; cursor: pointer; color: #FF003C; text-align: center;">Locked Door</div>
+                    <div class="prefab-block" (click)="activePaintMode.set('door_open')" [ngClass]="{'selected': activePaintMode() === 'door_open'}" style="padding: 10px; border: 1px solid #00FF66; cursor: pointer; color: #00FF66; text-align: center;">Open Door</div>
+                    <div class="prefab-block" (click)="activePaintMode.set('cctv')" [ngClass]="{'selected': activePaintMode() === 'cctv'}" style="padding: 10px; border: 1px solid #FFFF00; cursor: pointer; color: #FFFF00; text-align: center;">CCTV Node</div>
+                    <div class="prefab-block" (click)="activePaintMode.set('furniture')" [ngClass]="{'selected': activePaintMode() === 'furniture'}" style="padding: 10px; border: 1px solid #888888; cursor: pointer; color: #888888; text-align: center;">Furniture</div>
+                    <div class="prefab-block" (click)="activePaintMode.set('floor')" [ngClass]="{'selected': activePaintMode() === 'floor'}" style="padding: 10px; border: 1px solid gray; cursor: pointer; color: gray; text-align: center;">Eraser (Floor)</div>
                  </div>
                  <button class="cyber-button" style="border-color: #FF2A2A; color: #FF2A2A; width: 100%; margin-top: 20px;" (click)="publishMap()">SYNC GRID TO RTDB</button>
                </div>
@@ -342,6 +344,18 @@ const firebaseConfig = {
         </div>
       }
 
+      @defer (when is3dMode()) {
+        <div class="glass-panel" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; border-color: #FF00FF;">
+           <header class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; border-color: #FF00FF; margin-bottom: 10px;">
+             <h2 class="header-brutalist" style="color: #FF00FF; margin: 0;">3D FLYTHROUGH VIEW</h2>
+             <button class="cyber-button" style="margin-top: 0; padding: 5px 15px;" (click)="mode.set(null)">EXIT</button>
+           </header>
+           <div style="flex: 1; position: relative; border: 2px solid #FF00FF;">
+             <app-threejs-map [characters]="gameState().characters || {}" [mode]="'3d'"></app-threejs-map>
+           </div>
+        </div>
+      }
+
     </div>
   `
 })
@@ -415,6 +429,7 @@ export class AppComponent implements OnInit {
   isGmMode = computed(() => this.mode() === 'gm');
   isBillboardMode = computed(() => this.mode() === 'billboard');
   isNetrunnerMode = computed(() => this.mode() === 'netrunner');
+  is3dMode = computed(() => this.mode() === '3d');
   isSpectatorMode = computed(() => this.mode() === 'spectator');
   isPlayerMode = computed(() => this.mode() === 'player');
 
