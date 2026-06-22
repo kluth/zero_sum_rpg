@@ -46,10 +46,7 @@ fun Modifier.selectiveBorder(top: Boolean, bottom: Boolean, left: Boolean, right
 @Composable
 fun MapGeneratorSection(modifier: Modifier = Modifier) {
     val uiState by NetworkManager.uiState.collectAsStateWithLifecycle()
-    
-    // Fallback since raw JSON was removed in strict MVI refactor
-    val gridJson: JSONObject? = null
-    val roomsJson: JSONObject? = null
+    val mapState = uiState.map
 
     Column(
         modifier = modifier
@@ -68,8 +65,67 @@ fun MapGeneratorSection(modifier: Modifier = Modifier) {
         
         Spacer(modifier = Modifier.height(16.dp))
 
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("AWAITING INTEL...", color = Color.DarkGray, fontSize = 14.sp)
+        if (mapState != null && mapState.grid.isNotEmpty()) {
+            Text("TARGET: ${mapState.archetype}", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+            Text("LAYOUT: GRID-BASED", color = NeonRed, fontSize = 12.sp)
+            Spacer(modifier = Modifier.height(12.dp))
+            
+            val maxGridX = mapState.grid.maxOfOrNull { it.x } ?: 9
+            val columnsCount = maxGridX + 1
+
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(Math.max(1, columnsCount)), 
+                modifier = Modifier.fillMaxWidth().aspectRatio(1f),
+                horizontalArrangement = Arrangement.spacedBy(0.dp),
+                verticalArrangement = Arrangement.spacedBy(0.dp)
+            ) {
+                val totalCells = columnsCount * ((mapState.grid.maxOfOrNull { it.y } ?: 9) + 1)
+                items(totalCells) { index ->
+                    val x = index % columnsCount
+                    val y = index / columnsCount
+                    val cell = mapState.grid.find { it.x == x && it.y == y }
+                    val room = mapState.rooms.find { it.id == cell?.roomId }
+                    
+                    val isRevealed = room?.revealed ?: false
+
+                    if (cell != null && isRevealed) {
+                        val hasN = mapState.grid.find { it.x == x && it.y == y - 1 }?.let { nCell -> mapState.rooms.find { it.id == nCell.roomId }?.revealed == true } ?: false
+                        val hasS = mapState.grid.find { it.x == x && it.y == y + 1 }?.let { sCell -> mapState.rooms.find { it.id == sCell.roomId }?.revealed == true } ?: false
+                        val hasE = mapState.grid.find { it.x == x + 1 && it.y == y }?.let { eCell -> mapState.rooms.find { it.id == eCell.roomId }?.revealed == true } ?: false
+                        val hasW = mapState.grid.find { it.x == x - 1 && it.y == y }?.let { wCell -> mapState.rooms.find { it.id == wCell.roomId }?.revealed == true } ?: false
+
+                        Box(
+                            modifier = Modifier
+                                .aspectRatio(1f)
+                                .background(NeonBlue.copy(alpha = 0.15f))
+                                .selectiveBorder(!hasN, !hasS, !hasW, !hasE, NeonBlue, 4f),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            if (room?.threat == "critical") {
+                                Text("!", color = NeonRed, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                            }
+                        }
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .aspectRatio(1f)
+                                .background(Color(0xFF111111))
+                                .selectiveBorder(true, true, true, true, Color.DarkGray.copy(alpha=0.2f), 1f)
+                        )
+                    }
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(modifier = Modifier.size(10.dp).background(NeonRed))
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("CRITICAL THREAT DETECTED", color = Color.Gray, fontSize = 10.sp)
+            }
+        } else {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text("AWAITING INTEL...", color = Color.DarkGray, fontSize = 14.sp)
+            }
         }
     }
 }

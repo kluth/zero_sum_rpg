@@ -36,6 +36,11 @@ import kotlin.random.Random
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
+import android.content.Context
 
 val NeonRed = Color(0xFFFF2A2A)
 val NeonBlue = Color(0xFF00E5FF)
@@ -291,11 +296,30 @@ fun CharacterSheetSection(modifier: Modifier = Modifier) {
     val reflexes = character?.reflexes ?: 75
     val tech = character?.tech ?: 80
 
+    val context = androidx.compose.ui.platform.LocalContext.current
     var mockHeartRate by remember { mutableStateOf(80) }
-    LaunchedEffect(Unit) {
-        while (true) {
-            delay(2000)
-            mockHeartRate = Random.nextInt(60, 140)
+    
+    DisposableEffect(Unit) {
+        val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as? SensorManager
+        val heartRateSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_HEART_RATE)
+        val listener = object : SensorEventListener {
+            override fun onSensorChanged(event: SensorEvent?) {
+                event?.values?.firstOrNull()?.let { hr ->
+                    if (hr > 0) mockHeartRate = hr.toInt()
+                }
+            }
+            override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+        }
+        
+        if (heartRateSensor != null) {
+            sensorManager.registerListener(listener, heartRateSensor, SensorManager.SENSOR_DELAY_NORMAL)
+        } else {
+            // Fallback for emulators without hardware sensor: slow random walk around 80
+            mockHeartRate = 80
+        }
+        
+        onDispose {
+            sensorManager?.unregisterListener(listener)
         }
     }
 
@@ -397,6 +421,9 @@ fun StatBar(label: String, current: Int, max: Int, color: Color) {
 
 @Composable
 fun DiceRollerSection(modifier: Modifier = Modifier) {
+    val uiState by NetworkManager.uiState.collectAsStateWithLifecycle()
+    val mapState = uiState.map
+
     val coroutineScope = rememberCoroutineScope()
     val haptic = LocalHapticFeedback.current
     var isCalculating by remember { mutableStateOf(false) }
@@ -438,21 +465,29 @@ fun DiceRollerSection(modifier: Modifier = Modifier) {
                     isCalculating = true
                     delay(300)
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    val materials = listOf(
-                        Pair("Drywall", 3),
-                        Pair("Concrete", 15),
-                        Pair("Glass", 2),
-                        Pair("None", 0)
-                    )
-                    val raycastHit = materials.random()
-                    raycastMaterial = "${raycastHit.first} (-${raycastHit.second}dB)"
+                    
+                    val mapMaterials = mapState?.grid?.map { it.material }?.distinct()?.filter { it != "None" && it.isNotEmpty() } ?: emptyList()
+                    val actualMaterial = if (mapMaterials.isNotEmpty()) {
+                        mapMaterials.random()
+                    } else {
+                        "Concrete"
+                    }
+                    
+                    val dropOff = when (actualMaterial.lowercase()) {
+                        "drywall" -> 3
+                        "concrete" -> 15
+                        "glass" -> 2
+                        else -> 5
+                    }
+                    
+                    raycastMaterial = "$actualMaterial (-${dropOff}dB)"
 
                     val ambientDb = Random.nextInt(40, 60)
                     val gunshotDb = 140
-                    val dropRequired = gunshotDb - ambientDb - raycastHit.second
+                    val dropRequired = gunshotDb - ambientDb - dropOff
                     val distanceMeters = if (dropRequired <= 0) 1 else Math.pow(2.0, dropRequired / 6.0).toInt()
                     
-                    val stealthScore = Random.nextInt(50, 95)
+                    val stealthScore = uiState.character?.stats?.stealth_total ?: 50
                     val pSignal = Math.pow(10.0, (100 - stealthScore) / 10.0)
                     val pNoise = Math.pow(10.0, ambientDb / 10.0)
                     val snr = String.format("%.2f", pSignal / pNoise)

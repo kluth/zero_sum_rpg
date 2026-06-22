@@ -36,9 +36,30 @@ data class Roll(
     val timestamp: Long = 0L
 )
 
+data class MapRoom(
+    val id: String,
+    val name: String,
+    val threat: String,
+    val revealed: Boolean
+)
+
+data class GridCell(
+    val x: Int,
+    val y: Int,
+    val roomId: String?,
+    val material: String = "Concrete" // default solid
+)
+
+data class MapState(
+    val archetype: String = "UNKNOWN",
+    val grid: List<GridCell> = emptyList(),
+    val rooms: List<MapRoom> = emptyList()
+)
+
 data class PlayerState(
     val character: CharacterState? = null,
-    val recentRolls: List<Roll> = emptyList()
+    val recentRolls: List<Roll> = emptyList(),
+    val map: MapState? = null
 )
 
 sealed class PlayerIntent {
@@ -158,6 +179,39 @@ object NetworkManager {
         return newSessionId
     }
 
+    private fun parseMapState(stateMap: Map<*, *>): MapState? {
+        val mapData = stateMap["map"] as? Map<*, *> ?: return null
+        val archetype = mapData["archetype"] as? String ?: "UNKNOWN"
+        val gridList = mutableListOf<GridCell>()
+        val roomList = mutableListOf<MapRoom>()
+
+        val rooms = mapData["rooms"] as? Map<*, *>
+        rooms?.forEach { (k, v) ->
+            val roomId = k as? String ?: return@forEach
+            val roomObj = v as? Map<*, *> ?: return@forEach
+            val metadata = roomObj["metadata"] as? Map<*, *>
+            val revealedTo = metadata?.get("revealedTo") as? Map<*, *>
+            val isRevealed = revealedTo?.get("char_1") as? Boolean ?: false
+            val threat = metadata?.get("threat") as? String ?: "none"
+            roomList.add(MapRoom(roomId, roomId, threat, isRevealed))
+        }
+
+        val grid = mapData["grid"] as? Map<*, *>
+        grid?.forEach { (k, v) ->
+            val keyStr = k as? String ?: return@forEach
+            val parts = keyStr.split(",")
+            if (parts.size == 2) {
+                val x = parts[0].toIntOrNull() ?: 0
+                val y = parts[1].toIntOrNull() ?: 0
+                val cellObj = v as? Map<*, *>
+                val roomId = cellObj?.get("room_id") as? String
+                val material = cellObj?.get("material") as? String ?: "Drywall"
+                gridList.add(GridCell(x, y, roomId, material))
+            }
+        }
+        return MapState(archetype, gridList, roomList)
+    }
+
     fun joinSession(newSessionId: String) {
         valueEventListener?.let {
             database.child("sessions/$sessionId/gameState").removeEventListener(it)
@@ -172,7 +226,11 @@ object NetworkManager {
                         val stateMap = snapshot.value as? Map<*, *>
                         if (stateMap != null) {
                             val charState = parseCharacterState(stateMap)
-                            _uiState.value = _uiState.value.copy(character = charState)
+                            val mapState = parseMapState(stateMap)
+                            _uiState.value = _uiState.value.copy(
+                                character = charState,
+                                map = mapState
+                            )
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
