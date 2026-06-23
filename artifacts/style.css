@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@300;500&family=Inter:wght@300;400;600&display=swap');
+
+:root {
+  --bg-color: #0d0f12;
+  --text-color: #e0e6ed;
+  --neon-cyan: #0ff;
+  --neon-magenta: #f0f;
+  --dark-border: #1a1f26;
+  --blockquote-bg: #11151a;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 40px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Orbitron', sans-serif;
+  color: var(--neon-cyan);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  border-bottom: 1px solid var(--dark-border);
+  padding-bottom: 5px;
+  margin-top: 2em;
+}
+
+h1 {
+  font-size: 2.5em;
+  color: var(--neon-magenta);
+  text-shadow: 0 0 10px rgba(255, 0, 255, 0.4);
+  text-align: center;
+  border-bottom: 2px solid var(--neon-magenta);
+}
+
+h2 {
+  text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+}
+
+p {
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+}
+
+code, pre {
+  font-family: 'Roboto Mono', monospace;
+  background-color: var(--dark-border);
+  color: var(--neon-cyan);
+  border-radius: 3px;
+  padding: 0.2em 0.4em;
+}
+
+pre {
+  padding: 15px;
+  border-left: 3px solid var(--neon-cyan);
+  overflow-x: auto;
+}
+
+blockquote {
+  background-color: var(--blockquote-bg);
+  border-left: 4px solid var(--neon-magenta);
+  margin: 1.5em 0;
+  padding: 15px 20px;
+  font-style: italic;
+  color: #a0aab5;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2em 0;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.9em;
+}
+
+th, td {
+  border: 1px solid var(--dark-border);
+  padding: 12px;
+  text-align: left;
+}
+
+th {
+  background-color: var(--dark-border);
+  color: var(--neon-cyan);
+  text-transform: uppercase;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  border: 2px solid var(--dark-border);
+  border-radius: 4px;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
+  display: block;
+  margin: 2em auto;
+}
+
+hr {
+  border: 0;
+  border-top: 1px dashed var(--neon-cyan);
+  opacity: 0.3;
+  margin: 3em 0;
+}

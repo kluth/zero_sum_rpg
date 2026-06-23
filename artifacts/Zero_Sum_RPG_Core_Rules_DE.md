@@ -1,6 +1,6 @@
 # Zero-Sum RPG: Core Rulebook (Deutsch)
 
-![Cover Art](artifacts/images/zero_sum_cover.jpg)
+![Cover Art](images/zero_sum_cover.jpg)
 
 
 # Zero Sum RPG - Komplette Projektübersicht & Technische Architektur
@@ -62,7 +62,7 @@ Das System verzichtet auf die volatilen 0-100-Prozentskalen zugunsten flacher, s
 - `stealth_total` wird direkt übergeben; der Client berechnet Modifikatoren niemals iterativ.
 - Conditions sind flache Enums (z.B. `CYBERPSYCHOSIS`) für sofortige O(1) Condition-Checks.
 
-![Tactical Grid](artifacts/images/combat_grid.jpg)
+![Tactical Grid](images/combat_grid.jpg)
 
 ## 2. Action Economy & Combat Analytics (Tactical-Mathematician)
 **Das 3-Action Economy & Firebase Tag Engine**
@@ -87,7 +87,7 @@ Binäres Pass/Fail wird durch einen multidimensionalen Dice Pool (Success/Failur
 - **Server-Side Generation**: Der Backend Core berechnet den Dice Pool, führt den RNG Roll aus und übersetzt die mechanischen State-Änderungen.
 - **LLM Narrative Injection**: Das Backend verwendet ein sicheres internes LLM, um mechanische Ergebnisse (z.B. "Failed with 3 Advantages") in reichhaltige, kontextbezogene Prosa zu übersetzen, bevor die finale Narrative und State-Updates an den Client zurückgeschickt werden.
 
-![Neural Deck Hardware](artifacts/images/neural_deck.jpg)
+![Neural Deck Hardware](images/neural_deck.jpg)
 
 ## 5. Psychological Mechanics & UI Glitching (Psychological-Engineer)
 **Ausnutzung des AR-Geräts für Paranoia**
@@ -136,7 +136,7 @@ Die Android UI verzichtet auf statische Character Sheets. Gesteuert durch die Fi
 - **Parity:** Anstelle von komplexer Mathematik bestimmen Modifikatoren, *wie viele* von jedem Würfel du rollst. Wenn ein Spieler physisch rollt, tippt der GM einfach auf den "Manual Override"-Button in der Web-App/AR-App und gibt die finalen Ergebnis-Tags ein (z. B. `+2 Advantage`), um den digitalen Status zu synchronisieren.
 - **V2.1 Rule Sync:** Auto-Successes durch AP-Ausgaben sind nicht erlaubt. AP kauft strikt nur zusätzliche Grüne/Blaue Würfel. Threat-Wahrscheinlichkeiten (Rote Würfel) werden abgemildert, sodass ein einzelner gemischter Roll nicht zu katastrophalen mechanischen Wipes führt.
 
-![Tactical Grid](artifacts/images/combat_grid.jpg)
+![Tactical Grid](images/combat_grid.jpg)
 
 ## 2. Action Economy & Combat Analytics
 **Digital:** Die Jetpack Compose UI / Angular Web App trackt 3-Action Points (AP) und bestraft automatisch die Acoustic SNR (Signal-to-Noise Ratio).
