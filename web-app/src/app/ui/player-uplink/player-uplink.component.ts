@@ -10,7 +10,13 @@ import { DesignSystemConfig } from '../../core/design-system/design-tokens';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './player-uplink.component.html',
-  styleUrls: ['./player-uplink.component.css']
+  styleUrls: ['./player-uplink.component.css'],
+  host: {
+    '[style.display]': '"block"',
+    '[style.width]': '"100vw"',
+    '[style.height]': '"100dvh"',
+    '[style.overflow]': '"hidden"'
+  }
 })
 export class PlayerUplinkComponent implements OnInit {
   public scanner = new InventoryScanner();
