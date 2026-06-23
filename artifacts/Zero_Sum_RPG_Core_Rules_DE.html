@@ -31,39 +31,29 @@
 <h1 id="zero-sum-rpg-core-rulebook-deutsch">Zero-Sum RPG: Core Rulebook
 (Deutsch)</h1>
 <figure>
-<img src="images/zero_sum_cover.jpg" alt="Cover Art" />
-<figcaption aria-hidden="true">Cover Art</figcaption>
+<img src="images/blueprint.jpg" alt="Taktischer Blueprint" />
+<figcaption aria-hidden="true">Taktischer Blueprint</figcaption>
 </figure>
 <blockquote>
-<p><em>Die Grenze zwischen physischem Spieltisch und digitalem Backend
-verschwimmt. Dieses Dokument ist die architektonische Roadmap für die
-Zero-Sum RPG Engine und ihre Augmented Reality (AR)
-Companion-App.</em></p>
+<p><em>Dieses Regelwerk legt den vollen Fokus auf das analoge
+Spielerlebnis am physischen Tisch. Die optionalen digitalen Tools
+(Companion-App) ordnen sich vollständig der Pen-&amp;-Paper-Erfahrung
+unter.</em></p>
 </blockquote>
 <h2 id="worum-es-geht">1. Worum es geht</h2>
-<p><strong>Zero Sum RPG</strong> ist eine mathematisch rigorose,
-hochgradig asymmetrische und psychologisch intensive Next-Generation
-Tabletop Roleplaying Game Engine, angesiedelt in einem
-Cyberpunk-Infiltrationsuniversum. Es dient als hybrides Bindeglied
-zwischen physischen Spielern, dem Game Master (GM) und Twitch
-Spectators.</p>
-<p>Im Gegensatz zu traditionellen Companion Apps, die lediglich
-Würfelwürfe tracken, fungiert Zero Sum RPG als eine
-<strong>Cyber-Warfare Engine</strong>. Es berechnet reale akustische
-Physik für Stealth, trackt psychologisches Trauma über Allostatic Load
-Modelle und erzwingt brutale “Zero-Sum” ökonomische Transfers.</p>
-<figure>
-<img src="images/combat_grid.jpg" alt="Tactical Grid" />
-<figcaption aria-hidden="true">Tactical Grid</figcaption>
-</figure>
-<h2 id="core-mechanics-resolution">2. Core Mechanics &amp;
-Resolution</h2>
-<p><strong>Bounded Accuracy &amp; API-Friendly JSON</strong> Das System
-verzichtet auf volatile 0–100-Prozentskalen zugunsten flacher, streng
-begrenzter Integer (Werte von 1–20). Modifikatoren (+1 bis +3) bleiben
-dadurch extrem wirkungsvoll.</p>
-<p><strong>Die Multi-Axis Resolution Engine</strong> Die Engine nutzt
-einen multidimensionalen Dice Pool:</p>
+<p><strong>Zero Sum RPG</strong> ist ein asymmetrisches, psychologisch
+intensives und taktisches Tabletop Roleplaying Game (TTRPG), angesiedelt
+in unserer modernen, realen Welt der Gegenwart. Spieler übernehmen die
+Rolle von Spezialisten bei hochriskanten Operationen – von Infiltration
+und Sabotage bis hin zu Extraktionen.</p>
+<p>Das System konzentriert sich auf harte Konsequenzen, akustische
+Stealth-Physik und die Zermürbung der menschlichen Psyche unter extremem
+Stress (Allostatic Load).</p>
+<h2 id="core-mechanics-würfelwürfe">2. Core Mechanics &amp;
+Würfelwürfe</h2>
+<p>Das System verzichtet auf komplexe Prozentrechnungen und nutzt
+flache, leicht berechenbare Werte (1–20) sowie einen <strong>Multi-Axis
+D6 Pool</strong> für die Aktionsauflösung.</p>
 <table>
 <thead>
 <tr class="header">
@@ -74,107 +64,109 @@ einen multidimensionalen Dice Pool:</p>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;"><strong>Green</strong></td>
-<td style="text-align: left;">Core</td>
+<td style="text-align: left;"><strong>Grün</strong></td>
+<td style="text-align: left;">Erfolg</td>
 <td style="text-align: left;">Success / Failure</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><strong>Blue</strong></td>
-<td style="text-align: left;">Modifier</td>
+<td style="text-align: left;"><strong>Blau</strong></td>
+<td style="text-align: left;">Modifikator</td>
 <td style="text-align: left;">Advantage / Threat</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;"><strong>Red</strong></td>
-<td style="text-align: left;">Danger</td>
+<td style="text-align: left;"><strong>Rot</strong></td>
+<td style="text-align: left;">Risiko</td>
 <td style="text-align: left;">Triumph / Despair</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Digital:</strong> Der Server berechnet 200ms Lock-Windows und
-löst komplexe Matrizen sofort auf (z. B. “Failed mit 3
-Advantages”).<br />
-<strong>Analog Synchronization:</strong> Am physischen Spieltisch nutzen
-Spieler einen <strong>Multi-Axis D6 Pool</strong>. Anstelle von
-komplexer Mathematik bestimmen Modifikatoren, <em>wie viele</em> von
-jedem Würfel gerollt werden. Der GM synchronisiert dies durch Eintippen
-der finalen Tags (z.B. <code>+2 Advantage</code>) in das digitale
-Override-Dashboard.</p>
-<h2 id="action-economy-combat-analytics">3. Action Economy &amp; Combat
-Analytics</h2>
-<p>Basierend auf umfassenden Monte-Carlo-Simulationen nutzt die
-Combat-Engine ein striktes <strong>3-Action Point (AP)</strong> System
-pro Turn. Spieler müssen ihre AP taktisch zwischen Combat, Hacking und
-Stress-Management ausbalancieren.</p>
-<p><strong>Acoustic SNR (Signal-to-Noise Ratio)</strong> “Attack Spam”
-erzeugt kumulative Lärm-Strafen, die massive Schwärme alarmieren.</p>
-<p><strong>AP Recovery &amp; Standardization</strong> Spieler können
-nicht länger AP verbrennen, um Würfe vollständig zu umgehen
-(<em>Auto-Success ist deaktiviert</em>). AP fügen dem Dice Pool
-lediglich zusätzliche Modifier Dice hinzu. Um AP-Mangel im Late-Game
-abzufedern, existieren zwei Mechaniken: * <strong>Catch a
-Breath:</strong> Eine Aktion nutzen, um 1 AP zurückzugewinnen. *
-<strong>Narrative Flaw:</strong> Eine story-basierte Komplikation
-akzeptieren, um einen sofortigen AP-Refund zu erhalten.</p>
-<p><strong>Analog Synchronization:</strong> Spieler verwenden physische
-AP-Tokens (Pokerchips). Der SNR Track wird durch eine physische
-Drehscheibe auf dem Tisch dargestellt.</p>
+<p><strong>Analoges Würfeln:</strong> Spieler würfeln die D6 physisch.
+Modifikatoren bestimmen lediglich, <em>wie viele</em> von jedem Würfel
+in den Pool wandern. Eine Aktion ist erfolgreich, wenn die grünen
+Erfolge überwiegen, während blaue und rote Würfel narrative oder
+taktische Nebenwirkungen (z. B. entdeckte Spuren, Materialverschleiß)
+erzeugen.</p>
+<h2 id="action-economy-taktik">3. Action Economy &amp; Taktik</h2>
+<p>Jeder Charakter verfügt über ein striktes <strong>3-Aktionspunkte
+(AP)</strong> System pro Runde. Diese AP müssen sorgfältig zwischen
+Bewegung, Kampf, Interaktion und Stressabbau aufgeteilt werden.</p>
+<p><strong>Acoustic SNR (Signal-to-Noise Ratio)</strong> Jede laute
+Aktion (Schüsse, aufgetretene Türen) erzeugt Lärm. Am Spieltisch wird
+dies durch eine physische <strong>Lärm-Drehscheibe</strong> (SNR Track)
+dargestellt. Steigt der Lärm über bestimmte Schwellenwerte, werden
+automatisch Sicherheitskräfte und Verstärkung im Gebäude alarmiert.</p>
+<p><strong>AP-Rückgewinnung (Stamina)</strong> Es gibt keine
+automatischen Erfolge durch das Verbrennen von AP. Stattdessen können
+Spieler: * <strong>Durchatmen:</strong> Eine Aktion ausgeben, um 1 AP
+zurückzugewinnen. * <strong>Charakterschwäche ausspielen:</strong> Einen
+narrativen Fehler oder ein Trauma ausspielen, um vom Game Master (GM)
+sofort einen physischen AP-Token (Pokerchip) zurückzuerhalten.</p>
 <figure>
-<img src="images/neural_deck.jpg" alt="Neural Deck Hardware" />
-<figcaption aria-hidden="true">Neural Deck Hardware</figcaption>
+<img src="images/tactical_map.jpg" alt="Einsatzkarte" />
+<figcaption aria-hidden="true">Einsatzkarte</figcaption>
 </figure>
-<h2 id="asymmetric-state-syncing">4. Asymmetric State Syncing</h2>
-<p><strong>Das Split-Party-Problem gelöst</strong> Wenn der Netrunner
-via AR-App eine Datenfestung infiltriert, während der Solo physisch auf
-dem VTT kämpft, erzwingt das Backend eine einheitliche
-<strong>Simultaneous Resolution Queue</strong>.</p>
+<h2 id="asymmetrisches-gameplay-split-parties">4. Asymmetrisches
+Gameplay &amp; Split-Parties</h2>
+<p>Häufig trennt sich das Team: Während der Infiltrator lautlos eine
+Etage sichert, hackt der Tech-Spezialist in einem anderen Raum die
+Kamerasysteme.</p>
 <ul>
-<li><strong>Synchronized Breach (Group Action Mechanic):</strong> Um
-analoges Syncing zu erleichtern, können Spieler einen gemeinsamen
-<em>Breach</em> initiieren. Sie werfen ihre Dice physisch zusammen und
-bilden den Durchschnitt der Successes, oder geben AP aus, um via
-“Assist” zu helfen.</li>
-<li><strong>Time-Locking:</strong> Die erfolgreiche ICE-Entschlüsselung
-des Netrunners korreliert dadurch auf die Millisekunde genau mit dem
-Entriegeln der physischen Tür auf dem VTT.</li>
+<li><strong>Synchronized Breach:</strong> Um beide Handlungen am Tisch
+zu synchronisieren, legen die Spieler ihre Würfel zusammen. Die Erfolge
+werden gebündelt, damit nicht ein einzelner schlechter Wurf die gesamte
+koordinierte Aktion scheitern lässt.</li>
+<li><strong>Der Echtzeit-Timer:</strong> Für zeitkritische Manöver (z.
+B. das Knacken eines Tresors, während Wachleute patrouillieren) kann der
+GM eine physische Sanduhr (z. B. 2 Minuten) auf den Tisch stellen, um
+den echten Zeitdruck zu simulieren.</li>
 </ul>
-<h2 id="psychological-mechanics-stress">5. Psychological Mechanics &amp;
-Stress</h2>
-<p>Die AR Companion-App existiert nicht nur als Meta-Tool, sondern
-<em>In-Universe</em> als Neural Deck. Sie fungiert als Kanal für
-“Bleed”.</p>
+<h2 id="psychischer-stress-trauma">5. Psychischer Stress &amp;
+Trauma</h2>
+<p>Einsätze in der realen Welt hinterlassen Spuren.</p>
 <ul>
-<li><strong>Hidden Notifications:</strong> Der GM kann via Firebase
-gezielt Push-Benachrichtigungen an einzelne Spieler senden, um sie mit
-Halluzinationen oder falschen Infos zu manipulieren.</li>
-<li><strong>Bleed Cards:</strong> Physische Stress-Karten verursachen
-keine Hard-Lockouts (z.B. Turn-Skips) mehr. Sie erzwingen narrative
-Trade-Offs (z.B. <em>-1 auf Agility, es sei denn, man agiert
-rücksichtslos</em>).</li>
-<li><strong>Allostatic Stress Glitching:</strong> Steigt der
-<em>Allostatic Load</em>, degradiert die Jetpack Compose UI physisch:
-Text verschlüsselt sich, Shader lassen das Bild zerreißen und der
-haptische Motor des Smartphones imitiert einen rasenden Herzschlag.</li>
+<li><strong>Stress-Karten (Bleed Cards):</strong> Wenn Spieler extremen
+Situationen ausgesetzt sind, überreicht der GM ihnen verdeckt physische
+Stress-Karten. Diese enthalten keine harten Strafen wie “Du musst
+aussetzen”, sondern narrative Trade-Offs (z. B. <em>“Du hast zitternde
+Hände: -1 auf Feinmotorik, es sei denn, du nimmst ein riskantes
+Aufputschmittel”</em>).</li>
+<li><strong>Allostatic Load:</strong> Das anhaltende Stresslevel des
+Charakters. Steigt dieser Wert zu hoch, drohen Panikattacken, Paranoia
+oder Fehleinschätzungen der Lage.</li>
 </ul>
-<h2 id="the-dark-net-leverage">6. The Dark Net &amp; Leverage</h2>
-<p><strong>Leverage Currency:</strong> Spieler gewinnen
-<em>Leverage</em>, indem sie Verbündete schützen. Leverage kann
-ausgegeben werden, um Ressourcen zu stehlen oder den Emergency Heal
-eines Teammitglieds zu überschreiben.</p>
-<p><strong>The Dark Net:</strong> Die App bietet ein sicheres
-E2EE-Chat-Protokoll fürs Plotten unter den Spielern. <strong>Analog
-Synchronization:</strong> Spieler können klassische “Burner Notes”
-(physische Notizzettel) nutzen. Ein Spieler mit einem “Air-Gap Hack”
-kann verlangen, den Zettel abzufangen und zu lesen, bevor er den
-Empfänger erreicht.</p>
-<h2 id="progress-clocks-pacing">7. Progress Clocks &amp; Pacing</h2>
-<p><strong>Synchronized Clocks:</strong> Das VTT und die AR-App rendern
-nativ synchronisierte “Progress Clocks”. <strong>Analog
-Synchronization:</strong> Der GM nutzt Papier-Clocks auf dem Tisch.
-Clocks müssen <strong>sequenziell gefüllt</strong> werden (1 Segment pro
-generiertem Threat auf roten Würfeln). Ein einzelner gemischter Success
-führt nicht mehr sofort zum maximalen Doom.</p>
+<h2 id="kommunikation-informationskontrolle">6. Kommunikation &amp;
+Informationskontrolle</h2>
+<p><strong>Sichere Kanäle &amp; Intercepts</strong> Während Operationen
+koordinieren sich Spieler oft verdeckt. * <strong>Burner Notes:</strong>
+Spieler schreiben sich physische Notizzettel (“Burner Phones”), um Pläne
+zu schmieden, ohne dass der GM oder andere Spieler die Details kennen. *
+<strong>Überwachung:</strong> Gegnerische Fraktionen (oder sogar
+verräterische Teammitglieder) mit entsprechender Ausrüstung können
+verlangen, den Zettel abzufangen und zu lesen.</p>
+<h2 id="progress-clocks-spannungsaufbau">7. Progress Clocks &amp;
+Spannungsaufbau</h2>
+<p>Das Spiel nutzt <strong>Papier-Clocks</strong> (auf Karteikarten
+gezeichnete Kreise mit 4, 6 oder 8 Segmenten), um herannahende
+Bedrohungen sichtbar zu machen (z.B. “Polizei trifft ein” oder “Brand
+breitet sich aus”).</p>
+<ul>
+<li>Der GM füllt die Segmente <strong>sequenziell</strong> mit einem
+Stift aus (1 Segment pro generiertem “Threat” auf blauen/roten Würfeln).
+Die physische Präsenz der Clock auf dem Tisch dient als ständiger,
+sichtbarer Spannungsfaktor.</li>
+</ul>
 <hr />
-<p><em>Status: Rulebook Version 2.1 | Autor: Zero-Sum Agent
-Network</em></p>
+<h2 id="optional-digitale-companion-app-nice-to-have">8. Optional:
+Digitale Companion-App (“Nice to Have”)</h2>
+<p>Obwohl das System für Papier, Stift und Token designt ist, existiert
+ein optionales digitales Toolset zur Unterstützung: * <strong>Player
+Uplink (Smartphone):</strong> Spieler können ihr echtes Smartphone
+nutzen, um Inventar per NFC-Tags (aufgedruckt auf Ausrüstungskarten) zu
+scannen oder verschlüsselte Textnachrichten im Team-Chat zu versenden. *
+<strong>GM Dashboard:</strong> Der Spielleiter kann die Lärm-Physik
+(SNR) vom System berechnen lassen oder die Taktikkarte auf einen Monitor
+im Raum streamen (Corporate Billboard).</p>
+<p><em>Status: Rulebook Version 3.0 (Modern Realism Edition) | Autor:
+Zero-Sum Agent Network</em></p>
 </body>
 </html>
