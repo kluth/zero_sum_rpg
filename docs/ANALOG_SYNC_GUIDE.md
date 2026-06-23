@@ -10,11 +10,13 @@ This guide provides the official framework for synchronizing physical "analog" t
 - For offline or physical play, tables utilize a **Multi-Axis D6 Pool**. 
 - Roll standard six-sided dice: Green (Success/Failure), Blue (Advantage/Threat), and Red (Triumph/Despair).
 - **Parity:** Instead of complex math, modifiers dictate *how many* of each die you roll. If a player rolls physically, the GM simply taps the "Manual Override" button on the Web-App/AR-App and inputs the final result tags (e.g., `+2 Advantage`) to sync the digital state.
+- **V2.1 Rule Sync:** Auto-successes via AP expenditure are disallowed. AP strictly buys additional Green/Blue dice. Threat probabilities (Red Dice) are softened so a single mixed roll does not result in catastrophic mechanical wipes.
 
 ## 2. Action Economy & Combat Analytics
 **Digital:** The Jetpack Compose UI / Angular Web App tracks 3-Action Points (AP) and automatically penalizes Acoustic SNR (Signal-to-Noise Ratio).
 **Analog Synchronization:**
 - **Action Tokens:** Players use three physical tokens (poker chips or coins). Spend them to take actions.
+- **AP Recovery (V2.1 Fix):** Players can declare a "Catch a Breath" or accept a Narrative Flaw to have the GM physically hand them back an AP token mid-session, preventing late-game token starvation.
 - **The SNR Track:** The GM uses a physical paper tracker or spinning dial (from the printable assets) to track the party's Acoustic SNR. 
 - **Parity:** When the party makes noise physically (rolling loudly, dropping tokens), the GM can optionally advance the physical SNR dial. To sync, the GM taps the `+ HEAT` button on their digital dashboard.
 
@@ -22,12 +24,13 @@ This guide provides the official framework for synchronizing physical "analog" t
 **Digital:** The server calculates 200ms lock-windows so an AR hack perfectly coincides with a physical door opening.
 **Analog Synchronization:**
 - **The Split-Timer:** When the physical table initiates combat, the GM sets a physical egg-timer or hourglass (e.g., 2 minutes real-time) for the Netrunner to complete their physical hacking puzzle (e.g., a mastermind-style peg board or card matching game).
+- **Synchronized Breach (V2.1 Fix):** If the party is splitting physical actions, they can initiate a "Group Action." Players physically pool their D6s into a single communal bowl, averaging successes to prevent one player's bad roll from failing the entire split operation.
 - **Parity:** If the Netrunner finishes the puzzle before the timer drops, the GM pushes the `UNLOCK_DOOR` state to the VTT, instantly revealing the new room to the digital players.
 
 ## 4. Psychological Mechanics & The Diegetic Economy
 **Digital:** The AR App vibrates, text scrambles under Allostatic Stress, and players use NFC tags to equip gear.
 **Analog Synchronization:**
-- **Physical Stress Cards:** As players take stress, the GM hands them "Bleed Cards" face down. These cards contain contradictory intel or secret objectives.
+- **Physical Stress Cards:** As players take stress, the GM hands them "Bleed Cards" face down. Under the V2.1 Ruleset, these cards must *not* contain hard lockouts (like skipped turns). Instead, they provide manageable mechanical trade-offs (e.g., "-1 to Agility checks") or contradictory intel/secret objectives.
 - **Physical Gear:** Printable item cards.
 - **Parity:** To sync a physical item, players scan the QR code printed on the back of the item card using the AR Companion App. The item is instantly deleted from the Chaos Market and added to their digital inventory.
 
@@ -42,6 +45,7 @@ This guide provides the official framework for synchronizing physical "analog" t
 **Digital:** Synchronized SVGs update across all devices.
 **Analog Synchronization:**
 - **Paper Clocks:** Draw circles on index cards, divided into 4, 6, or 8 segments. Fill them in with a marker.
+- **Sequential Filling (V2.1 Fix):** The GM must shade in Paper Clocks sequentially (1 slice per Threat generated on a Red Die). A single mixed-success roll can no longer instantly fill a clock to maximum.
 - **Parity:** The GM's digital interface allows them to manually tick clocks. Ticking a digital clock will flash the VTT screens; the GM then physically shades in the analog clock on the table.
 
 ## 7. Multiple Levels & Outdoor Environments
