@@ -12,20 +12,23 @@ The system abandons the volatile 0-100 percentile scales in favor of flat, stric
 
 ## 2. Action Economy & Combat Analytics (Tactical-Mathematician)
 **The 3-Action Economy & Firebase Tag Engine**
-Based on extensive Monte Carlo simulations, the combat engine utilizes a 3-Action Point (AP) system. 
+Based on extensive Monte Carlo simulations, the combat engine utilizes a 3-Action Point (AP) system per turn. 
 - "Attack Spam" generates compounding Acoustic SNR penalties, alerting massive swarms.
 - Players must balance AP across Combat, Hacking, and Stress Management.
+- **AP Recovery & Standardization (V2.1 Fix):** Players can no longer spend multiple AP to bypass rolls (auto-success is disabled). AP strictly adds modifier dice (Green/Blue) to pools. To prevent late-game AP starvation, players can execute a "Catch a Breath" move to regain 1 AP, or deliberately accept a Narrative Flaw complication for an instant AP refund.
 - A **Modular Tag System** runs on the Firebase Backend, resolving additive maths and boolean overrides (e.g., `BUFF:ACCURACY:+2:1_TURN`) before pushing the final reduced state array down to the AR app's Jetpack Compose UI.
 
 ## 3. Asymmetric State Syncing (Asymmetric-Integrator)
 **Solving the Split-Party Problem**
 When the Netrunner is infiltrating a data-fortress via the AR app while the Solo is fighting on the VTT, the backend enforces a unified **Simultaneous Resolution Queue** via WebSockets/Socket.io. 
 - Real-time and turn-based contexts are bridged by mapping "AR Hacks" to specific AP costs.
+- **Group Action Mechanic (V2.1 Fix):** To fix clunky split-party analog syncing, players can initiate a "Synchronized Breach." They pool their dice and average their successes, or spend AP to "Assist" an ally on a split-front, preventing a single bad roll from catastrophically failing a dual-operation.
 - The state is locked for 200ms windows to calculate split-party events, ensuring the Netrunner's successful ICE decryption exactly correlates to the physical door unlocking on the VTT for the Solo.
 
 ## 4. Multi-Axis Resolution Engine (MultiAxis-Resolutor)
 **Narrative Dice Pools & Backend Offloading**
 Binary pass/fail is replaced with a multidimensional dice pool (Success/Failure, Advantage/Threat, Triumph/Despair). 
+- **Threat Re-Balancing & Sequential Clocks (V2.1 Fix):** The probability of Red "Danger" dice triggering catastrophic failures has been softened. Furthermore, multi-segment Paper Clocks must fill sequentially (one tick per Threat generated). A single mixed-success roll can no longer jump a clock to maximum.
 - **The "Dumb" Client**: The Android app sends only the player's intent and context tags (e.g., `"action": "hack", "context": ["under_fire"]`).
 - **Server-Side Generation**: The backend Core calculates the dice pool, executes the RNG roll, and translates the mechanical state changes.
 - **LLM Narrative Injection**: The backend uses a secure internal LLM to translate mechanical results (e.g., "Failed with 3 Advantages") into rich, contextual prose before piping the finalized narrative and state updates back to the client.
@@ -34,6 +37,7 @@ Binary pass/fail is replaced with a multidimensional dice pool (Success/Failure,
 **Exploiting the AR Device for Paranoia**
 The AR companion app acts as a conduit for "bleed." 
 - **Hidden Notifications**: The GM can send secure push notifications to specific players via the Firebase FCM layer, feeding them hallucinations or contradictory intel.
+- **Manageable Bleed Cards (V2.1 Fix):** The physical/digital "Bleed Cards" no longer enforce hard mechanical lockouts (e.g., skipped turns or forced blinding). Instead, they enforce narrative complications and manageable trade-offs (e.g., "-1 to Agility checks unless you recklessly push forward"), removing the un-fun death spiral.
 - **Allostatic Stress Glitching**: As a player's Allostatic Load crosses thresholds, the Jetpack Compose UI physically degrades—text scrambles, screens tear via shaders, and the device utilizes its haptic motor to mimic a racing heartbeat.
 
 ## 6. The Diegetic Economy & Hardware Interaction (Diegetic-Economist)
