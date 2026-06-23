@@ -212,11 +212,11 @@ const firebaseConfig = {
                   </div>
                   
                   <div style="display: flex; flex-direction: column; gap: clamp(10px, 2vh, 20px); width: 100%;">
-                     <div style="background: rgba(255,255,255,0.05); padding: clamp(10px, 2vh, 20px); border-radius: 4px;">
+                     <div style="background: rgba(255,255,255,0.05); padding: clamp(10px, 2vh, 20px); border-radius: 0px;">
                         <span style="font-size: clamp(14px, min(2vw, 3vh), 24px); font-weight: bold; color: white;">TYPE <span style="color:#00F0FF;">!chaos</span> IN CHAT</span><br/>
                         <span style="font-size: clamp(10px, 1.5vh, 14px); color: gray;">Adds $10 to the Chaos Market. FREE.</span>
                      </div>
-                     <div style="background: rgba(255,255,255,0.05); padding: clamp(10px, 2vh, 20px); border-radius: 4px;">
+                     <div style="background: rgba(255,255,255,0.05); padding: clamp(10px, 2vh, 20px); border-radius: 0px;">
                         <span style="font-size: clamp(14px, min(2vw, 3vh), 24px); font-weight: bold; color: white;">CHEER BITS</span><br/>
                         <span style="font-size: clamp(10px, 1.5vh, 14px); color: gray;">Adds proportional Chaos to the Market.</span>
                      </div>
@@ -326,7 +326,7 @@ const firebaseConfig = {
                   <div class="data-mono" style="font-size: clamp(12px, 1.5vh, 16px);">STL: {{ myCharStats().stealth_total }}</div>
               </div>
               
-              <button class="cyber-button" style="margin: 0; padding: clamp(4px, 1vh, 8px) clamp(8px, 1vw, 12px); font-size: clamp(10px, 1.2vh, 14px);" (click)="triggerEmergencyHeal()">⚠️ [ZERO SUM] EMERGENCY HEAL ⚠️</button>
+              <button class="cyber-button" style="margin: 0; padding: clamp(4px, 1vh, 8px) clamp(8px, 1vw, 12px); font-size: clamp(10px, 1.2vh, 14px);" (click)="triggerEmergencyHeal()">[ZERO SUM] EMERGENCY HEAL</button>
               
               <div class="data-mono" style="font-size: clamp(12px, 1.5vh, 16px);">HEAT: {{ heatLevel() }}</div>
               <button class="cyber-button" style="margin: 0; padding: clamp(4px, 1vh, 8px) clamp(8px, 1vw, 12px); font-size: clamp(10px, 1.2vh, 14px);" (click)="show3d.set(!show3d())">3D / 2D</button>
@@ -357,11 +357,11 @@ const firebaseConfig = {
               <div class="glass-panel" style="flex: 0 0 clamp(150px, 20vw, 250px); display: flex; flex-direction: column; overflow: hidden; padding: clamp(4px, 1vh, 10px);">
                 <h3 class="header-brutalist " style="margin-top: 0; margin-bottom: clamp(4px, 1vh, 10px); font-size: clamp(12px, 1.5vh, 16px); border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 5px; flex-shrink: 0;">ACTIONS</h3>
                 <div style="display: flex; flex-direction: column; gap: clamp(4px, 1vh, 10px); flex: 1; justify-content: center; overflow-y: auto;">
-                  <button class="cyber-button" style="margin: 0; font-size: clamp(12px, 2vh, 20px); padding: clamp(8px, 1.5vh, 15px); text-align: left;" (click)="playerAction('attack')">⚔️ ATTACK</button>
-                  <button class="cyber-button" style="margin: 0; font-size: clamp(12px, 2vh, 20px); padding: clamp(8px, 1.5vh, 15px); text-align: left;" (click)="playerAction('sneak')">🥷 SNEAK</button>
-                  <button class="cyber-button" style="margin: 0; font-size: clamp(12px, 2vh, 20px); padding: clamp(8px, 1.5vh, 15px); text-align: left;" (click)="playerAction('dash')">⚡ DASH</button>
-                  <button class="cyber-button" style="margin: 0; font-size: clamp(12px, 2vh, 20px); padding: clamp(8px, 1.5vh, 15px); text-align: left;" (click)="playerAction('investigate')">🔍 INVEST</button>
-                  <button class="cyber-button" style="margin: 0; font-size: clamp(12px, 2vh, 20px); padding: clamp(8px, 1.5vh, 15px); text-align: left;" (click)="playerAction('sabotage')">💥 SABOTAGE</button>
+                  <button class="cyber-button" style="margin: 0; font-size: clamp(12px, 2vh, 20px); padding: clamp(8px, 1.5vh, 15px); text-align: left;" (click)="playerAction('attack')">ATTACK</button>
+                  <button class="cyber-button" style="margin: 0; font-size: clamp(12px, 2vh, 20px); padding: clamp(8px, 1.5vh, 15px); text-align: left;" (click)="playerAction('sneak')">SNEAK</button>
+                  <button class="cyber-button" style="margin: 0; font-size: clamp(12px, 2vh, 20px); padding: clamp(8px, 1.5vh, 15px); text-align: left;" (click)="playerAction('dash')">DASH</button>
+                  <button class="cyber-button" style="margin: 0; font-size: clamp(12px, 2vh, 20px); padding: clamp(8px, 1.5vh, 15px); text-align: left;" (click)="playerAction('investigate')">INVESTIGATE</button>
+                  <button class="cyber-button" style="margin: 0; font-size: clamp(12px, 2vh, 20px); padding: clamp(8px, 1.5vh, 15px); text-align: left;" (click)="playerAction('sabotage')">SABOTAGE</button>
                 </div>
               </div>
               

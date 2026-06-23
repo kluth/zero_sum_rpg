@@ -8,7 +8,7 @@ import { GridStore } from './grid.store';
   selector: 'app-pixi-map',
   standalone: true,
   imports: [CommonModule],
-  template: `<div #pixiContainer style="width: 100%; height: 100%; overflow: hidden; border: 1px solid #00E5FF; border-radius: 4px;"></div>`
+  template: `<div #pixiContainer style="width: 100%; height: 100%; overflow: hidden; border: 1px solid #1a1a1c; border-radius: 0px;"></div>`
 })
 export class PixiMapComponent implements AfterViewInit, OnDestroy {
   @Input() characters: Record<string, any> = {};

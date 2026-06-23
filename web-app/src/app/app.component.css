@@ -3,13 +3,12 @@
 :host {
   display: block;
   min-height: 100dvh; 
-  background-color: #09090b; /* Zinc 950 */
-  color: #d4d4d8; /* Zinc 300 */
+  background-color: #000000; /* Absolute black */
+  color: #c9c9cd; /* Cold slate gray */
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
-  background-image: radial-gradient(circle at 50% 0%, #18181b 0%, #09090b 80%);
 }
 
 .crt-overlay {
@@ -43,13 +42,11 @@
 
 /* Sterile Corporate Panel */
 .glass-panel {
-  background: rgba(24, 24, 27, 0.4) !important;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.04) !important;
-  border-radius: 2px;
-  padding: clamp(12px, 2vh, 24px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.02) !important;
+  background: rgba(10, 10, 12, 0.95) !important;
+  border: 1px solid #1a1a1c !important;
+  border-radius: 0px !important;
+  padding: clamp(4px, 1vh, 8px) !important;
+  box-shadow: none !important;
   display: flex;
   flex-direction: column;
   overflow: hidden; /* Enforce no scrolling by default on panels */
@@ -73,48 +70,47 @@ h1, h2, h3 {
 }
 
 .cyber-input {
-  background: rgba(0, 0, 0, 0.2) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  color: #fafafa !important;
+  background: #000000 !important;
+  border: 1px solid #1a1a1c !important;
+  color: #ffffff !important;
   font-size: clamp(12px, 1.5vh, 16px) !important;
   text-align: center;
   letter-spacing: 0.15em;
-  padding: clamp(10px, 2vh, 16px) clamp(16px, 3vw, 24px);
+  padding: clamp(6px, 1.5vh, 10px) clamp(10px, 2vw, 16px);
   outline: none;
   font-family: 'JetBrains Mono', monospace !important;
-  border-radius: 2px;
+  border-radius: 0px !important;
   width: 100%;
   max-width: 400px;
   margin-bottom: 16px;
-  transition: all 0.3s ease;
+  transition: all 0.1s ease;
 }
 
 .cyber-input:focus {
-  border-color: rgba(255, 255, 255, 0.3) !important;
-  background: rgba(0, 0, 0, 0.4) !important;
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.02);
+  border-color: #39FF14 !important;
+  background: #050505 !important;
 }
 
 .cyber-button {
-  background: transparent !important;
+  background: #050505 !important;
   color: #a1a1aa !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  padding: clamp(6px, 1vh, 12px) clamp(12px, 1.5vw, 24px);
+  border: 1px solid #1a1a1c !important;
+  padding: clamp(4px, 1vh, 8px) clamp(8px, 1.5vw, 16px);
   font-size: clamp(10px, 1.2vh, 14px);
   font-family: 'JetBrains Mono', monospace;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.1em;
   font-weight: 400;
   cursor: pointer;
   margin-top: clamp(4px, 1vh, 10px);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.1s ease;
   text-transform: uppercase;
-  border-radius: 2px;
+  border-radius: 0px !important;
 }
 
 .cyber-button:hover, .cyber-button.active {
-  background: rgba(255, 255, 255, 0.1) !important;
-  color: #fafafa !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
+  background: #1a1a1c !important;
+  color: #ffffff !important;
+  border-color: #39FF14 !important;
 }
 
 .main-dashboard-wrapper { 
@@ -164,26 +160,28 @@ h1, h2, h3 {
 }
 
 .prefab-block, .tool-btn {
-  background: rgba(0, 0, 0, 0.2) !important;
+  background: #050505 !important;
   color: #a1a1aa !important;
-  border: 1px solid rgba(255, 255, 255, 0.04) !important;
-  border-radius: 2px;
+  border: 1px solid #1a1a1c !important;
+  border-radius: 0px !important;
   font-family: 'JetBrains Mono', monospace;
   font-size: clamp(9px, 1.2vh, 12px);
-  padding: clamp(4px, 1vh, 8px);
-  text-align: center;
+  padding: clamp(4px, 1vh, 6px);
+  text-align: left;
   cursor: pointer;
 }
 
 .prefab-block:hover, .tool-btn:hover {
-  background: rgba(255, 255, 255, 0.05) !important;
-  color: #fafafa !important;
+  background: #1a1a1c !important;
+  color: #ffffff !important;
+  border-color: #39FF14 !important;
 }
 
 .prefab-block.selected, .tool-btn.active {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border-color: rgba(255, 255, 255, 0.3) !important;
-  color: #fafafa !important;
+  background: #39FF14 !important;
+  border-color: #39FF14 !important;
+  color: #000000 !important;
+  font-weight: bold;
 }
 
 input[type="text"], input[type="number"], select {
@@ -193,7 +191,7 @@ input[type="text"], input[type="number"], select {
   font-family: 'JetBrains Mono', monospace;
   font-size: clamp(10px, 1.2vh, 12px);
   padding: clamp(4px, 1vh, 8px) !important;
-  border-radius: 2px;
+  border-radius: 0px;
 }
 
 /* Alert styling */
@@ -225,7 +223,7 @@ input[type="text"], input[type="number"], select {
 /* Custom Scrollbar for sterile look (used only on mobile or specific inner texts if absolutely necessary) */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.1); }
-::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 2px; }
+::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 0px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
 
 /* ========================================= */
