@@ -1,1 +1,21 @@
-<p>billboard works!</p>
+<div class="billboard-container" [style.backgroundColor]="paperWhiteColor" [style.color]="inkColor">
+  <header [style.backgroundColor]="slateBlueColor">
+    <h1>Corporate Billboard // GM Dashboard</h1>
+  </header>
+  
+  <main>
+    <section class="snr-display">
+      <h2>Acoustic SNR Level</h2>
+      <div class="snr-value" [ngClass]="getThreatLevelName()">{{ tracker.getSnr() }}</div>
+      <div class="threat-level">Threat: {{ getThreatLevelName() }}</div>
+    </section>
+
+    <section class="controls">
+      <button (click)="decreaseSnr(5)">- 5</button>
+      <button (click)="decreaseSnr(1)">- 1</button>
+      <button (click)="increaseSnr(1)">+ 1</button>
+      <button (click)="increaseSnr(5)">+ 5</button>
+      <button (click)="increaseSnr(10)">+ 10</button>
+    </section>
+  </main>
+</div>
