@@ -1,0 +1,37 @@
+<div class="uplink-wrapper" [style.backgroundColor]="coolGrayColor">
+  <div class="smartphone-frame" [style.backgroundColor]="paperWhiteColor" [style.color]="inkColor">
+    <header class="app-header">
+      <h2>Player Uplink v3.1</h2>
+    </header>
+
+    <div class="error-banner" *ngIf="errorMsg">
+      {{ errorMsg }}
+    </div>
+
+    <section class="inventory-section" [style.backgroundColor]="offWhiteColor">
+      <h3>Inventory (NFC Scan)</h3>
+      <div class="scan-bar">
+        <input type="text" [(ngModel)]="scanInput" placeholder="Enter Item Code (e.g. WPN-01)" />
+        <button (click)="onScan()">Scan</button>
+      </div>
+      <ul class="item-list">
+        <li *ngFor="let item of getItems()">
+          <span class="item-id">[{{ item.id }}]</span> {{ item.name }}
+        </li>
+      </ul>
+    </section>
+
+    <section class="chat-section">
+      <h3>Burner Notes (E2EE)</h3>
+      <div class="chat-window" [style.backgroundColor]="offWhiteColor">
+        <div class="chat-message" *ngFor="let msg of getMessages()">
+          <strong>{{ msg.sender }}:</strong> {{ msg.text }}
+        </div>
+      </div>
+      <div class="chat-input-bar">
+        <input type="text" [(ngModel)]="chatInput" placeholder="Type burner note..." />
+        <button (click)="onSendChat()">Send</button>
+      </div>
+    </section>
+  </div>
+</div>
