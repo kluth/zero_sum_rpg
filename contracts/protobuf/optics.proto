@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package zero_sum.optics;
+
+// --- Value Objects & Primitives ---
+message Coordinate {
+  int32 x = 1;
+  int32 y = 2;
+  int32 z = 3;
+}
+
+message LuminousFlux {
+  double lumen = 1;
+}
+
+message LuxLevel {
+  double lux = 1;
+}
+
+message FieldOfView {
+  repeated Coordinate visible_cells = 1;
+}
+
+// --- Events (Choreography) ---
+message LightSourceIgnitedEvent {
+  string source_id = 1;
+  Coordinate position = 2;
+  LuminousFlux flux = 3;
+}
+
+message LightSourceExtinguishedEvent {
+  string source_id = 1;
+}
+
+// --- Errors (Result Pattern in Protobuf) ---
+message ErrorDetails {
+  string code = 1;
+  string message = 2;
+}
+
+// --- Queries & Commands (Orchestration) ---
+message CalculateFovRequest {
+  Coordinate origin = 1;
+  double range_meters = 2;
+}
+
+message CalculateFovResponse {
+  oneof result {
+    FieldOfView fov = 1;
+    ErrorDetails error = 2;
+  }
+}
+
+// --- Optics Service ---
+service OpticsService {
+  rpc CalculateFieldOfView(CalculateFovRequest) returns (CalculateFovResponse);
+}

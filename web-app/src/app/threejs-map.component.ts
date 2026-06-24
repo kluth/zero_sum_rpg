@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild, AfterViewInit, OnDestroy, effect, inject } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild, AfterViewInit, OnDestroy, effect, inject, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -17,7 +17,7 @@ import { GridStore } from './grid.store';
     }
   `]
 })
-export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
+export class ThreeJsMapComponent implements AfterViewInit, OnDestroy, OnChanges {
   @Input() characters: Record<string, any> = {};
   @Input() mode: string = 'spectator';
   @ViewChild('mapContainer') mapContainer!: ElementRef<HTMLDivElement>;
@@ -31,6 +31,7 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
   private animationFrameId: number | null = null;
   private mapGroup!: THREE.Group;
   private animatedItems: THREE.Mesh[] = [];
+  private charMeshes: Record<string, THREE.Mesh> = {};
 
   constructor() {
     effect(() => {
@@ -58,7 +59,6 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
     if (this.animationFrameId !== null) {
       cancelAnimationFrame(this.animationFrameId);
     }
-    
     window.removeEventListener('resize', this.onWindowResize.bind(this));
 
     // Fix WebGL Memory Leak & Context Exhaustion
@@ -84,6 +84,58 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
             domElement.parentNode.removeChild(domElement);
         }
     }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+     if (changes['characters'] && this.scene) {
+        this.updateCharacters();
+     }
+  }
+
+  private updateCharacters(): void {
+     if (!this.characters || !this.scene) return;
+
+     const dim = this.gridStore.dimensions();
+     const width = dim?.width || 30;
+     const height = dim?.height || 30;
+
+     const currentIds = new Set(Object.keys(this.characters));
+
+     for (const charId of currentIds) {
+         const charData = this.characters[charId];
+         let mesh = this.charMeshes[charId];
+         
+         const x = charData.x - width / 2;
+         const z = charData.y - height / 2;
+
+         if (!mesh) {
+             const geo = new THREE.CylinderGeometry(0.3, 0.3, 1.6, 16);
+             const mat = new THREE.MeshStandardMaterial({ color: charId.startsWith('p') ? 0x00aaff : 0xff3333, roughness: 0.2, metalness: 0.8 });
+             mesh = new THREE.Mesh(geo, mat);
+             mesh.position.set(x, 0.8, z);
+             mesh.castShadow = true;
+             mesh.receiveShadow = true;
+             
+             const pointLight = new THREE.PointLight(charId.startsWith('p') ? 0x00aaff : 0xff3333, 1, 3);
+             pointLight.position.set(0, 1, 0);
+             mesh.add(pointLight);
+
+             this.scene.add(mesh);
+             this.charMeshes[charId] = mesh;
+         } else {
+             // Simple interpolation could be added here in the future
+             mesh.position.set(x, 0.8, z);
+         }
+     }
+
+     for (const oldId of Object.keys(this.charMeshes)) {
+         if (!currentIds.has(oldId)) {
+             this.scene.remove(this.charMeshes[oldId]);
+             this.charMeshes[oldId].geometry.dispose();
+             (this.charMeshes[oldId].material as THREE.Material).dispose();
+             delete this.charMeshes[oldId];
+         }
+     }
   }
 
   private cleanMaterial(material: any) {
@@ -493,7 +545,7 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
     this.renderer.setSize(width, height);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.renderer.shadowMap.type = THREE.PCFShadowMap;
     
     container.appendChild(this.renderer.domElement);
 
@@ -732,6 +784,8 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
     this.camera.position.set(distance * 0.7, distance * 0.8, distance * 0.7);
     this.controls.target.set(0, 0, 0);
     this.controls.update();
+    
+    this.updateCharacters();
   }
 
   private onWindowResize(): void {
