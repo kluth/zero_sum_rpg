@@ -16,6 +16,12 @@ import { AIEngineService, AIPersona } from './core/services/ai-engine.service';
 
 let fbApp: any;
 let fbDb: any;
+let getDb: any;
+let fbRef: any;
+let fbSet: any;
+let fbOnValue: any;
+let fbOnChildAdded: any;
+let fbRemove: any;
 
 const firebaseConfig = {
   projectId: "zero-sum-rpg-2026",
@@ -154,10 +160,10 @@ export class AppComponent implements OnInit, OnDestroy {
   wfcError = signal<string | null>(null);
 
   constructor() {
-    this.app = fbApp.initializeApp(firebaseConfig);
-    this.db = fbDb.getDatabase(this.app);
-    if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
-      fbDb.connectDatabaseEmulator(this.db, 'localhost', 9000);
+    const urlParams = new URLSearchParams(window.location.search);
+    const pinParam = urlParams.get('pin');
+    if (pinParam) {
+       this.sessionId.set(pinParam);
     }
 
     // IoT Web Audio API Siren Effect
@@ -182,12 +188,21 @@ export class AppComponent implements OnInit, OnDestroy {
     }, { allowSignalWrites: true });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     if (typeof window !== 'undefined') {
+      fbApp = await import('firebase/app');
+      fbDb = await import('firebase/database');
+      
+      this.app = fbApp.initializeApp(firebaseConfig);
+      this.db = fbDb.getDatabase(this.app);
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        fbDb.connectDatabaseEmulator(this.db, 'localhost', 9000);
+      }
+
       const params = new URLSearchParams(window.location.search);
       const token = params.get('token');
       
-      let session = params.get('session');
+      let session = this.sessionId() || params.get('session');
       let m = params.get('mode');
       let player = params.get('player');
       
@@ -617,12 +632,62 @@ export class AppComponent implements OnInit, OnDestroy {
       console.log("[AI GM Event]", eventText);
   }
 
+  isGm() { return this.isGmMode(); }
+
+  addTraumaLog(sender: string, level: string, msg: string) {
+     if (!this.db || !this.sessionId()) return;
+     fbDb.push(fbDb.ref(this.db, `sessions/${this.sessionId()}/gameState/traumaLog`), {
+        timestamp: Date.now(),
+        civilian: sender,
+        severity: level,
+        message: msg
+     });
+  }
+
+  processBotAction(action: any) {
+    if (!action || !action.type || !action.playerId) return;
+    const pId = action.playerId;
+    const type = action.type;
+    
+    // Ensure character exists
+    let state = this.gameState();
+    if (!state.characters || !state.characters[pId]) {
+       const newChar = { x: 5, y: 5, hp: 10, maxHp: 10, ap: 3, role: 'Bot', status: 'online' };
+       if(this.db && this.sessionId()) {
+         fbSet(fbRef(this.db, `sessions/${this.sessionId()}/gameState/characters/${pId}`), newChar);
+       }
+    }
+
+    if (type === 'MOVE') {
+      const char = this.gameState().characters?.[pId];
+      if (char) {
+        fbSet(fbRef(this.db, `sessions/${this.sessionId()}/gameState/characters/${pId}/x`), char.x + (action.dx || 0));
+        fbSet(fbRef(this.db, `sessions/${this.sessionId()}/gameState/characters/${pId}/y`), char.y + (action.dy || 0));
+        this.addTraumaLog("SYSTEM", "INFO", `Bot ${pId} moved.`);
+      }
+    } else if (type === 'ACTION') {
+      this.updateHeat(1);
+      this.addTraumaLog(pId, "WARNING", `Bot performed: ${action.payload}`);
+    }
+  }
+
   connectFirebase() {
     const sessionPin = this.sessionId();
     const playerId = this.activePlayerId() || 'spectator_' + Date.now();
     
-    // Initialize WebRTC P2P Sync (Offloading Firebase)
     if (sessionPin) {
+      // Setup CURL API Queue listener for headless agent networks
+      if (this.isGm()) {
+        fbOnChildAdded(fbRef(this.db, `sessions/${this.sessionId()}/apiQueue`), (snapshot: any) => {
+          const action = snapshot.val();
+          if (action) {
+            console.log("[API Queue] Processing CURL action:", action);
+            this.processBotAction(action);
+            fbRemove(snapshot.ref);
+          }
+        });
+      }
+
        this.webrtc.initialize(sessionPin, playerId, this.isGmMode()).catch(e => console.error("WebRTC Error:", e));
        
        effect(() => {
@@ -782,7 +847,13 @@ export class AppComponent implements OnInit, OnDestroy {
 
   async injectChaosFromTwitch(amount: number) {
     if (!this.sessionId()) return;
-    const { increment, set, ref } = await import('firebase/database');
+    const { getDatabase, ref, set, onValue, onChildAdded, remove, increment } = await import('firebase/database');
+    getDb = getDatabase;
+    fbRef = ref;
+    fbSet = set;
+    fbOnValue = onValue;
+    fbOnChildAdded = onChildAdded;
+    fbRemove = remove;
     set(ref(fbDb.getDatabase(), `sessions/${this.sessionId()}/gameState/chaosMarketValue`), increment(amount));
   }
 
