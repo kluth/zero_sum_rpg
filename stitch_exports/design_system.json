@@ -1,0 +1,251 @@
+{
+  "designSystems": [
+    {
+      "designSystem": {
+        "displayName": "Zero Sum Protocol",
+        "styleGuidelines": "## Brand & Style\n\nThis design system establishes a hostile, sterile, and indifferent UI/UX architecture designed for a corporate death game. The aesthetic is rooted in **Hard Brutalism** and **Terminal Realism**, stripping away all humanist affordances to treat the player as a biological asset in a high-stakes calculation.\n\nThe emotional response is one of cold anxiety and overwhelming data density. The UI does not assist; it monitors and dictates. Every interaction is transactional, emphasizing a power dynamic where the system is the absolute authority. Visuals are intentionally unrefined and \"raw,\" utilizing high-contrast layouts and 1px strokes to simulate a high-resolution surveillance feed or an industrial control system.\n\n## Layout & Spacing\n\nThe layout is a **High-Density Fixed Grid**. It utilizes a 12-column system where columns are separated by 1px borders rather than empty gutters. \n\n- **Density:** Information density should be high, overwhelming the user with raw data points. \n- **Borders:** Use 1px White or Slate Gray borders to define every container. No gaps between containers—elements should feel \"locked\" together.\n- **Asymmetry:** Layouts should be slightly off-balance (e.g., a massive 8-column data feed next to a cramped 4-column monitoring strip) to create a sense of systemic instability.\n- **Responsiveness:** On mobile, the grid collapses into vertical stacks, but the 1px borders remain as the primary separator.\n\n## Elevation & Depth\n\nThis design system rejects depth. There are no shadows, blurs, or gradients.\n\n- **Flat Tiers:** Hierarchy is established solely through color fills and 1px borders. \n- **Z-Index:** To indicate a \"modal\" or an \"interrupt,\" use a solid Black fill with a 1px White border that sits directly on top of the underlying content, completely obscuring it.\n- **Scanlines:** A subtle, low-opacity scanline overlay (1px horizontal lines) may be applied to the global viewport to simulate a monitor, but it must not interfere with text legibility.\n\n## Components\n\n### Buttons & Inputs\n- **Buttons:** Rectangular containers with 1px borders. Default state is Black background with White text. Hover/Active state is CRT Green background with Black text.\n- **Inputs:** Simple boxed areas. Active focus is indicated by a flashing 1px underscore cursor in CRT Green.\n\n### Status & Progress\n- **Tick-down Bars:** Progress bars must represent depletion. Fill bars with CRT Green; as the value decreases, the background (Black) is revealed. For critical states (e.g., <10% health), the fill color snaps to Warning Red.\n- **Transaction Logs:** Continuous stream of monospaced text at the bottom or side of the screen. Use system-speak: `ASSET_LOCATED`, `VITAL_SIGNS_DECREASING`, `ACCESS_DENIED`.\n\n### Cards & Modules\n- **Data Modules:** Every card must have a \"Header Strip\"—a 20px tall bar containing the module title in `label-xs` and a unique ID string (e.g., `MOD_772_AX`).\n- **Dividers:** Use 1px solid lines to separate content within modules.\n\n### Checkboxes & Radios\n- **Selection:** Use a simple [X] for checked and [ ] for unchecked, rendered in JetBrains Mono. No soft transitions; states must toggle instantly.",
+        "theme": {
+          "bodyFont": "INTER",
+          "bodyFontFamily": "Inter",
+          "colorMode": "DARK",
+          "colorVariant": "FIDELITY",
+          "customColor": "#000000",
+          "designMd": "---\nname: Zero Sum Protocol\ncolors:\n  surface: '#131315'\n  surface-dim: '#131315'\n  surface-bright: '#39393b'\n  surface-container-lowest: '#0e0e10'\n  surface-container-low: '#1b1b1d'\n  surface-container: '#1f1f21'\n  surface-container-high: '#2a2a2c'\n  surface-container-highest: '#353437'\n  on-surface: '#e4e2e4'\n  on-surface-variant: '#cfc4c5'\n  inverse-surface: '#e4e2e4'\n  inverse-on-surface: '#303032'\n  outline: '#988e90'\n  outline-variant: '#4c4546'\n  surface-tint: '#c6c6c6'\n  primary: '#c6c6c6'\n  on-primary: '#303030'\n  primary-container: '#000000'\n  on-primary-container: '#757575'\n  inverse-primary: '#5e5e5e'\n  secondary: '#c6c6c7'\n  on-secondary: '#2f3131'\n  secondary-container: '#454747'\n  on-secondary-container: '#b4b5b5'\n  tertiary: '#2ae500'\n  on-tertiary: '#053900'\n  tertiary-container: '#000000'\n  on-tertiary-container: '#168800'\n  error: '#ffb4ab'\n  on-error: '#690005'\n  error-container: '#93000a'\n  on-error-container: '#ffdad6'\n  primary-fixed: '#e2e2e2'\n  primary-fixed-dim: '#c6c6c6'\n  on-primary-fixed: '#1b1b1b'\n  on-primary-fixed-variant: '#474747'\n  secondary-fixed: '#e2e2e2'\n  secondary-fixed-dim: '#c6c6c7'\n  on-secondary-fixed: '#1a1c1c'\n  on-secondary-fixed-variant: '#454747'\n  tertiary-fixed: '#79ff5b'\n  tertiary-fixed-dim: '#2ae500'\n  on-tertiary-fixed: '#022100'\n  on-tertiary-fixed-variant: '#095300'\n  background: '#131315'\n  on-background: '#e4e2e4'\n  surface-variant: '#353437'\ntypography:\n  headline-lg:\n    fontFamily: Inter\n    fontSize: 48px\n    fontWeight: '900'\n    lineHeight: '1'\n    letterSpacing: -0.05em\n  headline-sm:\n    fontFamily: Inter\n    fontSize: 24px\n    fontWeight: '700'\n    lineHeight: '1.2'\n  body-md:\n    fontFamily: Inter\n    fontSize: 16px\n    fontWeight: '400'\n    lineHeight: '1.5'\n  data-lg:\n    fontFamily: JetBrains Mono\n    fontSize: 20px\n    fontWeight: '700'\n    lineHeight: '1'\n  data-md:\n    fontFamily: JetBrains Mono\n    fontSize: 14px\n    fontWeight: '500'\n    lineHeight: '1.4'\n  label-xs:\n    fontFamily: JetBrains Mono\n    fontSize: 10px\n    fontWeight: '400'\n    lineHeight: '1'\nspacing:\n  unit: 4px\n  gutter: 1px\n  margin-sm: 16px\n  margin-md: 32px\n  grid-cols: '12'\n---\n\n## Brand & Style\n\nThis design system establishes a hostile, sterile, and indifferent UI/UX architecture designed for a corporate death game. The aesthetic is rooted in **Hard Brutalism** and **Terminal Realism**, stripping away all humanist affordances to treat the player as a biological asset in a high-stakes calculation.\n\nThe emotional response is one of cold anxiety and overwhelming data density. The UI does not assist; it monitors and dictates. Every interaction is transactional, emphasizing a power dynamic where the system is the absolute authority. Visuals are intentionally unrefined and \"raw,\" utilizing high-contrast layouts and 1px strokes to simulate a high-resolution surveillance feed or an industrial control system.\n\n## Colors\n\nThe palette is strictly limited to an oppressive dark mode. \n\n- **Backgrounds:** Use `#000000` (Absolute Black) for the primary canvas to create a void-like depth. Use `#1a1a1c` (Cool Slate) for recessed containers or secondary modules.\n- **Content:** Use `#ffffff` (Hard White) for static text and structural borders. This provides maximum legibility and a stark, sterile contrast.\n- **Data & Interaction:** `#39FF14` (CRT Green) is reserved for stable inputs, active data streams, and successful operations.\n- **Threat/Error:** `#f43f5e` (Warning Red) is used exclusively for life-threatening data, critical failures, or system-initiated \"terminations.\" \n- **Sub-Data:** Use `#a1a1aa` for low-priority technical metadata or inactive labels.\n\n## Typography\n\nTypography is split between the cold, systematic efficiency of **Inter** for structural headers and the technical, monospaced precision of **JetBrains Mono** for all dynamic values.\n\n- **Headlines:** Set in Inter with tight tracking and heavy weights. They should feel like immovable architectural elements.\n- **Labels & Values:** All dynamic data—IDs, countdowns, health metrics, and terminal logs—must use JetBrains Mono. This reinforces the \"asset tracking\" nature of the interface.\n- **Case:** Use Uppercase for all labels and tactical headers to maintain a commanding tone.\n\n## Layout & Spacing\n\nThe layout is a **High-Density Fixed Grid**. It utilizes a 12-column system where columns are separated by 1px borders rather than empty gutters. \n\n- **Density:** Information density should be high, overwhelming the user with raw data points. \n- **Borders:** Use 1px White or Slate Gray borders to define every container. No gaps between containers—elements should feel \"locked\" together.\n- **Asymmetry:** Layouts should be slightly off-balance (e.g., a massive 8-column data feed next to a cramped 4-column monitoring strip) to create a sense of systemic instability.\n- **Responsiveness:** On mobile, the grid collapses into vertical stacks, but the 1px borders remain as the primary separator.\n\n## Elevation & Depth\n\nThis design system rejects depth. There are no shadows, blurs, or gradients.\n\n- **Flat Tiers:** Hierarchy is established solely through color fills and 1px borders. \n- **Z-Index:** To indicate a \"modal\" or an \"interrupt,\" use a solid Black fill with a 1px White border that sits directly on top of the underlying content, completely obscuring it.\n- **Scanlines:** A subtle, low-opacity scanline overlay (1px horizontal lines) may be applied to the global viewport to simulate a monitor, but it must not interfere with text legibility.\n\n## Shapes\n\nThe geometry is strictly **Absolute Sharp**. \n- **Radius:** 0px for all elements. No exceptions.\n- **Lines:** Use 1px strokes for all containers, buttons, and input fields.\n- **Iconography:** Use pixel-perfect, geometric icons with 90-degree or 45-degree angles only.\n\n## Components\n\n### Buttons & Inputs\n- **Buttons:** Rectangular containers with 1px borders. Default state is Black background with White text. Hover/Active state is CRT Green background with Black text.\n- **Inputs:** Simple boxed areas. Active focus is indicated by a flashing 1px underscore cursor in CRT Green.\n\n### Status & Progress\n- **Tick-down Bars:** Progress bars must represent depletion. Fill bars with CRT Green; as the value decreases, the background (Black) is revealed. For critical states (e.g., <10% health), the fill color snaps to Warning Red.\n- **Transaction Logs:** Continuous stream of monospaced text at the bottom or side of the screen. Use system-speak: `ASSET_LOCATED`, `VITAL_SIGNS_DECREASING`, `ACCESS_DENIED`.\n\n### Cards & Modules\n- **Data Modules:** Every card must have a \"Header Strip\"—a 20px tall bar containing the module title in `label-xs` and a unique ID string (e.g., `MOD_772_AX`).\n- **Dividers:** Use 1px solid lines to separate content within modules.\n\n### Checkboxes & Radios\n- **Selection:** Use a simple [X] for checked and [ ] for unchecked, rendered in JetBrains Mono. No soft transitions; states must toggle instantly.",
+          "font": "INTER",
+          "headlineFont": "INTER",
+          "headlineFontFamily": "Inter",
+          "labelFont": "JETBRAINS_MONO",
+          "labelFontFamily": "Jetbrains Mono",
+          "namedColors": {
+            "background": "#131315",
+            "error": "#ffb4ab",
+            "error_container": "#93000a",
+            "inverse_on_surface": "#303032",
+            "inverse_primary": "#5e5e5e",
+            "inverse_surface": "#e4e2e4",
+            "on_background": "#e4e2e4",
+            "on_error": "#690005",
+            "on_error_container": "#ffdad6",
+            "on_primary": "#303030",
+            "on_primary_container": "#757575",
+            "on_primary_fixed": "#1b1b1b",
+            "on_primary_fixed_variant": "#474747",
+            "on_secondary": "#2f3131",
+            "on_secondary_container": "#b4b5b5",
+            "on_secondary_fixed": "#1a1c1c",
+            "on_secondary_fixed_variant": "#454747",
+            "on_surface": "#e4e2e4",
+            "on_surface_variant": "#cfc4c5",
+            "on_tertiary": "#053900",
+            "on_tertiary_container": "#168800",
+            "on_tertiary_fixed": "#022100",
+            "on_tertiary_fixed_variant": "#095300",
+            "outline": "#988e90",
+            "outline_variant": "#4c4546",
+            "primary": "#c6c6c6",
+            "primary_container": "#000000",
+            "primary_fixed": "#e2e2e2",
+            "primary_fixed_dim": "#c6c6c6",
+            "secondary": "#c6c6c7",
+            "secondary_container": "#454747",
+            "secondary_fixed": "#e2e2e2",
+            "secondary_fixed_dim": "#c6c6c7",
+            "surface": "#131315",
+            "surface_bright": "#39393b",
+            "surface_container": "#1f1f21",
+            "surface_container_high": "#2a2a2c",
+            "surface_container_highest": "#353437",
+            "surface_container_low": "#1b1b1d",
+            "surface_container_lowest": "#0e0e10",
+            "surface_dim": "#131315",
+            "surface_tint": "#c6c6c6",
+            "surface_variant": "#353437",
+            "tertiary": "#2ae500",
+            "tertiary_container": "#000000",
+            "tertiary_fixed": "#79ff5b",
+            "tertiary_fixed_dim": "#2ae500"
+          },
+          "overrideNeutralColor": "#1a1a1c",
+          "overridePrimaryColor": "#000000",
+          "overrideSecondaryColor": "#ffffff",
+          "overrideTertiaryColor": "#39ff14",
+          "spacing": {
+            "grid-cols": "12",
+            "gutter": "1px",
+            "margin-md": "32px",
+            "margin-sm": "16px",
+            "unit": "4px"
+          },
+          "spacingScale": 2,
+          "typography": {
+            "body-md": {
+              "fontFamily": "Inter",
+              "fontSize": "16px",
+              "fontWeight": "400",
+              "lineHeight": "1.5"
+            },
+            "data-lg": {
+              "fontFamily": "JetBrains Mono",
+              "fontSize": "20px",
+              "fontWeight": "700",
+              "lineHeight": "1"
+            },
+            "data-md": {
+              "fontFamily": "JetBrains Mono",
+              "fontSize": "14px",
+              "fontWeight": "500",
+              "lineHeight": "1.4"
+            },
+            "headline-lg": {
+              "fontFamily": "Inter",
+              "fontSize": "48px",
+              "fontWeight": "900",
+              "letterSpacing": "-0.05em",
+              "lineHeight": "1"
+            },
+            "headline-sm": {
+              "fontFamily": "Inter",
+              "fontSize": "24px",
+              "fontWeight": "700",
+              "lineHeight": "1.2"
+            },
+            "label-xs": {
+              "fontFamily": "JetBrains Mono",
+              "fontSize": "10px",
+              "fontWeight": "400",
+              "lineHeight": "1"
+            }
+          }
+        }
+      },
+      "name": "assets/97e029a5b17b43bbb96c445de3d774a2",
+      "version": "1"
+    },
+    {
+      "designSystem": {
+        "displayName": "Protocol Interface",
+        "styleGuidelines": "## Brand & Style\n\nThis design system establishes a visual language of \"Hostile Minimalism.\" It evokes the atmosphere of a high-security terminal within a sterile, clinical environment—efficient, unyielding, and absolute. The aesthetic prioritizes information density and bureaucratic precision over user comfort.\n\nThe style is **Neo-Brutalist Minimalism**: \n- **Clinical Aesthetics:** Excessive whitespace used not for \"breathing room,\" but for isolation.\n- **Sterile Precision:** Every element is aligned to a rigid grid; there is no organic movement.\n- **Hostile Bureaucracy:** The UI feels like a government mandate—functional, cold, and inescapable.\n- **Digital Panopticon:** High-contrast visuals and monospaced data streams suggest a system that is constantly monitoring and recording.\n\n## Layout & Spacing\n\nThe layout is a **Static Docked System**. It is designed for a 100vh/100vw viewport with **zero scrolling**. All information must be accessible within fixed panels.\n\n- **Grid:** A 12-column rigid grid separated by 1px \"Ink Black\" borders rather than traditional gutters.\n- **Docking:** Panels are pinned to the edges of the screen. Resizing should feel mechanical, snapping to grid increments.\n- **Density:** High information density is required. Spacing between elements is minimal (8px or 4px) to emphasize the overwhelming amount of data the protocol manages.\n- **Inertia:** No animations or smooth transitions. Elements appear and disappear instantly.\n\n## Elevation & Depth\n\nThis design system rejects shadows and depth metaphors. There is no Z-axis; everything is flattened onto the screen surface.\n\n- **Flat Layering:** Hierarchy is achieved solely through 1px black borders and background color shifts (#F4F4F5 vs #E4E4E7).\n- **Inverted Focus:** Focused elements do not lift off the page; instead, they invert (Black background with White text).\n- **The \"Glass\" Exception:** Occasionally, a 1px semi-transparent overlay can be used for system-level \"Interruption Modals,\" but they must remain sharp-edged and keep the underlying content visible to maintain the \"monitored\" feel.\n\n## Components\n\n- **Buttons:** Rectangular, 1px border, Inter Medium. Default state is white background; Hover state is a subtle gray (#E4E4E7); Active/Pressed state is a total inversion (Black background, White text). No transitions.\n- **Data Cells:** Monospaced text inside 1px bordered boxes. Used for protocol IDs and telemetry.\n- **Input Fields:** Sharp-edged boxes with 1px borders. Focused inputs change border thickness to 2px or gain a solid black 1px inner-offset line.\n- **Status LEDs:** Small 8px circles. 'Transactional Green' for active, 'Warning Red' for error, 'Cold Gray' for idle.\n- **Status Ticker:** A fixed bar at the bottom or top of the screen constantly streaming Monospaced system logs in `data-sm` typography.\n- **The \"Override\" UI:** Components that use 'Warning Red' backgrounds with white text for irrevocable actions, creating a visual \"trauma\" on the clean interface.",
+        "theme": {
+          "bodyFont": "INTER",
+          "bodyFontFamily": "Inter",
+          "colorMode": "LIGHT",
+          "colorVariant": "FIDELITY",
+          "customColor": "#09090b",
+          "designMd": "---\nname: Protocol Interface\ncolors:\n  surface: '#f9f9fa'\n  surface-dim: '#dadadb'\n  surface-bright: '#f9f9fa'\n  surface-container-lowest: '#ffffff'\n  surface-container-low: '#f3f3f4'\n  surface-container: '#eeeeef'\n  surface-container-high: '#e8e8e9'\n  surface-container-highest: '#e2e2e3'\n  on-surface: '#1a1c1d'\n  on-surface-variant: '#47464a'\n  inverse-surface: '#2f3132'\n  inverse-on-surface: '#f0f1f2'\n  outline: '#78767b'\n  outline-variant: '#c8c5ca'\n  surface-tint: '#5f5e60'\n  primary: '#000000'\n  on-primary: '#ffffff'\n  primary-container: '#1c1b1d'\n  on-primary-container: '#858386'\n  inverse-primary: '#c8c6c8'\n  secondary: '#5d5e66'\n  on-secondary: '#ffffff'\n  secondary-container: '#e2e1eb'\n  on-secondary-container: '#63646c'\n  tertiary: '#000000'\n  on-tertiary: '#ffffff'\n  tertiary-container: '#002113'\n  on-tertiary-container: '#009668'\n  error: '#ba1a1a'\n  on-error: '#ffffff'\n  error-container: '#ffdad6'\n  on-error-container: '#93000a'\n  primary-fixed: '#e5e1e4'\n  primary-fixed-dim: '#c8c6c8'\n  on-primary-fixed: '#1c1b1d'\n  on-primary-fixed-variant: '#474649'\n  secondary-fixed: '#e2e1eb'\n  secondary-fixed-dim: '#c6c6cf'\n  on-secondary-fixed: '#1a1b22'\n  on-secondary-fixed-variant: '#45464e'\n  tertiary-fixed: '#6ffbbe'\n  tertiary-fixed-dim: '#4edea3'\n  on-tertiary-fixed: '#002113'\n  on-tertiary-fixed-variant: '#005236'\n  background: '#f9f9fa'\n  on-background: '#1a1c1d'\n  surface-variant: '#e2e2e3'\ntypography:\n  display-lg:\n    fontFamily: Inter\n    fontSize: 48px\n    fontWeight: '800'\n    lineHeight: '1'\n    letterSpacing: -0.04em\n  headline-md:\n    fontFamily: Inter\n    fontSize: 24px\n    fontWeight: '700'\n    lineHeight: '1.2'\n    letterSpacing: -0.02em\n  body-main:\n    fontFamily: Inter\n    fontSize: 14px\n    fontWeight: '400'\n    lineHeight: '1.5'\n    letterSpacing: 0em\n  data-lg:\n    fontFamily: JetBrains Mono\n    fontSize: 16px\n    fontWeight: '500'\n    lineHeight: '1.4'\n    letterSpacing: -0.01em\n  data-sm:\n    fontFamily: JetBrains Mono\n    fontSize: 12px\n    fontWeight: '400'\n    lineHeight: '1.4'\n    letterSpacing: 0em\n  label-caps:\n    fontFamily: Inter\n    fontSize: 11px\n    fontWeight: '700'\n    lineHeight: '1'\n    letterSpacing: 0.1em\nspacing:\n  unit: 4px\n  edge-margin: 24px\n  gutter: 1px\n  panel-padding: 16px\n  density-tight: 8px\n---\n\n## Brand & Style\n\nThis design system establishes a visual language of \"Hostile Minimalism.\" It evokes the atmosphere of a high-security terminal within a sterile, clinical environment—efficient, unyielding, and absolute. The aesthetic prioritizes information density and bureaucratic precision over user comfort.\n\nThe style is **Neo-Brutalist Minimalism**: \n- **Clinical Aesthetics:** Excessive whitespace used not for \"breathing room,\" but for isolation.\n- **Sterile Precision:** Every element is aligned to a rigid grid; there is no organic movement.\n- **Hostile Bureaucracy:** The UI feels like a government mandate—functional, cold, and inescapable.\n- **Digital Panopticon:** High-contrast visuals and monospaced data streams suggest a system that is constantly monitoring and recording.\n\n## Colors\n\nThe palette is strictly high-contrast light mode, simulating bleached fluorescent lighting.\n\n- **Background (Base):** #F4F4F5 (Off-white). Used for the primary canvas to create a cold, sanitary feel.\n- **Surface (Elevated):** #E4E4E7. Used for secondary containers or docked panels.\n- **Ink Black:** #09090B. Used for all primary text, heavy borders, and structural anchors.\n- **Transactional Green:** #10B981. Reserved strictly for successful data commits, system stability, and authorized actions.\n- **Warning Red:** #EF4444. Used for trauma alerts, unauthorized access attempts, and system critical failures.\n- **Cold Grays:** #A1A1AA. Used for non-essential labels and disabled states, suggesting bureaucratic apathy.\n\n## Typography\n\nTypography is used as a tool for categorization and control.\n\n- **Inter (Sans-Serif):** The primary typeface for instructional text, headers, and UI controls. It should feel ubiquitous and neutral.\n- **JetBrains Mono (Monospace):** Used for all dynamic data, unique identifiers, timestamps, and protocol logs. Monospaced text signals \"machine truth\" and unedited reality.\n- **Styling Rules:** Use all-caps for labels to denote authority. Headlines should be tightly tracked (negative letter-spacing) to feel compressed and urgent.\n\n## Layout & Spacing\n\nThe layout is a **Static Docked System**. It is designed for a 100vh/100vw viewport with **zero scrolling**. All information must be accessible within fixed panels.\n\n- **Grid:** A 12-column rigid grid separated by 1px \"Ink Black\" borders rather than traditional gutters.\n- **Docking:** Panels are pinned to the edges of the screen. Resizing should feel mechanical, snapping to grid increments.\n- **Density:** High information density is required. Spacing between elements is minimal (8px or 4px) to emphasize the overwhelming amount of data the protocol manages.\n- **Inertia:** No animations or smooth transitions. Elements appear and disappear instantly.\n\n## Elevation & Depth\n\nThis design system rejects shadows and depth metaphors. There is no Z-axis; everything is flattened onto the screen surface.\n\n- **Flat Layering:** Hierarchy is achieved solely through 1px black borders and background color shifts (#F4F4F5 vs #E4E4E7).\n- **Inverted Focus:** Focused elements do not lift off the page; instead, they invert (Black background with White text).\n- **The \"Glass\" Exception:** Occasionally, a 1px semi-transparent overlay can be used for system-level \"Interruption Modals,\" but they must remain sharp-edged and keep the underlying content visible to maintain the \"monitored\" feel.\n\n## Shapes\n\nThe geometry is strictly **Orthogonal**. \n\n- **Radius:** 0px. There are no rounded corners in the protocol. Circles are only permitted for status indicators (LED style).\n- **Borders:** All containers, buttons, and inputs must have a solid 1px border using #18181B. \n- **Separators:** Use 1px vertical and horizontal lines to bisect panels.\n\n## Components\n\n- **Buttons:** Rectangular, 1px border, Inter Medium. Default state is white background; Hover state is a subtle gray (#E4E4E7); Active/Pressed state is a total inversion (Black background, White text). No transitions.\n- **Data Cells:** Monospaced text inside 1px bordered boxes. Used for protocol IDs and telemetry.\n- **Input Fields:** Sharp-edged boxes with 1px borders. Focused inputs change border thickness to 2px or gain a solid black 1px inner-offset line.\n- **Status LEDs:** Small 8px circles. 'Transactional Green' for active, 'Warning Red' for error, 'Cold Gray' for idle.\n- **Status Ticker:** A fixed bar at the bottom or top of the screen constantly streaming Monospaced system logs in `data-sm` typography.\n- **The \"Override\" UI:** Components that use 'Warning Red' backgrounds with white text for irrevocable actions, creating a visual \"trauma\" on the clean interface.",
+          "font": "INTER",
+          "headlineFont": "INTER",
+          "headlineFontFamily": "Inter",
+          "labelFont": "JETBRAINS_MONO",
+          "labelFontFamily": "Jetbrains Mono",
+          "namedColors": {
+            "background": "#f9f9fa",
+            "error": "#ba1a1a",
+            "error_container": "#ffdad6",
+            "inverse_on_surface": "#f0f1f2",
+            "inverse_primary": "#c8c6c8",
+            "inverse_surface": "#2f3132",
+            "on_background": "#1a1c1d",
+            "on_error": "#ffffff",
+            "on_error_container": "#93000a",
+            "on_primary": "#ffffff",
+            "on_primary_container": "#858386",
+            "on_primary_fixed": "#1c1b1d",
+            "on_primary_fixed_variant": "#474649",
+            "on_secondary": "#ffffff",
+            "on_secondary_container": "#63646c",
+            "on_secondary_fixed": "#1a1b22",
+            "on_secondary_fixed_variant": "#45464e",
+            "on_surface": "#1a1c1d",
+            "on_surface_variant": "#47464a",
+            "on_tertiary": "#ffffff",
+            "on_tertiary_container": "#009668",
+            "on_tertiary_fixed": "#002113",
+            "on_tertiary_fixed_variant": "#005236",
+            "outline": "#78767b",
+            "outline_variant": "#c8c5ca",
+            "primary": "#000000",
+            "primary_container": "#1c1b1d",
+            "primary_fixed": "#e5e1e4",
+            "primary_fixed_dim": "#c8c6c8",
+            "secondary": "#5d5e66",
+            "secondary_container": "#e2e1eb",
+            "secondary_fixed": "#e2e1eb",
+            "secondary_fixed_dim": "#c6c6cf",
+            "surface": "#f9f9fa",
+            "surface_bright": "#f9f9fa",
+            "surface_container": "#eeeeef",
+            "surface_container_high": "#e8e8e9",
+            "surface_container_highest": "#e2e2e3",
+            "surface_container_low": "#f3f3f4",
+            "surface_container_lowest": "#ffffff",
+            "surface_dim": "#dadadb",
+            "surface_tint": "#5f5e60",
+            "surface_variant": "#e2e2e3",
+            "tertiary": "#000000",
+            "tertiary_container": "#002113",
+            "tertiary_fixed": "#6ffbbe",
+            "tertiary_fixed_dim": "#4edea3"
+          },
+          "overrideNeutralColor": "#f4f4f5",
+          "overridePrimaryColor": "#09090b",
+          "overrideSecondaryColor": "#a1a1aa",
+          "overrideTertiaryColor": "#10b981",
+          "spacing": {
+            "density-tight": "8px",
+            "edge-margin": "24px",
+            "gutter": "1px",
+            "panel-padding": "16px",
+            "unit": "4px"
+          },
+          "spacingScale": 2,
+          "typography": {
+            "body-main": {
+              "fontFamily": "Inter",
+              "fontSize": "14px",
+              "fontWeight": "400",
+              "letterSpacing": "0em",
+              "lineHeight": "1.5"
+            },
+            "data-lg": {
+              "fontFamily": "JetBrains Mono",
+              "fontSize": "16px",
+              "fontWeight": "500",
+              "letterSpacing": "-0.01em",
+              "lineHeight": "1.4"
+            },
+            "data-sm": {
+              "fontFamily": "JetBrains Mono",
+              "fontSize": "12px",
+              "fontWeight": "400",
+              "letterSpacing": "0em",
+              "lineHeight": "1.4"
+            },
+            "display-lg": {
+              "fontFamily": "Inter",
+              "fontSize": "48px",
+              "fontWeight": "800",
+              "letterSpacing": "-0.04em",
+              "lineHeight": "1"
+            },
+            "headline-md": {
+              "fontFamily": "Inter",
+              "fontSize": "24px",
+              "fontWeight": "700",
+              "letterSpacing": "-0.02em",
+              "lineHeight": "1.2"
+            },
+            "label-caps": {
+              "fontFamily": "Inter",
+              "fontSize": "11px",
+              "fontWeight": "700",
+              "letterSpacing": "0.1em",
+              "lineHeight": "1"
+            }
+          }
+        }
+      },
+      "name": "assets/bdb4f765dec34721a3202d5f86dbcc18",
+      "version": "1"
+    }
+  ]
+}

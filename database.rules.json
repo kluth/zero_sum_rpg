@@ -1,29 +1,51 @@
 {
   "rules": {
+    "users": {
+      "$uid": {
+        ".read": "auth != null",
+        ".write": false // Only the backend can assign roles or create users
+      }
+    },
     "sessions": {
       "$session_id": {
-        ".read": true,
-        ".write": true,
+        // Anyone authenticated can read the session data
+        ".read": "auth != null",
+        // No global writes allowed. Everything must be granular.
+        ".write": false,
+        
         "darknet": {
           "$channel_id": {
+            // E2EE Channels: Only members of the channel can read/write.
+            // Using a strict schema to prevent payload injection.
             ".read": "auth != null && $channel_id.contains(auth.uid)",
-            ".write": "auth != null && $channel_id.contains(auth.uid)"
+            ".write": "auth != null && $channel_id.contains(auth.uid)",
+            "$message_id": {
+              ".validate": "newData.hasChildren(['sender', 'ciphertext', 'nonce', 'timestamp']) && newData.child('sender').val() === auth.uid"
+            }
           }
         },
+
         "clocks": {
-          ".read": true,
-          ".write": "auth != null && root.child('users/'+auth.uid+'/isGM').val() == true"
+          // Progress Clocks: Only GM or Backend can mutate
+          ".write": "auth != null && root.child('users/'+auth.uid+'/isGM').val() === true"
         },
-        "flashbacks": {
-          ".read": true,
-          ".write": "auth != null"
-        },
+
         "gameState": {
-          ".read": true,
-          ".write": true,
+          // CORE LOCKDOWN: The GameState is strictly read-only for players.
+          // It represents the absolute truth calculated by the Backend ResolutionEngine.
+          ".write": "auth != null && root.child('users/'+auth.uid+'/isGM').val() === true",
+          
           "narrativeContext": {
-            ".read": true,
-            ".write": "auth != null && root.child('users/'+auth.uid+'/isGM').val() == true"
+            ".write": "auth != null && root.child('users/'+auth.uid+'/isGM').val() === true"
+          }
+        },
+
+        "actionQueue": {
+          // PLAYERS WRITE HERE: Players submit ActionDTOs.
+          // They cannot overwrite existing actions, only append new ones.
+          "$action_id": {
+            ".write": "auth != null && !data.exists() && newData.child('playerId').val() === auth.uid",
+            ".validate": "newData.hasChildren(['type', 'apCost'])"
           }
         }
       }

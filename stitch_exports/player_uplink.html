@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Asset Uplink Terminal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-fixed-variant": "#474649",
+                    "on-primary": "#ffffff",
+                    "on-tertiary-fixed": "#002113",
+                    "background": "#f9f9fa",
+                    "primary": "#000000",
+                    "on-secondary": "#ffffff",
+                    "on-primary-fixed": "#1c1b1d",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary": "#5d5e66",
+                    "on-surface-variant": "#47464a",
+                    "surface-dim": "#dadadb",
+                    "surface-variant": "#e2e2e3",
+                    "primary-fixed-dim": "#c8c6c8",
+                    "error": "#ba1a1a",
+                    "inverse-on-surface": "#f0f1f2",
+                    "surface-tint": "#5f5e60",
+                    "secondary-fixed": "#e2e1eb",
+                    "on-tertiary-container": "#009668",
+                    "on-error-container": "#93000a",
+                    "inverse-surface": "#2f3132",
+                    "secondary-fixed-dim": "#c6c6cf",
+                    "surface-bright": "#f9f9fa",
+                    "surface-container": "#eeeeef",
+                    "outline": "#78767b",
+                    "surface-container-low": "#f3f3f4",
+                    "primary-container": "#1c1b1d",
+                    "primary-fixed": "#e5e1e4",
+                    "on-secondary-container": "#63646c",
+                    "surface-container-highest": "#e2e2e3",
+                    "tertiary-container": "#002113",
+                    "tertiary-fixed-dim": "#4edea3",
+                    "inverse-primary": "#c8c6c8",
+                    "on-background": "#1a1c1d",
+                    "on-primary-container": "#858386",
+                    "tertiary": "#000000",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-fixed-variant": "#005236",
+                    "outline-variant": "#c8c5ca",
+                    "secondary-container": "#e2e1eb",
+                    "surface-container-high": "#e8e8e9",
+                    "on-secondary-fixed": "#1a1b22",
+                    "tertiary-fixed": "#6ffbbe",
+                    "surface": "#f9f9fa",
+                    "on-secondary-fixed-variant": "#45464e",
+                    "on-surface": "#1a1c1d",
+                    "on-tertiary": "#ffffff",
+                    "on-error": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "panel-padding": "16px",
+                    "edge-margin": "24px",
+                    "unit": "4px",
+                    "gutter": "1px",
+                    "density-tight": "8px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "label-caps": ["Inter"],
+                    "data-sm": ["JetBrains Mono"],
+                    "data-lg": ["JetBrains Mono"],
+                    "body-main": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "display-lg": ["48px", {"lineHeight": "1", "letterSpacing": "-0.04em", "fontWeight": "800"}],
+                    "label-caps": ["11px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                    "data-sm": ["12px", {"lineHeight": "1.4", "letterSpacing": "0em", "fontWeight": "400"}],
+                    "data-lg": ["16px", {"lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                    "body-main": ["14px", {"lineHeight": "1.5", "letterSpacing": "0em", "fontWeight": "400"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .grid-bg {
+            background-image: 
+                linear-gradient(to right, #c8c5ca 1px, transparent 1px),
+                linear-gradient(to bottom, #c8c5ca 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .crt-flicker {
+            animation: flicker 0.15s infinite;
+        }
+        @keyframes flicker {
+            0% { opacity: 0.95; }
+            50% { opacity: 1; }
+            100% { opacity: 0.98; }
+        }
+        body {
+            /* Force exact viewport containment */
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            background-color: #e8e8e9; /* surface-container-high for outer isolation */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .datapad-container {
+            width: 100%;
+            max-width: 800px;
+            height: 100%;
+            max-height: 100vh;
+            background-color: #f9f9fa; /* surface */
+            border-left: 1px solid #000000;
+            border-right: 1px solid #000000;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 0 1px #000 inset;
+        }
+        /* Overriding borders for inner elements to maintain strict 1px grid */
+        .border-b-strict { border-bottom: 1px solid #000000; }
+        .border-t-strict { border-top: 1px solid #000000; }
+        .border-r-strict { border-right: 1px solid #000000; }
+        .border-l-strict { border-left: 1px solid #000000; }
+    </style>
+</head>
+<body class="text-on-surface">
+<div class="datapad-container">
+<!-- TopAppBar (Modified for Context) -->
+<header class="bg-surface dark:bg-surface flex justify-between items-center px-edge-margin w-full h-10 border-b-strict flex-shrink-0">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">sensors</span>
+<span class="font-headline-md text-headline-md font-bold text-primary tracking-tight">GM_TERM_01</span>
+</div>
+<div class="flex items-center gap-density-tight">
+<div class="w-2 h-2 rounded-full bg-on-tertiary-container"></div>
+<span class="font-data-sm text-data-sm text-primary uppercase">UPLINK_ESTABLISHED</span>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-grow flex flex-col p-panel-padding gap-panel-padding overflow-hidden">
+<!-- Sector Feed -->
+<div class="w-full flex-grow border-strict border border-primary relative overflow-hidden bg-surface-container flex flex-col">
+<div class="absolute inset-0 grid-bg opacity-20 pointer-events-none"></div>
+<div class="absolute top-0 left-0 w-full p-2 border-b-strict bg-surface z-10 flex justify-between items-center">
+<span class="font-data-sm text-data-sm text-primary uppercase">Sector_Feed_V4.9</span>
+<span class="font-data-sm text-data-sm text-primary crt-flicker">REC ///</span>
+</div>
+<div class="flex-grow relative bg-black flex items-center justify-center crt-flicker overflow-hidden border-t-strict mt-[33px]">
+<!-- Wireframe Simulation / Noise Placeholder -->
+<svg class="w-full h-full opacity-30 absolute inset-0" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<pattern height="40" id="wireframe" patternunits="userSpaceOnUse" width="40">
+<path d="M 40 0 L 0 0 0 40" fill="none" stroke="#6ffbbe" stroke-width="0.5"></path>
+<path d="M 0 0 L 40 40 M 40 0 L 0 40" fill="none" stroke="#6ffbbe" stroke-width="0.2"></path>
+</pattern>
+</defs>
+<rect fill="url(#wireframe)" height="100%" width="100%"></rect>
+</svg>
+<div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiMwMDAiLz48cmVjdCB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSIjZmZmIi8+PC9zdmc+')] opacity-10 pointer-events-none mix-blend-overlay"></div>
+<span class="font-data-lg text-data-lg text-tertiary-fixed z-10 crt-flicker border border-tertiary-fixed px-2 py-1 bg-black">NO_SIGNAL_LOCK</span>
+</div>
+</div>
+<!-- Diagnostics & Inventory Panel -->
+<div class="w-full h-48 border-strict border border-primary flex flex-row flex-shrink-0">
+<!-- System Integrity (Left) -->
+<div class="w-1/3 border-r-strict flex flex-col">
+<div class="p-2 border-b-strict bg-surface-container-low font-data-sm text-data-sm text-primary uppercase flex justify-between">
+<span>SYS_INT</span>
+<span>0.64</span>
+</div>
+<div class="flex-grow p-4 flex items-center justify-center relative">
+<!-- Clinical Gray Bar Filling Downwards -->
+<div class="absolute top-4 bottom-4 left-1/2 -translate-x-1/2 w-8 border border-primary bg-surface-container-lowest">
+<div class="absolute top-0 w-full bg-secondary-fixed-dim" style="height: 64%;"></div>
+<!-- Markers -->
+<div class="absolute top-1/4 w-full h-[1px] bg-primary"></div>
+<div class="absolute top-2/4 w-full h-[1px] bg-primary"></div>
+<div class="absolute top-3/4 w-full h-[1px] bg-primary"></div>
+</div>
+</div>
+</div>
+<!-- Inventory Log (Right) -->
+<div class="w-2/3 flex flex-col bg-surface-container-lowest">
+<div class="p-2 border-b-strict bg-surface-container-low font-data-sm text-data-sm text-primary uppercase flex justify-between items-center">
+<span>INV_LOG</span>
+<span class="material-symbols-outlined text-[16px]">inventory_2</span>
+</div>
+<div class="flex-grow p-2 flex flex-col gap-1 overflow-hidden">
+<!-- Data Cells -->
+<div class="border border-primary p-2 flex justify-between items-center font-data-sm text-data-sm hover:bg-surface-container transition-none">
+<span class="uppercase">MED_STIM_MK4</span>
+<span class="bg-surface-dim px-1 border border-primary">x02</span>
+</div>
+<div class="border border-primary p-2 flex justify-between items-center font-data-sm text-data-sm hover:bg-surface-container transition-none">
+<span class="uppercase">RATION_PACK</span>
+<span class="bg-surface-dim px-1 border border-primary">x05</span>
+</div>
+<div class="border border-outline-variant p-2 flex justify-between items-center font-data-sm text-data-sm text-outline border-dashed">
+<span class="uppercase">SLOT_EMPTY</span>
+<span>--</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Execution Button -->
+<div class="p-panel-padding border-t-strict bg-surface flex-shrink-0">
+<button class="w-full h-16 border border-primary font-headline-md text-headline-md font-bold uppercase tracking-widest text-primary bg-on-primary hover:bg-surface-container-highest active:bg-primary active:text-on-primary transition-none flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+                ASSET_STABILIZED
+            </button>
+</div>
+<!-- Ticker -->
+<div class="h-6 border-t-strict bg-primary text-on-primary font-data-sm text-data-sm flex items-center px-2 overflow-hidden whitespace-nowrap flex-shrink-0">
+<span class="animate-[marquee_10s_linear_infinite] inline-block">
+                SYS_LOG: 00:00 UPLINK INIT... 00:01 HANDSHAKE SECURE... 00:03 TELEMETRY SYNCING... 00:04 WARNING: NON-STANDARD BIO-RHYTHM DETECTED... 00:05 IGNORING WARNING PER PROTOCOL_SEC.
+            </span>
+</div>
+</div>
+<style>
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+    </style>
+</body></html>

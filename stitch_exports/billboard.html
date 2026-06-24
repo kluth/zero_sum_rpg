@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Indoctrination Billboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#474649",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed": "#002113",
+                        "background": "#f9f9fa",
+                        "primary": "#000000",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#1c1b1d",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#5d5e66",
+                        "on-surface-variant": "#47464a",
+                        "surface-dim": "#dadadb",
+                        "surface-variant": "#e2e2e3",
+                        "primary-fixed-dim": "#c8c6c8",
+                        "error": "#ba1a1a",
+                        "inverse-on-surface": "#f0f1f2",
+                        "surface-tint": "#5f5e60",
+                        "secondary-fixed": "#e2e1eb",
+                        "on-tertiary-container": "#009668",
+                        "on-error-container": "#93000a",
+                        "inverse-surface": "#2f3132",
+                        "secondary-fixed-dim": "#c6c6cf",
+                        "surface-bright": "#f9f9fa",
+                        "surface-container": "#eeeeef",
+                        "outline": "#78767b",
+                        "surface-container-low": "#f3f3f4",
+                        "primary-container": "#1c1b1d",
+                        "primary-fixed": "#e5e1e4",
+                        "on-secondary-container": "#63646c",
+                        "surface-container-highest": "#e2e2e3",
+                        "tertiary-container": "#002113",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "inverse-primary": "#c8c6c8",
+                        "on-background": "#1a1c1d",
+                        "on-primary-container": "#858386",
+                        "tertiary": "#000000",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "outline-variant": "#c8c5ca",
+                        "secondary-container": "#e2e1eb",
+                        "surface-container-high": "#e8e8e9",
+                        "on-secondary-fixed": "#1a1b22",
+                        "tertiary-fixed": "#6ffbbe",
+                        "surface": "#f9f9fa",
+                        "on-secondary-fixed-variant": "#45464e",
+                        "on-surface": "#1a1c1d",
+                        "on-tertiary": "#ffffff",
+                        "on-error": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "panel-padding": "16px",
+                        "edge-margin": "24px",
+                        "unit": "4px",
+                        "gutter": "1px",
+                        "density-tight": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "data-sm": ["JetBrains Mono"],
+                        "data-lg": ["JetBrains Mono"],
+                        "body-main": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "display-lg": ["48px", { "lineHeight": "1", "letterSpacing": "-0.04em", "fontWeight": "800" }],
+                        "label-caps": ["11px", { "lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "700" }],
+                        "data-sm": ["12px", { "lineHeight": "1.4", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "data-lg": ["16px", { "lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+                        "body-main": ["14px", { "lineHeight": "1.5", "letterSpacing": "0em", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .flashing-error {
+            animation: flash 1s infinite alternate;
+        }
+        
+        @keyframes flash {
+            0% { background-color: #f9f9fa; color: #ba1a1a; }
+            100% { background-color: #ba1a1a; color: #ffffff; }
+        }
+
+        .brutalist-text-massive {
+            font-size: 15vw;
+            line-height: 0.8;
+            letter-spacing: -0.06em;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .brutalist-number-massive {
+            font-size: 40vw;
+            line-height: 0.7;
+            letter-spacing: -0.06em;
+            font-weight: 800;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface h-full w-full overflow-hidden flex flex-col font-body-main text-body-main selection:bg-primary selection:text-on-primary">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-surface border-b border-outline-variant h-10 flex justify-between items-center px-edge-margin w-full shrink-0">
+<div class="font-headline-md text-headline-md font-bold text-primary">GM_TERM_01</div>
+<div class="flex items-center gap-density-tight">
+<span class="material-symbols-outlined text-primary cursor-pointer hover:bg-surface-container-highest" data-icon="schedule">schedule</span>
+<span class="material-symbols-outlined text-primary cursor-pointer hover:bg-surface-container-highest" data-icon="sensors">sensors</span>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col lg:flex-row w-full h-full relative border-b border-outline-variant">
+<!-- Left Panel: Indoctrination Core -->
+<section class="flex-1 border-r border-outline-variant flex flex-col justify-center p-edge-margin bg-surface-container-lowest">
+<div class="font-headline-md text-headline-md font-bold text-primary mb-panel-padding tracking-tighter uppercase border-b border-outline-variant pb-density-tight inline-block w-fit">
+                Directive Output
+            </div>
+<h1 class="brutalist-text-massive text-primary mt-auto mb-auto break-words hyphens-auto">
+                ASSET<br/>TERMINATED
+            </h1>
+</section>
+<!-- Right Panel: Data Stream -->
+<section class="flex-1 flex flex-col bg-surface-container-low relative">
+<div class="absolute top-edge-margin right-edge-margin border border-outline-variant bg-surface p-density-tight flex items-center gap-2">
+<span class="block w-2 h-2 rounded-full bg-error animate-pulse"></span>
+<span class="font-data-sm text-data-sm text-primary uppercase">Live Feed</span>
+</div>
+<div class="flex-grow flex flex-col justify-center items-center p-edge-margin">
+<h2 class="font-display-lg text-display-lg font-bold text-on-surface mb-panel-padding uppercase text-center">
+                    ACTIVE_DEATH_TOLL
+                </h2>
+<div class="brutalist-number-massive text-primary">
+                    3
+                </div>
+</div>
+<!-- Lower Command Block -->
+<div class="border-t border-outline-variant bg-surface p-panel-padding flex flex-col gap-density-tight">
+<div class="font-data-sm text-data-sm text-secondary uppercase tracking-widest border-b border-outline-variant pb-1 mb-2">
+                    Action Required [TWITCH_INT]
+                </div>
+<div class="font-display-lg text-display-lg font-bold text-primary uppercase text-center bg-surface-container-highest p-panel-padding border border-primary">
+                    VOTE_NOW. OBEY.
+                </div>
+</div>
+</section>
+</main>
+<!-- Ticker / Alert Banner -->
+<div class="h-16 w-full shrink-0 flex items-center justify-center flashing-error border-t border-outline-variant z-50">
+<div class="font-display-lg text-display-lg font-bold uppercase tracking-tighter">
+            GLOBAL HEAT: SEVERE
+        </div>
+</div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-between items-center px-edge-margin border-t border-outline-variant bg-surface-container-lowest h-8 lg:hidden">
+<div class="flex items-center gap-1 text-on-surface-variant hover:bg-surface-container px-2 cursor-pointer transition-none">
+<span class="material-symbols-outlined text-[16px]" data-icon="thermostat">thermostat</span>
+<span class="font-data-sm text-data-sm font-label-caps text-label-caps">HEAT: 22C</span>
+</div>
+<div class="flex items-center gap-1 text-primary hover:bg-surface-container px-2 cursor-pointer transition-none">
+<span class="material-symbols-outlined text-[16px]" data-icon="signal_cellular_alt">signal_cellular_alt</span>
+<span class="font-data-sm text-data-sm font-label-caps text-label-caps">STABILITY: 99%</span>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant hover:bg-surface-container px-2 cursor-pointer transition-none">
+<span class="material-symbols-outlined text-[16px]" data-icon="verified_user">verified_user</span>
+<span class="font-data-sm text-data-sm font-label-caps text-label-caps">AUTH: ADMIN</span>
+</div>
+</nav>
+<!-- Desktop Bottom Nav Replica (To fulfill structural requirements for non-mobile) -->
+<footer class="hidden lg:flex justify-between items-center px-edge-margin border-t border-outline-variant bg-surface-container-lowest h-8 shrink-0">
+<div class="flex gap-4">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]" data-icon="thermostat">thermostat</span>
+<span class="font-data-sm text-data-sm">HEAT: 22C</span>
+</div>
+<div class="flex items-center gap-2 text-primary font-bold">
+<span class="material-symbols-outlined text-[16px]" data-icon="signal_cellular_alt">signal_cellular_alt</span>
+<span class="font-data-sm text-data-sm">STABILITY: 99%</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]" data-icon="verified_user">verified_user</span>
+<span class="font-data-sm text-data-sm">AUTH: ADMIN</span>
+</div>
+</div>
+</footer>
+</body></html>

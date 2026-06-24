@@ -117,8 +117,8 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
         const key = `${x},${y},${this.currentLevel}`;
         const fallbackKey = `${x},${y}`;
         const cell = this.gridStore.grid()[key] || this.gridStore.grid()[fallbackKey];
-        if (cell && cell.room_id) {
-          this.roomClicked.emit(cell.room_id);
+        if (cell && cell.roomId) {
+          this.roomClicked.emit(cell.roomId);
         } else {
           this.cellClicked.emit({x, y});
         }
@@ -243,12 +243,26 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
               baseGrid.rect(x * 32 + 8, y * 32 + 8, 16, 16);
               baseGrid.fill({ color: 0x666666 });
            } else if (cell.type === 'server_rack') {
-              baseGrid.rect(x * 32, y * 32, 32, 32);
-              baseGrid.fill({ color: 0x111111 });
-              baseGrid.stroke({ color: 0x333333, width: 1 });
-              baseGrid.rect(x * 32 + 4, y * 32 + 2, 24, 28);
-              baseGrid.fill({ color: 0x002200 });
-              baseGrid.stroke({ color: 0x00FF00, width: 1 });
+               const rect = new PIXI.Graphics();
+               rect.rect(x * 32 + 2, y * 32 + 2, 28, 28);
+               rect.fill({ color: 0x111111 });
+               rect.stroke({ color: 0x00aaff, width: 2 });
+               this.viewport.addChild(rect);
+               this.sprites[`${x},${y}`] = rect;
+           } else if (['chair', 'bed', 'locker', 'sofa', 'plant', 'table', 'monitor'].includes(cell.type)) {
+               // Generic fallback for all new furniture
+               const rect = new PIXI.Graphics();
+               rect.rect(x * 32 + 4, y * 32 + 4, 24, 24);
+               rect.fill({ color: 0x888888 });
+               rect.stroke({ color: 0x555555, width: 1 });
+               this.viewport.addChild(rect);
+               this.sprites[`${x},${y}`] = rect;
+               
+               const text = new PIXI.Text({ text: cell.type.substring(0,2).toUpperCase(), style: { fontSize: 10, fill: 0xffffff } });
+               text.x = x * 32 + 16 - text.width / 2;
+               text.y = y * 32 + 16 - text.height / 2;
+               this.viewport.addChild(text);
+               // Note: text won't be easily trackable for cleanup but since it's a static map generation it's okay for GM layout.
            } else if (cell.type === 'grass') {
                baseGrid.rect(x * 32, y * 32, 32, 32);
                baseGrid.fill({ color: 0x051105 });

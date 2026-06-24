@@ -1,0 +1,520 @@
+    <div class="crt-overlay"></div>
+    <app-flashback-overlay [isActive]="flashbackActive()" [initiatingPlayer]="flashbackPlayer()" [description]="flashbackDescription()"></app-flashback-overlay>
+    
+    <!-- LOBBY SCREEN -->
+    <div *ngIf="!sessionId()" class="bg-background text-on-background h-screen w-screen overflow-hidden flex flex-col font-body-main text-body-main selection:bg-primary selection:text-on-primary items-center justify-center relative">
+        <div class="absolute inset-0 bg-[radial-gradient(circle,transparent_20%,rgba(0,0,0,0.1)_100%)] pointer-events-none z-0"></div>
+        <div class="z-10 bg-surface border border-outline-variant p-8 w-full max-w-4xl shadow-lg flex flex-col gap-8">
+            <div class="text-center border-b border-outline-variant pb-8">
+                <h2 class="font-display-lg text-6xl tracking-tighter text-primary">ZERO_SUM_RPG</h2>
+                <div class="font-data-sm text-secondary uppercase tracking-widest mt-2">AUTHORIZATION_REQUIRED</div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-3">
+                <input type="text" placeholder="ENTER_SESSION_PIN" [value]="sessionPinInput()" (input)="sessionPinInput.set($any($event.target).value)" class="bg-surface-container-lowest border border-outline-variant text-primary font-data-sm px-4 py-3 w-full outline-none focus:border-primary placeholder:text-secondary uppercase">
+                <input type="text" placeholder="TWITCH_CHANNEL (OPTIONAL)" [value]="twitchChannelInput()" (input)="twitchChannelInput.set($any($event.target).value)" class="bg-surface-container-lowest border border-outline-variant text-primary font-data-sm px-4 py-3 w-full outline-none focus:border-primary placeholder:text-secondary uppercase">
+            </div>
+            
+            <div class="flex flex-wrap gap-2 justify-center">
+                <button class="bg-surface text-primary border border-outline-variant font-label-caps py-2 px-4 hover:bg-surface-container-highest transition-none" (click)="joinSession('spectator')">SPECTATE</button>
+                <button class="bg-primary text-on-primary border border-primary font-label-caps py-2 px-4 hover:bg-surface-tint transition-none" (click)="joinSession('gm')">GAME_MASTER</button>
+                <button class="bg-surface text-primary border border-outline-variant font-label-caps py-2 px-4 hover:bg-surface-container-highest transition-none" (click)="joinSession('billboard')">DASHBOARD</button>
+                <button class="bg-surface text-primary border border-outline-variant font-label-caps py-2 px-4 hover:bg-surface-container-highest transition-none" (click)="joinSession('support')">IT_SUPPORT_SHELL</button>
+                <button class="bg-surface text-primary border border-outline-variant font-label-caps py-2 px-4 hover:bg-surface-container-highest transition-none" (click)="joinSession('3d')">3D_FLYTHROUGH</button>
+            </div>
+
+            <div class="mt-4 pt-4 border-t border-outline-variant text-center">
+                <div class="font-data-sm text-secondary uppercase tracking-widest mb-4">PROTAGONIST_UPLINKS</div>
+                <div class="flex flex-wrap gap-2 justify-center">
+                    <button *ngFor="let p of protagonistList" class="bg-surface text-primary border border-outline-variant font-label-caps py-2 px-4 hover:bg-primary hover:text-on-primary transition-none" (click)="joinSession('player', p.id)">{{p.name}} [{{p.role}}]</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD -->
+    <div *ngIf="sessionId()" class="main-dashboard-wrapper">
+      
+      <!-- Pulsating Alert Bar -->
+      <div *ngIf="heatLevel() >= 8 || recentTrauma()" class="pulsating-alert-bar header-brutalist chromatic" style="color: white; padding: clamp(8px, 1.5vh, 15px); font-size: clamp(16px, 2.5vh, 28px); text-align: center; border: 1px solid rgba(255, 255, 255, 0.08); flex-shrink: 0;">
+        ⚠️ CRITICAL ALERT: {{ heatLevel() >= 8 ? 'HIGH HEAT LEVEL DETECTED (' + heatLevel() + '/10). ' : '' }} {{ recentTrauma() ? 'LIFE SUPPORT SYSTEM FAILURE: ' + recentTrauma().civilian : '' }}
+      </div>
+
+      @defer (when isGmMode()) {
+        <!-- GM View Tailwind Re-design -->
+        <div class="bg-background text-on-background h-screen w-screen overflow-hidden flex flex-col font-body-main text-body-main selection:bg-primary selection:text-on-primary">
+            <!-- TopAppBar -->
+            <header class="bg-surface text-primary font-data-sm text-data-sm flex justify-between items-center px-edge-margin w-full shrink-0 h-10 border-b border-outline-variant z-20">
+                <div class="font-headline-md text-headline-md font-bold text-primary tracking-tighter uppercase flex items-center gap-3">
+                    ZERO SUM <span class="text-secondary">GM_TERM_01</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="font-data-sm text-secondary">SESSION:</span>
+                    <strong class="font-data-lg text-primary bg-surface-container-highest px-2 border border-outline-variant">{{ sessionId() }}</strong>
+                    <button class="bg-primary text-on-primary px-2 hover:bg-surface-tint border border-primary transition-none" (click)="publishMap()">SYNC_MAP</button>
+                    <button class="bg-surface text-primary px-2 hover:bg-surface-container-highest border border-outline-variant transition-none" (click)="show3d.set(!show3d())">3D/2D_TOGGLE</button>
+                </div>
+            </header>
+
+            <main class="flex-1 grid grid-cols-1 lg:grid-cols-4 grid-rows-2 gap-3 p-4 bg-background overflow-hidden">
+                <!-- Center Map (Col 2-3, Row 1-2) -->
+                <section class="lg:col-span-2 lg:row-span-2 bg-surface border border-outline-variant flex flex-col relative overflow-hidden group">
+                    <div class="h-8 border-b border-outline-variant bg-surface-container-lowest flex items-center justify-between px-density-tight shrink-0">
+                        <div class="font-label-caps text-label-caps text-primary flex items-center gap-2">
+                            <span class="h-2 w-2 rounded-none bg-primary animate-blink"></span>
+                            TACTIC_MAP // LOCAL_GRID
+                        </div>
+                        <div class="font-data-sm text-data-sm text-secondary">FEED: SECURE</div>
+                    </div>
+                    <div class="flex-1 relative overflow-hidden bg-surface-container">
+                        <ng-container *ngIf="!show3d(); else threeDViewGM">
+                            <div class="absolute inset-0 w-full h-full">
+                                <app-pixi-map 
+                                    [mode]="'gm'"
+                                    [characters]="gameState().characters || {}"
+                                    [activePlayerId]="activePlayerId()"
+                                    [paintMode]="activePaintMode()"
+                                    [currentLevel]="currentLevel()"
+                                    (cellClicked)="onCanvasCellClicked($event)" 
+                                    (roomClicked)="onCanvasRoomClicked($event)"
+                                    (cellPainted)="onCellPainted($event)"
+                                    class="w-full h-full block">
+                                </app-pixi-map>
+                            </div>
+                        </ng-container>
+                        <ng-template #threeDViewGM>
+                            <app-threejs-map [characters]="gameState().characters || {}" [mode]="'gm'" class="absolute inset-0 w-full h-full"></app-threejs-map>
+                        </ng-template>
+                    </div>
+                </section>
+
+                <!-- Left Tools (Col 1, Row 1-2) -->
+                <section class="bg-surface border border-outline-variant flex flex-col overflow-hidden border-r border-outline-variant">
+                    <div class="h-8 border-b border-outline-variant bg-surface-container-lowest flex items-center px-density-tight shrink-0">
+                        <div class="font-label-caps text-label-caps text-primary">MAP_OPERATIONS // TOOLS</div>
+                    </div>
+                    <div class="flex-1 p-3 flex-shrink-0 overflow-hidden flex flex-col gap-3">
+                        
+                        <div class="border border-outline-variant p-2 flex flex-col gap-2 bg-surface-container-lowest">
+                            <h3 class="font-label-caps text-primary border-b border-outline-variant pb-1">PROC_GEN & BLOCKS</h3>
+                            <div class="grid grid-cols-2 gap-1">
+                                <button class="border border-outline-variant bg-surface text-secondary hover:text-primary hover:bg-surface-container py-1 font-data-sm" [ngClass]="{'bg-primary text-on-primary': activePrefab() === 'corridor'}" (click)="selectPrefab('corridor')">CORRIDOR</button>
+                                <button class="border border-outline-variant bg-surface text-secondary hover:text-primary hover:bg-surface-container py-1 font-data-sm" [ngClass]="{'bg-primary text-on-primary': activePrefab() === 'l_junction'}" (click)="selectPrefab('l_junction')">L-JUNC</button>
+                                <button class="border border-outline-variant bg-surface text-secondary hover:text-primary hover:bg-surface-container py-1 font-data-sm" [ngClass]="{'bg-primary text-on-primary': activePrefab() === 'medbay'}" (click)="selectPrefab('medbay')">MEDBAY</button>
+                                <button class="border border-outline-variant bg-surface text-secondary hover:text-primary hover:bg-surface-container py-1 font-data-sm" [ngClass]="{'bg-primary text-on-primary': activePrefab() === 'data_terminal'}" (click)="selectPrefab('data_terminal')">TERMINAL</button>
+                            </div>
+                            <button class="border border-primary bg-primary text-on-primary py-2 font-label-caps hover:bg-surface-tint mt-2" (click)="generateProceduralFacility()">GEN_FACILITY</button>
+                            <div class="flex gap-1 mt-1">
+                                <button class="flex-1 border border-outline-variant py-1 font-data-sm" [ngClass]="{'bg-primary text-on-primary': currentLevel() === 1, 'bg-surface text-secondary': currentLevel() !== 1}" (click)="currentLevel.set(1)">LEVEL_1</button>
+                                <button class="flex-1 border border-outline-variant py-1 font-data-sm" [ngClass]="{'bg-primary text-on-primary': currentLevel() === 2, 'bg-surface text-secondary': currentLevel() !== 2}" (click)="currentLevel.set(2)">LEVEL_2</button>
+                            </div>
+                        </div>
+
+                        <div class="border border-outline-variant p-2 flex flex-col gap-2 bg-surface-container-lowest">
+                            <h3 class="font-label-caps text-primary border-b border-outline-variant pb-1">PAINT_OVERRIDES</h3>
+                            <div class="grid grid-cols-2 gap-1">
+                                <button class="border border-outline-variant py-1 font-data-sm hover:bg-surface-container" [class.bg-primary]="activePaintMode() === 'wall'" [class.text-on-primary]="activePaintMode() === 'wall'" (click)="activePaintMode.set('wall')">WALL</button>
+                                <button class="border border-outline-variant py-1 font-data-sm hover:bg-surface-container" [class.bg-primary]="activePaintMode() === 'breakable_wall'" [class.text-on-primary]="activePaintMode() === 'breakable_wall'" (click)="activePaintMode.set('breakable_wall')">BREAK</button>
+                                <button class="border border-outline-variant py-1 font-data-sm hover:bg-surface-container" [class.bg-primary]="activePaintMode() === 'door_locked'" [class.text-on-primary]="activePaintMode() === 'door_locked'" (click)="activePaintMode.set('door_locked')">DOOR_L</button>
+                                <button class="border border-outline-variant py-1 font-data-sm hover:bg-surface-container" [class.bg-primary]="activePaintMode() === 'door_open'" [class.text-on-primary]="activePaintMode() === 'door_open'" (click)="activePaintMode.set('door_open')">DOOR_O</button>
+                                <select class="col-span-2 border border-outline-variant py-1 font-data-sm bg-surface text-secondary hover:bg-surface-container" (change)="activePaintMode.set($any($event.target).value)">
+                                    <optgroup label="Office & General">
+                                        <option value="furniture">DESK / TERMINAL</option>
+                                        <option value="cupboard">CUPBOARD</option>
+                                        <option value="chair">CHAIR</option>
+                                        <option value="bed">BED</option>
+                                        <option value="sofa">SOFA</option>
+                                        <option value="table">TABLE</option>
+                                        <option value="plant">POTTED PLANT</option>
+                                    </optgroup>
+                                    <optgroup label="Server & Netrunner">
+                                        <option value="server_rack">SERVER RACK</option>
+                                    </optgroup>
+                                    <optgroup label="Stealth & Storage">
+                                        <option value="storage_box">STORAGE BOX</option>
+                                        <option value="tech_scrap">TECH SCRAP</option>
+                                        <option value="pressure_plate">PRESSURE PLATE</option>
+                                    </optgroup>
+                                    <optgroup label="Security & Combat">
+                                        <option value="locker">LOCKER</option>
+                                        <option value="weapon_rack">WEAPON RACK</option>
+                                        <option value="ammo_crate">AMMO CRATE</option>
+                                        <option value="turret">TURRET</option>
+                                        <option value="cctv">CCTV CAMERA</option>
+                                    </optgroup>
+                                    <optgroup label="Medbay & Science">
+                                        <option value="medical_bed">MEDICAL BED</option>
+                                        <option value="autodoc">AUTODOC</option>
+                                        <option value="bio_scanner">BIO SCANNER</option>
+                                    </optgroup>
+                                    <optgroup label="Utility">
+                                        <option value="generator">GENERATOR</option>
+                                    </optgroup>
+                                </select>
+                                <button class="border border-outline-variant py-1 font-data-sm hover:bg-surface-container col-span-2" [class.bg-error]="activePaintMode() === 'floor'" [class.text-on-error]="activePaintMode() === 'floor'" (click)="activePaintMode.set('floor')">ERASE_CELL</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- Right Top: Heat & Actions (Col 4, Row 1) -->
+                <section class="bg-surface border border-outline-variant flex flex-col overflow-hidden">
+                    <div class="h-8 border-b border-outline-variant bg-surface-container-lowest flex items-center px-density-tight shrink-0">
+                        <div class="font-label-caps text-label-caps text-primary">DIRECTOR_OVERRIDES</div>
+                    </div>
+                    <div class="flex-1 p-3 flex-shrink-0 flex flex-col gap-2 overflow-hidden">
+                        <div class="border border-error p-2 bg-error-container text-on-error-container flex flex-col gap-1 items-center justify-center">
+                            <h3 class="font-label-caps tracking-widest text-error">GLOBAL_HEAT_LEVEL</h3>
+                            <div class="font-display-lg text-error tracking-tighter">{{ heatLevel() }}</div>
+                            <div class="flex gap-2 w-full mt-2">
+                                <button class="flex-1 border border-error bg-surface text-error py-1 hover:bg-error hover:text-on-error transition-none" (click)="updateHeat(-1)">DECREASE</button>
+                                <button class="flex-1 border border-error bg-surface text-error py-1 hover:bg-error hover:text-on-error transition-none" (click)="updateHeat(1)">INCREASE</button>
+                            </div>
+                        </div>
+
+                        <div class="border border-outline-variant p-2 flex flex-col gap-1 bg-surface-container-lowest mt-2">
+                            <h3 class="font-label-caps text-primary border-b border-outline-variant pb-1">ROOM_PROPS</h3>
+                            <div *ngIf="selectedRoomId(); else noSelection" class="flex flex-col gap-2 mt-2">
+                                <input type="text" [ngModel]="getRoomTag()" (ngModelChange)="updateRoomTag($event)" placeholder="Room Tag" class="bg-surface border border-outline-variant text-primary font-data-sm px-2 py-1 w-full outline-none focus:border-primary" />
+                                <select [ngModel]="getRoomVfx()" (ngModelChange)="updateRoomVfx($event)" class="bg-surface border border-outline-variant text-primary font-data-sm px-2 py-1 w-full outline-none focus:border-primary">
+                                    <option value="none">VFX: NONE</option>
+                                    <option value="flash_red_alert">VFX: RED_ALARM</option>
+                                    <option value="flicker_blue_data">VFX: DATA_CORRUPTION</option>
+                                </select>
+                            </div>
+                            <ng-template #noSelection>
+                                <div class="font-data-sm text-secondary py-2 text-center">NO_ROOM_SELECTED</div>
+                            </ng-template>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Right Bottom: Commands (Col 4, Row 2) -->
+                <section class="bg-surface border border-outline-variant flex flex-col overflow-hidden">
+                    <div class="h-8 border-b border-outline-variant bg-surface-container-lowest flex items-center px-density-tight shrink-0">
+                        <div class="font-label-caps text-label-caps text-primary">SQUAD_TRAUMA_INJECTION</div>
+                    </div>
+                    <div class="flex-1 p-2 flex flex-col gap-2 justify-center bg-surface-container-lowest min-h-0">
+                        <button class="flex-1 min-h-0 w-full border border-primary bg-surface text-primary font-label-caps hover:bg-surface-container-highest transition-none" (click)="deploySquad()">DEPLOY_SQUAD</button>
+                        <button class="flex-1 min-h-0 w-full border border-error bg-surface text-error font-label-caps hover:bg-error-container transition-none" (click)="dealDamageToSquad()">INFLICT_20_DMG</button>
+                        <button class="flex-1 min-h-0 w-full border border-error bg-surface text-error font-label-caps hover:bg-error-container transition-none" (click)="inflictStressToSquad()">INFLICT_20_STRESS</button>
+                        <button class="flex-1 min-h-0 w-full border border-primary bg-primary text-on-primary font-label-caps hover:bg-surface-tint transition-none" (click)="spawnTraumaEvent()">LOG_CASUALTY</button>
+                    </div>
+                </section>
+
+            </main>
+            
+            <footer class="bg-surface-container-lowest text-on-surface font-data-sm h-8 border-t border-outline-variant flex justify-between items-center px-edge-margin w-full shrink-0 z-20">
+                <div class="flex items-center gap-3 text-secondary">
+                    <span>SYS_UPTIME: 99.9%</span>
+                    <span>AUTHORIZATION: GAME_MASTER</span>
+                </div>
+            </footer>
+        </div>
+      }
+      
+      @defer (when isBillboardMode()) {
+        <!-- Billboard View Tailwind Re-design -->
+        <div class="bg-background text-on-background h-screen w-screen overflow-hidden flex flex-col font-body-main text-body-main selection:bg-primary selection:text-on-primary relative" [ngClass]="{'bg-error-container': heatLevel() >= 8 || recentTrauma()}">
+            <div *ngIf="heatLevel() >= 8 || recentTrauma()" class="absolute inset-0 bg-[radial-gradient(circle,transparent_20%,rgba(186,26,26,0.3)_100%)] pointer-events-none z-0"></div>
+            
+            <div class="flex-1 flex flex-col m-4 md:m-6 p-4 md:p-8 z-10 relative bg-surface border border-outline-variant shadow-sm rounded-sm min-h-0 overflow-hidden w-[calc(100vw-2rem)] md:w-[calc(100vw-3rem)]">
+                <h1 class="font-display-lg text-[min(10vw,12vh)] leading-none text-center uppercase tracking-tighter shrink flex-none break-words whitespace-normal" [ngClass]="{'text-error animate-blink': heatLevel() >= 8, 'text-primary': heatLevel() < 8}">GLOBAL HEAT: {{ heatLevel() }}</h1>
+                
+                <h2 *ngIf="recentTrauma()" class="font-display-lg text-[min(6vw,8vh)] leading-none text-center text-error mt-4 shrink flex-none break-words whitespace-normal">
+                    LIFE SUPPORT REDIRECTED.<br/>CASUALTY: {{ recentTrauma().civilian }}
+                </h2>
+                
+                <div *ngIf="!recentTrauma()" class="flex flex-col md:flex-row flex-1 gap-4 md:gap-10 mt-4 overflow-hidden min-h-0 w-full">
+                    <!-- Operative Status -->
+                    <div class="flex-1 bg-surface border border-outline-variant p-2 md:p-8 flex flex-col gap-2 shadow-lg min-h-0 overflow-hidden w-full">
+                        <h3 class="font-headline-md text-primary border-b border-outline-variant pb-2 w-full uppercase text-center flex-none break-words">OPERATIVE STATUS</h3>
+                        
+                        <div class="w-full flex-1 min-h-0 flex flex-col items-center justify-center text-center">
+                            <div class="font-label-caps text-secondary text-[min(4vw,2vh)] md:text-[min(1.125rem,3vh)] flex-none break-words w-full">SQUAD VITALITY (HP)</div>
+                            <div class="font-data-lg text-[min(12vw,10vh)] leading-none text-tertiary-fixed-dim font-bold shrink break-words w-full">{{ squadHpAvg() }}%</div>
+                            <div class="font-data-sm text-secondary flex-none hidden md:block break-words w-full">Measures average physical integrity.</div>
+                        </div>
+                        
+                        <div class="w-full flex-1 min-h-0 flex flex-col items-center justify-center text-center">
+                            <div class="font-label-caps text-secondary text-[min(4vw,2vh)] md:text-[min(1.125rem,3vh)] flex-none break-words w-full">ALLOSTATIC LOAD (STRESS)</div>
+                            <div class="font-data-lg text-[min(12vw,10vh)] leading-none text-error font-bold shrink break-words w-full">{{ squadStressAvg() }}%</div>
+                            <div class="font-data-sm text-secondary flex-none hidden md:block break-words w-full">High levels lead to psychological deterioration.</div>
+                        </div>
+                        
+                        <div class="w-full flex-1 min-h-0 flex flex-col items-center justify-center text-center">
+                            <div class="font-label-caps text-secondary text-[min(4vw,2vh)] md:text-[min(1.125rem,3vh)] flex-none break-words w-full">CONFIRMED CASUALTIES</div>
+                            <div class="font-data-lg text-[min(12vw,10vh)] leading-none text-primary font-bold shrink break-words w-full">{{ traumaCount() }}</div>
+                            <div class="font-data-sm text-secondary flex-none hidden md:block break-words w-full">Collateral damage logged.</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Twitch Chaos -->
+                    <div class="flex-1 bg-surface border border-outline-variant p-2 md:p-8 flex flex-col gap-2 shadow-lg min-h-0 overflow-hidden w-full">
+                        <h3 class="font-headline-md text-primary border-b border-outline-variant pb-2 w-full uppercase text-center flex-none break-words">SPECTATOR OVERRIDE</h3>
+                        
+                        <div class="font-body-main text-secondary text-[min(4vw,2.5vh)] md:text-[min(1.5rem,4vh)] text-center flex-none shrink max-w-[90%] mx-auto break-words w-full">
+                            YOU ARE AUTHORIZED TO INFLUENCE THE OPERATION. USE TWITCH CHAT TO INJECT CHAOS.
+                        </div>
+                        
+                        <div class="flex flex-col gap-2 w-full flex-1 min-h-0 justify-center">
+                            <div class="bg-surface-container-lowest border border-outline-variant p-2 md:p-4 flex-1 min-h-0 flex flex-col items-center justify-center text-center overflow-hidden w-full">
+                                <span class="font-display-lg text-[min(4vw,3vh)] leading-tight text-primary shrink break-words whitespace-normal w-full">TYPE <span class="text-tertiary-fixed-dim bg-primary px-1">!chaos</span> IN CHAT</span>
+                                <span class="font-data-sm text-secondary text-[min(2vw,1.5vh)] md:text-[min(1.5vw,1.5vh)] flex-none hidden md:block break-words w-full">Adds $10 to the Market.</span>
+                            </div>
+                            <div class="bg-surface-container-lowest border border-outline-variant p-2 md:p-4 flex-1 min-h-0 flex flex-col items-center justify-center text-center overflow-hidden w-full">
+                                <span class="font-display-lg text-[min(4vw,3vh)] leading-tight text-primary shrink break-words whitespace-normal w-full">CHEER BITS</span>
+                                <span class="font-data-sm text-secondary text-[min(2vw,1.5vh)] md:text-[min(1.5vw,1.5vh)] flex-none hidden md:block break-words w-full">Adds proportional Chaos.</span>
+                            </div>
+                        </div>
+                        
+                        <h3 class="font-display-lg text-[min(5vw,6vh)] leading-none text-primary border-4 border-dashed border-primary p-2 md:p-4 w-full uppercase text-center flex-none shrink break-words whitespace-normal">MARKET: $ {{ chaosMarketValue() }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+      }
+      
+      @defer (when isSupportMode()) {
+        <!-- Netrunner Shell Tailwind Re-design -->
+        <div class="bg-background text-on-background h-screen w-screen overflow-hidden flex flex-col font-body-main text-body-main selection:bg-primary selection:text-on-primary">
+            <header class="bg-surface text-primary font-data-sm flex justify-between items-center px-edge-margin w-full shrink-0 h-10 border-b border-outline-variant z-20">
+                <div class="font-headline-md font-bold text-primary tracking-tighter uppercase flex items-center gap-3">
+                    ICE_TERMINAL // <span class="text-secondary">SYS_ADMIN</span>
+                </div>
+                <button class="bg-surface text-primary px-4 border border-outline-variant hover:bg-surface-container-highest transition-none" (click)="connectBleBeacon()">[BLE_AIRGAP] CONNECT_BEACON</button>
+            </header>
+            <main class="flex-1 bg-surface-container-lowest m-4 border border-outline-variant p-8 flex flex-col gap-3 relative overflow-hidden shadow-sm rounded-sm">
+                <div class="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.1)_1px,transparent_1px)] bg-[length:100%_4px] pointer-events-none opacity-20"></div>
+                <div class="flex-1 font-data-lg text-primary overflow-hidden flex flex-col-reverse" id="terminalOutput">
+                    <div *ngFor="let log of terminalLogs()" class="py-1">> {{ log }}</div>
+                </div>
+                <div class="flex items-center gap-2 border-t border-outline-variant pt-4 mt-auto">
+                    <span class="font-data-lg text-primary">$</span>
+                    <input type="text" [(ngModel)]="terminalCommand" (keyup.enter)="executeIceCommand()" placeholder="grep the mainframe..." autofocus class="flex-1 bg-transparent text-primary font-data-lg border-none outline-none focus:ring-0 placeholder:text-secondary" />
+                </div>
+            </main>
+        </div>
+      }
+      
+      @defer (when isSpectatorMode()) {
+        <!-- Spectator View Tailwind Re-design -->
+        <div class="bg-background text-on-background h-screen w-screen overflow-hidden flex flex-col font-body-main text-body-main selection:bg-primary selection:text-on-primary">
+            <!-- TopAppBar -->
+            <header class="bg-surface text-primary font-data-sm text-data-sm flex justify-between items-center px-edge-margin w-full shrink-0 h-10 border-b border-outline-variant z-20">
+                <div class="font-headline-md text-headline-md font-bold text-primary tracking-tighter uppercase flex items-center gap-3">
+                    TWITCH <span class="text-secondary">VOYEUR_FEED</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="font-data-sm text-secondary">CHAOS_MARKET:</span>
+                    <strong class="font-data-lg text-primary bg-surface-container-highest px-2 border border-outline-variant">${{ chaosMarketValue() }}</strong>
+                    <span class="font-data-sm text-secondary ml-4">GLOBAL_HEAT:</span>
+                    <strong class="font-data-lg text-error bg-error-container px-2 border border-error">{{ heatLevel() }}</strong>
+                    <button class="bg-surface text-primary px-2 hover:bg-surface-container-highest border border-outline-variant transition-none ml-4" (click)="show3d.set(!show3d())">3D/2D_TOGGLE</button>
+                </div>
+            </header>
+
+            <main class="flex-1 grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-3 p-4 bg-background overflow-hidden">
+                
+                <!-- Left: CAMS (Col 1, Row 1-2) -->
+                <section class="bg-surface border border-outline-variant flex flex-col overflow-hidden border-r border-outline-variant">
+                    <div class="h-8 border-b border-outline-variant bg-surface-container-lowest flex items-center px-density-tight shrink-0">
+                        <div class="font-label-caps text-label-caps text-primary">LIVE_CAMS // ASSET_UPLINK</div>
+                    </div>
+                    <div class="flex-1 p-3 flex-shrink-0 overflow-hidden flex flex-col gap-3 bg-surface-container-lowest">
+                        <div *ngFor="let key of getCharacterKeys()" class="relative aspect-video bg-black border border-outline-variant flex items-center justify-center overflow-hidden">
+                            <!-- Simulated noise / blank feed -->
+                            <div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, #fff 2px, #fff 4px);"></div>
+                            <div class="absolute top-1 left-1 bg-black border border-primary text-primary font-data-sm text-[10px] px-1 z-10">{{ gameState().characters[key].name }}</div>
+                            <div class="text-secondary font-data-sm text-xs">[FEED_ENCRYPTED]</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Center: Map (Col 2-3, Row 1-2) -->
+                <section class="md:col-span-2 md:row-span-2 bg-surface border border-outline-variant flex flex-col relative overflow-hidden group">
+                    <div class="h-8 border-b border-outline-variant bg-surface-container-lowest flex items-center justify-between px-density-tight shrink-0">
+                        <div class="font-label-caps text-label-caps text-primary flex items-center gap-2">
+                            <span class="h-2 w-2 rounded-none bg-primary animate-blink"></span>
+                            THEATER_OVERVIEW
+                        </div>
+                    </div>
+                    <div class="flex-1 relative overflow-hidden bg-surface-container">
+                        <ng-container *ngIf="!show3d(); else threeDViewSpec">
+                            <app-pixi-map [mode]="'spectator'" [characters]="gameState().characters || {}" [currentLevel]="currentLevel()" class="absolute inset-0 w-full h-full block"></app-pixi-map>
+                        </ng-container>
+                        <ng-template #threeDViewSpec>
+                            <app-threejs-map [characters]="gameState().characters || {}" [mode]="'spectator'" class="absolute inset-0 w-full h-full block"></app-threejs-map>
+                        </ng-template>
+                        <div class="absolute inset-0 border-[1px] border-primary/20 m-4 pointer-events-none"></div>
+                    </div>
+                </section>
+
+                <!-- Right Top: Squad Status (Col 4, Row 1) -->
+                <section class="bg-surface border border-outline-variant flex flex-col overflow-hidden">
+                    <div class="h-8 border-b border-outline-variant bg-surface-container-lowest flex items-center px-density-tight shrink-0">
+                        <div class="font-label-caps text-label-caps text-primary">SQUAD_VITALS</div>
+                    </div>
+                    <div class="flex-1 p-3 flex-shrink-0 overflow-hidden flex flex-col gap-2">
+                        <div *ngFor="let key of getCharacterKeys()" class="border border-outline-variant p-2 flex flex-col gap-1 bg-surface-container-lowest" [ngClass]="{'border-error bg-error-container': (gameState().characters[key].stats?.hp_current || 100) <= 0}">
+                            <div class="flex justify-between items-center border-b border-outline-variant pb-1" [ngClass]="{'border-error/50': (gameState().characters[key].stats?.hp_current || 100) <= 0}">
+                                <span class="font-label-caps text-label-caps text-primary" [ngClass]="{'text-error': (gameState().characters[key].stats?.hp_current || 100) <= 0}">{{ gameState().characters[key].name }}</span>
+                            </div>
+                            <div class="flex justify-between items-end mt-1 font-data-sm">
+                                <div>HP: <span class="font-data-lg" [ngClass]="{'text-error': (gameState().characters[key].stats?.hp_current || 100) <= 20}">{{ gameState().characters[key].stats?.hp_current || 100 }}</span></div>
+                                <div>STR: <span class="font-data-lg text-secondary">{{ gameState().characters[key].stats?.stress_current || 0 }}</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Right Bottom: Feed & Clocks (Col 4, Row 2) -->
+                <section class="bg-surface border border-outline-variant flex flex-col overflow-hidden">
+                    <div class="h-8 border-b border-outline-variant bg-surface-container-lowest flex items-center px-density-tight shrink-0">
+                        <div class="font-label-caps text-label-caps text-primary">THREATS & FEED</div>
+                    </div>
+                    <div class="flex-1 p-3 flex-shrink-0 overflow-hidden flex flex-col gap-3 bg-surface-container-lowest">
+                        <!-- Clocks -->
+                        <div class="flex flex-wrap gap-2">
+                            <app-progress-clock *ngFor="let clock of getPublicClocks()" 
+                                [name]="clock.name" [segments]="clock.segments" [filled]="clock.filled" [color]="clock.color" class="scale-75 origin-top-left">
+                            </app-progress-clock>
+                        </div>
+                        <!-- Feed -->
+                        <div class="flex-1 overflow-hidden font-data-sm text-secondary flex flex-col gap-1">
+                            <div *ngFor="let roll of gameState().recentRolls || []" class="border-b border-outline-variant/30 py-1 hover:bg-surface-container transition-none flex gap-2">
+                                <span class="w-16 shrink-0">{{ roll.timestamp | date:'HH:mm:ss' }}</span>
+                                <span class="text-primary">{{ roll.player }}</span>
+                                <span>-></span>
+                                <span class="font-bold" [ngClass]="{'text-error': roll.result === 'Fail', 'text-primary': roll.result !== 'Fail'}">{{ roll.result }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+      }
+
+      @defer (when isPlayerMode()) {
+        <!-- Player View Tailwind Re-design -->
+        <div class="bg-background text-on-background h-screen w-screen overflow-hidden flex flex-col font-body-main text-body-main selection:bg-primary selection:text-on-primary">
+            <!-- TopAppBar -->
+            <header class="bg-surface text-primary font-data-sm text-data-sm flex justify-between items-center px-edge-margin w-full shrink-0 h-10 border-b border-outline-variant z-20">
+                <div class="font-headline-md text-headline-md font-bold text-primary tracking-tighter uppercase flex items-center gap-3">
+                    UPLINK // <span class="text-secondary">{{ getPlayerName() }}</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="font-data-sm text-secondary">ROLE:</span>
+                    <strong class="font-data-lg text-primary">{{ getPlayerRole() }}</strong>
+                    <div class="h-4 border-l border-outline-variant mx-2"></div>
+                    <span class="font-data-sm text-secondary">HEAT:</span>
+                    <strong class="font-data-lg text-error bg-error-container px-2 border border-error">{{ heatLevel() }}</strong>
+                    <button class="bg-surface text-primary px-2 hover:bg-surface-container-highest border border-outline-variant transition-none ml-4" (click)="show3d.set(!show3d())">3D/2D_TOGGLE</button>
+                    <button class="bg-error text-on-error font-bold px-2 border border-error transition-none hover:bg-error-container hover:text-error" (click)="triggerEmergencyHeal()">EMERGENCY_HEAL</button>
+                </div>
+            </header>
+
+            <main class="flex-1 grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-3 p-4 bg-background overflow-hidden">
+                <!-- Left: Inventory (Col 1, Row 1-2) -->
+                <section class="bg-surface border border-outline-variant flex flex-col overflow-hidden border-r border-outline-variant">
+                    <div class="h-8 border-b border-outline-variant bg-surface-container-lowest flex items-center px-density-tight shrink-0">
+                        <div class="font-label-caps text-label-caps text-primary">INVENTORY // LOADOUT</div>
+                    </div>
+                    <div class="flex-1 p-3 flex-shrink-0 overflow-hidden flex flex-col gap-2 bg-surface-container-lowest">
+                        <div draggable="true" (dragstart)="onDragStart($event, 'usb_drive')" class="border border-primary border-dashed p-2 text-center cursor-grab bg-surface text-primary font-label-caps hover:bg-surface-container-highest">USB_DRIVE</div>
+                        <div draggable="true" (dragstart)="onDragStart($event, 'c4_explosive')" class="border border-primary border-dashed p-2 text-center cursor-grab bg-surface text-primary font-label-caps hover:bg-surface-container-highest">C4_CHARGE</div>
+                    </div>
+                </section>
+
+                <!-- Center: Map (Col 2-3, Row 1-2) -->
+                <section class="md:col-span-2 md:row-span-2 bg-surface border border-outline-variant flex flex-col relative overflow-hidden group" (dragover)="$event.preventDefault()" (drop)="onDropItem($event)">
+                    <div class="h-8 border-b border-outline-variant bg-surface-container-lowest flex items-center justify-between px-density-tight shrink-0">
+                        <div class="font-label-caps text-label-caps text-primary flex items-center gap-2">
+                            <span class="h-2 w-2 rounded-none bg-primary animate-blink"></span>
+                            TACTICAL_OVERVIEW
+                        </div>
+                    </div>
+                    <div class="flex-1 relative overflow-hidden bg-surface-container">
+                        <ng-container *ngIf="!show3d(); else threeDViewPlayer">
+                            <app-pixi-map [mode]="'player'" [characters]="gameState().characters || {}" [activePlayerId]="activePlayerId()" [currentLevel]="currentLevel()" (playerMoved)="onPlayerMoved($event)" class="absolute inset-0 w-full h-full block"></app-pixi-map>
+                        </ng-container>
+                        <ng-template #threeDViewPlayer>
+                            <app-threejs-map [characters]="gameState().characters || {}" [mode]="'player'" class="absolute inset-0 w-full h-full block"></app-threejs-map>
+                        </ng-template>
+                        <div class="absolute inset-0 border-[1px] border-primary/20 m-4 pointer-events-none"></div>
+                    </div>
+                </section>
+
+                <!-- Right Top: Vitals (Col 4, Row 1) -->
+                <section class="bg-surface border border-outline-variant flex flex-col overflow-hidden">
+                    <div class="h-8 border-b border-outline-variant bg-surface-container-lowest flex items-center px-density-tight shrink-0">
+                        <div class="font-label-caps text-label-caps text-primary">PERSONAL_VITALS</div>
+                    </div>
+                    <div class="flex-1 p-3 flex-shrink-0 overflow-hidden flex flex-col gap-2 bg-surface-container-lowest" *ngIf="myCharStats()">
+                        <div class="border border-outline-variant p-2 flex flex-col gap-1 bg-surface">
+                            <div class="flex justify-between items-center border-b border-outline-variant pb-1">
+                                <span class="font-label-caps text-primary">HP_INTEGRITY</span>
+                            </div>
+                            <div class="font-display-lg text-primary tracking-tighter" [ngClass]="{'text-error': myCharStats().hp_current <= 20}">{{ myCharStats().hp_current }}</div>
+                        </div>
+                        <div class="border border-outline-variant p-2 flex flex-col gap-1 bg-surface">
+                            <div class="flex justify-between items-center border-b border-outline-variant pb-1">
+                                <span class="font-label-caps text-primary">STRESS_LOAD</span>
+                            </div>
+                            <div class="font-display-lg text-error tracking-tighter">{{ myCharStats().stress_current }}</div>
+                        </div>
+                        <div class="border border-outline-variant p-2 flex flex-col gap-1 bg-surface">
+                            <div class="flex justify-between items-center border-b border-outline-variant pb-1">
+                                <span class="font-label-caps text-primary">STEALTH_RATING</span>
+                            </div>
+                            <div class="font-display-lg text-secondary tracking-tighter">{{ myCharStats().stealth_total }}</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Right Bottom: Actions (Col 4, Row 2) -->
+                <section class="bg-surface border border-outline-variant flex flex-col overflow-hidden">
+                    <div class="h-8 border-b border-outline-variant bg-surface-container-lowest flex items-center px-density-tight shrink-0">
+                        <div class="font-label-caps text-label-caps text-primary">ACTION_EXECUTION</div>
+                    </div>
+                    <div class="flex-1 p-2 flex flex-col gap-2 justify-center bg-surface-container-lowest min-h-0">
+                        <button class="flex-1 min-h-0 w-full border border-primary bg-surface text-primary font-label-caps hover:bg-surface-container-highest hover:border-b-2 active:bg-primary active:text-on-primary transition-none" (click)="playerAction('attack')">EXEC_ATTACK</button>
+                        <button class="flex-1 min-h-0 w-full border border-primary bg-surface text-primary font-label-caps hover:bg-surface-container-highest hover:border-b-2 active:bg-primary active:text-on-primary transition-none" (click)="playerAction('sneak')">EXEC_SNEAK</button>
+                        <button class="flex-1 min-h-0 w-full border border-primary bg-surface text-primary font-label-caps hover:bg-surface-container-highest hover:border-b-2 active:bg-primary active:text-on-primary transition-none" (click)="playerAction('dash')">EXEC_DASH</button>
+                        <button class="flex-1 min-h-0 w-full border border-primary bg-surface text-primary font-label-caps hover:bg-surface-container-highest hover:border-b-2 active:bg-primary active:text-on-primary transition-none" (click)="playerAction('investigate')">EXEC_INVESTIGATE</button>
+                        <button class="flex-1 min-h-0 w-full border border-error bg-surface text-error font-label-caps hover:bg-error-container hover:border-b-2 active:bg-error active:text-on-error transition-none" (click)="playerAction('sabotage')">EXEC_SABOTAGE</button>
+                    </div>
+                </section>
+            </main>
+        </div>
+      }
+
+      @defer (when is3dMode()) {
+        <!-- 3D View Tailwind Re-design -->
+        <div class="bg-background text-on-background h-screen w-screen overflow-hidden flex flex-col font-body-main text-body-main selection:bg-primary selection:text-on-primary">
+            <header class="bg-surface text-primary font-data-sm flex justify-between items-center px-edge-margin w-full shrink-0 h-10 border-b border-outline-variant z-20">
+                <div class="font-headline-md font-bold text-primary tracking-tighter uppercase flex items-center gap-3">
+                    THEATER_FLYTHROUGH // <span class="text-secondary">3D_RENDER</span>
+                </div>
+                <button class="bg-error text-on-error px-4 border border-error hover:bg-error-container hover:text-error transition-none font-bold" (click)="mode.set(null)">EXIT_FLYTHROUGH</button>
+            </header>
+            <main class="flex-1 relative bg-black overflow-hidden">
+                <app-threejs-map [characters]="gameState().characters || {}" [mode]="'3d'" class="absolute inset-0 w-full h-full block"></app-threejs-map>
+            </main>
+        </div>
+      }
+
+      @defer (when mode() === 'billboard_v2') {
+         <div style="height: 100dvh; max-height: 100dvh; overflow: hidden;">
+            <app-billboard></app-billboard>
+         </div>
+      }
+
+      @defer (when mode() === 'player_v2') {
+         <div style="height: 100dvh; max-height: 100dvh; overflow: hidden;">
+            <app-player-uplink></app-player-uplink>
+         </div>
+      }
+
+    </div>
