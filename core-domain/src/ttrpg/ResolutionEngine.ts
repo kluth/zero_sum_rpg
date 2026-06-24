@@ -1,5 +1,6 @@
 export enum DegreeOfSuccess {
-  CRITICAL_FAILURE = 'CRITICAL_FAILURE', // 1-9
+  CRITICAL_FAILURE = 'CRITICAL_FAILURE', // 1-7
+  FAIL_FORWARD = 'FAIL_FORWARD',         // 8-9
   MIXED_SUCCESS = 'MIXED_SUCCESS',       // 10-15
   CLEAN_SUCCESS = 'CLEAN_SUCCESS',       // 16-19
   CRITICAL_TRIUMPH = 'CRITICAL_TRIUMPH'  // 20+
@@ -30,7 +31,8 @@ export class ResolutionEngine {
     const safePen = Number.isFinite(request.difficultyPenalty) ? request.difficultyPenalty : 0;
     
     const clampedModifier = Math.max(-5, Math.min(5, Math.round(safeMod)));
-    const clampedPenalty = Math.max(0, Math.round(safePen));
+    // Cap Penalty to a maximum of 5 to prevent infinite Heat death spirals
+    const clampedPenalty = Math.max(0, Math.min(5, Math.round(safePen)));
 
     // 2. Execute natural roll (1 to 20)
     const naturalRoll = Math.floor(randomProvider() * 20) + 1;
@@ -48,9 +50,12 @@ export class ResolutionEngine {
     } else if (naturalRoll === 20) {
       degree = DegreeOfSuccess.CRITICAL_TRIUMPH;
       consequences.push('ACTION_SUCCEEDED', 'MOMENTUM_GAINED', 'AP_REFUNDED', 'NATURAL_CRIT');
-    } else if (finalTotal < 10) {
+    } else if (finalTotal <= 7) {
       degree = DegreeOfSuccess.CRITICAL_FAILURE;
       consequences.push('ACTION_FAILED', 'SNR_INCREASED');
+    } else if (finalTotal <= 9) {
+      degree = DegreeOfSuccess.FAIL_FORWARD;
+      consequences.push('ACTION_SUCCEEDED', 'EXTREME_COST', 'TRAUMA_SUFFERED');
     } else if (finalTotal <= 15) {
       degree = DegreeOfSuccess.MIXED_SUCCESS;
       consequences.push('ACTION_SUCCEEDED', 'COMPLICATION_ADDED');

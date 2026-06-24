@@ -1,4 +1,5 @@
 import { Injectable, signal } from '@angular/core';
+import { Subject, concatMap, delay, of } from 'rxjs';
 
 
 @Injectable({
@@ -10,6 +11,18 @@ export class WebRTCService {
   
   public connectedPlayers = signal<string[]>([]);
   public incomingMessages = signal<{senderId: string, payload: any} | null>(null);
+  
+  // Lock-Step Queue for WebRTC Messages to prevent race conditions from rapid inputs (e.g. Chaos Agent Sabotage spam)
+  private messageQueue = new Subject<{senderId: string, payload: any}>();
+
+  constructor() {
+    this.messageQueue.pipe(
+      // Process sequentially with a 100ms lock-step buffer per message
+      concatMap(msg => of(msg).pipe(delay(100)))
+    ).subscribe(msg => {
+      this.incomingMessages.set(msg);
+    });
+  }
 
   private sessionId: string | null = null;
   private myPlayerId: string | null = null;
@@ -179,7 +192,8 @@ export class WebRTCService {
     channel.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        this.incomingMessages.set({ senderId: peerId, payload: data });
+        // Push to lock-step queue instead of setting signal directly
+        this.messageQueue.next({ senderId: peerId, payload: data });
       } catch(e) {
         console.error("Failed to parse WebRTC message", e);
       }
