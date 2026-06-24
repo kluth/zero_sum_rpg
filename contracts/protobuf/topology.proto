@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package zero_sum.topology;
+
+message Coordinate3D {
+  int32 x = 1;
+  int32 y = 2;
+  int32 z = 3;
+}
+
+enum MaterialType {
+  MATERIAL_UNKNOWN = 0;
+  MATERIAL_AIR = 1;
+  MATERIAL_CONCRETE = 2;
+  MATERIAL_GLASS = 3;
+  MATERIAL_STEEL = 4;
+}
+
+message VoxelNode {
+  Coordinate3D position = 1;
+  MaterialType material = 2;
+  double structural_integrity = 3;
+}
+
+message BoundingBox {
+  Coordinate3D min = 1;
+  Coordinate3D max = 2;
+}
+
+message GetTopologyRequest {
+  BoundingBox bounds = 1;
+}
+
+message GetTopologyResponse {
+  repeated VoxelNode voxels = 1;
+}
+
+service TopologyService {
+  rpc GetTopology(GetTopologyRequest) returns (GetTopologyResponse);
+}
