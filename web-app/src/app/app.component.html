@@ -66,9 +66,21 @@
                         </div>
                         <div class="font-data-sm text-data-sm text-secondary">FEED: SECURE</div>
                     </div>
-                    <div class="flex-1 relative overflow-hidden bg-surface-container">
+                    <div class="flex-1 relative overflow-hidden bg-surface-container flex items-center justify-center">
+                        <div *ngIf="(gridStore.rooms() | keyvalue).length === 0" class="absolute z-10 text-center flex flex-col items-center gap-4 p-8 bg-surface border border-outline-variant shadow-lg max-w-sm">
+                           <div class="font-display-lg text-error text-3xl">NO TACTICAL DATA</div>
+                           <div class="font-data-sm text-secondary">The grid is offline. Generate a procedural facility or place blocks to initialize the session.</div>
+                           <button class="bg-primary text-on-primary font-label-caps py-2 px-4 hover:bg-surface-tint w-full mb-2" (click)="generateProceduralFacility()">GEN_FACILITY</button>
+                           
+                           <!-- AI Engine Controls -->
+                           <div class="border border-outline-variant p-2 mt-4 bg-surface-container">
+                               <div class="text-xs text-primary mb-1">AI ORCHESTRATOR UPLINK</div>
+                               <input type="password" [ngModel]="aiEngine.apiKey()" (ngModelChange)="aiEngine.apiKey.set($event)" placeholder="Enter Gemini API Key..." class="w-full bg-surface border border-outline-variant text-on-surface p-1 mb-2 font-data-sm">
+                               <button class="bg-surface text-secondary hover:text-primary border border-outline-variant py-1 px-2 w-full font-label-caps" (click)="triggerAiGmEvent()">GEN_AI_THREAT</button>
+                           </div>
+                        </div>
                         <ng-container *ngIf="!show3d(); else threeDViewGM">
-                            <div class="absolute inset-0 w-full h-full">
+                            <div class="absolute inset-0 w-full h-full" [style.opacity]="(gridStore.rooms() | keyvalue).length === 0 ? 0.2 : 1">
                                 <app-pixi-map 
                                     [mode]="'gm'"
                                     [characters]="gameState().characters || {}"
@@ -219,7 +231,7 @@
         <div class="bg-background text-on-background h-screen w-screen overflow-hidden flex flex-col font-body-main text-body-main selection:bg-primary selection:text-on-primary relative" [ngClass]="{'bg-error-container': heatLevel() >= 8 || recentTrauma()}">
             <div *ngIf="heatLevel() >= 8 || recentTrauma()" class="absolute inset-0 bg-[radial-gradient(circle,transparent_20%,rgba(186,26,26,0.3)_100%)] pointer-events-none z-0"></div>
             
-            <div class="flex-1 flex flex-col m-4 md:m-6 p-4 md:p-8 z-10 relative bg-surface border border-outline-variant shadow-sm rounded-sm min-h-0 overflow-hidden w-[calc(100vw-2rem)] md:w-[calc(100vw-3rem)]">
+            <div class="flex-1 flex flex-col m-4 md:m-6 p-4 md:p-8 z-10 relative bg-surface border border-outline-variant shadow-sm rounded-none min-h-0 overflow-hidden w-[calc(100vw-2rem)] md:w-[calc(100vw-3rem)]">
                 <h1 class="font-display-lg text-[min(10vw,12vh)] leading-none text-center uppercase tracking-tighter shrink flex-none break-words whitespace-normal" [ngClass]="{'text-error animate-blink': heatLevel() >= 8, 'text-primary': heatLevel() < 8}">GLOBAL HEAT: {{ heatLevel() }}</h1>
                 
                 <h2 *ngIf="recentTrauma()" class="font-display-lg text-[min(6vw,8vh)] leading-none text-center text-error mt-4 shrink flex-none break-words whitespace-normal">
@@ -285,7 +297,7 @@
                 </div>
                 <button class="bg-surface text-primary px-4 border border-outline-variant hover:bg-surface-container-highest transition-none" (click)="connectBleBeacon()">[BLE_AIRGAP] CONNECT_BEACON</button>
             </header>
-            <main class="flex-1 bg-surface-container-lowest m-4 border border-outline-variant p-8 flex flex-col gap-3 relative overflow-hidden shadow-sm rounded-sm">
+            <main class="flex-1 bg-surface-container-lowest m-4 border border-outline-variant p-8 flex flex-col gap-3 relative overflow-hidden shadow-sm rounded-none">
                 <div class="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.1)_1px,transparent_1px)] bg-[length:100%_4px] pointer-events-none opacity-20"></div>
                 <div class="flex-1 font-data-lg text-primary overflow-hidden flex flex-col-reverse" id="terminalOutput">
                     <div *ngFor="let log of terminalLogs()" class="py-1">> {{ log }}</div>
@@ -435,9 +447,13 @@
                             TACTICAL_OVERVIEW
                         </div>
                     </div>
-                    <div class="flex-1 relative overflow-hidden bg-surface-container">
+                    <div class="flex-1 relative overflow-hidden bg-surface-container flex items-center justify-center">
+                        <div *ngIf="(gridStore.rooms() | keyvalue).length === 0" class="absolute z-10 text-center flex flex-col items-center gap-4 p-8 bg-surface border border-outline-variant shadow-lg max-w-sm">
+                           <div class="font-display-lg text-error text-3xl">UPLINK OFFLINE</div>
+                           <div class="font-data-sm text-secondary">Awaiting GM Tactical Initialization. Stand by for neural sync...</div>
+                        </div>
                         <ng-container *ngIf="!show3d(); else threeDViewPlayer">
-                            <app-pixi-map [mode]="'player'" [characters]="gameState().characters || {}" [activePlayerId]="activePlayerId()" [currentLevel]="currentLevel()" (playerMoved)="onPlayerMoved($event)" class="absolute inset-0 w-full h-full block"></app-pixi-map>
+                            <app-pixi-map [mode]="'player'" [characters]="gameState().characters || {}" [activePlayerId]="activePlayerId()" [currentLevel]="currentLevel()" (playerMoved)="onPlayerMoved($event)" class="absolute inset-0 w-full h-full block" [style.opacity]="(gridStore.rooms() | keyvalue).length === 0 ? 0 : 1"></app-pixi-map>
                         </ng-container>
                         <ng-template #threeDViewPlayer>
                             <app-threejs-map [characters]="gameState().characters || {}" [mode]="'player'" class="absolute inset-0 w-full h-full block"></app-threejs-map>

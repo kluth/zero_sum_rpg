@@ -1,9 +1,6 @@
-import { Component, OnInit, OnDestroy, signal, computed, effect, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, effect, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import * as tmi from 'tmi.js';
 import { FormsModule } from '@angular/forms';
-import { initializeApp } from 'firebase/app';
-import { getDatabase, ref, onValue, set, connectDatabaseEmulator, push, get } from 'firebase/database';
 import { PixiMapComponent } from './pixi-map.component';
 import { ProgressClockComponent } from './progress-clock.component';
 import { FlashbackOverlayComponent } from './flashback-overlay.component';
@@ -13,6 +10,12 @@ import { executeEmergencyHeal, EmergencyHealCommand } from '@core-domain/ledger/
 import { PlayerCharacter, CivilianEntity } from '@core-domain/ledger/Entities';
 import { BillboardComponent } from './ui/billboard/billboard.component';
 import { PlayerUplinkComponent } from './ui/player-uplink/player-uplink.component';
+import { ActionQueueService } from './core/services/ActionQueueService';
+import { WebRTCService } from './core/services/webrtc.service';
+import { AIEngineService, AIPersona } from './core/services/ai-engine.service';
+
+let fbApp: any;
+let fbDb: any;
 
 const firebaseConfig = {
   projectId: "zero-sum-rpg-2026",
@@ -29,9 +32,12 @@ const firebaseConfig = {
   standalone: true,
   imports: [CommonModule, FormsModule, PixiMapComponent, ProgressClockComponent, FlashbackOverlayComponent, ThreeJsMapComponent, BillboardComponent, PlayerUplinkComponent],
   styleUrls: ['./app.component.css'],
-  templateUrl: './app.component.html'
+  templateUrl: './app.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements OnInit, OnDestroy {
+  private webrtc = inject(WebRTCService);
+  public aiEngine = inject(AIEngineService);
   gameState = signal<any>({ characters: {}, map: null, traumaLog: {}, clocks: {}, flashbacks: {} });
   heatLevel = computed(() => this.gameState().heatLevel || 1);
   chaosMarketValue = computed(() => this.gameState()?.chaosMarketValue || 0);
@@ -138,6 +144,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   // Architect Store and UI State
   gridStore = inject(GridStore);
+  actionQueue = inject(ActionQueueService);
   activeTab = signal<'blocks' | 'paint' | 'properties'>('blocks');
   activePrefab = signal<string>('corridor');
   activePaintMode = signal<string | null>(null);
@@ -147,10 +154,10 @@ export class AppComponent implements OnInit, OnDestroy {
   wfcError = signal<string | null>(null);
 
   constructor() {
-    this.app = initializeApp(firebaseConfig);
-    this.db = getDatabase(this.app);
+    this.app = fbApp.initializeApp(firebaseConfig);
+    this.db = fbDb.getDatabase(this.app);
     if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
-      connectDatabaseEmulator(this.db, 'localhost', 9000);
+      fbDb.connectDatabaseEmulator(this.db, 'localhost', 9000);
     }
 
     // IoT Web Audio API Siren Effect
@@ -231,7 +238,7 @@ export class AppComponent implements OnInit, OnDestroy {
     // Occupy grid cells
     for(let dx=0; dx<2; dx++) {
       for(let dy=0; dy<2; dy++) {
-         this.updateCell(pos.x + dx, pos.y + dy, { type: 'structure_wall', room_id: roomId });
+         this.updateCell(pos.x + dx, pos.y + dy, { type: 'structure_wall', roomId: roomId });
       }
     }
   }
@@ -274,7 +281,7 @@ export class AppComponent implements OnInit, OnDestroy {
         // Fill floor
         for (let r_x = x + 1; r_x < x + w - 1; r_x++) {
             for (let r_y = y + 1; r_y < y + h - 1; r_y++) {
-               this.updateCell(r_x, r_y, { type: 'floor', room_id: roomId });
+               this.updateCell(r_x, r_y, { type: 'floor', roomId: roomId });
             }
         }
         
@@ -282,7 +289,7 @@ export class AppComponent implements OnInit, OnDestroy {
         for (let r_x = x; r_x < x + w; r_x++) {
             for (let r_y = y; r_y < y + h; r_y++) {
                if (r_x === x || r_x === x + w - 1 || r_y === y || r_y === y + h - 1) {
-                   this.updateCell(r_x, r_y, { type: 'structure_wall', room_id: roomId });
+                   this.updateCell(r_x, r_y, { type: 'structure_wall', roomId: roomId });
                }
             }
         }
@@ -401,19 +408,19 @@ export class AppComponent implements OnInit, OnDestroy {
     // Clear interior
     for (let r_x = x + 1; r_x < x + w - 1; r_x++) {
         for (let r_y = y + 1; r_y < y + h - 1; r_y++) {
-            this.updateCell(r_x, r_y, { type: 'floor', room_id: roomId } as any);
+            this.updateCell(r_x, r_y, { type: 'floor', roomId: roomId } as any);
         }
     }
 
     if (templateName === 'office') {
        this.updateRoomTag("Corporate Office");
        // Place cupboards (lockers) in corners
-       this.updateCell(x + 1, y + 1, { type: 'cupboard', room_id: roomId } as any);
-       this.updateCell(x + w - 2, y + h - 2, { type: 'cupboard', room_id: roomId } as any);
+       this.updateCell(x + 1, y + 1, { type: 'cupboard', roomId: roomId } as any);
+       this.updateCell(x + w - 2, y + h - 2, { type: 'cupboard', roomId: roomId } as any);
        // Add a center terminal
-       this.updateCell(x + Math.floor(w/2), y + Math.floor(h/2), { type: 'furniture', room_id: roomId } as any);
+       this.updateCell(x + Math.floor(w/2), y + Math.floor(h/2), { type: 'furniture', roomId: roomId } as any);
        // Add data pad
-       this.updateCell(x + Math.floor(w/2) + 1, y + Math.floor(h/2), { type: 'floor', room_id: roomId, inventory: [{ id: 'datapad', name: 'Secure Datapad' }] } as any);
+       this.updateCell(x + Math.floor(w/2) + 1, y + Math.floor(h/2), { type: 'floor', roomId: roomId, inventory: [{ id: 'datapad', name: 'Secure Datapad' }] } as any);
     } 
     else if (templateName === 'storage') {
        this.updateRoomTag("Storage Area");
@@ -422,14 +429,14 @@ export class AppComponent implements OnInit, OnDestroy {
            for (let r_y = y + 1; r_y < y + h - 1; r_y++) {
                const rand = Math.random();
                if (rand > 0.8) {
-                   this.updateCell(r_x, r_y, { type: 'storage_box', room_id: roomId } as any);
+                   this.updateCell(r_x, r_y, { type: 'storage_box', roomId: roomId } as any);
                } else if (rand > 0.6) {
-                   this.updateCell(r_x, r_y, { type: 'floor', room_id: roomId, inventory: [{ id: 'scrap', name: 'Tech Scrap' }] } as any);
+                   this.updateCell(r_x, r_y, { type: 'floor', roomId: roomId, inventory: [{ id: 'scrap', name: 'Tech Scrap' }] } as any);
                }
            }
        }
        // Make one of the surrounding walls breakable for a secret hideout
-       this.updateCell(x + Math.floor(w/2), y, { type: 'breakable_wall', room_id: roomId } as any);
+       this.updateCell(x + Math.floor(w/2), y, { type: 'breakable_wall', roomId: roomId } as any);
     }
     else if (templateName === 'server_room') {
        this.updateRoomTag("Server Mainframe");
@@ -439,7 +446,7 @@ export class AppComponent implements OnInit, OnDestroy {
        for (let r_x = x + 2; r_x < x + w - 2; r_x += 2) {
            for (let r_y = y + 1; r_y < y + h - 1; r_y++) {
                if (r_y !== y + Math.floor(h/2)) { // Leave a center aisle
-                   this.updateCell(r_x, r_y, { type: 'server_rack', room_id: roomId } as any);
+                   this.updateCell(r_x, r_y, { type: 'server_rack', roomId: roomId } as any);
                }
            }
        }
@@ -450,8 +457,8 @@ export class AppComponent implements OnInit, OnDestroy {
        this.updateRoomThreat('critical');
        // Place beds along the wall
        for (let r_x = x + 1; r_x < x + w - 1; r_x += 2) {
-           this.updateCell(r_x, y + 1, { type: 'furniture', room_id: roomId } as any);
-           this.updateCell(r_x, y + 2, { type: 'floor', room_id: roomId, inventory: [{ id: 'medkit', name: 'Emergency Medkit' }] } as any);
+           this.updateCell(r_x, y + 1, { type: 'furniture', roomId: roomId } as any);
+           this.updateCell(r_x, y + 2, { type: 'floor', roomId: roomId, inventory: [{ id: 'medkit', name: 'Emergency Medkit' }] } as any);
        }
     }
 
@@ -468,7 +475,7 @@ export class AppComponent implements OnInit, OnDestroy {
         }
     }
     if (!hasDoor) {
-       this.updateCell(x + Math.floor(w/2), y, { type: 'door_locked', room_id: roomId } as any);
+       this.updateCell(x + Math.floor(w/2), y, { type: 'door_locked', roomId: roomId } as any);
     }
   }
   setTab(tab: 'blocks' | 'paint' | 'properties') {
@@ -509,8 +516,8 @@ export class AppComponent implements OnInit, OnDestroy {
     const url = `/?token=${encoded}`;
     
     if (mode === 'gm' && this.twitchChannelInput()) {
-      const dbRef = ref(this.db, `sessions/${pin}/gameState/twitchChannel`);
-      set(dbRef, this.twitchChannelInput().toLowerCase()).then(() => {
+      const dbRef = fbDb.ref(this.db, `sessions/${pin}/gameState/twitchChannel`);
+      fbDb.set(dbRef, this.twitchChannelInput().toLowerCase()).then(() => {
          window.location.href = url;
       });
     } else {
@@ -553,7 +560,7 @@ export class AppComponent implements OnInit, OnDestroy {
             modifiers: []
          };
       });
-      set(ref(this.db, `sessions/${this.sessionId()}/gameState/characters`), chars);
+      fbDb.set(fbDb.ref(this.db, `sessions/${this.sessionId()}/gameState/characters`), chars);
   }
 
   dealDamageToSquad() {
@@ -564,7 +571,7 @@ export class AppComponent implements OnInit, OnDestroy {
         if (!updated[key].stats) return;
         updated[key].stats.hp_current = Math.max(0, updated[key].stats.hp_current - 20);
      });
-     set(ref(this.db, `sessions/${this.sessionId()}/gameState/characters`), updated);
+     fbDb.set(fbDb.ref(this.db, `sessions/${this.sessionId()}/gameState/characters`), updated);
   }
 
   inflictStressToSquad() {
@@ -575,7 +582,7 @@ export class AppComponent implements OnInit, OnDestroy {
         if (!updated[key].stats) return;
         updated[key].stats.stress_current = Math.min(100, updated[key].stats.stress_current + 20);
      });
-     set(ref(this.db, `sessions/${this.sessionId()}/gameState/characters`), updated);
+     fbDb.set(fbDb.ref(this.db, `sessions/${this.sessionId()}/gameState/characters`), updated);
   }
 
   spawnTraumaEvent() {
@@ -587,18 +594,88 @@ export class AppComponent implements OnInit, OnDestroy {
         civilian: names[Math.floor(Math.random() * names.length)],
         severity: "FATAL"
      };
-     set(ref(this.db, `sessions/${this.sessionId()}/gameState/traumaLog/${eventId}`), logEntry);
+     fbDb.set(fbDb.ref(this.db, `sessions/${this.sessionId()}/gameState/traumaLog/${eventId}`), logEntry);
      this.updateHeat(1);
   }
 
+  async triggerAiGmEvent() {
+      const state = this.gameState();
+      const recent = state.recentRolls ? state.recentRolls.map((r: any) => r.type) : [];
+      const eventText = await this.aiEngine.generateGmEvent(this.heatLevel(), recent);
+      
+      const eventId = `ai_evt_${Date.now()}`;
+      const logEntry = {
+         timestamp: Date.now(),
+         civilian: "AI OVERLORD",
+         severity: "THREAT",
+         message: eventText
+      };
+      
+      if (this.db && this.sessionId()) {
+         fbDb.set(fbDb.ref(this.db, `sessions/${this.sessionId()}/gameState/traumaLog/${eventId}`), logEntry);
+      }
+      console.log("[AI GM Event]", eventText);
+  }
+
   connectFirebase() {
-    const stateRef = ref(this.db, `sessions/${this.sessionId()}/gameState`);
-    onValue(stateRef, (snapshot) => {
+    const sessionPin = this.sessionId();
+    const playerId = this.activePlayerId() || 'spectator_' + Date.now();
+    
+    // Initialize WebRTC P2P Sync (Offloading Firebase)
+    if (sessionPin) {
+       this.webrtc.initialize(sessionPin, playerId, this.isGmMode()).catch(e => console.error("WebRTC Error:", e));
+       
+       effect(() => {
+          const msg = this.webrtc.incomingMessages();
+          if (!msg) return;
+          
+          if (this.isGmMode() && msg.payload.type === 'MOVE') {
+             const pid = msg.senderId;
+             const pos = msg.payload.data;
+             const currentState = this.gameState();
+             if (currentState.characters && currentState.characters[pid]) {
+                 currentState.characters[pid].x = pos.x;
+                 currentState.characters[pid].y = pos.y;
+                 
+                 // Persist to Firebase directly (bypassing slow ActionQueue)
+                 fbDb.set(fbDb.ref(this.db, `sessions/${sessionPin}/gameState/characters/${pid}`), currentState.characters[pid]);
+                 
+                 // Broadcast to other P2P nodes for sub-10ms sync
+                 this.webrtc.broadcastToPlayers({ type: 'STATE_UPDATE', data: { pid, x: pos.x, y: pos.y } });
+             }
+          } else if (!this.isGmMode() && msg.payload.type === 'STATE_UPDATE') {
+             // Client instantly applying P2P state
+             const update = msg.payload.data;
+             const currentState = this.gameState();
+             if (currentState.characters && currentState.characters[update.pid]) {
+                 currentState.characters[update.pid].x = update.x;
+                 currentState.characters[update.pid].y = update.y;
+                 this.gameState.set({ ...currentState });
+             }
+          }
+       });
+    }
+
+    const stateRef = fbDb.ref(this.db, `sessions/${this.sessionId()}/gameState`);
+    fbDb.onValue(stateRef, (snapshot: any) => {
       const data = snapshot.val();
       if (data) {
         if (this.isGmMode() && data.twitchChannel && !this.tmiClient) {
           this.initTmiClient(data.twitchChannel);
         }
+        
+        // --- Action Queue Processor (GM only) ---
+        if (this.isGmMode()) {
+           const queueRef = fbDb.ref(this.db, `sessions/${this.sessionId()}/actionQueue`);
+           fbDb.onValue(queueRef, (qSnapshot: any) => {
+              const queueData = qSnapshot.val();
+              if (queueData) {
+                 this.processActionQueue(queueData);
+              }
+           });
+        }
+        // ----------------------------------------
+        
         data.characters = data.characters || {};
         data.traumaLog = data.traumaLog || {};
         
@@ -616,13 +693,13 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     });
 
-    const clocksRef = ref(this.db, `sessions/${this.sessionId()}/clocks`);
-    onValue(clocksRef, (snapshot) => {
+    const clocksRef = fbDb.ref(this.db, `sessions/${this.sessionId()}/clocks`);
+    fbDb.onValue(clocksRef, (snapshot: any) => {
       this.gameState.update(s => ({ ...s, clocks: snapshot.val() || {} }));
     });
 
-    const flashbacksRef = ref(this.db, `sessions/${this.sessionId()}/flashbacks`);
-    onValue(flashbacksRef, (snapshot) => {
+    const flashbacksRef = fbDb.ref(this.db, `sessions/${this.sessionId()}/flashbacks`);
+    fbDb.onValue(flashbacksRef, (snapshot: any) => {
       this.gameState.update(s => ({ ...s, flashbacks: snapshot.val() || {} }));
     });
   }
@@ -630,7 +707,7 @@ export class AppComponent implements OnInit, OnDestroy {
   updateHeat(delta: number) {
     if (!this.db || !this.sessionId()) return;
     const newHeat = Math.max(1, Math.min(10, this.heatLevel() + delta));
-    set(ref(this.db, `sessions/${this.sessionId()}/gameState/heatLevel`), newHeat);
+    fbDb.set(fbDb.ref(this.db, `sessions/${this.sessionId()}/gameState/heatLevel`), newHeat);
   }
 
   getTraumaLog(): any[] {
@@ -640,7 +717,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   publishMap() {
     if (!this.db || !this.sessionId()) return;
-    set(ref(this.db, `sessions/${this.sessionId()}/gameState/map`), {
+    fbDb.set(fbDb.ref(this.db, `sessions/${this.sessionId()}/gameState/map`), {
       dimensions: this.gridStore.dimensions(),
       grid: this.gridStore.grid(),
       rooms: this.gridStore.rooms()
@@ -664,7 +741,7 @@ export class AppComponent implements OnInit, OnDestroy {
      } else if (cmd.startsWith('overload')) {
         this.terminalLogs.update(logs => [...logs, '>>> INTRUSION SUCCESS: GRID OVERLOADED.', '>>> CHAOS MARKET FORCED TO 0.']);
         if (this.db && this.sessionId()) {
-          set(ref(this.db, `sessions/${this.sessionId()}/gameState/chaosMarketValue`), 0);
+          fbDb.set(fbDb.ref(this.db, `sessions/${this.sessionId()}/gameState/chaosMarketValue`), 0);
         }
      } else if (cmd.startsWith('grep')) {
         const query = cmd.replace('grep', '').trim();
@@ -678,7 +755,8 @@ export class AppComponent implements OnInit, OnDestroy {
      }
   }
 
-  initTmiClient(channel: string) {
+  async initTmiClient(channel: string) {
+    const tmi = await import('tmi.js');
     this.tmiClient = new tmi.Client({
       connection: { secure: true, reconnect: true },
       channels: [ channel ]
@@ -702,12 +780,10 @@ export class AppComponent implements OnInit, OnDestroy {
     });
   }
 
-  injectChaosFromTwitch(amount: number) {
+  async injectChaosFromTwitch(amount: number) {
     if (!this.sessionId()) return;
-    get(ref(this.db, `sessions/${this.sessionId()}/gameState/chaosMarketValue`)).then(snapshot => {
-      const current = snapshot.val() || 0;
-      set(ref(this.db, `sessions/${this.sessionId()}/gameState/chaosMarketValue`), current + amount);
-    });
+    const { increment, set, ref } = await import('firebase/database');
+    set(ref(fbDb.getDatabase(), `sessions/${this.sessionId()}/gameState/chaosMarketValue`), increment(amount));
   }
 
   triggerEmergencyHeal() {
@@ -750,21 +826,20 @@ export class AppComponent implements OnInit, OnDestroy {
       availableCivilians
     };
 
-    // Execute Pure Domain Logic
+    // Execute Pure Domain Logic (Simulation for validation)
     const result = executeEmergencyHeal(command);
 
     if (result.isSuccess()) {
       const successData = result.value;
       
-      // Persist State Mutation via Infrastructure Adapter (Firebase)
-      const updates: any = {};
-      updates[`sessions/${this.sessionId()}/gameState/characters/${this.activePlayerId()}/stats/hp_current`] = successData.newCharacterHp;
-      updates[`sessions/${this.sessionId()}/gameState/traumaLog/${successData.generatedCasualty.eventId}`] = successData.generatedCasualty;
-      
-      import('firebase/database').then(({ update }) => {
-        update(ref(this.db!), updates);
+      // Dispatch securely to the ActionQueue instead of directly modifying gameState
+      this.actionQueue.dispatchAction(this.sessionId()!, this.activePlayerId()!, 'EMERGENCY_HEAL', {
+          targetId: this.activePlayerId()!,
+          hpRestored: successData.actualHpRestored,
+          apCost: 2
+      }).then(() => {
+         console.log(`HEAL DISPATCHED. ${successData.actualHpRestored} HP requested.`);
       });
-      alert(`HEAL SUCCESS. ${successData.actualHpRestored} HP restored. CASUALTY LOGGED: ${successData.generatedCasualty.civilianName}.`);
     } else {
       alert(`HEAL FAILED. Error: ${result.error.message}`);
     }
@@ -815,19 +890,100 @@ export class AppComponent implements OnInit, OnDestroy {
   onPlayerMoved(pos: {x: number, y: number}) {
     const pid = this.activePlayerId();
     if (!pid || !this.sessionId()) return;
-    const db = getDatabase();
-    set(ref(db, `sessions/${this.sessionId()}/characters/${pid}/x`), pos.x);
-    set(ref(db, `sessions/${this.sessionId()}/characters/${pid}/y`), pos.y);
+    
+    // Route movement strictly over P2P WebRTC to bypass the slow Firebase ActionQueue
+    this.webrtc.sendToGm({ type: 'MOVE', data: { x: pos.x, y: pos.y, apCost: 1 } });
+    
+    // Optimistically update local state for 0ms latency perception
+    const state = this.gameState();
+    if (state.characters && state.characters[pid]) {
+        state.characters[pid].x = pos.x;
+        state.characters[pid].y = pos.y;
+        this.gameState.set({ ...state });
+    }
   }
   
+  processActionQueue(queueData: any) {
+    if (!this.db || !this.sessionId()) return;
+    
+    // Simulate Backend Processing (Resolution Engine)
+    const actions = Object.entries(queueData);
+    let stateMutated = false;
+    const currentState = this.gameState() || { characters: {} };
+    
+    actions.forEach(([key, action]: [string, any]) => {
+        let rollResult = `Executed action: ${action.type.toUpperCase()}`;
+        const pid = action.playerId;
+        
+        // Actually resolve the actions
+        if (action.type === 'MOVE' && action.payload) {
+             if (currentState.characters[pid]) {
+                 currentState.characters[pid].x = action.payload.x;
+                 currentState.characters[pid].y = action.payload.y;
+                 stateMutated = true;
+                 rollResult = `Relocated to coords [${action.payload.x}, ${action.payload.y}]`;
+             }
+        } else if (action.type === 'EMERGENCY_HEAL' && action.payload) {
+             const char = currentState.characters[pid];
+             if (char) {
+                 const playerEntity: any = {
+                    id: pid,
+                    stats: { hp_current: char.hp || 0, hp_max: 100 },
+                    isDead: false
+                 };
+                 // Temporary internal pool for now
+                 const availableCivilians: any[] = currentState.civilians || [
+                    { id: 'civ-1', name: 'Maintenance Tech 44', lifeSupport: 100, isAlive: true },
+                    { id: 'civ-2', name: 'Dr. Aris Thorne', lifeSupport: 50, isAlive: true }
+                 ];
+                 const healCommand = {
+                    playerId: pid,
+                    requestedHp: action.payload.hpRestored || 25,
+                    player: playerEntity,
+                    availableCivilians: availableCivilians
+                 };
+                 // Call domain logic
+                 const result = executeEmergencyHeal(healCommand);
+                 if (result.isSuccess()) {
+                     const successData = result.value;
+                     char.hp = successData.newCharacterHp;
+                     currentState.civilians = availableCivilians; // Updated by reference in pure func? Wait, pure functions don't update by reference.
+                     // The pure function doesn't actually mutate the civilian, we have to do it ourselves:
+                     const victim = currentState.civilians.find((c: any) => c.id === successData.generatedCasualty.civilianId);
+                     if (victim) {
+                         victim.lifeSupport -= successData.actualHpRestored;
+                         if (victim.lifeSupport <= 0) victim.isAlive = false;
+                     }
+                     // Push Trauma Event
+                     fbDb.set(fbDb.ref(this.db, `sessions/${this.sessionId()}/gameState/traumaLog/${successData.generatedCasualty.eventId}`), successData.generatedCasualty);
+                     
+                     stateMutated = true;
+                     rollResult = `Injected Auto-Heal. +${successData.actualHpRestored} HP restored. Civilian '${victim?.name}' drained.`;
+                 } else {
+                     rollResult = `Auto-Heal Failed: ${result.error.message}`;
+                 }
+             }
+        }
+        
+        // Append to recentRolls / feed
+        fbDb.push(fbDb.ref(this.db, `sessions/${this.sessionId()}/gameState/recentRolls`), {
+            player: this.protagonistList.find(p => p.id === pid)?.name || pid,
+            result: rollResult,
+            timestamp: action.timestamp || Date.now()
+        });
+
+        // Delete from Action Queue
+        fbDb.remove(fbDb.ref(this.db, `sessions/${this.sessionId()}/actionQueue/${key}`));
+    });
+    
+    if (stateMutated && currentState.characters) {
+         fbDb.set(fbDb.ref(this.db, `sessions/${this.sessionId()}/gameState/characters`), currentState.characters);
+    }
+  }
+
   playerAction(action: string) {
     if (!this.sessionId() || !this.activePlayerId()) return;
-    const db = getDatabase();
-    push(ref(db, `sessions/${this.sessionId()}/rolls`), {
-       player: this.getPlayerName(),
-       result: `Executed action: ${action.toUpperCase()}`,
-       timestamp: Date.now()
-    });
+    this.actionQueue.dispatchAction(this.sessionId()!, this.activePlayerId()!, action.toUpperCase(), { apCost: 1 });
   }
   
   onDragStart(event: DragEvent, itemId: string) {

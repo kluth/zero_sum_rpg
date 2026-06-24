@@ -58,10 +58,42 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
     if (this.animationFrameId !== null) {
       cancelAnimationFrame(this.animationFrameId);
     }
+    
     window.removeEventListener('resize', this.onWindowResize.bind(this));
-    if (this.renderer) {
-      this.renderer.dispose();
+
+    // Fix WebGL Memory Leak & Context Exhaustion
+    if (this.scene) {
+        this.scene.traverse((object: any) => {
+            if (!object.isMesh) return;
+            if (object.geometry) object.geometry.dispose();
+            if (object.material) {
+                if (object.material.isMaterial) {
+                    this.cleanMaterial(object.material);
+                } else {
+                    for (const material of object.material) this.cleanMaterial(material);
+                }
+            }
+        });
     }
+    
+    if (this.renderer) {
+        this.renderer.dispose();
+        this.renderer.forceContextLoss();
+        const domElement = this.renderer.domElement;
+        if (domElement && domElement.parentNode) {
+            domElement.parentNode.removeChild(domElement);
+        }
+    }
+  }
+
+  private cleanMaterial(material: any) {
+      material.dispose();
+      for (const key of Object.keys(material)) {
+          const value = material[key];
+          if (value && typeof value === 'object' && 'minFilter' in value) {
+              value.dispose(); // Dispose textures
+          }
+      }
   }
 
   // --- Procedural Textures ---
@@ -592,7 +624,7 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy {
         const x = cx + offsetX + 0.5;
         const z = cy + offsetZ + 0.5;
 
-        const isBunker = cell.room_id ? roomIsBunker[cell.room_id] : false;
+        const isBunker = cell.roomId ? roomIsBunker[cell.roomId] : false;
 
         // Walls
         if (cell && (cell.type === 'wall' || cell.type === 'structure_wall' || cell.type === 'door_locked' || cell.type === 'door_open' || cell.type === 'breakable_wall' || cell.isWall === true)) {

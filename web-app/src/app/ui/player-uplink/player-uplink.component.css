@@ -15,7 +15,7 @@
   max-width: 400px;
   height: 100%;
   max-height: 800px;
-  border-radius: clamp(10px, 4vw, 30px);
+  border-radius: 0px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
   display: flex;
   flex-direction: column;
@@ -74,7 +74,7 @@ input {
   flex: 1;
   padding: clamp(5px, 1.5vh, 10px);
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 0px;
   font-family: monospace;
   font-size: clamp(12px, 3vw, 14px);
   min-width: 0;
@@ -85,7 +85,7 @@ button {
   background-color: #2c3e50;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 0px;
   cursor: pointer;
   font-weight: bold;
   font-size: clamp(12px, 3vw, 14px);
@@ -101,7 +101,7 @@ button:hover {
   list-style: none;
   padding: 0;
   margin: 0;
-  overflow-y: auto;
+  overflow: hidden;
   flex: 1 1 auto;
   min-height: 30px;
 }
@@ -129,10 +129,10 @@ button:hover {
 .chat-window {
   flex: 1 1 auto;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 0px;
   padding: clamp(5px, 1vh, 10px);
   margin-bottom: clamp(5px, 2vh, 15px);
-  overflow-y: auto;
+  overflow: hidden;
   min-height: 40px;
 }
 

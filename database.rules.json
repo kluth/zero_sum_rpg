@@ -8,31 +8,30 @@
     },
     "sessions": {
       "$session_id": {
-        // Anyone authenticated can read the session data
-        ".read": "auth != null",
-        // No global writes allowed. Everything must be granular.
+        // Removed global .read: "auth != null" to prevent Darknet E2EE bypass!
         ".write": false,
         
         "darknet": {
           "$channel_id": {
-            // E2EE Channels: Only members of the channel can read/write.
-            // Using a strict schema to prevent payload injection.
+            // E2EE Channels: Only members of the channel can read.
             ".read": "auth != null && $channel_id.contains(auth.uid)",
-            ".write": "auth != null && $channel_id.contains(auth.uid)",
             "$message_id": {
+              // Only members can write, and they can only append their own messages
+              ".write": "auth != null && $channel_id.contains(auth.uid) && !data.exists()",
               ".validate": "newData.hasChildren(['sender', 'ciphertext', 'nonce', 'timestamp']) && newData.child('sender').val() === auth.uid"
             }
           }
         },
 
         "clocks": {
+          ".read": "auth != null",
           // Progress Clocks: Only GM or Backend can mutate
           ".write": "auth != null && root.child('users/'+auth.uid+'/isGM').val() === true"
         },
 
         "gameState": {
+          ".read": "auth != null",
           // CORE LOCKDOWN: The GameState is strictly read-only for players.
-          // It represents the absolute truth calculated by the Backend ResolutionEngine.
           ".write": "auth != null && root.child('users/'+auth.uid+'/isGM').val() === true",
           
           "narrativeContext": {
@@ -41,11 +40,11 @@
         },
 
         "actionQueue": {
-          // PLAYERS WRITE HERE: Players submit ActionDTOs.
-          // They cannot overwrite existing actions, only append new ones.
+          ".read": "auth != null",
+          // PLAYERS WRITE HERE: Players submit ActionDTOs. GMs can delete them.
           "$action_id": {
-            ".write": "auth != null && !data.exists() && newData.child('playerId').val() === auth.uid",
-            ".validate": "newData.hasChildren(['type', 'apCost'])"
+            ".write": "(auth != null && !data.exists() && newData.child('playerId').val() === auth.uid) || (auth != null && root.child('users/'+auth.uid+'/isGM').val() === true)",
+            ".validate": "!newData.exists() || newData.hasChildren(['type', 'apCost'])"
           }
         }
       }

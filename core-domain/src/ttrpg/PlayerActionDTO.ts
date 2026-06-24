@@ -7,7 +7,8 @@ export enum ActionType {
   CATCH_BREATH = 'CATCH_BREATH', // V2.1 Fix: AP Recovery
   ACCEPT_FLAW = 'ACCEPT_FLAW',   // V2.1 Fix: Narrative Complication for AP
   SYNC_BREACH = 'SYNC_BREACH',   // V2.1 Fix: Split-Party Group Action
-  INTERACT = 'INTERACT'
+  INTERACT = 'INTERACT',
+  EMERGENCY_HEAL = 'EMERGENCY_HEAL'
 }
 
 export interface ActionPayloadDTO {
@@ -32,8 +33,8 @@ export class ActionParser {
       return failure(new Error("Invalid Action payload: Missing required fields or invalid ActionType."));
     }
 
-    if (typeof data.apCost !== 'number' || data.apCost < 0 || data.apCost > 3) {
-      return failure(new Error("Invalid Action payload: apCost must be between 0 and 3."));
+    if (!Number.isInteger(data.apCost) || data.apCost < 0 || data.apCost > 3) {
+      return failure(new Error("Invalid Action payload: apCost must be an integer between 0 and 3."));
     }
 
     try {

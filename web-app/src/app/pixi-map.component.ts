@@ -352,12 +352,12 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
       if (this.mode === 'player' && myChar) {
          const dist = Math.sqrt(Math.pow(x - myChar.x, 2) + Math.pow(y - myChar.y, 2));
          if (dist > (myChar.fowRadius || 6)) {
-             const parentRoom = cell.room_id ? rooms[cell.room_id] : null;
+             const parentRoom = cell.roomId ? rooms[cell.roomId] : null;
              const isRevealed = parentRoom?.metadata?.revealedTo && parentRoom.metadata.revealedTo[this.activePlayerId!];
              if (!isRevealed) isVisible = false;
          }
-      } else if (this.mode === 'spectator' && cell.room_id) {
-         const parentRoom = rooms[cell.room_id];
+      } else if (this.mode === 'spectator' && cell.roomId) {
+         const parentRoom = rooms[cell.roomId];
          const isRevealed = parentRoom?.metadata?.revealedTo && Object.values(parentRoom.metadata.revealedTo).some(v => v === true);
          if (!isRevealed) isVisible = false;
       }

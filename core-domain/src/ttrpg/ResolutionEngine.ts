@@ -25,8 +25,12 @@ export class ResolutionEngine {
    */
   public static resolve(request: RollRequest, randomProvider: () => number = Math.random): RollResult {
     // 1. Cap modifiers to prevent power-creep (Bounded Accuracy)
-    const clampedModifier = Math.max(-5, Math.min(5, request.baseModifier));
-    const clampedPenalty = Math.max(0, request.difficultyPenalty);
+    // Secure against NaN exploits guaranteeing Critical Triumphs
+    const safeMod = Number.isFinite(request.baseModifier) ? request.baseModifier : 0;
+    const safePen = Number.isFinite(request.difficultyPenalty) ? request.difficultyPenalty : 0;
+    
+    const clampedModifier = Math.max(-5, Math.min(5, Math.round(safeMod)));
+    const clampedPenalty = Math.max(0, Math.round(safePen));
 
     // 2. Execute natural roll (1 to 20)
     const naturalRoll = Math.floor(randomProvider() * 20) + 1;
@@ -38,7 +42,13 @@ export class ResolutionEngine {
     let degree: DegreeOfSuccess;
     const consequences: string[] = [];
 
-    if (finalTotal < 10) {
+    if (naturalRoll === 1) {
+      degree = DegreeOfSuccess.CRITICAL_FAILURE;
+      consequences.push('ACTION_FAILED', 'SNR_INCREASED', 'CRITICAL_GLITCH');
+    } else if (naturalRoll === 20) {
+      degree = DegreeOfSuccess.CRITICAL_TRIUMPH;
+      consequences.push('ACTION_SUCCEEDED', 'MOMENTUM_GAINED', 'AP_REFUNDED', 'NATURAL_CRIT');
+    } else if (finalTotal < 10) {
       degree = DegreeOfSuccess.CRITICAL_FAILURE;
       consequences.push('ACTION_FAILED', 'SNR_INCREASED');
     } else if (finalTotal <= 15) {
