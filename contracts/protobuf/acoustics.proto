@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package zero_sum.acoustics;
+
+import "topology.proto";
+
+message Coordinate3D {
+  int32 x = 1;
+  int32 y = 2;
+  int32 z = 3;
+}
+
+message Decibel {
+  double db = 1;
+}
+
+message SoundEmittedEvent {
+  string source_id = 1;
+  Coordinate3D position = 2;
+  Decibel intensity = 3;
+}
+
+message GetHearingRangeRequest {
+  Coordinate3D origin = 1;
+  Decibel source_intensity = 2;
+  Decibel hearing_threshold = 3;
+}
+
+message GetHearingRangeResponse {
+  repeated Coordinate3D audible_cells = 1;
+}
+
+service AcousticsService {
+  rpc GetHearingRange(GetHearingRangeRequest) returns (GetHearingRangeResponse);
+}
