@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, signal, computed, effect, inject, Injecto
 import { interval } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PixiMapComponent } from './pixi-map.component';
 import { ProgressClockComponent } from './progress-clock.component';
@@ -48,7 +49,7 @@ const firebaseConfig = {
     CommonModule, FormsModule, PixiMapComponent, ProgressClockComponent, 
     FlashbackOverlayComponent, ThreeJsMapComponent, BillboardComponent, 
     PlayerUplinkComponent, WhispernetComponent, OcgfComponent, 
-    FrequenzXComponent, NeonLotusComponent
+    FrequenzXComponent, NeonLotusComponent, RouterModule
   ],
   styleUrls: ['./app.component.css'],
   templateUrl: './app.component.html',

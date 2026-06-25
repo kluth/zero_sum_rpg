@@ -18,7 +18,8 @@ export class FeedService {
   constructor(private zone: NgZone) {
     console.log('[FeedService] Connecting to Live Backend SSE stream...');
     const token = localStorage.getItem('zero_sum_token') || '';
-    const eventSource = new EventSource(`http://localhost:8080/events?token=${token}`);
+    const serverUrl = localStorage.getItem('zero_sum_server_url') || 'http://localhost:8080';
+    const eventSource = new EventSource(`${serverUrl}/events?token=${token}`);
 
     eventSource.onmessage = (event) => {
       try {
