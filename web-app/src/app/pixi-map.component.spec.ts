@@ -1,11 +1,13 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { PixiMapComponent } from './pixi-map.component';
 import { GridStore } from './grid.store';
+import { PixiRendererService } from './services/pixi-renderer.service';
 
 describe('PixiMapComponent', () => {
   let component: PixiMapComponent;
   let fixture: ComponentFixture<PixiMapComponent>;
   let store: any;
+  let rendererServiceSpy: jasmine.SpyObj<PixiRendererService>;
 
   beforeAll(() => {
     // Stub prototype methods to completely prevent real PIXI initialization and destruction
@@ -14,9 +16,14 @@ describe('PixiMapComponent', () => {
   });
 
   beforeEach(async () => {
+    rendererServiceSpy = jasmine.createSpyObj('PixiRendererService', ['renderStaticMap', 'renderDynamicEntities']);
+
     await TestBed.configureTestingModule({
       imports: [PixiMapComponent],
-      providers: [GridStore]
+      providers: [
+        GridStore,
+        { provide: PixiRendererService, useValue: rendererServiceSpy }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(PixiMapComponent);
@@ -198,6 +205,25 @@ describe('PixiMapComponent', () => {
     it('should demonstrate the infinite loop risk on non-diagonal paths (dy is calculated using x1 - x0)', () => {
       const fileContent = `let dy = Math.abs(x1 - x0);`;
       expect(true).toBe(true);
+    });
+  });
+
+  describe('Refactoring verify - Separation of Concerns', () => {
+    it('should delegate static rendering to PixiRendererService', () => {
+      store.setState({ dimensions: { width: 10, height: 10 }, grid: {}, rooms: {} });
+      // Simulate effect triggering renderStaticMap
+      if ((component as any).renderStaticMap) {
+         (component as any).renderStaticMap(store.dimensions(), store.grid(), store.rooms());
+      }
+      expect(rendererServiceSpy.renderStaticMap).toHaveBeenCalled();
+    });
+
+    it('should delegate dynamic entities to PixiRendererService', () => {
+      store.setState({ dimensions: { width: 10, height: 10 }, grid: {}, rooms: {} });
+      if ((component as any).renderDynamicEntities) {
+         (component as any).renderDynamicEntities(store.dimensions(), store.grid(), store.rooms());
+      }
+      expect(rendererServiceSpy.renderDynamicEntities).toHaveBeenCalled();
     });
   });
 });
