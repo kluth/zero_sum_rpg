@@ -153,6 +153,13 @@ import { map } from 'rxjs/operators';
       flex: 1;
       overflow-y: auto;
       position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .window-content > * {
+      flex: 1;
+      height: 100%;
     }
 
     .os-taskbar {
