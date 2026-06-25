@@ -1,0 +1,36 @@
+<div class="lotus-container">
+  <div class="ambient-glow"></div>
+  
+  <header class="luxury-header">
+    <div class="brand">NEON LOTUS</div>
+    <div class="vip-status">STATUS: EXCLUSIVE VIP</div>
+  </header>
+  
+  <div class="main-content">
+    <section class="hologram-display">
+      <h2 class="section-title">EXCLUSIVE ACQUISITIONS</h2>
+      <div class="item-grid">
+        <div class="holo-item" *ngFor="let item of exclusiveItems" [ngClass]="item.rarity.toLowerCase()">
+          <div class="holo-projection"></div>
+          <div class="item-details">
+            <div class="item-name">{{ item.name }}</div>
+            <div class="item-meta">
+              <span class="price">₮ {{ item.price | number }}</span>
+              <span class="rarity">{{ item.rarity }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <aside class="vip-feed">
+      <h2 class="section-title">PRIVATE WHISPERS</h2>
+      <div class="feed-messages">
+        <div class="vip-message" *ngFor="let msg of vipMessages">
+          <div class="msg-time">{{ msg.timestamp | date:'shortTime' }}</div>
+          <div class="msg-content">{{ msg.content }}</div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
