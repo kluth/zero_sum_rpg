@@ -10,7 +10,7 @@ import { DesignSystemConfig } from '../../core/design-system/design-tokens';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './player-uplink.component.html',
-  styleUrls: ['./player-uplink.component.css'],
+  styleUrls: ['./player-uplink.component.scss'],
   host: {
     '[style.display]': '"block"',
     '[style.width]': '"100vw"',

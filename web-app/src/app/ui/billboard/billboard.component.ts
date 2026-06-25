@@ -8,7 +8,7 @@ import { DesignSystemConfig } from '../../core/design-system/design-tokens';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './billboard.component.html',
-  styleUrls: ['./billboard.component.css']
+  styleUrls: ['./billboard.component.scss']
 })
 export class BillboardComponent implements OnInit {
   public tracker = new SnrTracker();

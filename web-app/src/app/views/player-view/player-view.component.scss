@@ -1,0 +1,247 @@
+.os-desktop {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070&auto=format&fit=crop') no-repeat center center;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.desktop-area {
+  flex: 1;
+  position: relative;
+}
+
+.os-window {
+  position: absolute;
+  background: var(--surface-color);
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.window-titlebar {
+  height: 40px;
+  background: rgba(243, 244, 246, 0.9);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--surface-border);
+  cursor: default; /* In a real app, this would be draggable */
+}
+
+.window-controls {
+  display: flex;
+  gap: 8px;
+  margin-right: 16px;
+}
+
+.win-btn {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.close { background: #ff5f56; }
+.minimize { background: #ffbd2e; }
+.maximize { background: #27c93f; }
+
+.window-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.window-content {
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.window-content > * {
+  flex: 1;
+  height: 100%;
+}
+
+.os-taskbar {
+  height: 48px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255,255,255,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  z-index: 100;
+}
+
+.taskbar-start {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-color);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.taskbar-start:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+.taskbar-apps {
+  display: flex;
+  gap: 8px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.taskbar-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.taskbar-icon:hover {
+  background: rgba(0,0,0,0.05);
+  color: var(--text-main);
+}
+
+.taskbar-icon.active {
+  color: var(--primary-color);
+}
+
+.taskbar-icon.active::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  width: 4px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--primary-color);
+}
+
+.taskbar-tray {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.control-panel-window {
+  border-color: #33ff33 !important;
+  box-shadow: 0 0 15px rgba(51, 255, 51, 0.2) !important;
+}
+
+[data-test-id="biometric-scanner"] {
+  user-select: none;
+  &.scanning {
+    background: rgba(51, 255, 51, 0.1);
+    color: #33ff33;
+    border-style: dotted !important;
+  }
+  &.scan-success {
+    background: rgba(51, 255, 51, 0.3) !important;
+    border-color: #00ff00 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 12px #00ff00;
+  }
+}
+
+.scan-pulse {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border: 2px solid #33ff33;
+  border-radius: 4px;
+  pointer-events: none;
+  animation: scanner-pulse 1.2s infinite ease-in-out;
+}
+
+@keyframes scanner-pulse {
+  0% {
+    transform: scale(0.96);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.04);
+    opacity: 0.2;
+  }
+  100% {
+    transform: scale(0.96);
+    opacity: 0.8;
+  }
+}
+
+.control-section {
+  border-bottom: 1px solid rgba(51, 255, 51, 0.2);
+  padding-bottom: 10px;
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+/* Accessibility stabilizer styles */
+.os-desktop.stabilized {
+  .scan-pulse {
+    animation: none !important;
+    display: none !important;
+  }
+  * {
+    animation: none !important;
+    animation-name: none !important;
+    transition: none !important;
+  }
+}
+
+/* Responsive layout for Milestone 3: Mobile Reflow Stacking */
+@media (max-width: 768px) {
+  .desktop-area {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px 12px;
+    overflow-y: auto;
+    box-sizing: border-box;
+    height: calc(100vh - 48px);
+  }
+
+  .os-window {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    right: auto !important;
+    width: 100% !important;
+    height: 420px !important;
+    max-height: 70vh !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2) !important;
+    box-sizing: border-box;
+  }
+
+  .control-panel-window {
+    width: 100% !important;
+    height: 500px !important;
+    max-height: 80vh !important;
+  }
+}
+

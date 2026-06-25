@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './ocgf.component.html',
-  styleUrls: ['./ocgf.component.css']
+  styleUrls: ['./ocgf.component.scss']
 })
 export class OcgfComponent implements OnInit, OnDestroy {
   feedItems: FeedMessage[] = [];

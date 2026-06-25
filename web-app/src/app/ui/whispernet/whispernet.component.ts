@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './whispernet.component.html',
-  styleUrls: ['./whispernet.component.css']
+  styleUrls: ['./whispernet.component.scss']
 })
 export class WhispernetComponent implements OnInit, OnDestroy {
   messages: FeedMessage[] = [];

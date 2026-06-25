@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './frequenz-x.component.html',
-  styleUrls: ['./frequenz-x.component.css']
+  styleUrls: ['./frequenz-x.component.scss']
 })
 export class FrequenzXComponent implements OnInit, OnDestroy {
   messages: FeedMessage[] = [];

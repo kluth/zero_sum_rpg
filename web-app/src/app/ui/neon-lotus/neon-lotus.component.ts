@@ -15,7 +15,7 @@ interface HologramItem {
   standalone: true,
   imports: [CommonModule],
   templateUrl: './neon-lotus.component.html',
-  styleUrls: ['./neon-lotus.component.css']
+  styleUrls: ['./neon-lotus.component.scss']
 })
 export class NeonLotusComponent implements OnInit, OnDestroy {
   vipMessages: FeedMessage[] = [];

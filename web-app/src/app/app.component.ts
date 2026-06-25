@@ -2,26 +2,16 @@ import { Component, OnInit, OnDestroy, signal, computed, effect, inject, Injecto
 import { interval } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router, NavigationStart, NavigationEnd, NavigationCancel, NavigationError } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { PixiMapComponent } from './pixi-map.component';
-import { ProgressClockComponent } from './progress-clock.component';
-import { FlashbackOverlayComponent } from './flashback-overlay.component';
-import { ThreeJsMapComponent } from './threejs-map.component';
 import { GridStore, RoomData } from './grid.store';
 import { executeEmergencyHeal, EmergencyHealCommand } from '@core-domain/ledger/EmergencyHeal';
 import { PlayerCharacter, CivilianEntity } from '@core-domain/ledger/Entities';
-import { BillboardComponent } from './ui/billboard/billboard.component';
-import { PlayerUplinkComponent } from './ui/player-uplink/player-uplink.component';
 import { ActionQueueService } from './core/services/ActionQueueService';
 import { WebRTCService } from './core/services/webrtc.service';
-import { AIEngineService, AIPersona } from './core/services/ai-engine.service';
+import { AIEngineService } from './core/services/ai-engine.service';
 import { FacilityGeneratorService } from './core/services/facility-generator.service';
-import { WhispernetComponent } from './ui/whispernet/whispernet.component';
-import { OcgfComponent } from './ui/ocgf/ocgf.component';
-import { FrequenzXComponent } from './ui/frequenz-x/frequenz-x.component';
-import { NeonLotusComponent } from './ui/neon-lotus/neon-lotus.component';
-import { UiStateService, NetworkType } from './services/ui-state.service';
+import { UiStateService } from './services/ui-state.service';
 
 let fbApp: any;
 let fbDb: any;
@@ -46,12 +36,9 @@ const firebaseConfig = {
   selector: 'app-root',
   standalone: true,
   imports: [
-    CommonModule, FormsModule, PixiMapComponent, ProgressClockComponent, 
-    FlashbackOverlayComponent, ThreeJsMapComponent, BillboardComponent, 
-    PlayerUplinkComponent, WhispernetComponent, OcgfComponent, 
-    FrequenzXComponent, NeonLotusComponent, RouterModule
+    CommonModule, FormsModule, RouterModule
   ],
-  styleUrls: ['./app.component.css'],
+  styleUrls: ['./app.component.scss'],
   templateUrl: './app.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -128,6 +115,10 @@ export class AppComponent implements OnInit, OnDestroy {
   sessionPinInput = signal<string>('');
   twitchChannelInput = signal<string>('');
   
+  private router = inject(Router);
+  isLoading = signal<boolean>(false);
+  isStabilized = computed(() => this.uiState.isStabilized());
+
   sessionId = signal<string | null>(null);
   mode = signal<string | null>(null);
   activePlayerId = signal<string | null>(null);
@@ -198,10 +189,33 @@ export class AppComponent implements OnInit, OnDestroy {
   wfcError = signal<string | null>(null);
 
   constructor() {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        let stabilized = false;
+        try {
+          if (typeof window !== 'undefined' && window.localStorage) {
+            stabilized = localStorage.getItem('zero_sum_stabilized') === 'true';
+          }
+        } catch (e) {
+          console.error('Error reading zero_sum_stabilized from localStorage:', e);
+        }
+        this.uiState.setStabilized(stabilized);
+        this.isLoading.set(true);
+      } else if (
+        event instanceof NavigationEnd ||
+        event instanceof NavigationCancel ||
+        event instanceof NavigationError
+      ) {
+        setTimeout(() => {
+          this.isLoading.set(false);
+        }, 500);
+      }
+    });
+
     const urlParams = new URLSearchParams(window.location.search);
     const pinParam = urlParams.get('pin');
     if (pinParam) {
-       this.sessionId.set(pinParam);
+       this.sessionId.set(pinParam.replace(/[\.#\$\[\]\/]/g, '_'));
     }
 
     // IoT Web Audio API Siren Effect
@@ -252,7 +266,11 @@ export class AppComponent implements OnInit, OnDestroy {
       this.app = fbApp.initializeApp(firebaseConfig);
       this.db = fbDb.getDatabase(this.app);
       if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        fbDb.connectDatabaseEmulator(this.db, 'localhost', 9000);
+        try {
+          fbDb.connectDatabaseEmulator(this.db, 'localhost', 9000);
+        } catch (e) {
+          // Suppress duplicate connection errors
+        }
       }
 
       const params = new URLSearchParams(window.location.search);
@@ -274,7 +292,7 @@ export class AppComponent implements OnInit, OnDestroy {
       }
       
       if (session) {
-        this.sessionId.set(session);
+        this.sessionId.set(session.replace(/[\.#\$\[\]\/]/g, '_'));
         this.mode.set(m);
         if (player) this.activePlayerId.set(player);
         this.connectFirebase();

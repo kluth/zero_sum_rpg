@@ -1,7 +1,7 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { initializeApp } from 'firebase/app';
-import { getDatabase, ref, onChildAdded, push } from 'firebase/database';
+import { initializeApp, getApps, getApp } from 'firebase/app';
+import { getDatabase, ref, onChildAdded, push, connectDatabaseEmulator } from 'firebase/database';
 
 export interface FeedMessage {
   id: string;
@@ -31,10 +31,18 @@ export class FeedService {
 
   constructor(private zone: NgZone) {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-      this.sessionId = localStorage.getItem('zero_sum_token') || 'demo';
+      this.sessionId = (localStorage.getItem('zero_sum_token') || 'demo').replace(/[\.#\$\[\]\/]/g, '_');
       
-      const app = initializeApp(firebaseConfig);
+      const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
       this.db = getDatabase(app);
+
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        try {
+          connectDatabaseEmulator(this.db, 'localhost', 9000);
+        } catch (e) {
+          // Suppress error if already connected
+        }
+      }
 
       console.log('[FeedService] Connecting to Firebase Realtime Database for Session:', this.sessionId);
       

@@ -1,1 +1,5 @@
+<div *ngIf="isLoading()" class="reception-loader-container" [class.no-glitch]="isStabilized()">
+  <div class="reception-noise-overlay"></div>
+  <div class="signal-text glitch-text">Zero-Sum Connection Stabilizing...</div>
+</div>
 <router-outlet></router-outlet>

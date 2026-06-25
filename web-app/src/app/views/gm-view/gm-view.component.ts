@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FeedService } from '../../services/feed.service';
+import { UiStateService } from '../../services/ui-state.service';
 import { OcgfComponent } from '../../ui/ocgf/ocgf.component';
 import { WhispernetComponent } from '../../ui/whispernet/whispernet.component';
 import { FrequenzXComponent } from '../../ui/frequenz-x/frequenz-x.component';
@@ -10,6 +11,7 @@ import { FrequenzXComponent } from '../../ui/frequenz-x/frequenz-x.component';
   selector: 'app-gm-view',
   standalone: true,
   imports: [CommonModule, FormsModule, OcgfComponent, WhispernetComponent, FrequenzXComponent],
+  styleUrls: ['./gm-view.component.scss'],
   template: `
   <div class="modern-dashboard">
     <header class="top-nav">
@@ -18,6 +20,7 @@ import { FrequenzXComponent } from '../../ui/frequenz-x/frequenz-x.component';
         <span class="brand-name">Zero-Sum Admin Panel</span>
       </div>
       <div class="user-profile">
+        <button data-test-id="theme-toggle" (click)="uiState.toggleTheme()" class="zs-btn" style="margin-right: 12px; padding: 4px 8px; font-size: 12px;">Toggle Theme</button>
         <span class="badge" style="background:#fef2f2; color:#991b1b; margin-right: 12px;">Session Live</span>
         <div class="user-info">
           <span class="user-name">Overseer</span>
@@ -120,6 +123,7 @@ import { FrequenzXComponent } from '../../ui/frequenz-x/frequenz-x.component';
 })
 export class GmViewComponent {
   private feedService = inject(FeedService);
+  public uiState = inject(UiStateService);
 
   broadcast() {
     this.feedService.injectMessage('ocgf', 'SYSTEM BROADCAST: Status update required from all agents.', 'URGENT_KPI');

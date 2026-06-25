@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WhispernetComponent } from '../../ui/whispernet/whispernet.component';
 import { FrequenzXComponent } from '../../ui/frequenz-x/frequenz-x.component';
+import { UiStateService } from '../../services/ui-state.service';
 import { Observable, interval } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -10,12 +11,25 @@ import { map } from 'rxjs/operators';
   standalone: true,
   imports: [CommonModule, WhispernetComponent, FrequenzXComponent],
   template: `
-  <div class="os-desktop">
-    <!-- Desktop Icons / Area -->
-    <div class="desktop-area">
+  <div class="os-desktop" [class.stabilized]="uiState.isStabilized()">
+    <!-- Swipe Area wraps the desktop-area -->
+    <div data-test-id="swipe-area" class="desktop-area"
+         (mousedown)="onSwipeStart($event)" (mouseup)="onSwipeEnd($event)"
+         (touchstart)="onSwipeStart($event)" (touchend)="onSwipeEnd($event)"
+         (touchmove)="onTouchMove($event)">
+         
       <!-- Browser Window (Social Network) -->
-      <div class="os-window" *ngIf="showBrowser" [style.zIndex]="activeWindow === 'browser' ? 10 : 1" (mousedown)="focusWindow('browser')" style="top: 10%; left: 10%; width: 60%; height: 70%;">
-        <div class="window-titlebar">
+      <div class="os-window" #browserWin *ngIf="showBrowser" 
+           [style.zIndex]="activeWindow === 'browser' ? 10 : 1" 
+           [style.left]="windowPositions['browser'] ? windowPositions['browser'].x + 'px' : '5%'"
+           [style.top]="windowPositions['browser'] ? windowPositions['browser'].y + 'px' : '5%'"
+           (mousedown)="focusWindow('browser'); $event.stopPropagation()"
+           (touchstart)="focusWindow('browser'); $event.stopPropagation()"
+           style="width: 50%; height: 50%;">
+        <div class="window-titlebar"
+             (mousedown)="onWindowDragStart($event, 'browser', browserWin)"
+             (touchstart)="onWindowDragStart($event, 'browser', browserWin)"
+             style="cursor: move;">
           <div class="window-controls">
             <div class="win-btn close" (click)="showBrowser = false"></div>
             <div class="win-btn minimize" (click)="showBrowser = false"></div>
@@ -29,8 +43,17 @@ import { map } from 'rxjs/operators';
       </div>
 
       <!-- Messenger Window -->
-      <div class="os-window" *ngIf="showMessenger" [style.zIndex]="activeWindow === 'messenger' ? 10 : 1" (mousedown)="focusWindow('messenger')" style="top: 15%; left: 55%; width: 400px; height: 600px;">
-        <div class="window-titlebar">
+      <div class="os-window" #messengerWin *ngIf="showMessenger" 
+           [style.zIndex]="activeWindow === 'messenger' ? 10 : 1" 
+           [style.left]="windowPositions['messenger'] ? windowPositions['messenger'].x + 'px' : '15%'"
+           [style.top]="windowPositions['messenger'] ? windowPositions['messenger'].y + 'px' : '10%'"
+           (mousedown)="focusWindow('messenger'); $event.stopPropagation()"
+           (touchstart)="focusWindow('messenger'); $event.stopPropagation()"
+           style="width: 400px; height: 500px;">
+        <div class="window-titlebar"
+             (mousedown)="onWindowDragStart($event, 'messenger', messengerWin)"
+             (touchstart)="onWindowDragStart($event, 'messenger', messengerWin)"
+             style="cursor: move;">
           <div class="window-controls">
             <div class="win-btn close" (click)="showMessenger = false"></div>
             <div class="win-btn minimize" (click)="showMessenger = false"></div>
@@ -44,8 +67,17 @@ import { map } from 'rxjs/operators';
       </div>
 
       <!-- Maps Window -->
-      <div class="os-window" *ngIf="showMaps" [style.zIndex]="activeWindow === 'maps' ? 10 : 1" (mousedown)="focusWindow('maps')" style="top: 20%; left: 20%; width: 50%; height: 60%;">
-        <div class="window-titlebar">
+      <div class="os-window" #mapsWin *ngIf="showMaps" 
+           [style.zIndex]="activeWindow === 'maps' ? 10 : 1" 
+           [style.left]="windowPositions['maps'] ? windowPositions['maps'].x + 'px' : '10%'"
+           [style.top]="windowPositions['maps'] ? windowPositions['maps'].y + 'px' : '15%'"
+           (mousedown)="focusWindow('maps'); $event.stopPropagation()"
+           (touchstart)="focusWindow('maps'); $event.stopPropagation()"
+           style="width: 45%; height: 45%;">
+        <div class="window-titlebar"
+             (mousedown)="onWindowDragStart($event, 'maps', mapsWin)"
+             (touchstart)="onWindowDragStart($event, 'maps', mapsWin)"
+             style="cursor: move;">
           <div class="window-controls">
             <div class="win-btn close" (click)="showMaps = false"></div>
             <div class="win-btn minimize" (click)="showMaps = false"></div>
@@ -60,6 +92,99 @@ import { map } from 'rxjs/operators';
           </div>
         </div>
       </div>
+
+      <!-- ALWAYS OPEN CONTROL PANEL WINDOW FOR DIEGETIC CONTROLS & NETRUNNER CONSOLE -->
+      <div class="os-window control-panel-window" #controlPanelWin 
+           [style.left]="windowPositions['controlPanel'] ? windowPositions['controlPanel'].x + 'px' : null"
+           [style.top]="windowPositions['controlPanel'] ? windowPositions['controlPanel'].y + 'px' : '5%'"
+           [style.right]="windowPositions['controlPanel'] ? null : '2%'"
+           (mousedown)="$event.stopPropagation()"
+           (touchstart)="$event.stopPropagation()"
+           style="width: 380px; height: 85%; z-index: 20; display: flex; flex-direction: column;">
+        <div class="window-titlebar"
+             (mousedown)="onWindowDragStart($event, 'controlPanel', controlPanelWin)"
+             (touchstart)="onWindowDragStart($event, 'controlPanel', controlPanelWin)"
+             style="cursor: move;">
+          <span class="window-title">SYSTEM CONTROL PANEL</span>
+        </div>
+        <div class="window-content" style="padding: 12px; display: flex; flex-direction: column; gap: 12px; background: #0c0f12; color: #33ff33; font-family: monospace; overflow-y: auto;">
+          
+          <!-- Theme & Stabilizer -->
+          <div class="control-section">
+            <span style="font-weight: bold; color: #00ffcc;">SYSTEM SETTINGS</span>
+            <div style="display: flex; gap: 8px; margin-top: 4px;">
+              <button data-test-id="theme-toggle" (click)="uiState.toggleTheme()" class="zs-btn" style="flex: 1; padding: 6px 12px; font-size: 11px;">Theme Shift</button>
+              <button data-test-id="stabilizer-toggle" (click)="uiState.toggleStabilizer()" class="zs-btn" style="flex: 1; padding: 6px 12px; font-size: 11px;">Stabilizer</button>
+            </div>
+          </div>
+
+          <!-- Biometric Scanner -->
+          <div class="control-section">
+            <span style="font-weight: bold; color: #00ffcc;">BIOMETRIC AUTHENTICATION</span>
+            <div data-test-id="biometric-scanner"
+                 [class.scan-success]="scanSuccess"
+                 [class.scanning]="isScanning"
+                 (mousedown)="onScanStart($event)"
+                 (mouseup)="onScanEnd($event)"
+                 (mouseleave)="onScanEnd($event)"
+                 (touchstart)="onScanStart($event)"
+                 (touchend)="onScanEnd($event)"
+                 style="width: 100%; height: 50px; display: flex; align-items: center; justify-content: center; border: 2px dashed #33ff33; cursor: pointer; border-radius: 4px; user-select: none; transition: background 0.3s; position: relative; margin-top: 4px; min-width: 44px; min-height: 44px;">
+              <span style="font-size: 12px;">{{ scannerText }}</span>
+              <div class="scan-pulse" *ngIf="isScanning"></div>
+            </div>
+          </div>
+
+          <!-- NDA Signature -->
+          <div class="control-section" style="display: flex; flex-direction: column; gap: 4px;">
+            <span style="font-weight: bold; color: #00ffcc;">NDA AUTHORIZATION</span>
+            <div style="position: relative;">
+              <canvas #ndaCanvas
+                      data-test-id="nda-canvas"
+                      [attr.data-stabilized]="uiState.isStabilized() ? 'true' : null"
+                      [class.stabilized-draw]="uiState.isStabilized()"
+                      (mousedown)="onDrawStart($event)"
+                      (mousemove)="onDrawMove($event)"
+                      (mouseup)="onDrawEnd($event)"
+                      (mouseleave)="onDrawEnd($event)"
+                      (touchstart)="onDrawStart($event)"
+                      (touchmove)="onDrawMove($event)"
+                      (touchend)="onDrawEnd($event)"
+                      style="border: 1px solid #33ff33; background: #05070a; width: 100%; height: 90px; display: block;"></canvas>
+              <button (click)="clearCanvas()" class="zs-btn" style="position: absolute; right: 4px; top: 4px; font-size: 9px; padding: 2px 4px;">Clear</button>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <button data-test-id="nda-approve-btn" [disabled]="strokes.length === 0" (click)="approveNDA()" class="zs-btn" style="padding: 6px 12px; font-size: 11px;">Approve NDA</button>
+              <span *ngIf="ndaApproved" data-test-id="nda-approved-label" style="color: #00ff00; font-size: 11px; font-weight: bold;">[NDA Approved]</span>
+            </div>
+          </div>
+
+          <!-- Emergency Heal -->
+          <div class="control-section">
+            <span style="font-weight: bold; color: #00ffcc;">NANITE INJECTOR</span>
+            <button data-test-id="emergency-heal-btn" (click)="onEmergencyHeal()" class="zs-btn" style="width: 100%; background: #990000; border: 1px solid #ff3333; color: white; padding: 8px 12px; font-size: 12px; margin-top: 4px; font-weight: bold; letter-spacing: 1px;">
+              EMERGENCY HEAL
+            </button>
+          </div>
+
+          <!-- Netrunner Terminal -->
+          <div class="control-section" style="flex: 1; display: flex; flex-direction: column; min-height: 140px;">
+            <span style="font-weight: bold; color: #00ffcc;">NETRUNNER TERMINAL</span>
+            <div data-test-id="terminal-logs" style="flex: 1; border: 1px solid #33ff33; background: #05070a; padding: 6px; font-size: 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; margin-top: 4px; min-height: 80px;">
+              <div *ngFor="let log of terminalLogs">
+                {{ log }}
+              </div>
+            </div>
+            <input data-test-id="terminal-input"
+                   #termInput
+                   (keydown.enter)="handleTerminalCommand(termInput.value); termInput.value = ''"
+                   placeholder="type status/help/clear..."
+                   style="width: 100%; border: 1px solid #33ff33; background: #000; color: #33ff33; padding: 4px 8px; font-family: monospace; outline: none; margin-top: 4px; font-size: 11px;" />
+          </div>
+
+        </div>
+      </div>
+
     </div>
 
     <!-- Bottom Taskbar -->
@@ -87,161 +212,85 @@ import { map } from 'rxjs/operators';
     </div>
   </div>
   `,
-  styles: [`
-    .os-desktop {
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-      background: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070&auto=format&fit=crop') no-repeat center center;
-      background-size: cover;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-    }
-
-    .desktop-area {
-      flex: 1;
-      position: relative;
-    }
-
-    .os-window {
-      position: absolute;
-      background: var(--surface-color);
-      border-radius: 12px;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-    }
-
-    .window-titlebar {
-      height: 40px;
-      background: rgba(243, 244, 246, 0.9);
-      display: flex;
-      align-items: center;
-      padding: 0 16px;
-      border-bottom: 1px solid var(--surface-border);
-      cursor: default; /* In a real app, this would be draggable */
-    }
-
-    .window-controls {
-      display: flex;
-      gap: 8px;
-      margin-right: 16px;
-    }
-
-    .win-btn {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      cursor: pointer;
-    }
-
-    .close { background: #ff5f56; }
-    .minimize { background: #ffbd2e; }
-    .maximize { background: #27c93f; }
-
-    .window-title {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-muted);
-    }
-
-    .window-content {
-      flex: 1;
-      overflow-y: auto;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .window-content > * {
-      flex: 1;
-      height: 100%;
-    }
-
-    .os-taskbar {
-      height: 48px;
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(20px);
-      border-top: 1px solid rgba(255,255,255,0.3);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 16px;
-      z-index: 100;
-    }
-
-    .taskbar-start {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--primary-color);
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .taskbar-start:hover {
-      background: rgba(0,0,0,0.05);
-    }
-
-    .taskbar-apps {
-      display: flex;
-      gap: 8px;
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .taskbar-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: all 0.2s;
-      position: relative;
-    }
-
-    .taskbar-icon:hover {
-      background: rgba(0,0,0,0.05);
-      color: var(--text-main);
-    }
-
-    .taskbar-icon.active {
-      color: var(--primary-color);
-    }
-
-    .taskbar-icon.active::after {
-      content: '';
-      position: absolute;
-      bottom: 2px;
-      width: 4px;
-      height: 4px;
-      border-radius: 2px;
-      background: var(--primary-color);
-    }
-
-    .taskbar-tray {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-main);
-    }
-  `]
+  styleUrls: ['./player-view.component.scss']
 })
-export class PlayerViewComponent implements OnInit {
+export class PlayerViewComponent implements OnInit, AfterViewInit {
+  @ViewChild('ndaCanvas', { static: false }) canvasRef!: ElementRef<HTMLCanvasElement>;
+
+  public uiState = inject(UiStateService);
+
   time$: Observable<Date> = new Observable();
+
+  // Draggable Window State
+  windowPositions: { [key: string]: { x: number, y: number } } = {};
+  private draggingWindow: string | null = null;
+  private dragStartX = 0;
+  private dragStartY = 0;
+  private dragStartWindowX = 0;
+  private dragStartWindowY = 0;
+
+  onWindowDragStart(event: MouseEvent | TouchEvent, winId: string, windowEl: HTMLElement) {
+    if (event instanceof MouseEvent && event.button !== 0) return;
+    if (window.innerWidth <= 768) return; // Disable dragging on mobile stacked layout
+
+    this.focusWindow(winId);
+
+    const desktopEl = windowEl.closest('.desktop-area');
+    const desktopRect = desktopEl ? desktopEl.getBoundingClientRect() : { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight };
+    const winRect = windowEl.getBoundingClientRect();
+
+    this.dragStartWindowX = winRect.left - desktopRect.left;
+    this.dragStartWindowY = winRect.top - desktopRect.top;
+
+    this.dragStartX = ('touches' in event && event.touches.length > 0)
+      ? event.touches[0].clientX
+      : (event as MouseEvent).clientX;
+    this.dragStartY = ('touches' in event && event.touches.length > 0)
+      ? event.touches[0].clientY
+      : (event as MouseEvent).clientY;
+
+    if (!this.windowPositions[winId]) {
+      this.windowPositions[winId] = { x: this.dragStartWindowX, y: this.dragStartWindowY };
+    }
+
+    this.draggingWindow = winId;
+
+    if (event.cancelable) {
+      event.preventDefault();
+    }
+    event.stopPropagation();
+  }
+
+  @HostListener('window:mousemove', ['$event'])
+  @HostListener('window:touchmove', ['$event'])
+  onWindowDragMove(event: MouseEvent | TouchEvent) {
+    if (!this.draggingWindow) return;
+
+    const clientX = ('touches' in event && event.touches.length > 0)
+      ? event.touches[0].clientX
+      : (event as MouseEvent).clientX;
+    const clientY = ('touches' in event && event.touches.length > 0)
+      ? event.touches[0].clientY
+      : (event as MouseEvent).clientY;
+
+    const deltaX = clientX - this.dragStartX;
+    const deltaY = clientY - this.dragStartY;
+
+    let newX = this.dragStartWindowX + deltaX;
+    let newY = this.dragStartWindowY + deltaY;
+
+    // Boundary snapping: clamp coordinates (X >= 0, Y >= 0)
+    newX = Math.max(0, newX);
+    newY = Math.max(0, newY);
+
+    this.windowPositions[this.draggingWindow] = { x: newX, y: newY };
+  }
+
+  @HostListener('window:mouseup')
+  @HostListener('window:touchend')
+  onWindowDragEnd() {
+    this.draggingWindow = null;
+  }
   
   showBrowser = true;
   showMessenger = true;
@@ -249,8 +298,41 @@ export class PlayerViewComponent implements OnInit {
 
   activeWindow = 'browser';
 
+  // Biometric Scanner State
+  scanSuccess = false;
+  isScanning = false;
+  scannerText = 'Hold to Authenticate Biometrics';
+  private scanTimer: any = null;
+
+  // NDA Canvas Drawing State
+  isDrawing = false;
+  currentStroke: Array<{ x: number, y: number }> = [];
+  strokes: Array<Array<{ x: number, y: number }>> = [];
+  ndaApproved = false;
+
+  // Emergency Heal State
+  healCount = 0;
+
+  // Terminal Console State
+  terminalLogs: string[] = ['System Ready. Awaiting commands...'];
+
+  private swipeStartX = 0;
+
   ngOnInit() {
     this.time$ = interval(1000).pipe(map(() => new Date()));
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.initCanvasSize();
+      this.redrawCanvas();
+    }, 100);
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.initCanvasSize();
+    this.redrawCanvas();
   }
 
   toggleWindow(win: string) {
@@ -270,5 +352,253 @@ export class PlayerViewComponent implements OnInit {
 
   focusWindow(win: string) {
     this.activeWindow = win;
+  }
+
+  // --- Biometric Scanner ---
+  onScanStart(event: MouseEvent | TouchEvent) {
+    if (this.scanSuccess) return;
+    this.isScanning = true;
+    this.scannerText = 'Scanning Biometrics...';
+    
+    if (this.scanTimer) clearTimeout(this.scanTimer);
+    this.scanTimer = setTimeout(() => {
+      this.scanSuccess = true;
+      this.isScanning = false;
+      this.scannerText = 'Authorized: Success';
+    }, 1100);
+  }
+
+  onScanEnd(event: MouseEvent | TouchEvent) {
+    this.cancelScan();
+  }
+
+  cancelScan() {
+    if (this.scanSuccess) return;
+    this.isScanning = false;
+    this.scannerText = 'Hold to Authenticate Biometrics';
+    if (this.scanTimer) {
+      clearTimeout(this.scanTimer);
+      this.scanTimer = null;
+    }
+  }
+
+  // --- NDA Canvas ---
+  getCanvas(): HTMLCanvasElement | null {
+    if (this.canvasRef && this.canvasRef.nativeElement) {
+      return this.canvasRef.nativeElement;
+    }
+    return document.querySelector('canvas[data-test-id="nda-canvas"]') as HTMLCanvasElement;
+  }
+
+  initCanvasSize() {
+    const canvas = this.getCanvas();
+    if (canvas) {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+    }
+  }
+
+  private getEventCoords(event: MouseEvent | TouchEvent): { x: number, y: number } | null {
+    const canvas = this.getCanvas();
+    if (!canvas) return null;
+    const rect = canvas.getBoundingClientRect();
+    let clientX = 0;
+    let clientY = 0;
+
+    if (window.TouchEvent && event instanceof TouchEvent) {
+      if (event.touches.length === 0) return null;
+      clientX = event.touches[0].clientX;
+      clientY = event.touches[0].clientY;
+    } else if (event instanceof MouseEvent) {
+      clientX = event.clientX;
+      clientY = event.clientY;
+    } else {
+      const anyEv: any = event;
+      if (anyEv.touches && anyEv.touches.length > 0) {
+        clientX = anyEv.touches[0].clientX;
+        clientY = anyEv.touches[0].clientY;
+      } else {
+        clientX = anyEv.clientX;
+        clientY = anyEv.clientY;
+      }
+    }
+
+    return {
+      x: (clientX - rect.left) / rect.width,
+      y: (clientY - rect.top) / rect.height
+    };
+  }
+
+  onDrawStart(event: MouseEvent | TouchEvent) {
+    if (event.cancelable) {
+      event.preventDefault();
+    }
+    this.isDrawing = true;
+    const coords = this.getEventCoords(event);
+    if (coords) {
+      this.currentStroke = [coords];
+      this.strokes = [...this.strokes, this.currentStroke];
+      this.redrawCanvas();
+    }
+  }
+
+  onDrawMove(event: MouseEvent | TouchEvent) {
+    if (!this.isDrawing) return;
+    if (event.cancelable) {
+      event.preventDefault();
+    }
+    const coords = this.getEventCoords(event);
+    if (coords) {
+      if (this.uiState.isStabilized() && this.currentStroke.length > 0) {
+        const last = this.currentStroke[this.currentStroke.length - 1];
+        const dx = coords.x - last.x;
+        const dy = coords.y - last.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 0.02) {
+          return;
+        }
+      }
+      this.currentStroke.push(coords);
+      this.redrawCanvas();
+    }
+  }
+
+  onDrawEnd(event: MouseEvent | TouchEvent) {
+    if (this.isDrawing) {
+      this.isDrawing = false;
+      this.currentStroke = [];
+      this.redrawCanvas();
+    }
+  }
+
+  clearCanvas() {
+    this.strokes = [];
+    this.ndaApproved = false;
+    this.redrawCanvas();
+  }
+
+  approveNDA() {
+    if (this.strokes.length > 0) {
+      this.ndaApproved = true;
+    }
+  }
+
+  redrawCanvas() {
+    const canvas = this.getCanvas();
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.strokeStyle = '#33ff33';
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    for (const stroke of this.strokes) {
+      if (stroke.length === 0) continue;
+      ctx.beginPath();
+      const p0 = stroke[0];
+      ctx.moveTo(p0.x * canvas.width, p0.y * canvas.height);
+      for (let i = 1; i < stroke.length; i++) {
+        const p = stroke[i];
+        ctx.lineTo(p.x * canvas.width, p.y * canvas.height);
+      }
+      ctx.stroke();
+    }
+  }
+
+  // --- Emergency Heal ---
+  onEmergencyHeal() {
+    this.healCount++;
+    console.log(`Emergency heal clicked. Count: ${this.healCount}`);
+  }
+
+  // --- Netrunner Terminal ---
+  handleTerminalCommand(cmd: string) {
+    const trimmed = cmd.trim().toLowerCase();
+    if (!trimmed) return;
+
+    this.terminalLogs.push(`> ${cmd}`);
+
+    if (trimmed === 'status') {
+      this.terminalLogs.push('System: ONLINE');
+      this.terminalLogs.push('Theme: ' + this.uiState.currentTheme());
+      this.terminalLogs.push('Stabilizer: ' + (this.uiState.isStabilized() ? 'ACTIVE' : 'INACTIVE'));
+    } else if (trimmed === 'help') {
+      this.terminalLogs.push('Available commands: status, help, clear, heal');
+    } else if (trimmed === 'clear') {
+      this.terminalLogs = [];
+    } else if (trimmed === 'heal') {
+      this.terminalLogs.push('Executing emergency healing...');
+      this.onEmergencyHeal();
+    } else {
+      this.terminalLogs.push(`Unknown command: ${cmd}`);
+    }
+  }
+
+  // --- Swipe Navigation & Gesture Touch Handling ---
+  onSwipeStart(event: MouseEvent | TouchEvent) {
+    if (window.TouchEvent && event instanceof TouchEvent) {
+      this.swipeStartX = event.touches[0].clientX;
+    } else if (event instanceof MouseEvent) {
+      this.swipeStartX = event.clientX;
+    } else {
+      const anyEv: any = event;
+      this.swipeStartX = anyEv.touches ? anyEv.touches[0].clientX : anyEv.clientX;
+    }
+  }
+
+  onSwipeEnd(event: MouseEvent | TouchEvent) {
+    let endX = 0;
+    if (window.TouchEvent && event instanceof TouchEvent) {
+      if (event.changedTouches.length > 0) {
+        endX = event.changedTouches[0].clientX;
+      }
+    } else if (event instanceof MouseEvent) {
+      endX = event.clientX;
+    } else {
+      const anyEv: any = event;
+      endX = anyEv.changedTouches ? anyEv.changedTouches[0].clientX : anyEv.clientX;
+    }
+
+    const deltaX = endX - this.swipeStartX;
+    if (Math.abs(deltaX) > 50) {
+      this.cycleWindows(deltaX);
+    }
+  }
+
+  cycleWindows(deltaX: number) {
+    const windows = ['browser', 'messenger', 'maps'];
+    let idx = windows.indexOf(this.activeWindow);
+    if (deltaX > 0) {
+      idx = (idx + 1) % windows.length;
+    } else {
+      idx = (idx - 1 + windows.length) % windows.length;
+    }
+    this.activeWindow = windows[idx];
+    if (this.activeWindow === 'browser') this.showBrowser = true;
+    if (this.activeWindow === 'messenger') this.showMessenger = true;
+    if (this.activeWindow === 'maps') this.showMaps = true;
+  }
+
+  onTouchMove(event: TouchEvent) {
+    // 1. Biometric scanner drag-out logic
+    if (this.isScanning) {
+      const touch = event.touches[0];
+      const scannerEl = document.querySelector('[data-test-id="biometric-scanner"]');
+      if (scannerEl) {
+        const rect = scannerEl.getBoundingClientRect();
+        if (
+          touch.clientX < rect.left ||
+          touch.clientX > rect.right ||
+          touch.clientY < rect.top ||
+          touch.clientY > rect.bottom
+        ) {
+          this.cancelScan();
+        }
+      }
+    }
   }
 }
