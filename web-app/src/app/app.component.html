@@ -1,6 +1,16 @@
     <div class="crt-overlay"></div>
     <app-flashback-overlay [isActive]="flashbackActive()" [initiatingPlayer]="flashbackPlayer()" [description]="flashbackDescription()"></app-flashback-overlay>
     
+    <!-- DIEGETIC SHELL OVERLAYS -->
+    <ng-container *ngIf="(uiState.getState() | async)?.activeNetwork as network">
+      <div class="diegetic-overlay" style="position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; background: #000;">
+        <app-whispernet *ngIf="network === 'whispernet'"></app-whispernet>
+        <app-ocgf *ngIf="network === 'ocgf'"></app-ocgf>
+        <app-frequenz-x *ngIf="network === 'frequenz-x'"></app-frequenz-x>
+        <app-neon-lotus *ngIf="network === 'neon-lotus'"></app-neon-lotus>
+      </div>
+    </ng-container>
+
     <!-- LOBBY SCREEN -->
     <div *ngIf="!sessionId()" class="bg-background text-on-background h-screen w-screen overflow-hidden flex flex-col font-body-main text-body-main selection:bg-primary selection:text-on-primary items-center justify-center relative">
         <div class="absolute inset-0 bg-[radial-gradient(circle,transparent_20%,rgba(0,0,0,0.1)_100%)] pointer-events-none z-0"></div>

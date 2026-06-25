@@ -14,6 +14,11 @@ import { ActionQueueService } from './core/services/ActionQueueService';
 import { WebRTCService } from './core/services/webrtc.service';
 import { AIEngineService, AIPersona } from './core/services/ai-engine.service';
 import { FacilityGeneratorService } from './core/services/facility-generator.service';
+import { WhispernetComponent } from './ui/whispernet/whispernet.component';
+import { OcgfComponent } from './ui/ocgf/ocgf.component';
+import { FrequenzXComponent } from './ui/frequenz-x/frequenz-x.component';
+import { NeonLotusComponent } from './ui/neon-lotus/neon-lotus.component';
+import { UiStateService, NetworkType } from './services/ui-state.service';
 
 let fbApp: any;
 let fbDb: any;
@@ -37,7 +42,12 @@ const firebaseConfig = {
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, PixiMapComponent, ProgressClockComponent, FlashbackOverlayComponent, ThreeJsMapComponent, BillboardComponent, PlayerUplinkComponent],
+  imports: [
+    CommonModule, FormsModule, PixiMapComponent, ProgressClockComponent, 
+    FlashbackOverlayComponent, ThreeJsMapComponent, BillboardComponent, 
+    PlayerUplinkComponent, WhispernetComponent, OcgfComponent, 
+    FrequenzXComponent, NeonLotusComponent
+  ],
   styleUrls: ['./app.component.css'],
   templateUrl: './app.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -47,6 +57,7 @@ export class AppComponent implements OnInit, OnDestroy {
   public aiEngine = inject(AIEngineService);
   private injector = inject(Injector);
   private facilityGenerator = inject(FacilityGeneratorService);
+  public uiState = inject(UiStateService);
   gameState = signal<any>({ characters: {}, map: null, traumaLog: {}, clocks: {}, flashbacks: {} });
   heatLevel = computed(() => this.gameState().heatLevel || 1);
   chaosMarketValue = computed(() => this.gameState()?.chaosMarketValue || 0);
