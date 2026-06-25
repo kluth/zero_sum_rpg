@@ -1,16 +1,22 @@
-<div class="whispernet-container">
-  <header class="terminal-header">
-    <span class="network-id">SYS.WHISPERNET // SECURE_LINK</span>
-    <span class="timer">UPTIME: {{ timerText }}</span>
-  </header>
-  
-  <main class="chat-stream">
-    <div class="message" *ngFor="let msg of messages">
-      <span class="timestamp">[{{ msg.timestamp | date:'HH:mm:ss' }}]</span>
-      <span class="content">> {{ msg.content }}</span>
+<div class="whispernet-container diegetic-panel">
+  <div class="wn-header">
+    <span class="lock-icon">🔒</span>
+    <span>WHISPERNET // SECURE CHANNEL</span>
+  </div>
+  <div class="message-feed">
+    <div class="msg received">
+      <span class="timestamp">[23:41:02]</span>
+      <span class="sender">ANON-99:</span>
+      <span class="text decryption-fx">The package is at the drop point.</span>
     </div>
-    <div class="cursor-line">
-      <span class="cursor">_</span>
+    <div class="msg sent">
+      <span class="timestamp">[23:41:45]</span>
+      <span class="sender">YOU:</span>
+      <span class="text">Copy that. Erasing logs.</span>
     </div>
-  </main>
+  </div>
+  <div class="input-area">
+    <span class="prompt">&gt;</span>
+    <div class="cursor-blink">_</div>
+  </div>
 </div>

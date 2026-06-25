@@ -1,86 +1,80 @@
-:host {
-  display: block;
-  width: 100%;
-  height: 100%;
-  background-color: #000000;
-  color: #0f0;
-  font-family: 'Courier New', Courier, monospace;
-  overflow: hidden;
-  position: relative;
-}
-
 .whispernet-container {
-  padding: 20px;
-  height: 100%;
+  background-color: #0d1117;
+  color: #8b949e;
+  font-family: 'Consolas', monospace;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 1rem;
+  max-width: 600px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.wn-header {
+  border-bottom: 1px solid #30363d;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #58a6ff;
+}
+
+.lock-icon {
+  font-size: 1rem;
+}
+
+.message-feed {
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
+  gap: 0.8rem;
+  margin-bottom: 2rem;
 }
 
-.terminal-header {
+.msg {
   display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid #0f0;
-  padding-bottom: 10px;
-  margin-bottom: 20px;
-  text-shadow: 0 0 5px #0f0;
+  gap: 0.5rem;
+  font-size: 0.9rem;
 }
 
-.network-id, .timer {
-  font-weight: bold;
+.timestamp { color: #484f58; }
+.received .sender { color: #ff7b72; }
+.sent .sender { color: #7ee787; }
+
+.decryption-fx {
+  position: relative;
+  display: inline-block;
 }
 
-.chat-stream {
-  flex: 1;
-  overflow-y: auto;
+.decryption-fx::before {
+  content: "T@# p&ck*g3 is !t t$e d^0p p01nt.";
+  position: absolute;
+  top: 0; left: 0;
+  color: #8b949e;
+  background: #0d1117;
+  overflow: hidden;
+  animation: revealText 2s forwards steps(30);
+}
+
+.input-area {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  align-items: center;
+  gap: 0.5rem;
+  color: #c9d1d9;
+  border-top: 1px dashed #30363d;
+  padding-top: 1rem;
 }
 
-.message {
-  opacity: 0;
-  animation: typeIn 0.3s forwards;
+.cursor-blink {
+  animation: blinkCursor 1s step-end infinite;
 }
 
-.timestamp {
-  color: #0a0;
-  margin-right: 10px;
-}
-
-.content {
-  text-shadow: 0 0 3px #0f0;
-}
-
-.cursor-line {
-  margin-top: 10px;
-}
-
-.cursor {
-  animation: blink 1s step-end infinite;
-}
-
-@keyframes typeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes blink {
+@keyframes blinkCursor {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
 }
 
-/* Glitch effect overlay */
-:host::after {
-  content: " ";
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-  z-index: 2;
-  background-size: 100% 2px, 3px 100%;
-  pointer-events: none;
+@keyframes revealText {
+  0% { width: 100%; }
+  100% { width: 0%; }
 }

@@ -1,28 +1,29 @@
-<div class="ocgf-container">
-  <header class="corp-header">
-    <div class="logo">OCGF // OMNICORP GLOBAL FEED</div>
-    <div class="citizen-info">ID: {{ citizenId }} | STATUS: COMPLIANT</div>
+<div class="overseer-panopticon threat-level-tracker">
+  <header class="overseer-header">
+    <h1>OVERSEER PANOPTICON // SYSTEM UPLINK</h1>
   </header>
   
-  <div class="alert-overlay" *ngIf="showAlert">
-    <div class="alert-box">
-      <span class="alert-icon">⚠</span>
-      <span class="alert-text">{{ alertMessage }}</span>
+  <aside class="overseer-vitals">
+    <h2>PLAYER VITALS</h2>
+    <div class="vital-stats">
+      <div>STRESS: CRITICAL</div>
+      <div>AP: 42%</div>
     </div>
-  </div>
-
-  <main class="feed-list">
-    <article class="feed-card" *ngFor="let item of feedItems">
-      <div class="card-header">
-        <span class="time">{{ item.timestamp | date:'shortTime' }}</span>
-        <span class="category">{{ item.metadata?.category || 'UPDATE' }}</span>
-      </div>
-      <div class="card-body">
-        {{ item.content }}
-      </div>
-    </article>
-    <div class="empty-state" *ngIf="feedItems.length === 0">
-      No new updates. Have a productive day.
+  </aside>
+  
+  <main class="overseer-main">
+    <h2>MAIN FEED / SURVEILLANCE MATRIX</h2>
+    <div class="content-feed">
+      [LIVE CAMERA FEEDS]
     </div>
   </main>
+  
+  <aside class="overseer-log">
+    <h2>EVENT LOG</h2>
+    <ul class="log-stream">
+      <li>> CONNECT_TO_NODE_</li>
+      <li>> UPLINK ESTABLISHED...</li>
+      <li>> UNAUTHORIZED ACCESS DETECTED</li>
+    </ul>
+  </aside>
 </div>

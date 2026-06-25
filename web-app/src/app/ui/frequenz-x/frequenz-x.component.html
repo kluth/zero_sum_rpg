@@ -1,16 +1,20 @@
-<div class="frequenz-container" [class.hijacked]="isHijacked">
-  <div class="static-overlay"></div>
-  
-  <header class="warning-header">
-    <div class="signal-lost">SIGNAL COMPROMISED // FREQUENZ-X OVERRIDE</div>
+<div class="frequenz-x-container diegetic-panel">
+  <div class="scanline-overlay"></div>
+  <header class="fx-header">
+    <h1>FREQUENZ-X</h1>
+    <div class="status-indicator active">SIGNAL LOCKED</div>
   </header>
   
-  <main class="rebel-stream">
-    <div class="stream-line" *ngFor="let msg of messages">
-      <span class="glitch-text">{{ msg.content }}</span>
+  <main class="fx-display">
+    <div class="oscilloscope">
+      <svg viewBox="0 0 400 100" preserveAspectRatio="none">
+        <path class="wave" d="M0,50 Q20,10 40,50 T80,50 T120,50 T160,50 T200,90 T240,50 T280,50 T320,50 T360,50 T400,50" />
+      </svg>
     </div>
-    <div class="prompt">
-      <span class="blinking-cursor">█</span>
+    <div class="data-stream">
+      <p>FRQ: 104.992 MHz</p>
+      <p>ENC: B-KDF2</p>
+      <p>SRC: UNKNOWN</p>
     </div>
   </main>
 </div>
