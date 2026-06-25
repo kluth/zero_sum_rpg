@@ -18,6 +18,8 @@ export enum CellType {
   EMPTY = 'empty',
   WALL = 'wall',
   FLOOR = 'floor',
+  GRASS = 'grass',
+  STREET = 'street',
   DOOR_OPEN = 'door_open',
   DOOR_LOCKED = 'door_locked',
   CCTV = 'cctv',
@@ -52,10 +54,10 @@ export interface GridCoordinateDTO {
 }
 
 export interface CellDTO {
-  readonly type: CellType;
+  readonly type: CellType | string;
   readonly roomId?: string;
   readonly characterId?: string;
-  readonly inventoryIds: ReadonlyArray<string>;
+  readonly inventoryIds?: ReadonlyArray<string>;
 }
 
 export interface RoomDTO {
