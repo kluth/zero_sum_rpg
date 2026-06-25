@@ -1,0 +1,28 @@
+<div class="ocgf-container">
+  <header class="corp-header">
+    <div class="logo">OCGF // OMNICORP GLOBAL FEED</div>
+    <div class="citizen-info">ID: {{ citizenId }} | STATUS: COMPLIANT</div>
+  </header>
+  
+  <div class="alert-overlay" *ngIf="showAlert">
+    <div class="alert-box">
+      <span class="alert-icon">⚠</span>
+      <span class="alert-text">{{ alertMessage }}</span>
+    </div>
+  </div>
+
+  <main class="feed-list">
+    <article class="feed-card" *ngFor="let item of feedItems">
+      <div class="card-header">
+        <span class="time">{{ item.timestamp | date:'shortTime' }}</span>
+        <span class="category">{{ item.metadata?.category || 'UPDATE' }}</span>
+      </div>
+      <div class="card-body">
+        {{ item.content }}
+      </div>
+    </article>
+    <div class="empty-state" *ngIf="feedItems.length === 0">
+      No new updates. Have a productive day.
+    </div>
+  </main>
+</div>
