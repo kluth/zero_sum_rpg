@@ -30,3 +30,25 @@ func (h *Handler) DetermineNetworks(hotspot *Hotspot) []pb.NetworkID {
 
 	return networks
 }
+
+func (h *Handler) FindEligiblePlayers(players []*Player, hotspot *Hotspot) []*Player {
+	var eligible []*Player
+
+	for _, p := range players {
+		if p.IsBlindSpot {
+			continue
+		}
+
+		if hotspot.HeatLevel > 10 && p.Reputation < 50 {
+			continue
+		}
+
+		if p.HeatLevel > 80 && hotspot.HeatLevel > 5 {
+			continue
+		}
+
+		eligible = append(eligible, p)
+	}
+
+	return eligible
+}

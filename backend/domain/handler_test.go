@@ -34,3 +34,39 @@ func TestHandler_DetermineNetworks(t *testing.T) {
 		}
 	})
 }
+
+func TestHandler_FindEligiblePlayers(t *testing.T) {
+	handler := NewHandler()
+	hotspot := NewHotspot("h1", "Test")
+
+	p1 := NewPlayer("p1", "Alice")
+	p1.Reputation = 60
+	p1.HeatLevel = 10
+
+	p2 := NewPlayer("p2", "Bob")
+	p2.EnterBlindSpot()
+
+	p3 := NewPlayer("p3", "Charlie")
+	p3.Reputation = 10
+
+	p4 := NewPlayer("p4", "Dave")
+	p4.HeatLevel = 90
+
+	players := []*Player{p1, p2, p3, p4}
+
+	t.Run("normal hotspot", func(t *testing.T) {
+		hotspot.HeatLevel = 5
+		eligible := handler.FindEligiblePlayers(players, hotspot)
+		if len(eligible) != 3 {
+			t.Errorf("expected 3 eligible players, got %d", len(eligible))
+		}
+	})
+
+	t.Run("high heat hotspot", func(t *testing.T) {
+		hotspot.HeatLevel = 15
+		eligible := handler.FindEligiblePlayers(players, hotspot)
+		if len(eligible) != 1 || eligible[0].ID != "p1" {
+			t.Errorf("expected 1 eligible player (Alice), got %d", len(eligible))
+		}
+	})
+}
