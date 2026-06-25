@@ -1,90 +1,82 @@
-/* Premium N54 News Network Broadcast Style */
-.n54-news-overlay {
+.presentation-board {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   height: 100vh;
-  background: radial-gradient(circle at 50% 50%, rgba(30,0,0,0.8), rgba(0,0,0,1));
-  font-family: var(--font-heading);
-  position: relative;
-  overflow: hidden;
+  background: var(--bg-color);
+  font-family: var(--font-body);
 }
 
-.n54-news-overlay::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px);
-  pointer-events: none;
-  z-index: 10;
+.board-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 48px;
+  background: var(--surface-color);
+  border-bottom: 1px solid var(--surface-border);
 }
 
-.breaking-news-header {
-  padding: 4rem;
-  text-align: center;
-  margin-top: 15vh;
-  position: relative;
-  z-index: 20;
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 600;
 }
 
-.breaking-news-header h1 {
-  font-size: 8rem;
-  color: var(--alert-red);
-  margin: 0;
-  text-transform: uppercase;
-  text-shadow: 0 0 40px rgba(255, 42, 42, 0.8), 0 0 10px rgba(255, 42, 42, 0.4);
-  letter-spacing: 4px;
-  animation: glitch-anim 2s infinite;
+.status-badge.live {
+  background: #fee2e2;
+  color: #ef4444;
 }
 
-.breaking-news-header h2 {
-  font-size: 4rem;
+.board-header h2 {
+  font-size: 24px;
   color: var(--text-main);
   margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 10px;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
-.n54-ticker-container {
-  width: 100%;
-  overflow: hidden;
-  background: rgba(255, 42, 42, 0.1);
-  border-top: 2px solid var(--alert-red);
-  border-bottom: 2px solid var(--alert-red);
-  white-space: nowrap;
+.board-content {
+  flex: 1;
   display: flex;
-  padding: 20px 0;
-  box-shadow: 0 0 30px rgba(255, 42, 42, 0.2);
-  position: relative;
-  z-index: 20;
-  backdrop-filter: blur(10px);
+  justify-content: center;
+  align-items: center;
+  padding: 48px;
 }
 
-.n54-ticker-track {
-  display: inline-block;
+.slide-img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  object-fit: contain;
+}
+
+.news-ticker {
+  background: var(--surface-color);
+  border-top: 1px solid var(--surface-border);
+  padding: 16px 0;
+  overflow: hidden;
   white-space: nowrap;
-  color: #FFD700;
-  font-family: var(--font-heading);
-  font-size: 4rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  animation: scroll-ticker 15s linear infinite;
-  will-change: transform;
-  text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
+
+.ticker-track {
+  display: inline-block;
+  animation: scroll-ticker 20s linear infinite;
+}
+
+.ticker-item {
+  display: inline-block;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-main);
+  margin-right: 64px;
+}
+
+.ticker-item::before {
+  content: "•";
+  color: var(--primary-color);
+  margin-right: 16px;
 }
 
 @keyframes scroll-ticker {
-  0%   { transform: translate3d(100vw, 0, 0); }
-  100% { transform: translate3d(-100%, 0, 0); }
-}
-
-@keyframes glitch-anim {
-  0% { transform: translate(0) }
-  20% { transform: translate(-2px, 2px) }
-  40% { transform: translate(-2px, -2px) }
-  60% { transform: translate(2px, 2px) }
-  80% { transform: translate(2px, -2px) }
-  100% { transform: translate(0) }
+  0% { transform: translateX(100vw); }
+  100% { transform: translateX(-100%); }
 }

@@ -1,29 +1,17 @@
-<div class="overseer-panopticon threat-level-tracker">
-  <header class="overseer-header">
-    <h1>OVERSEER PANOPTICON // SYSTEM UPLINK</h1>
-  </header>
-  
-  <aside class="overseer-vitals">
-    <h2>PLAYER VITALS</h2>
-    <div class="vital-stats">
-      <div>STRESS: CRITICAL</div>
-      <div>AP: 42%</div>
+<div class="ocgf-container">
+  <div class="feed-list">
+    <div *ngFor="let item of feedItems" class="feed-item">
+      <div class="feed-meta">
+        <span class="feed-type chat">{{item.network}}</span>
+        <span class="feed-time">{{item.timestamp | date:'shortTime'}}</span>
+      </div>
+      <div class="feed-content">
+        {{item.content}}
+      </div>
     </div>
-  </aside>
-  
-  <main class="overseer-main">
-    <h2>MAIN FEED / SURVEILLANCE MATRIX</h2>
-    <div class="content-feed">
-      [LIVE CAMERA FEEDS]
-    </div>
-  </main>
-  
-  <aside class="overseer-log">
-    <h2>EVENT LOG</h2>
-    <ul class="log-stream">
-      <li>> CONNECT_TO_NODE_</li>
-      <li>> UPLINK ESTABLISHED...</li>
-      <li>> UNAUTHORIZED ACCESS DETECTED</li>
-    </ul>
-  </aside>
+  </div>
+  <div class="ocgf-input-area">
+    <input type="text" #cmdInput class="zs-input" placeholder="Enter global command or message..." (keyup.enter)="cmdInput.value=''">
+    <button class="zs-btn" (click)="cmdInput.value=''">Send</button>
+  </div>
 </div>

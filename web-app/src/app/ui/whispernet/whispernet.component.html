@@ -1,17 +1,15 @@
-<div class="whispernet-container diegetic-panel">
-  <div class="wn-header">
-    <span class="lock-icon">🔒</span>
-    <span>WHISPERNET // SECURE CHANNEL</span>
-  </div>
+<div class="whispernet-container">
   <div class="message-feed">
     <div *ngFor="let msg of messages" class="msg received">
-      <span class="timestamp">[{{msg.timestamp | date:'HH:mm:ss'}}]</span>
-      <span class="sender">SYS_OVERRIDE:</span>
-      <span class="text decryption-fx">{{msg.content}}</span>
+      <div class="msg-meta">
+        <span class="sender">Ops Control</span>
+        <span class="timestamp">{{msg.timestamp | date:'shortTime'}}</span>
+      </div>
+      <span class="text">{{msg.content}}</span>
     </div>
   </div>
   <div class="input-area">
-    <span class="prompt">&gt;</span>
-    <div class="cursor-blink">_</div>
+    <span class="prompt">Type a message...</span>
+    <div class="cursor-blink">|</div>
   </div>
 </div>

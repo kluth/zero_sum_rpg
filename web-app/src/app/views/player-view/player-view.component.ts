@@ -11,54 +11,60 @@ import { map } from 'rxjs/operators';
   standalone: true,
   imports: [CommonModule, WhispernetComponent, FrequenzXComponent, NeonLotusComponent],
   template: `
-  <div class="diegetic-os-shell">
-    <header class="os-header">
-      <div class="status-indicator warning">SYS.ON</div>
-      <div class="time">{{ time$ | async | date:'HH:mm:ss' }}</div>
-      <div class="connection glitch-text">UPLINK_SECURE</div>
+  <div class="modern-dashboard">
+    <header class="top-nav">
+      <div class="branding">
+        <img src="https://ui-avatars.com/api/?name=Z+S&background=2563eb&color=fff&rounded=true" alt="Logo" class="logo">
+        <span class="brand-name">Zero-Sum Workspace</span>
+      </div>
+      <div class="time">{{ time$ | async | date:'HH:mm' }}</div>
+      <div class="user-profile">
+        <img src="https://i.pravatar.cc/150?img=32" alt="Agent Profile" class="avatar">
+        <div class="user-info">
+          <span class="user-name">Alex Chen</span>
+          <span class="user-role">Field Agent</span>
+        </div>
+      </div>
     </header>
 
-    <section class="cognitive-load-container">
-      <div class="cognitive-label">
-        <span>MENTAL BANDWIDTH</span>
-        <span>{{ usedCapacity }} / 150 MB</span>
-      </div>
-      <div class="cognitive-bar">
-        <div class="cognitive-fill" [style.width.%]="(usedCapacity / 150) * 100"
-             [class.critical]="usedCapacity >= 140"></div>
-      </div>
-      <div class="stress-warning" *ngIf="usedCapacity >= 140">
-        CRITICAL COGNITIVE LOAD DETECTED. ATROPHY IMMINENT.
-      </div>
-    </section>
+    <div class="dashboard-content">
+      <aside class="sidebar">
+        <div class="clean-panel widget">
+          <h3>Health & Status</h3>
+          <img src="https://picsum.photos/300/150?grayscale" alt="Heart Rate Monitor" class="widget-img" style="border-radius:8px; margin: 10px 0; width:100%;">
+          <div class="progress-container">
+            <div class="progress-label"><span>Vitals</span> <span>96%</span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 96%; background: var(--success-green);"></div></div>
+          </div>
+        </div>
+        <div class="clean-panel widget" style="flex: 1;">
+          <h3>Location Map</h3>
+          <img src="https://picsum.photos/300/300?blur=2" alt="Map" class="widget-img" style="border-radius:8px; margin-top: 10px; width:100%; height: 100%; object-fit: cover;">
+        </div>
+      </aside>
 
-    <main class="os-workspace">
-      <article class="os-window">
-        <div class="window-titlebar">WHISPERNET.exe</div>
-        <div class="window-content"><app-whispernet></app-whispernet></div>
-      </article>
+      <main class="main-area">
+        <div class="clean-panel module">
+          <div class="module-header">
+            <h3>Direct Messages</h3>
+            <span class="badge">Secure</span>
+          </div>
+          <app-whispernet></app-whispernet>
+        </div>
 
-      <article class="os-window">
-        <div class="window-titlebar">FREQUENZ-X.sys</div>
-        <div class="window-content"><app-frequenz-x></app-frequenz-x></div>
-      </article>
-      
-      <article class="os-window">
-        <div class="window-titlebar">NEON_LOTUS.bin</div>
-        <div class="window-content"><app-neon-lotus></app-neon-lotus></div>
-      </article>
-    </main>
-
-    <footer class="os-footer">
-      <button class="os-button">REBOOT_CORE</button>
-      <button class="os-button primary">AWAIT_ORDERS</button>
-    </footer>
+        <div class="clean-panel module">
+          <div class="module-header">
+            <h3>Team Frequencies</h3>
+          </div>
+          <app-frequenz-x></app-frequenz-x>
+        </div>
+      </main>
+    </div>
   </div>
   `
 })
 export class PlayerViewComponent implements OnInit {
   time$: Observable<Date> = new Observable();
-  usedCapacity = 145; // Test data
   ngOnInit() {
     this.time$ = interval(1000).pipe(map(() => new Date()));
   }

@@ -5,19 +5,7 @@
 }
 
 .wn-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--primary-glow);
-  font-family: var(--font-heading);
-  letter-spacing: 1px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--surface-border);
-  margin-bottom: 16px;
-}
-
-.lock-icon {
-  font-size: 16px;
+  display: none; /* Hide the old header since the module header handles this */
 }
 
 .message-feed {
@@ -33,70 +21,64 @@
 /* Custom Scrollbar */
 .message-feed::-webkit-scrollbar { width: 4px; }
 .message-feed::-webkit-scrollbar-track { background: transparent; }
-.message-feed::-webkit-scrollbar-thumb { background: var(--surface-border); border-radius: 2px; }
+.message-feed::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 2px; }
 
 .msg {
   display: flex;
-  gap: 8px;
-  font-family: var(--font-mono);
-  font-size: 13px;
-  line-height: 1.4;
-  padding: 8px 12px;
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 4px;
-  border-left: 2px solid transparent;
+  flex-direction: column;
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 10px 14px;
+  background: #f3f4f6;
+  border-radius: 12px;
+  max-width: 85%;
+  align-self: flex-start;
 }
 
 .msg.received {
-  border-left-color: var(--alert-red);
+  background: #fee2e2; /* light red */
+  color: #991b1b;
+  border-bottom-left-radius: 2px;
 }
 
 .msg.sent {
-  border-left-color: var(--success-green);
+  background: #2563eb; /* primary blue */
+  color: #ffffff;
+  align-self: flex-end;
+  border-bottom-right-radius: 2px;
 }
 
-.timestamp { color: var(--text-muted); font-size: 11px; }
-.received .sender { color: var(--alert-red); font-weight: bold; }
-.sent .sender { color: var(--success-green); font-weight: bold; }
-.text { color: var(--text-main); }
-
-.decryption-fx {
-  position: relative;
-  display: inline-block;
+.msg-meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 4px;
+  font-size: 11px;
 }
 
-.decryption-fx::after {
-  content: "T@# p&ck*g3 is !t t$e d^0p p01nt.";
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  color: var(--primary-muted);
-  background: var(--bg-color);
-  overflow: hidden;
-  animation: revealText 1.5s forwards steps(20);
-}
+.timestamp { opacity: 0.7; }
+.received .sender { font-weight: 600; }
+.sent .sender { font-weight: 600; }
 
 .input-area {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--primary-glow);
-  font-family: var(--font-mono);
+  color: var(--text-muted);
   padding: 12px;
-  background: rgba(0, 240, 255, 0.05);
+  background: #f9fafb;
   border: 1px solid var(--surface-border);
-  border-radius: 4px;
+  border-radius: 8px;
 }
+
+.prompt { font-weight: 600; color: #9ca3af; }
 
 .cursor-blink {
   animation: blinkCursor 1s step-end infinite;
+  color: #9ca3af;
 }
 
 @keyframes blinkCursor {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
-}
-
-@keyframes revealText {
-  0% { width: 100%; }
-  100% { width: 0%; display: none; }
 }

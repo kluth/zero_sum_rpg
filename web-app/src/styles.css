@@ -1,107 +1,114 @@
-  --color-text-secondary: #A0AEC0;
-  
-  /* Semantic Colors */
-  --color-nerve-ok: #38A169;
-  --color-nerve-warn: #D69E2E;
-  --color-nerve-crit: #E53E3E;
-  --color-focus-mana: #3182CE;
-  --color-cyber-blue: #00E5FF;
-  --color-neon-red: #FF2A2A;
-  
-  /* Typography */
-  --font-family-base: 'Inter', 'Roboto', sans-serif;
-  --font-family-mono: 'Courier New', Courier, monospace;
-  --font-size-sm: 0.875rem;
-  --font-size-base: 1rem;
-  --font-size-lg: 1.125rem;
-  --font-size-xl: 1.25rem;
-  
-  /* Spacing */
-  --spacing-1: 0.25rem;
-  --spacing-2: 0.5rem;
-  --spacing-3: 0.75rem;
-  --spacing-4: 1rem;
-  --spacing-6: 1.5rem;
-  --spacing-8: 2rem;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg-color: #f3f4f6;
+  --surface-color: #ffffff;
+  --surface-border: #e5e7eb;
+  --primary-color: #2563eb;
+  --primary-hover: #1d4ed8;
+  --text-main: #111827;
+  --text-muted: #6b7280;
+  --alert-red: #ef4444;
+  --success-green: #10b981;
+  --font-body: 'Inter', sans-serif;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
-body {
+
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  background-color: #0A0F14;
-  color: #FFFFFF;
-  font-family: 'Inter', 'Roboto', sans-serif;
-  overflow-x: hidden;
 }
 
-.glass-panel {
-  background: rgba(0, 229, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(0, 229, 255, 0.2);
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
+body {
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  height: 100vh;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3 {
-  color: #00E5FF;
-  text-transform: uppercase;
-  letter-spacing: 2px;
+h1, h2, h3, h4 {
+  font-weight: 600;
+  color: var(--text-main);
+  letter-spacing: -0.025em;
 }
 
-.text-neon-red {
-  color: #FF2A2A;
+/* Modern Clean Panels */
+.glass-panel, .clean-panel {
+  background: var(--surface-color);
+  border: 1px solid var(--surface-border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  padding: 24px;
 }
 
-.text-neon-blue {
-  color: #00E5FF;
-}
-
-.flex-container {
-  display: flex;
-  gap: 20px;
-}
-
-.flex-item {
-  flex: 1;
-}
-
-.roll-card {
-  background: rgba(255, 42, 42, 0.1);
-  border-left: 4px solid #FF2A2A;
-  padding: 10px;
-  margin-bottom: 10px;
-}
-
-.map-room {
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(0, 229, 255, 0.3);
-  padding: 10px;
+/* Forms & Inputs */
+.zs-label {
+  display: block;
+  font-weight: 500;
+  color: var(--text-main);
+  font-size: 14px;
   margin-bottom: 8px;
-  border-radius: 4px;
 }
 
-.map-room.objective {
-  border-color: #FF2A2A;
-  background: rgba(255, 42, 42, 0.1);
+.zs-input, .zs-select, .zs-textarea {
+  width: 100%;
+  background: #f9fafb;
+  border: 1px solid #d1d5db;
+  color: var(--text-main);
+  font-family: var(--font-body);
+  font-size: 14px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  outline: none;
 }
 
-/* --- INJECTED BY UI OVERHAUL: COLOR PSYCHOLOGY --- */
-:root {
-  --color-bg-oppressive: #1c1d21;
-  --color-surface-heavy: #282a2e;
-  --color-zerosum-void: #0d0d0f;
-  --color-text-primary: #c4c5c7;
-  --color-text-muted: #7a7d84;
-  --color-text-ghost: #4b4e54;
-  --color-exhaustion-blue: #4a637a;
-  --color-cognitive-drain: #394a59;
-  --color-stress-neon: #dfff00;
-  --color-anxiety-glitch: #badd22;
-  --color-panic-red: #c92a2a;
-  --ui-bg-main: var(--color-zerosum-void);
-  --ui-bg-panel: var(--color-surface-heavy);
-  --ui-border-default: var(--color-cognitive-drain);
-  --ui-text-normal: var(--color-text-primary);
-  --ui-text-faded: var(--color-text-muted);
+.zs-input:focus, .zs-select:focus, .zs-textarea:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  background: #ffffff;
 }
-body { background-color: var(--ui-bg-main); color: var(--ui-text-normal); }
+
+/* Buttons */
+.zs-btn {
+  background: var(--primary-color);
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-block;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.zs-btn:hover {
+  background: var(--primary-hover);
+  box-shadow: var(--shadow-md);
+}
+
+.zs-btn:active {
+  transform: translateY(1px);
+}
+
+/* Utilities */
+.text-alert { color: var(--alert-red) !important; font-weight: 500; }
+.text-cyan { color: var(--primary-color) !important; font-weight: 500; }
+.text-muted { color: var(--text-muted); }
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.w-full { width: 100%; }
+.mt-2 { margin-top: 8px; }
+.mt-4 { margin-top: 16px; }
+.mb-4 { margin-bottom: 16px; }
+
+/* Remove old CRT effects completely */
+.crt-overlay { display: none; }

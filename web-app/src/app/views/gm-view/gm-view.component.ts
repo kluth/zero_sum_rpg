@@ -1,75 +1,62 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { OcgfComponent } from '../../ui/ocgf/ocgf.component';
 import { FormsModule } from '@angular/forms';
-import { FeedService } from '../../services/feed.service';
+import { FeedService, FeedMessage } from '../../services/feed.service';
+import { OcgfComponent } from '../../ui/ocgf/ocgf.component';
 
 @Component({
   selector: 'app-gm-view',
   standalone: true,
-  imports: [CommonModule, OcgfComponent, FormsModule],
+  imports: [CommonModule, FormsModule, OcgfComponent],
   template: `
-  <div style="display: flex; height: 100vh;">
-    <div style="flex: 1; padding: 30px; border-right: 1px solid var(--surface-border); display: flex; flex-direction: column;">
-      <h2 style="margin-bottom: 10px;">[GM OVERSEER TERMINAL]</h2>
-      <p class="text-muted" style="color: var(--text-muted); margin-bottom: 30px;">Inject commands directly into the players' WhisperNet Feed.</p>
-      
-      <div class="glass-panel" style="flex: 1; display: flex; flex-direction: column;">
-        <div class="mb-4">
-          <label class="zs-label">TARGET NETWORK</label>
-          <select class="zs-select" [(ngModel)]="network">
-            <option value="whispernet">WhisperNet</option>
-            <option value="frequenz-x">Frequenz-X</option>
-          </select>
-        </div>
-        
-        <div class="mb-4">
-          <label class="zs-label">PRIORITY LEVEL</label>
-          <select class="zs-select" [(ngModel)]="priority">
-            <option value="NORMAL">NORMAL</option>
-            <option value="URGENT_KPI">URGENT_KPI</option>
-          </select>
-        </div>
-
-        <div class="mb-4" style="flex: 1; display: flex; flex-direction: column;">
-          <label class="zs-label">MESSAGE PAYLOAD</label>
-          <textarea class="zs-textarea" [(ngModel)]="content" style="flex: 1; resize: none;" placeholder="Enter directive here..."></textarea>
-        </div>
-
-        <button class="zs-btn w-full mt-4" (click)="sendMessage()">
-          TRANSMIT DIRECTIVE
-        </button>
-
-        <div *ngIf="status" class="mt-4" [ngClass]="{'text-alert': status.includes('failed'), 'text-cyan': !status.includes('failed')}">
-          > {{ status }}
+  <div class="modern-dashboard">
+    <header class="top-nav">
+      <div class="branding">
+        <img src="https://ui-avatars.com/api/?name=GM&background=ef4444&color=fff&rounded=true" alt="Logo" class="logo">
+        <span class="brand-name">Zero-Sum Admin Panel</span>
+      </div>
+      <div class="user-profile">
+        <span class="badge" style="background:#fef2f2; color:#991b1b; margin-right: 12px;">Session Live</span>
+        <div class="user-info">
+          <span class="user-name">Overseer</span>
+          <span class="user-role">System Administrator</span>
         </div>
       </div>
-    </div>
-    
-    <div style="flex: 2; position: relative;">
-      <app-ocgf></app-ocgf>
+    </header>
+
+    <div class="dashboard-content">
+      <aside class="sidebar">
+        <div class="clean-panel widget">
+          <h3>System Controls</h3>
+          <div class="flex-container" style="flex-direction: column; gap: 8px; margin-top: 16px;">
+            <button class="zs-btn w-full" (click)="broadcast()">Broadcast Global Msg</button>
+            <button class="zs-btn w-full" style="background: var(--surface-border); color: var(--text-main);">Trigger Event</button>
+            <button class="zs-btn w-full" style="background: var(--alert-red); color: white;">Emergency Shutdown</button>
+          </div>
+        </div>
+        <div class="clean-panel widget" style="flex: 1;">
+          <h3>Agent Locations</h3>
+          <img src="https://picsum.photos/300/400?grayscale&blur=1" alt="Global Map" class="widget-img" style="border-radius:8px; margin-top: 10px; width:100%; height: 100%; object-fit: cover;">
+        </div>
+      </aside>
+
+      <main class="main-area">
+        <div class="clean-panel module" style="flex: 1;">
+          <div class="module-header">
+            <h3>Global Feed Oversight</h3>
+            <span class="badge">Monitoring Active</span>
+          </div>
+          <app-ocgf></app-ocgf>
+        </div>
+      </main>
     </div>
   </div>
   `
 })
 export class GmViewComponent {
-  network = 'whispernet';
-  priority = 'URGENT_KPI';
-  content = '';
-  status = '';
   private feedService = inject(FeedService);
 
-  sendMessage() {
-    this.status = 'Injecting...';
-    
-    this.feedService.injectMessage(this.network, this.content, this.priority)
-      .then(() => {
-        this.content = '';
-        this.status = 'Injecting... DONE';
-        setTimeout(() => this.status = '', 2000);
-      })
-      .catch(err => {
-        this.status = 'Injection failed: ' + err.message;
-      });
+  broadcast() {
+    this.feedService.injectMessage('ocgf', 'SYSTEM BROADCAST: Status update required from all agents.', 'URGENT_KPI');
   }
 }
