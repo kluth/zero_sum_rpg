@@ -1,1 +1,16 @@
-<p>whispernet works!</p>
+<div class="whispernet-container">
+  <header class="terminal-header">
+    <span class="network-id">SYS.WHISPERNET // SECURE_LINK</span>
+    <span class="timer">UPTIME: {{ timerText }}</span>
+  </header>
+  
+  <main class="chat-stream">
+    <div class="message" *ngFor="let msg of messages">
+      <span class="timestamp">[{{ msg.timestamp | date:'HH:mm:ss' }}]</span>
+      <span class="content">> {{ msg.content }}</span>
+    </div>
+    <div class="cursor-line">
+      <span class="cursor">_</span>
+    </div>
+  </main>
+</div>
