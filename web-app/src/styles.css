@@ -2,6 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* Base Colors */
+  --color-bg-primary: #0A0F14;
+  --color-bg-secondary: #121820;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #A0AEC0;
+  
+  /* Semantic Colors */
+  --color-nerve-ok: #38A169;
+  --color-nerve-warn: #D69E2E;
+  --color-nerve-crit: #E53E3E;
+  --color-focus-mana: #3182CE;
+  --color-cyber-blue: #00E5FF;
+  --color-neon-red: #FF2A2A;
+  
+  /* Typography */
+  --font-family-base: 'Inter', 'Roboto', sans-serif;
+  --font-family-mono: 'Courier New', Courier, monospace;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  
+  /* Spacing */
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+}
 body {
   margin: 0;
   padding: 0;
