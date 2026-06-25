@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OcgfComponent } from '../../ui/ocgf/ocgf.component';
 import { FormsModule } from '@angular/forms';
+import { FeedService } from '../../services/feed.service';
 
 @Component({
   selector: 'app-gm-view',
@@ -50,33 +51,19 @@ export class GmViewComponent {
   priority = 'URGENT_KPI';
   content = '';
   status = '';
+  private feedService = inject(FeedService);
 
   sendMessage() {
     this.status = 'Injecting...';
-    const token = localStorage.getItem('zero_sum_token');
-    const serverUrl = localStorage.getItem('zero_sum_server_url') || 'http://localhost:8080';
-    const targetUrl = serverUrl.endsWith('/') ? serverUrl.slice(0, -1) : serverUrl;
-
-    fetch(`${targetUrl}/api/message`, {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-      body: JSON.stringify({
-        network: this.network,
-        priority: this.priority,
-        content: this.content
-      })
-    }).then(res => {
-      if (res.ok) {
-        this.status = 'Payload injected successfully.';
+    
+    this.feedService.injectMessage(this.network, this.content, this.priority)
+      .then(() => {
         this.content = '';
-      } else {
-        this.status = 'Error injecting payload. Unauthorized?';
-      }
-    }).catch(err => {
-      this.status = 'Connection error.';
-    });
+        this.status = 'Injecting... DONE';
+        setTimeout(() => this.status = '', 2000);
+      })
+      .catch(err => {
+        this.status = 'Injection failed: ' + err.message;
+      });
   }
 }

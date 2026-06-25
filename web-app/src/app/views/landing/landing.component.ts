@@ -13,14 +13,8 @@ import { FormsModule } from '@angular/forms';
         <h1 style="margin-bottom: 30px; font-size: 24px;">ZERO-SUM RPG<br>UPLINK TERMINAL</h1>
         
         <div style="margin-bottom: 20px; text-align: left;">
-          <label>SERVER URL:</label>
-          <input type="text" [(ngModel)]="serverUrl" 
-                 style="width: 100%; padding: 10px; background: #111; color: #00ff00; border: 1px solid #00ff00; margin-top: 5px;">
-        </div>
-
-        <div style="margin-bottom: 20px; text-align: left;">
           <label>ACCESS KEY:</label>
-          <input type="password" [(ngModel)]="sessionKey" 
+          <input type="text" [(ngModel)]="sessionKey" 
                  style="width: 100%; padding: 10px; background: #111; color: #00ff00; border: 1px solid #00ff00; margin-top: 5px;">
         </div>
 
@@ -44,44 +38,22 @@ import { FormsModule } from '@angular/forms';
   `
 })
 export class LandingComponent {
-  serverUrl = 'http://localhost:8080';
   sessionKey = '';
   selectedRole = 'player';
   error = '';
 
-  constructor(private router: Router, private ngZone: NgZone) {
-    if (typeof localStorage !== 'undefined') {
-      const savedUrl = localStorage.getItem('zero_sum_server_url');
-      if (savedUrl) this.serverUrl = savedUrl;
-    }
-  }
+  constructor(private router: Router, private ngZone: NgZone) {}
 
   login() {
+    if (!this.sessionKey.trim()) {
+      this.error = 'ACCESS KEY REQUIRED.';
+      return;
+    }
     this.error = 'Connecting...';
     
-    // Ensure URL has no trailing slash
-    const targetUrl = this.serverUrl.endsWith('/') ? this.serverUrl.slice(0, -1) : this.serverUrl;
-
-    fetch(targetUrl + '/api/auth', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sessionKey: this.sessionKey })
-    })
-    .then(res => {
-      this.ngZone.run(() => {
-        if (res.ok) {
-          localStorage.setItem('zero_sum_server_url', targetUrl);
-          localStorage.setItem('zero_sum_token', this.sessionKey);
-          this.router.navigate(['/' + this.selectedRole]);
-        } else {
-          this.error = 'ACCESS DENIED. INVALID KEY.';
-        }
-      });
-    })
-    .catch(err => {
-      this.ngZone.run(() => {
-        this.error = 'UPLINK FAILURE. SERVER UNREACHABLE.';
-      });
+    this.ngZone.run(() => {
+      localStorage.setItem('zero_sum_token', this.sessionKey.trim());
+      this.router.navigate(['/' + this.selectedRole]);
     });
   }
 }
