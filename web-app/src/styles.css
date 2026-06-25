@@ -93,3 +93,24 @@ h1, h2, h3 {
   border-color: #FF2A2A;
   background: rgba(255, 42, 42, 0.1);
 }
+
+/* --- INJECTED BY UI OVERHAUL: COLOR PSYCHOLOGY --- */
+:root {
+  --color-bg-oppressive: #1c1d21;
+  --color-surface-heavy: #282a2e;
+  --color-zerosum-void: #0d0d0f;
+  --color-text-primary: #c4c5c7;
+  --color-text-muted: #7a7d84;
+  --color-text-ghost: #4b4e54;
+  --color-exhaustion-blue: #4a637a;
+  --color-cognitive-drain: #394a59;
+  --color-stress-neon: #dfff00;
+  --color-anxiety-glitch: #badd22;
+  --color-panic-red: #c92a2a;
+  --ui-bg-main: var(--color-zerosum-void);
+  --ui-bg-panel: var(--color-surface-heavy);
+  --ui-border-default: var(--color-cognitive-drain);
+  --ui-text-normal: var(--color-text-primary);
+  --ui-text-faded: var(--color-text-muted);
+}
+body { background-color: var(--ui-bg-main); color: var(--ui-text-normal); }
