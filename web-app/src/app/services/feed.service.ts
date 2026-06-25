@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 
 export interface FeedMessage {
@@ -15,15 +15,18 @@ export interface FeedMessage {
 export class FeedService {
   private messagesSubject = new Subject<FeedMessage>();
 
-  constructor() {
+  constructor(private zone: NgZone) {
     console.log('[FeedService] Connecting to Live Backend SSE stream...');
-    const eventSource = new EventSource('http://localhost:8080/events');
+    const token = localStorage.getItem('zero_sum_token') || '';
+    const eventSource = new EventSource(`http://localhost:8080/events?token=${token}`);
 
     eventSource.onmessage = (event) => {
       try {
         const msg = JSON.parse(event.data);
         console.log('[FeedService] Received live event:', msg);
-        this.pushMessage(msg);
+        this.zone.run(() => {
+          this.pushMessage(msg);
+        });
       } catch (e) {
         console.error('[FeedService] Failed to parse SSE event', e);
       }

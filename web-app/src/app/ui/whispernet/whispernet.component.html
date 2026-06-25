@@ -4,15 +4,10 @@
     <span>WHISPERNET // SECURE CHANNEL</span>
   </div>
   <div class="message-feed">
-    <div class="msg received">
-      <span class="timestamp">[23:41:02]</span>
-      <span class="sender">ANON-99:</span>
-      <span class="text decryption-fx">The package is at the drop point.</span>
-    </div>
-    <div class="msg sent">
-      <span class="timestamp">[23:41:45]</span>
-      <span class="sender">YOU:</span>
-      <span class="text">Copy that. Erasing logs.</span>
+    <div *ngFor="let msg of messages" class="msg received">
+      <span class="timestamp">[{{msg.timestamp | date:'HH:mm:ss'}}]</span>
+      <span class="sender">SYS_OVERRIDE:</span>
+      <span class="text decryption-fx">{{msg.content}}</span>
     </div>
   </div>
   <div class="input-area">

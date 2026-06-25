@@ -14,7 +14,9 @@
     <div class="data-stream">
       <p>FRQ: 104.992 MHz</p>
       <p>ENC: B-KDF2</p>
-      <p>SRC: UNKNOWN</p>
+      <div *ngFor="let msg of messages">
+        <p>> {{msg.content}}</p>
+      </div>
     </div>
   </main>
 </div>
