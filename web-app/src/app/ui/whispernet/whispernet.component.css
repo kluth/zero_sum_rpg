@@ -1,0 +1,86 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
+  color: #0f0;
+  font-family: 'Courier New', Courier, monospace;
+  overflow: hidden;
+  position: relative;
+}
+
+.whispernet-container {
+  padding: 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.terminal-header {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #0f0;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  text-shadow: 0 0 5px #0f0;
+}
+
+.network-id, .timer {
+  font-weight: bold;
+}
+
+.chat-stream {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.message {
+  opacity: 0;
+  animation: typeIn 0.3s forwards;
+}
+
+.timestamp {
+  color: #0a0;
+  margin-right: 10px;
+}
+
+.content {
+  text-shadow: 0 0 3px #0f0;
+}
+
+.cursor-line {
+  margin-top: 10px;
+}
+
+.cursor {
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes typeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Glitch effect overlay */
+:host::after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  z-index: 2;
+  background-size: 100% 2px, 3px 100%;
+  pointer-events: none;
+}
