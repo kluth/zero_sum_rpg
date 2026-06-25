@@ -1,239 +1,124 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&family=JetBrains+Mono:wght@100;300;400&display=swap');
-
-:host {
-  display: block;
-  min-height: 100dvh; 
-  background-color: #000000; /* Absolute black */
-  color: #c9c9cd; /* Cold slate gray */
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-}
-
-.crt-overlay {
-  display: block;
-  position: fixed;
-  top: 0;
-  left: 0;
+/* Diegetic OS Layout */
+.diegetic-os-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
   width: 100vw;
-  height: 100dvh;
-  pointer-events: none;
-  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05) 1px, transparent 1px, transparent 2px);
-  z-index: 9999;
-  opacity: 0.3;
-}
-
-.header-brutalist {
-  font-family: 'Inter', sans-serif;
-  font-weight: 200;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  color: #fafafa;
-  margin: 0;
-}
-
-.data-mono {
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 300;
-  letter-spacing: 0.05em;
-  color: #a1a1aa;
-}
-
-/* Sterile Corporate Panel */
-.glass-panel {
-  background: rgba(10, 10, 12, 0.95) !important;
-  border: 1px solid #1a1a1c !important;
-  border-radius: 0px !important;
-  padding: clamp(4px, 1vh, 8px) !important;
-  box-shadow: none !important;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden; /* Enforce no scrolling by default on panels */
-}
-
-/* Typography Scaling */
-h1, h2, h3 {
-  margin-bottom: clamp(6px, 1.5vh, 16px) !important;
-}
-
-.lobby-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100dvh; max-height: 100dvh;
-  z-index: 10;
-  position: relative;
-  padding: clamp(20px, 4vh, 40px);
-  box-sizing: border-box;
-}
-
-.cyber-input {
-  background: #000000 !important;
-  border: 1px solid #1a1a1c !important;
-  color: #ffffff !important;
-  font-size: clamp(12px, 1.5vh, 16px) !important;
-  text-align: center;
-  letter-spacing: 0.15em;
-  padding: clamp(6px, 1.5vh, 10px) clamp(10px, 2vw, 16px);
-  outline: none;
-  font-family: 'JetBrains Mono', monospace !important;
-  border-radius: 0px !important;
-  width: 100%;
-  max-width: 400px;
-  margin-bottom: 16px;
-  transition: all 0.1s ease;
-}
-
-.cyber-input:focus {
-  border-color: #39FF14 !important;
-  background: #050505 !important;
-}
-
-.cyber-button {
-  background: #050505 !important;
-  color: #a1a1aa !important;
-  border: 1px solid #1a1a1c !important;
-  padding: clamp(4px, 1vh, 8px) clamp(8px, 1.5vw, 16px);
-  font-size: clamp(10px, 1.2vh, 14px);
-  font-family: 'JetBrains Mono', monospace;
-  letter-spacing: 0.1em;
-  font-weight: 400;
-  cursor: pointer;
-  margin-top: clamp(4px, 1vh, 10px);
-  transition: all 0.1s ease;
-  text-transform: uppercase;
-  border-radius: 0px !important;
-}
-
-.cyber-button:hover, .cyber-button.active {
-  background: #1a1a1c !important;
-  color: #ffffff !important;
-  border-color: #39FF14 !important;
-}
-
-.main-dashboard-wrapper { 
-  display: flex;
-  flex-direction: column;
-  height: 100dvh; 
-  max-height: 100dvh; 
-  width: 100vw;
-  max-width: 100vw;
-  overflow: hidden; 
-  padding: clamp(10px, 2vh, 24px);
-  box-sizing: border-box;
-  gap: clamp(10px, 2vh, 20px);
-}
-
-/* Desktop First Layouts */
-.gm-grid, .spectator-grid, .spectator-grid-cams {
-  display: flex;
-  flex: 1;
-  gap: clamp(10px, 2vw, 20px);
+  background-color: var(--color-bg-oppressive);
+  color: var(--color-text-primary);
+  font-family: 'Courier New', Courier, monospace;
   overflow: hidden;
-}
-
-/* Remove Tabs from GM View - make tools pane multi-column */
-.gm-tools-container {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(8px, 1.5vh, 16px);
-  height: 100%;
-  overflow: hidden; /* No scrolling! */
-}
-.gm-tools-row {
-  display: flex;
-  gap: clamp(8px, 1vw, 16px);
-  flex: 1;
-  min-height: 0; /* allows shrinking */
-}
-.gm-tools-col {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: clamp(4px, 1vh, 8px);
-  min-height: 0;
-  border: 1px solid rgba(255,255,255,0.05);
-  padding: clamp(6px, 1vh, 12px);
-  background: rgba(0,0,0,0.2);
-}
-
-.prefab-block, .tool-btn {
-  background: #050505 !important;
-  color: #a1a1aa !important;
-  border: 1px solid #1a1a1c !important;
-  border-radius: 0px !important;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: clamp(9px, 1.2vh, 12px);
-  padding: clamp(4px, 1vh, 6px);
-  text-align: left;
-  cursor: pointer;
-}
-
-.prefab-block:hover, .tool-btn:hover {
-  background: #1a1a1c !important;
-  color: #ffffff !important;
-  border-color: #39FF14 !important;
-}
-
-.prefab-block.selected, .tool-btn.active {
-  background: #39FF14 !important;
-  border-color: #39FF14 !important;
-  color: #000000 !important;
-  font-weight: bold;
-}
-
-input[type="text"], input[type="number"], select {
-  background: rgba(0, 0, 0, 0.2) !important;
-  color: #fafafa !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: clamp(10px, 1.2vh, 12px);
-  padding: clamp(4px, 1vh, 8px) !important;
-  border-radius: 0px;
-}
-
-/* Alert styling */
-.pulsating-alert-bar {
-  position: fixed;
-  top: 40px;
-  left: 0;
-  right: 0;
-  z-index: 9999;
   box-sizing: border-box;
-  animation: corporate-alert 2s infinite alternate !important;
-  color: #f43f5e !important;
-  border: 1px solid rgba(244, 63, 94, 0.3) !important;
-  border-left: none !important;
-  border-right: none !important;
-  background: rgba(20, 0, 0, 0.9) !important;
-  backdrop-filter: blur(4px);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: clamp(14px, 2vh, 20px) !important;
-  letter-spacing: 0.15em;
-  font-weight: 300;
-  padding: clamp(10px, 1.5vh, 16px) !important;
-  text-align: center;
-  flex-shrink: 0;
+  padding: 10px;
 }
 
-@keyframes corporate-alert {
-  0% { opacity: 0.8; box-shadow: 0 0 8px rgba(244, 63, 94, 0.05); }
-  100% { opacity: 1; box-shadow: 0 0 24px rgba(244, 63, 94, 0.15); border-color: rgba(244, 63, 94, 0.5) !important; }
+.os-header {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--color-cognitive-drain);
+  padding-bottom: 5px;
+  margin-bottom: 15px;
+  font-weight: bold;
+  font-size: 0.9rem;
 }
 
-@keyframes blink {
-  0% { opacity: 1; }
-  50% { opacity: 0.5; }
-  100% { opacity: 1; }
+.status-indicator.warning { color: var(--color-stress-neon); }
+.glitch-text { text-shadow: 2px 0 var(--color-panic-red), -2px 0 var(--color-exhaustion-blue); }
+
+.cognitive-load-container {
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: var(--color-surface-heavy);
+  border: 1px solid var(--color-exhaustion-blue);
 }
 
-/* Custom Scrollbar for sterile look (used only on mobile or specific inner texts if absolutely necessary) */
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.1); }
-::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 0px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+.cognitive-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
 
-/* ========================================= */
-/* Removed Mobile Scroll Override to enforce strict single-screen Dystopian Dashboard compliance. */
+.cognitive-bar {
+  width: 100%;
+  height: 10px;
+  background-color: var(--color-zerosum-void);
+  border: 1px solid var(--color-cognitive-drain);
+}
+
+.cognitive-fill {
+  height: 100%;
+  background-color: var(--color-exhaustion-blue);
+  transition: width 0.3s ease;
+}
+.cognitive-fill.critical {
+  background-color: var(--color-panic-red);
+  box-shadow: var(--metric-burnout-glow);
+}
+
+.stress-warning {
+  margin-top: 5px;
+  font-size: 0.75rem;
+  color: var(--color-panic-red);
+  animation: blink 1s infinite;
+}
+
+@keyframes blink { 50% { opacity: 0; } }
+
+.os-workspace {
+  flex-grow: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto 1fr;
+  gap: 15px;
+  overflow-y: auto;
+}
+
+@media (min-width: 768px) {
+  .os-workspace {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+}
+
+.os-window {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-cognitive-drain);
+  background-color: var(--color-surface-heavy);
+}
+
+.window-titlebar {
+  background-color: var(--color-cognitive-drain);
+  color: var(--color-text-ghost);
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.window-content {
+  padding: 10px;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.os-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 2px solid var(--color-cognitive-drain);
+}
+
+.os-button {
+  background-color: var(--ui-btn-bg);
+  border: 1px solid var(--ui-btn-border);
+  color: var(--ui-btn-text);
+  padding: 10px 20px;
+  font-family: inherit;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+.os-button:hover { background-color: var(--ui-btn-hover-bg); }
+.os-button.primary { border-color: var(--color-stress-neon); color: var(--color-stress-neon); }

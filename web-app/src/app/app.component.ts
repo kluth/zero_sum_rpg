@@ -1,4 +1,6 @@
 import { Component, OnInit, OnDestroy, signal, computed, effect, inject, Injector, ChangeDetectionStrategy } from '@angular/core';
+import { interval } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PixiMapComponent } from './pixi-map.component';
@@ -53,6 +55,12 @@ const firebaseConfig = {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements OnInit, OnDestroy {
+  // Simulated clock for the OS
+  time$ = interval(1000).pipe(map(() => new Date()));
+  
+  // Cognitive Load metric for Zero-Sum display
+  usedCapacity = 120; // Simulated high load for UI testing
+
   private webrtc = inject(WebRTCService);
   public aiEngine = inject(AIEngineService);
   private injector = inject(Injector);
