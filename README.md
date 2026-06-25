@@ -11,7 +11,7 @@
 
 **<span style="font-size: 1.5em; float: left; margin-right: 5px;">I</span>n the failing infrastructure of decaying cities and crumbling institutions, a grounded reality demands action. Welcome to the ZERO SUM RPG.**
 
-This is a hardcore tactical roleplaying experience focused on community resilience and systemic friction. You are not a chosen one. You are not a cybernetically-enhanced super-soldier or an elite mercenary. You are a Grocery Store Manager, a Stay-at-Home Parent, a Janitor, or a Nurse. 
+This is a hardcore tactical roleplaying experience focused on community resilience and systemic friction. You are not a chosen one. You are not a cybernetically-enhanced super-soldier or an elite mercenary. You are an everyday citizen. There are no fixed classes; through our Freeform Job System, you define your background with custom tags, earning dynamic GM bonuses when your everyday expertise applies to the crisis at hand.
 
 As systemic crises bleed the world dry—failing supply chains, unaccountable corporate overreach, and collapsing public utilities—ordinary people are stepping up. The world's elites have insulated themselves, leaving the everyday citizen to hold the pieces together. Survival is entirely dependent on your mundane specialized knowledge, human resilience, and tactical coordination.
 
