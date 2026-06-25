@@ -1,73 +1,90 @@
-/* N54 News Network Broadcast Style */
+/* Premium N54 News Network Broadcast Style */
 .n54-news-overlay {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.9);
-  font-family: 'Impact', 'Bebas Neue', sans-serif;
-  animation: heartbeat-pulse-bg 0.5s infinite alternate;
+  background: radial-gradient(circle at 50% 50%, rgba(30,0,0,0.8), rgba(0,0,0,1));
+  font-family: var(--font-heading);
+  position: relative;
+  overflow: hidden;
+}
+
+.n54-news-overlay::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px);
+  pointer-events: none;
+  z-index: 10;
 }
 
 .breaking-news-header {
-  padding: 2rem;
+  padding: 4rem;
   text-align: center;
-  margin-top: 10vh;
+  margin-top: 15vh;
+  position: relative;
+  z-index: 20;
 }
 
 .breaking-news-header h1 {
   font-size: 8rem;
-  color: #FF0033; /* N54 Alarm-Rot */
+  color: var(--alert-red);
   margin: 0;
   text-transform: uppercase;
-  text-shadow: 0 0 20px #FF0033;
+  text-shadow: 0 0 40px rgba(255, 42, 42, 0.8), 0 0 10px rgba(255, 42, 42, 0.4);
+  letter-spacing: 4px;
+  animation: glitch-anim 2s infinite;
 }
 
 .breaking-news-header h2 {
-  font-size: 5rem;
-  color: #FFFFFF; /* Strobe White */
+  font-size: 4rem;
+  color: var(--text-main);
   margin: 0;
   text-transform: uppercase;
+  letter-spacing: 10px;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
-/* Endloser Strom aus Sensationsmeldungen (Hardwarebeschleunigt) */
 .n54-ticker-container {
   width: 100%;
   overflow: hidden;
-  background-color: #000000;
-  border-top: 4px solid #FF0033; /* N54 Alarm-Rot */
+  background: rgba(255, 42, 42, 0.1);
+  border-top: 2px solid var(--alert-red);
+  border-bottom: 2px solid var(--alert-red);
   white-space: nowrap;
   display: flex;
-  padding: 10px 0;
+  padding: 20px 0;
+  box-shadow: 0 0 30px rgba(255, 42, 42, 0.2);
+  position: relative;
+  z-index: 20;
+  backdrop-filter: blur(10px);
 }
 
 .n54-ticker-track {
   display: inline-block;
   white-space: nowrap;
-  color: #FFD700; /* Toxic Yellow für Hervorhebungen */
-  font-family: 'Impact', 'Bebas Neue', sans-serif;
-  font-size: 3rem;
+  color: #FFD700;
+  font-family: var(--font-heading);
+  font-size: 4rem;
+  font-weight: 700;
   text-transform: uppercase;
-  /* Hardwarebeschleunigte Transform-Animation */
-  animation: scroll-ticker 10s linear infinite;
+  letter-spacing: 2px;
+  animation: scroll-ticker 15s linear infinite;
   will-change: transform;
+  text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
 }
 
-/* 
- * Reizüberflutung: Zu schnell für entspanntes Lesen.
- * Transform: translate3d erzwingt GPU-Rendering für flüssige 60fps.
- */
 @keyframes scroll-ticker {
-  0%   { transform: translate3d(100%, 0, 0); }
+  0%   { transform: translate3d(100vw, 0, 0); }
   100% { transform: translate3d(-100%, 0, 0); }
 }
 
-@keyframes heartbeat-pulse-bg {
-  0%   { box-shadow: inset 0 0 20px #FF0033; }
-  100% { box-shadow: inset 0 0 80px #FF0033; }
-}
-
-@keyframes heartbeat-pulse {
-  0%   { box-shadow: 0 0 10px #FF0033; }
-  100% { box-shadow: 0 0 40px #FF0033; }
+@keyframes glitch-anim {
+  0% { transform: translate(0) }
+  20% { transform: translate(-2px, 2px) }
+  40% { transform: translate(-2px, -2px) }
+  60% { transform: translate(2px, 2px) }
+  80% { transform: translate(2px, -2px) }
+  100% { transform: translate(0) }
 }

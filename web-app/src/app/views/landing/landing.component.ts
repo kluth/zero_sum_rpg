@@ -8,31 +8,30 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div style="display:flex; justify-content:center; items-center:center; min-height:100vh; background:black; color:#00ff00; font-family:monospace; align-items:center;">
-      <div style="border: 2px solid #00ff00; padding: 40px; width: 400px; text-align: center; box-shadow: 0 0 20px #00ff00;">
-        <h1 style="margin-bottom: 30px; font-size: 24px;">ZERO-SUM RPG<br>UPLINK TERMINAL</h1>
+    <div class="crt-overlay"></div>
+    <div class="flex-center" style="min-height: 100vh;">
+      <div class="glass-panel" style="width: 420px; text-align: center;">
+        <h1 style="margin-bottom: 30px; font-size: 28px;">ZERO-SUM RPG<br><span style="font-size: 16px; color: var(--text-muted);">UPLINK TERMINAL</span></h1>
         
-        <div style="margin-bottom: 20px; text-align: left;">
-          <label>ACCESS KEY:</label>
-          <input type="text" [(ngModel)]="sessionKey" 
-                 style="width: 100%; padding: 10px; background: #111; color: #00ff00; border: 1px solid #00ff00; margin-top: 5px;">
+        <div class="mb-4" style="text-align: left;">
+          <label class="zs-label">ACCESS KEY</label>
+          <input type="text" class="zs-input" [(ngModel)]="sessionKey" placeholder="Enter secure session ID...">
         </div>
 
-        <div style="margin-bottom: 30px; text-align: left;">
-          <label>SELECT ROLE:</label>
-          <select [(ngModel)]="selectedRole" style="width: 100%; padding: 10px; background: #111; color: #00ff00; border: 1px solid #00ff00; margin-top: 5px;">
+        <div class="mb-4" style="text-align: left;">
+          <label class="zs-label">SELECT ROLE</label>
+          <select class="zs-select" [(ngModel)]="selectedRole">
             <option value="player">Player Agent (UI)</option>
             <option value="gm">Game Master (Overseer)</option>
             <option value="spectator">Spectator (Billboard)</option>
           </select>
         </div>
 
-        <button (click)="login()" 
-                style="width: 100%; padding: 15px; background: #00ff00; color: black; border: none; font-weight: bold; cursor: pointer;">
+        <button class="zs-btn w-full mt-4" (click)="login()">
           ESTABLISH UPLINK
         </button>
 
-        <div *ngIf="error" style="color: red; margin-top: 15px;">{{ error }}</div>
+        <div *ngIf="error" class="text-alert mt-4" style="font-weight: 600;">{{ error }}</div>
       </div>
     </div>
   `

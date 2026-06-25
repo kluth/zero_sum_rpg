@@ -1,75 +1,112 @@
-/* Gnadenloses Grid-System ohne Padding-Luxus */
 .overseer-panopticon {
   display: grid;
-  grid-template-columns: 1fr 3fr 1fr; /* Magazin-Spalten: Threat, Main, Event-Log */
+  grid-template-columns: 1.2fr 3fr 1.2fr;
   grid-template-rows: auto 1fr;
   grid-template-areas: 
     "header header header"
     "vitals main log";
-  gap: 2px;
-  background-color: #ffffff; /* Harte weiße Ränder als Grid-Gap */
-  height: 100vh;
-  overflow: hidden;
-  font-family: monospace; /* Monospace-Typografie */
-  color: #0a0a0a;
+  gap: 16px;
+  height: 100%;
+  color: var(--text-main);
 }
 
 .overseer-header { 
   grid-area: header; 
-  background-color: #0a0a0a; 
-  color: #00ff00; /* phosphor-grün */
-  padding: 10px;
+  background: var(--surface-color);
+  border: 1px solid var(--surface-border);
+  border-radius: 8px;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
+
 .overseer-header h1 {
   margin: 0;
-  font-size: 1.5rem;
-  letter-spacing: 2px;
+  font-size: 20px;
+  color: var(--primary-glow);
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
 }
 
-.overseer-vitals { 
-  grid-area: vitals; 
-  background-color: #0a0a0a; 
-  color: #ffaa00; /* bernsteinfarben */
-  padding: 10px;
-}
-
-.overseer-main   { 
-  grid-area: main;   
-  background-color: #0a0a0a; 
-  color: #ffffff;
-  padding: 10px;
-}
-
-.overseer-log    { 
-  grid-area: log;    
-  background-color: #0a0a0a; 
-  color: #00ff00; 
-  padding: 10px;
+.overseer-vitals, .overseer-main, .overseer-log {
+  background: var(--surface-color);
+  border: 1px solid var(--surface-border);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
 }
 
 .overseer-panopticon h2 {
-  margin-top: 0;
-  font-size: 1.2rem;
-  border-bottom: 1px solid currentColor;
-  padding-bottom: 5px;
+  font-size: 14px;
+  color: var(--text-muted);
+  border-bottom: 1px solid rgba(0, 240, 255, 0.1);
+  padding-bottom: 10px;
+  margin-bottom: 16px;
+  letter-spacing: 2px;
+}
+
+.vital-stats {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.vital-stats > div {
+  background: rgba(0, 0, 0, 0.4);
+  padding: 10px;
+  border-radius: 4px;
+  border-left: 3px solid var(--alert-red);
+}
+
+.content-feed {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed var(--surface-border);
+  background: rgba(0, 240, 255, 0.02);
+  color: var(--primary-muted);
+  border-radius: 4px;
+  font-family: var(--font-heading);
+  letter-spacing: 4px;
 }
 
 ul.log-stream {
   list-style: none;
   padding: 0;
   margin: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
 }
+
 ul.log-stream li {
-  margin-bottom: 5px;
+  margin-bottom: 8px;
+  padding: 6px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
 }
 
-/* Threat Level Tracker - Pulsierend */
 .threat-level-tracker {
-  border-top: 8px solid #ff2a2a;
-  animation: heartbeat-pulse 0.5s infinite alternate; /* 120 BPM */
+  position: relative;
 }
 
-@keyframes heartbeat-pulse {
-  0%   { box-shadow: inset 0 0 10px #FF0033; }
-  100% { box-shadow: inset 0 0 40px #FF0033; }
+.threat-level-tracker::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 4px;
+  background: var(--alert-red);
+  box-shadow: 0 0 15px var(--alert-red);
+  z-index: 10;
+  border-radius: 4px 4px 0 0;
+  animation: pulse-threat 2s infinite alternate;
+}
+
+@keyframes pulse-threat {
+  0% { opacity: 0.4; }
+  100% { opacity: 1; }
 }

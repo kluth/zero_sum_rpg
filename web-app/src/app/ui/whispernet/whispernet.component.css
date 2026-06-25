@@ -1,68 +1,90 @@
 .whispernet-container {
-  background-color: #0d1117;
-  color: #8b949e;
-  font-family: 'Consolas', monospace;
-  border: 1px solid #30363d;
-  border-radius: 6px;
-  padding: 1rem;
-  max-width: 600px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .wn-header {
-  border-bottom: 1px solid #30363d;
-  padding-bottom: 0.5rem;
-  margin-bottom: 1rem;
-  font-size: 0.85rem;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  color: #58a6ff;
+  gap: 8px;
+  color: var(--primary-glow);
+  font-family: var(--font-heading);
+  letter-spacing: 1px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--surface-border);
+  margin-bottom: 16px;
 }
 
 .lock-icon {
-  font-size: 1rem;
+  font-size: 16px;
 }
 
 .message-feed {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
-  margin-bottom: 2rem;
+  gap: 12px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+  padding-right: 8px;
 }
+
+/* Custom Scrollbar */
+.message-feed::-webkit-scrollbar { width: 4px; }
+.message-feed::-webkit-scrollbar-track { background: transparent; }
+.message-feed::-webkit-scrollbar-thumb { background: var(--surface-border); border-radius: 2px; }
 
 .msg {
   display: flex;
-  gap: 0.5rem;
-  font-size: 0.9rem;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.4;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  border-left: 2px solid transparent;
 }
 
-.timestamp { color: #484f58; }
-.received .sender { color: #ff7b72; }
-.sent .sender { color: #7ee787; }
+.msg.received {
+  border-left-color: var(--alert-red);
+}
+
+.msg.sent {
+  border-left-color: var(--success-green);
+}
+
+.timestamp { color: var(--text-muted); font-size: 11px; }
+.received .sender { color: var(--alert-red); font-weight: bold; }
+.sent .sender { color: var(--success-green); font-weight: bold; }
+.text { color: var(--text-main); }
 
 .decryption-fx {
   position: relative;
   display: inline-block;
 }
 
-.decryption-fx::before {
+.decryption-fx::after {
   content: "T@# p&ck*g3 is !t t$e d^0p p01nt.";
   position: absolute;
-  top: 0; left: 0;
-  color: #8b949e;
-  background: #0d1117;
+  top: 0; left: 0; right: 0; bottom: 0;
+  color: var(--primary-muted);
+  background: var(--bg-color);
   overflow: hidden;
-  animation: revealText 2s forwards steps(30);
+  animation: revealText 1.5s forwards steps(20);
 }
 
 .input-area {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  color: #c9d1d9;
-  border-top: 1px dashed #30363d;
-  padding-top: 1rem;
+  gap: 8px;
+  color: var(--primary-glow);
+  font-family: var(--font-mono);
+  padding: 12px;
+  background: rgba(0, 240, 255, 0.05);
+  border: 1px solid var(--surface-border);
+  border-radius: 4px;
 }
 
 .cursor-blink {
@@ -76,5 +98,5 @@
 
 @keyframes revealText {
   0% { width: 100%; }
-  100% { width: 0%; }
+  100% { width: 0%; display: none; }
 }
