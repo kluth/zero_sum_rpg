@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, computed, effect, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, effect, inject, Injector, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PixiMapComponent } from './pixi-map.component';
@@ -44,6 +44,7 @@ const firebaseConfig = {
 export class AppComponent implements OnInit, OnDestroy {
   private webrtc = inject(WebRTCService);
   public aiEngine = inject(AIEngineService);
+  private injector = inject(Injector);
   gameState = signal<any>({ characters: {}, map: null, traumaLog: {}, clocks: {}, flashbacks: {} });
   heatLevel = computed(() => this.gameState().heatLevel || 1);
   chaosMarketValue = computed(() => this.gameState()?.chaosMarketValue || 0);
@@ -147,6 +148,21 @@ export class AppComponent implements OnInit, OnDestroy {
   currentLevel = signal<number>(1);
   
   recentTrauma = signal<any>(null);
+  directorFocus = signal<{charId: string, reason: string} | null>(null);
+
+  squadVitalsKeys = computed(() => {
+     const chars = this.gameState()?.characters || {};
+     return Object.keys(chars).filter(k => k.startsWith('p'));
+  });
+
+  visibleCams = computed(() => {
+     const chars = this.gameState()?.characters || {};
+     let players = Object.keys(chars).filter(k => k.startsWith('p')).slice(0, 4);
+     while (players.length < 4) {
+         players.push(`cam_offline_${players.length}`);
+     }
+     return players;
+  });
 
   // Architect Store and UI State
   gridStore = inject(GridStore);
@@ -174,15 +190,33 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     });
     
-    // Procedural Guilt Flashing Effect
+    // Procedural Guilt & Director Automation
+    let lastTraumaKey: string | null = null;
     effect(() => {
        const state = this.gameState();
        if (state.traumaLog) {
          const keys = Object.keys(state.traumaLog);
          if (keys.length > 0) {
-           const latest = state.traumaLog[keys[keys.length - 1]];
-           this.recentTrauma.set(latest);
-           setTimeout(() => this.recentTrauma.set(null), 10000); // clear after 10s
+           const latestKey = keys[keys.length - 1];
+           if (lastTraumaKey !== latestKey) {
+             lastTraumaKey = latestKey;
+             const latest = state.traumaLog[latestKey];
+             this.recentTrauma.set(latest);
+             
+             // Director Automation: Focus on the character involved
+             if (latest.civilian) {
+                 const charId = Object.keys(state.characters || {}).find(k => state.characters[k].name === latest.civilian) || latest.civilian;
+                 this.directorFocus.set({ charId, reason: latest.action || 'TRAUMA_EVENT' });
+                 setTimeout(() => {
+                     // Clear focus if it hasn't changed
+                     if (this.directorFocus()?.charId === charId) this.directorFocus.set(null);
+                 }, 6000);
+             }
+             
+             setTimeout(() => {
+                 if (this.recentTrauma() === latest) this.recentTrauma.set(null);
+             }, 10000);
+           }
          }
        }
     }, { allowSignalWrites: true });
@@ -667,7 +701,7 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     } else if (type === 'ACTION') {
       this.updateHeat(1);
-      this.addTraumaLog(pId, "WARNING", `Bot performed: ${action.payload}`);
+      this.addTraumaLog(pId, "INFO", `Bot performed: ${action.payload}`);
     }
   }
 
@@ -718,7 +752,7 @@ export class AppComponent implements OnInit, OnDestroy {
                  this.gameState.set({ ...currentState });
              }
           }
-       });
+       }, { injector: this.injector });
     }
 
     const stateRef = fbDb.ref(this.db, `sessions/${this.sessionId()}/gameState`);
@@ -779,6 +813,10 @@ export class AppComponent implements OnInit, OnDestroy {
     const state = this.gameState();
     return state.traumaLog ? Object.values(state.traumaLog) : [];
   }
+
+  traumaLogArray = computed(() => {
+    return this.getTraumaLog().sort((a: any, b: any) => b.timestamp - a.timestamp);
+  });
 
   publishMap() {
     if (!this.db || !this.sessionId()) return;

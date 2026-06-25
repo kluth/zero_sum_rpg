@@ -19,7 +19,9 @@ import { GridStore } from './grid.store';
 })
 export class ThreeJsMapComponent implements AfterViewInit, OnDestroy, OnChanges {
   @Input() characters: Record<string, any> = {};
+  @Input() sensoryData: any = {};
   @Input() mode: string = 'spectator';
+  @Input() activePlayerId: string | null = null;
   @ViewChild('mapContainer') mapContainer!: ElementRef<HTMLDivElement>;
 
   private gridStore = inject(GridStore);
@@ -32,6 +34,11 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy, OnChanges 
   private mapGroup!: THREE.Group;
   private animatedItems: THREE.Mesh[] = [];
   private charMeshes: Record<string, THREE.Mesh> = {};
+  
+  private sharedMaterials: Record<string, THREE.Material> = {};
+  private sharedGeometries: Record<string, THREE.BufferGeometry> = {};
+  private mapMeshes = new Map<string, THREE.Object3D>();
+  private lastRenderTime = 0;
 
   constructor() {
     effect(() => {
@@ -75,6 +82,12 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy, OnChanges 
             }
         });
     }
+
+    Object.values(this.sharedMaterials).forEach(mat => this.cleanMaterial(mat));
+    Object.values(this.sharedGeometries).forEach(geo => geo.dispose());
+    this.sharedMaterials = {};
+    this.sharedGeometries = {};
+    this.mapMeshes.clear();
     
     if (this.renderer) {
         this.renderer.dispose();
@@ -89,6 +102,9 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy, OnChanges 
   ngOnChanges(changes: SimpleChanges): void {
      if (changes['characters'] && this.scene) {
         this.updateCharacters();
+     }
+     if (changes['sensoryData'] && this.scene) {
+        this.renderSensoryData();
      }
   }
 
@@ -109,22 +125,46 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy, OnChanges 
          const z = charData.y - height / 2;
 
          if (!mesh) {
-             const geo = new THREE.CylinderGeometry(0.3, 0.3, 1.6, 16);
-             const mat = new THREE.MeshStandardMaterial({ color: charId.startsWith('p') ? 0x00aaff : 0xff3333, roughness: 0.2, metalness: 0.8 });
-             mesh = new THREE.Mesh(geo, mat);
-             mesh.position.set(x, 0.8, z);
+             if (charId.startsWith('p')) {
+                 const geo = new THREE.CapsuleGeometry(0.3, 0.8, 4, 16);
+                 const mat = new THREE.MeshStandardMaterial({ color: 0x00aaff, roughness: 0.2, metalness: 0.8 });
+                 mesh = new THREE.Mesh(geo, mat);
+                 mesh.position.set(x, 0.7, z);
+                 
+                 // Trichter Spotlight
+                 const spotLight = new THREE.SpotLight(0x00aaff, 5, 12, Math.PI / 5, 0.5, 1);
+                 spotLight.position.set(0, 0.5, 0);
+                 spotLight.target.position.set(0, 0, 1); // points positive Z (forward relative to mesh if rotated)
+                 mesh.add(spotLight);
+                 mesh.add(spotLight.target);
+             } else {
+                 const geo = new THREE.ConeGeometry(0.4, 1.6, 4);
+                 const mat = new THREE.MeshStandardMaterial({ color: 0xff3333, roughness: 0.2, metalness: 0.8 });
+                 mesh = new THREE.Mesh(geo, mat);
+                 mesh.position.set(x, 0.8, z);
+                 const pointLight = new THREE.PointLight(0xff3333, 1, 3);
+                 pointLight.position.set(0, 1, 0);
+                 mesh.add(pointLight);
+             }
+             
              mesh.castShadow = true;
              mesh.receiveShadow = true;
-             
-             const pointLight = new THREE.PointLight(charId.startsWith('p') ? 0x00aaff : 0xff3333, 1, 3);
-             pointLight.position.set(0, 1, 0);
-             mesh.add(pointLight);
-
              this.scene.add(mesh);
              this.charMeshes[charId] = mesh;
          } else {
-             // Simple interpolation could be added here in the future
-             mesh.position.set(x, 0.8, z);
+             mesh.position.set(x, charId.startsWith('p') ? 0.7 : 0.8, z);
+         }
+         
+         // Apply rotation
+         const rot = charData.rotation || 0;
+         mesh.rotation.y = -(rot) + Math.PI/2;
+         
+         // Visibility logic based on FOV
+         if (this.mode === 'player' && this.activePlayerId && charId !== this.activePlayerId) {
+             const playerFov = this.sensoryData?.fov?.[this.activePlayerId] || [];
+             mesh.visible = playerFov.some((c: any) => c.x === charData.x && c.y === charData.y);
+         } else {
+             mesh.visible = true;
          }
      }
 
@@ -136,6 +176,123 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy, OnChanges 
              delete this.charMeshes[oldId];
          }
      }
+  }
+
+  private fovMeshes: THREE.Mesh[] = [];
+  private vfxMeshes: THREE.Object3D[] = [];
+
+  private renderSensoryData(): void {
+      if (!this.sensoryData || !this.scene) return;
+      const dim = this.gridStore.dimensions();
+      const width = dim?.width || 30;
+      const height = dim?.height || 30;
+      const offsetX = -width / 2;
+      const offsetZ = -height / 2;
+
+      // 1. Cleanup old sensory visuals
+      for (const m of this.fovMeshes) {
+          this.scene.remove(m);
+          if (m.geometry) m.geometry.dispose();
+          if (Array.isArray(m.material)) {
+              m.material.forEach((mat: any) => mat.dispose());
+          } else if (m.material) {
+              (m.material as any).dispose();
+          }
+      }
+      this.fovMeshes = [];
+
+      for (const m of this.vfxMeshes) {
+          this.scene.remove(m);
+          // basic cleanup
+          m.traverse((child: any) => {
+              if (child.geometry) child.geometry.dispose();
+              if (child.material) {
+                 if (Array.isArray(child.material)) child.material.forEach((mat:any)=>mat.dispose());
+                 else child.material.dispose();
+              }
+          });
+      }
+      this.vfxMeshes = [];
+
+      // 2. Render Optics (Field of View)
+      if (this.sensoryData.fov && typeof this.sensoryData.fov === 'object') {
+          const fovGeo = new THREE.PlaneGeometry(1, 1);
+          const fovMat = new THREE.MeshBasicMaterial({ 
+              color: 0xffffee, 
+              transparent: true, 
+              opacity: 0.15,
+              depthWrite: false
+          });
+          
+          let cellsToRender: any[] = [];
+          if (this.mode === 'player' && this.activePlayerId) {
+             cellsToRender = this.sensoryData.fov[this.activePlayerId] || [];
+          } else {
+             // GM or Spectator: combine all FOVs
+             const cellSet = new Set();
+             for (const pId of Object.keys(this.sensoryData.fov)) {
+                if (Array.isArray(this.sensoryData.fov[pId])) {
+                   for (const c of this.sensoryData.fov[pId]) {
+                      const key = `${c.x},${c.y}`;
+                      if (!cellSet.has(key)) {
+                         cellSet.add(key);
+                         cellsToRender.push(c);
+                      }
+                   }
+                }
+             }
+          }
+          
+          for (const cell of cellsToRender) {
+              const fovMesh = new THREE.Mesh(fovGeo, fovMat);
+              fovMesh.rotation.x = -Math.PI / 2;
+              fovMesh.position.set(cell.x + offsetX + 0.5, 0.02, cell.y + offsetZ + 0.5);
+              this.scene.add(fovMesh);
+              this.fovMeshes.push(fovMesh);
+          }
+      }
+
+      // 3. Render Acoustics (Sound Rings + Wall Reflection Pulses)
+      if (this.sensoryData.acoustics && Array.isArray(this.sensoryData.acoustics)) {
+          for (const sound of this.sensoryData.acoustics) {
+              const ringGeo = new THREE.RingGeometry(sound.radius - 0.2, sound.radius, 32);
+              const ringMat = new THREE.MeshBasicMaterial({ color: sound.type === 'GUNFIRE' ? 0xff0000 : 0x00ffff, transparent: true, opacity: 0.5, side: THREE.DoubleSide });
+              const ring = new THREE.Mesh(ringGeo, ringMat);
+              ring.rotation.x = -Math.PI / 2;
+              ring.position.set(sound.x + offsetX + 0.5, 0.05, sound.y + offsetZ + 0.5);
+              this.scene.add(ring);
+              this.vfxMeshes.push(ring);
+              
+              if (sound.cells && Array.isArray(sound.cells)) {
+                  const pulseGeo = new THREE.PlaneGeometry(1, 1);
+                  const pulseMat = new THREE.MeshBasicMaterial({ color: sound.type === 'GUNFIRE' ? 0xaa0000 : 0x00aaaa, transparent: true, opacity: 0.2, depthWrite: false });
+                  for (const cell of sound.cells) {
+                      const pulse = new THREE.Mesh(pulseGeo, pulseMat);
+                      pulse.rotation.x = -Math.PI / 2;
+                      pulse.position.set(cell.x + offsetX + 0.5, 0.03, cell.y + offsetZ + 0.5);
+                      this.scene.add(pulse);
+                      this.vfxMeshes.push(pulse);
+                  }
+              }
+          }
+      }
+
+      // 4. Render Ballistics (Lasers/Tracers)
+      if (this.sensoryData.ballistics && Array.isArray(this.sensoryData.ballistics)) {
+          for (const shot of this.sensoryData.ballistics) {
+              if (!shot.path || shot.path.length < 2) continue;
+              const points = shot.path.map((p: any) => new THREE.Vector3(p.x + offsetX + 0.5, 1.0, p.y + offsetZ + 0.5));
+              if (shot.collision_point) {
+                  points.push(new THREE.Vector3(shot.collision_point.x + offsetX + 0.5, 1.0, shot.collision_point.y + offsetZ + 0.5));
+              }
+
+              const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
+              const lineMat = new THREE.LineBasicMaterial({ color: 0xff0000, linewidth: 2 });
+              const line = new THREE.Line(lineGeo, lineMat);
+              this.scene.add(line);
+              this.vfxMeshes.push(line);
+          }
+      }
   }
 
   private cleanMaterial(material: any) {
@@ -588,61 +745,77 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy, OnChanges 
     this.animate();
   }
 
-  private buildMap(dimensions: { width: number, height: number } | undefined, grid: Record<string, any>, rooms: Record<string, any>): void {
-    if (!dimensions || !dimensions.width) return;
+  private initSharedResources(): void {
+    if (this.sharedMaterials['raufaser']) return;
     
-    while (this.mapGroup.children.length > 0) {
-      const child = this.mapGroup.children[0];
-      this.mapGroup.remove(child);
-      if (child instanceof THREE.Mesh || child instanceof THREE.Group) {
-        // We let the garbage collector handle material cleanup for simplicity here,
-        // to avoid killing shared procedurals
-      }
-    }
-    this.animatedItems = [];
-
-    const { width, height } = dimensions;
-    const cellSize = 1;
-    const offsetX = -width / 2;
-    const offsetZ = -height / 2;
-
-    // Base materials
     const raufaserTex = this.createRaufaserTexture();
     const raufaserBump = this.createRaufaserBumpMap();
     const steelTex = this.createBrushedSteelTexture();
     const concreteTex = this.createConcreteTexture();
     const carpetTex = this.createCarpetTexture();
 
-    const raufaserMat = new THREE.MeshStandardMaterial({
-        map: raufaserTex,
-        bumpMap: raufaserBump,
-        bumpScale: 0.05,
-        roughness: 0.9,
+    this.sharedMaterials['raufaser'] = new THREE.MeshStandardMaterial({
+        map: raufaserTex, bumpMap: raufaserBump, bumpScale: 0.05, roughness: 0.9,
+    });
+    this.sharedMaterials['bunkerSteel'] = new THREE.MeshStandardMaterial({
+        map: steelTex, metalness: 0.8, roughness: 0.4, color: 0x888888
+    });
+    this.sharedMaterials['concreteFloor'] = new THREE.MeshStandardMaterial({
+        map: concreteTex, roughness: 0.8
+    });
+    this.sharedMaterials['carpetFloor'] = new THREE.MeshStandardMaterial({
+        map: carpetTex, roughness: 1.0
+    });
+    this.sharedMaterials['breakableWall'] = new THREE.MeshStandardMaterial({
+        map: concreteTex, color: 0xaa5555, roughness: 0.9
+    });
+    this.sharedMaterials['doorLocked'] = new THREE.MeshStandardMaterial({
+        map: steelTex, color: 0xff3333, metalness: 0.6, roughness: 0.5
+    });
+    this.sharedMaterials['itemMat'] = new THREE.MeshStandardMaterial({
+        color: 0xFFFF00, emissive: 0xFF8800, emissiveIntensity: 0.5
     });
 
-    const bunkerSteelMat = new THREE.MeshStandardMaterial({
-        map: steelTex,
-        metalness: 0.8,
-        roughness: 0.4,
-        color: 0x888888
-    });
+    this.sharedGeometries['itemBox'] = new THREE.BoxGeometry(0.3, 0.3, 0.3);
+  }
 
-    const concreteFloorMat = new THREE.MeshStandardMaterial({
-        map: concreteTex,
-        roughness: 0.8
-    });
+  private getMapObject(key: string, createFn: () => THREE.Object3D): THREE.Object3D {
+    if (this.mapMeshes.has(key)) {
+        const obj = this.mapMeshes.get(key)!;
+        obj.visible = true;
+        return obj;
+    }
+    const obj = createFn();
+    this.mapMeshes.set(key, obj);
+    this.mapGroup.add(obj);
+    return obj;
+  }
 
-    const carpetFloorMat = new THREE.MeshStandardMaterial({
-        map: carpetTex,
-        roughness: 1.0
-    });
+  private buildMap(dimensions: { width: number, height: number } | undefined, grid: Record<string, any>, rooms: Record<string, any>): void {
+    if (!dimensions || !dimensions.width) return;
+    
+    this.initSharedResources();
+
+    // Hide all cached objects, we will only show those that are still needed
+    this.mapMeshes.forEach(mesh => mesh.visible = false);
+    this.animatedItems = [];
+
+    const { width, height } = dimensions;
+    const offsetX = -width / 2;
+    const offsetZ = -height / 2;
 
     // Default global floor (concrete foundation)
-    const baseGeo = new THREE.BoxGeometry(width + 2, 0.5, height + 2);
-    const base = new THREE.Mesh(baseGeo, concreteFloorMat);
+    const base = this.getMapObject('base_floor', () => {
+        const baseGeo = new THREE.BoxGeometry(width + 2, 0.5, height + 2);
+        const m = new THREE.Mesh(baseGeo, this.sharedMaterials['concreteFloor']);
+        m.receiveShadow = true;
+        return m;
+    });
     base.position.set(0, -0.25, 0);
-    base.receiveShadow = true;
-    this.mapGroup.add(base);
+    if (base instanceof THREE.Mesh && base.geometry.parameters && (base.geometry.parameters.width !== width + 2 || base.geometry.parameters.depth !== height + 2)) {
+        base.geometry.dispose();
+        base.geometry = new THREE.BoxGeometry(width + 2, 0.5, height + 2);
+    }
 
     // Determine room properties
     const roomIsBunker: Record<string, boolean> = {};
@@ -650,7 +823,6 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy, OnChanges 
       Object.keys(rooms).forEach(key => {
         const room = rooms[key];
         const threat = room.metadata?.threat || 'low';
-        // 'critical' rooms are bunkers (steel/concrete), others are offices (raufaser/carpet)
         roomIsBunker[key] = (threat === 'critical');
         
         if (!room.bounds) return;
@@ -659,14 +831,19 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy, OnChanges 
         const roomX = (room.bounds.x || 0) + offsetX + roomW / 2;
         const roomZ = (room.bounds.y || 0) + offsetZ + roomH / 2;
 
-        const floorGeo = new THREE.PlaneGeometry(roomW - 0.1, roomH - 0.1);
-        const floorMat = roomIsBunker[key] ? concreteFloorMat : carpetFloorMat;
-        
-        const floorMesh = new THREE.Mesh(floorGeo, floorMat);
-        floorMesh.rotation.x = -Math.PI / 2;
+        const floorMesh = this.getMapObject(`room_floor_${key}`, () => {
+            const floorGeo = new THREE.PlaneGeometry(roomW - 0.1, roomH - 0.1);
+            const floorMat = roomIsBunker[key] ? this.sharedMaterials['concreteFloor'] : this.sharedMaterials['carpetFloor'];
+            const m = new THREE.Mesh(floorGeo, floorMat);
+            m.rotation.x = -Math.PI / 2;
+            m.receiveShadow = true;
+            return m;
+        });
         floorMesh.position.set(roomX, 0.01, roomZ); 
-        floorMesh.receiveShadow = true;
-        this.mapGroup.add(floorMesh);
+        if (floorMesh instanceof THREE.Mesh && floorMesh.geometry.parameters && (floorMesh.geometry.parameters.width !== roomW - 0.1 || floorMesh.geometry.parameters.height !== roomH - 0.1)) {
+            floorMesh.geometry.dispose();
+            floorMesh.geometry = new THREE.PlaneGeometry(roomW - 0.1, roomH - 0.1);
+        }
       });
     }
 
@@ -683,102 +860,110 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy, OnChanges 
           
           let wallHeight = 2.0; 
           let yOffset = wallHeight / 2;
-          let mat = isBunker ? bunkerSteelMat : raufaserMat;
+          let mat = isBunker ? this.sharedMaterials['bunkerSteel'] : this.sharedMaterials['raufaser'];
 
           if (cell.type === 'breakable_wall') {
-             // Cracked concrete
-             mat = new THREE.MeshStandardMaterial({ map: concreteTex, color: 0xaa5555, roughness: 0.9 });
+             mat = this.sharedMaterials['breakableWall'];
           } else if (cell.type === 'door_locked' || cell.type === 'door_open') {
-             // Heavy steel doors
-             mat = bunkerSteelMat;
+             mat = this.sharedMaterials['bunkerSteel'];
              if (cell.type === 'door_locked') {
-                 mat = new THREE.MeshStandardMaterial({ map: steelTex, color: 0xff3333, metalness: 0.6, roughness: 0.5 });
+                 mat = this.sharedMaterials['doorLocked'];
                  wallHeight = 1.8;
                  yOffset = wallHeight / 2;
              } else {
-                 wallHeight = 0.05; // open flat on ground
+                 wallHeight = 0.05; 
                  yOffset = wallHeight / 2;
              }
           }
 
-          // Merge blocky walls by slightly scaling them up to hide seams
-          const geo = new THREE.BoxGeometry(1.01, wallHeight, 1.01);
+          const wallKey = `wall_${key}`;
+          const mesh = this.getMapObject(wallKey, () => {
+             const geo = new THREE.BoxGeometry(1.01, wallHeight, 1.01);
+             const pos = geo.attributes['position'];
+             const uv = geo.attributes['uv'];
+             
+             for (let i = 0; i < pos.count; i++) {
+               const px = pos.getX(i) + x;
+               const py = pos.getY(i) + yOffset;
+               const pz = pos.getZ(i) + z;
+
+               let nx = Math.abs(pos.getX(i));
+               let ny = Math.abs(pos.getY(i));
+               let nz = Math.abs(pos.getZ(i));
+
+               if (ny > 0.49) {
+                   uv.setXY(i, px * 0.2, pz * 0.2);
+               } else if (nx > 0.49) {
+                   uv.setXY(i, pz * 0.2, py * 0.2);
+               } else if (nz > 0.49) {
+                   uv.setXY(i, px * 0.2, py * 0.2);
+               }
+             }
+
+             const m = new THREE.Mesh(geo, mat);
+             m.castShadow = true;
+             m.receiveShadow = true;
+             return m;
+          });
           
-          // Re-map UVs to world coordinates so the texture tiles globally, not per-block!
-          // This completely kills the "Minecraft" repeating block look.
-          const pos = geo.attributes['position'];
-          const uv = geo.attributes['uv'];
-          for(let i=0; i<pos.count; i++) {
-              const vx = pos.getX(i) + x;
-              const vy = pos.getY(i) + yOffset;
-              const vz = pos.getZ(i) + z;
-              
-              // Simple planar mapping based on normals
-              const nx = Math.abs(geo.attributes['normal'].getX(i));
-              const ny = Math.abs(geo.attributes['normal'].getY(i));
-              const nz = Math.abs(geo.attributes['normal'].getZ(i));
-              
-              if (ny > 0.5) { uv.setXY(i, vx * 0.5, vz * 0.5); }
-              else if (nx > 0.5) { uv.setXY(i, vz * 0.5, vy * 0.5); }
-              else { uv.setXY(i, vx * 0.5, vy * 0.5); }
+          mesh.position.set(x, yOffset, z);
+          if (mesh instanceof THREE.Mesh) {
+              mesh.material = mat;
+              if (mesh.geometry.parameters && mesh.geometry.parameters.height !== wallHeight) {
+                  mesh.geometry.dispose();
+                  const geo = new THREE.BoxGeometry(1.01, wallHeight, 1.01);
+                  const pos = geo.attributes['position'];
+                  const uv = geo.attributes['uv'];
+                  for (let i = 0; i < pos.count; i++) {
+                     const px = pos.getX(i) + x;
+                     const py = pos.getY(i) + yOffset;
+                     const pz = pos.getZ(i) + z;
+                     let nx = Math.abs(pos.getX(i)); let ny = Math.abs(pos.getY(i)); let nz = Math.abs(pos.getZ(i));
+                     if (ny > 0.49) uv.setXY(i, px * 0.2, pz * 0.2);
+                     else if (nx > 0.49) uv.setXY(i, pz * 0.2, py * 0.2);
+                     else if (nz > 0.49) uv.setXY(i, px * 0.2, py * 0.2);
+                  }
+                  mesh.geometry = geo;
+              }
           }
-          geo.attributes['uv'].needsUpdate = true;
+        } else if (cell.type === 'street' || cell.type === 'grass' || cell.type === 'water') {
+            // ...
+        } else {
+            const propMap: Record<string, string> = {
+                'server_rack': 'server_rack', 'cupboard': 'cupboard', 'storage_box': 'crate',
+                'furniture': 'desk', 'medical_bed': 'medical_bed', 'autodoc': 'autodoc',
+                'bio_scanner': 'bio_scanner', 'chair': 'chair', 'bed': 'bed', 'sofa': 'sofa',
+                'locker': 'locker', 'weapon_rack': 'weapon_rack', 'ammo_crate': 'ammo_crate',
+                'turret': 'turret', 'generator': 'generator', 'table': 'table', 'plant': 'plant',
+                'monitor': 'monitor', 'cctv': 'cctv', 'pressure_plate': 'pressure_plate', 'tech_scrap': 'tech_scrap'
+            };
 
-          const wall = new THREE.Mesh(geo, mat);
-          wall.position.set(x, yOffset, z);
-          wall.castShadow = true;
-          wall.receiveShadow = true;
-          this.mapGroup.add(wall);
-        }
-
-        // Furniture and Items
-        if (cell) {
-          if (cell.type === 'furniture') {
-            const prop = this.buildDesk(x, 0, z);
-            this.mapGroup.add(prop);
-          } else if (cell.type === 'cupboard') {
-            const prop = this.buildCupboard(x, 0, z);
-            this.mapGroup.add(prop);
-          } else if (cell.type === 'server_rack') {
-            const prop = this.buildServerRack(x, 0, z);
-            this.mapGroup.add(prop);
-          } else if (cell.type === 'storage_box') {
-            const prop = this.buildCrate(x, 0, z);
-            this.mapGroup.add(prop);
-          } else if (['chair', 'bed', 'locker', 'sofa', 'table', 'plant', 'monitor', 'tech_scrap', 'pressure_plate', 'weapon_rack', 'ammo_crate', 'medical_bed', 'autodoc', 'turret', 'generator', 'bio_scanner', 'cctv'].includes(cell.type)) {
-            const prop = this.buildGenericProp(cell.type, x, 0, z);
-            this.mapGroup.add(prop);
-          }
-        }
-
-        // Inventory Cache
-
-        
-        
-        if (cell && cell.inventory && cell.inventory.length > 0) {
-          // A glowing high-tech briefcase/cache
-          const cacheGeo = new THREE.BoxGeometry(0.4, 0.15, 0.3);
-          const cacheMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.2 });
-          const cache = new THREE.Mesh(cacheGeo, cacheMat);
-          
-          cache.position.set(x, 0.5, z);
-          cache.castShadow = true;
-          
-          // Glowing lock
-          const lockGeo = new THREE.PlaneGeometry(0.1, 0.05);
-          const lockMat = new THREE.MeshBasicMaterial({ color: 0x00ffaa });
-          const lock = new THREE.Mesh(lockGeo, lockMat);
-          lock.position.set(0, 0, 0.151);
-          cache.add(lock);
-
-          cache.userData = { startY: 0.5 };
-          this.animatedItems.push(cache);
-          this.mapGroup.add(cache);
+            if (propMap[cell.type]) {
+                const propKey = `prop_${key}_${propMap[cell.type]}`;
+                const group = this.getMapObject(propKey, () => {
+                    if (propMap[cell.type] === 'desk') return this.buildDesk(x, 0, z);
+                    if (propMap[cell.type] === 'server_rack') return this.buildServerRack(x, 0, z);
+                    if (propMap[cell.type] === 'cupboard') return this.buildCupboard(x, 0, z);
+                    if (propMap[cell.type] === 'crate') return this.buildCrate(x, 0, z);
+                    return this.buildGenericProp(cell.type, x, 0, z);
+                });
+                group.position.set(x, 0, z);
+            }
+            
+            if (cell.inventory && Array.isArray(cell.inventory) && cell.inventory.length > 0) {
+               const itemKey = `item_${key}`;
+               const itemBox = this.getMapObject(itemKey, () => {
+                  const m = new THREE.Mesh(this.sharedGeometries['itemBox'], this.sharedMaterials['itemMat']);
+                  m.castShadow = true;
+                  m.userData['startY'] = 0.15;
+                  return m;
+               });
+               itemBox.position.set(x, 0.15, z);
+               if (itemBox instanceof THREE.Mesh) this.animatedItems.push(itemBox);
+            }
         }
       });
     }
-
-    // Auto focus camera based on map size
     const maxDimension = Math.max(width, height);
     const distance = (maxDimension / 2) / Math.tan(Math.PI / 8);
     this.camera.position.set(distance * 0.7, distance * 0.8, distance * 0.7);
@@ -803,6 +988,13 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy, OnChanges 
   private animate(): void {
     this.animationFrameId = requestAnimationFrame(this.animate.bind(this));
     
+    const now = performance.now();
+    const elapsed = now - this.lastRenderTime;
+    
+    // Throttle rendering to ~60 FPS max
+    if (elapsed < 16.6) return;
+    this.lastRenderTime = now - (elapsed % 16.6);
+
     if (this.controls) {
       this.controls.update();
     }
@@ -811,7 +1003,7 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy, OnChanges 
       const time = Date.now() * 0.003;
       this.animatedItems.forEach((item, i) => {
         item.position.y = item.userData['startY'] + Math.sin(time + i) * 0.1;
-        item.rotation.y = Math.sin(time * 0.5 + i) * 0.2; // Subtle hover rotation
+        item.rotation.y = Math.sin(time * 0.5 + i) * 0.2; 
       });
     }
     

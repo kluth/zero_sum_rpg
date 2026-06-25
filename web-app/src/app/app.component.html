@@ -36,11 +36,11 @@
     <div *ngIf="sessionId()" class="main-dashboard-wrapper">
       
       <!-- Pulsating Alert Bar -->
-      <div *ngIf="heatLevel() >= 8 || recentTrauma()" class="pulsating-alert-bar header-brutalist chromatic" style="color: white; padding: clamp(8px, 1.5vh, 15px); font-size: clamp(16px, 2.5vh, 28px); text-align: center; border: 1px solid rgba(255, 255, 255, 0.08); flex-shrink: 0;">
+      <div *ngIf="heatLevel() >= 8 || recentTrauma()" class="pulsating-alert-bar header-brutalist chromatic">
         ⚠️ CRITICAL ALERT: {{ heatLevel() >= 8 ? 'HIGH HEAT LEVEL DETECTED (' + heatLevel() + '/10). ' : '' }} {{ recentTrauma() ? 'LIFE SUPPORT SYSTEM FAILURE: ' + recentTrauma().civilian : '' }}
       </div>
 
-      @defer (when isGmMode()) {
+      @defer (when isGmMode(); prefetch on idle) {
         <!-- GM View Tailwind Re-design -->
         <div class="bg-background text-on-background h-screen w-screen overflow-hidden flex flex-col font-body-main text-body-main selection:bg-primary selection:text-on-primary">
             <!-- TopAppBar -->
@@ -95,7 +95,7 @@
                             </div>
                         </ng-container>
                         <ng-template #threeDViewGM>
-                            <app-threejs-map [characters]="gameState().characters || {}" [mode]="'gm'" class="absolute inset-0 w-full h-full"></app-threejs-map>
+                            <app-threejs-map [characters]="gameState().characters || {}" [sensoryData]="gameState().sensoryData || {}" [mode]="'gm'" class="absolute inset-0 w-full h-full"></app-threejs-map>
                         </ng-template>
                     </div>
                 </section>
@@ -226,7 +226,7 @@
         </div>
       }
       
-      @defer (when isBillboardMode()) {
+      @defer (when isBillboardMode(); prefetch on idle) {
         <!-- Billboard View Tailwind Re-design -->
         <div class="bg-background text-on-background h-screen w-screen overflow-hidden flex flex-col font-body-main text-body-main selection:bg-primary selection:text-on-primary relative" [ngClass]="{'bg-error-container': heatLevel() >= 8 || recentTrauma()}">
             <div *ngIf="heatLevel() >= 8 || recentTrauma()" class="absolute inset-0 bg-[radial-gradient(circle,transparent_20%,rgba(186,26,26,0.3)_100%)] pointer-events-none z-0"></div>
@@ -288,7 +288,7 @@
         </div>
       }
       
-      @defer (when isSupportMode()) {
+      @defer (when isSupportMode(); prefetch on idle) {
         <!-- Netrunner Shell Tailwind Re-design -->
         <div class="bg-background text-on-background h-screen w-screen overflow-hidden flex flex-col font-body-main text-body-main selection:bg-primary selection:text-on-primary">
             <header class="bg-surface text-primary font-data-sm flex justify-between items-center px-edge-margin w-full shrink-0 h-10 border-b border-outline-variant z-20">
@@ -310,7 +310,7 @@
         </div>
       }
       
-      @defer (when isSpectatorMode()) {
+      @defer (when isSpectatorMode(); prefetch on idle) {
         <!-- Spectator View Tailwind Re-design -->
         <div class="bg-background text-on-background h-screen w-screen overflow-hidden flex flex-col font-body-main text-body-main selection:bg-primary selection:text-on-primary">
             <!-- TopAppBar -->
@@ -330,16 +330,28 @@
             <main class="flex-1 grid grid-cols-1 md:grid-cols-4 grid-rows-2 gap-3 p-4 bg-background overflow-hidden">
                 
                 <!-- Left: CAMS (Col 1, Row 1-2) -->
-                <section class="bg-surface border border-outline-variant flex flex-col overflow-hidden border-r border-outline-variant">
-                    <div class="h-8 border-b border-outline-variant bg-surface-container-lowest flex items-center px-density-tight shrink-0">
-                        <div class="font-label-caps text-label-caps text-primary">LIVE_CAMS // ASSET_UPLINK</div>
+                <section class="md:row-span-2 bg-surface border border-outline-variant flex flex-col overflow-hidden border-r border-outline-variant transition-all duration-300" [ngClass]="{'border-error shadow-[0_0_15px_rgba(186,26,26,0.3)]': directorFocus()}">
+                    <div class="h-8 border-b border-outline-variant bg-surface-container-lowest flex items-center px-density-tight shrink-0 justify-between">
+                        <div class="font-label-caps text-label-caps text-primary flex items-center gap-2">
+                            <span *ngIf="directorFocus()" class="h-2 w-2 rounded-full bg-error animate-blink"></span>
+                            LIVE_CAMS // ASSET_UPLINK
+                        </div>
+                        <div *ngIf="directorFocus()" class="font-data-sm text-[10px] text-error animate-blink border border-error px-1">DIRECTOR_OVERRIDE</div>
                     </div>
-                    <div class="flex-1 p-3 flex-shrink-0 overflow-hidden flex flex-col gap-3 bg-surface-container-lowest">
-                        <div *ngFor="let key of getCharacterKeys()" class="relative aspect-video bg-black border border-outline-variant flex items-center justify-center overflow-hidden">
+                    <div class="flex-1 p-3 flex-shrink-0 overflow-hidden grid grid-cols-1 grid-rows-4 gap-3 bg-surface-container-lowest">
+                        <div *ngFor="let key of visibleCams()" class="relative bg-black border border-outline-variant flex items-center justify-center overflow-hidden transition-all duration-300 w-full h-full" [ngClass]="{'border-error shadow-[0_0_15px_rgba(186,26,26,0.5)]': directorFocus()?.charId === key}">
                             <!-- Simulated noise / blank feed -->
                             <div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, #fff 2px, #fff 4px);"></div>
-                            <div class="absolute top-1 left-1 bg-black border border-primary text-primary font-data-sm text-[10px] px-1 z-10">{{ gameState().characters[key].name }}</div>
-                            <div class="text-secondary font-data-sm text-xs">[FEED_ENCRYPTED]</div>
+                            <div class="absolute top-1 left-1 bg-black border text-primary font-data-sm text-[10px] px-1 z-10" [ngClass]="{'border-error text-error': directorFocus() && !key.startsWith('p'), 'border-primary': !directorFocus() || key.startsWith('p')}">{{ gameState().characters[key]?.name || key | uppercase }}</div>
+                            <div *ngIf="directorFocus()" class="absolute bottom-1 right-1 bg-error text-on-error font-data-sm text-[10px] px-1 z-10 uppercase tracking-widest">{{ directorFocus()?.reason }}</div>
+                            <div class="text-secondary font-data-sm" [ngClass]="{'text-error text-lg font-bold': directorFocus(), 'text-xs': !directorFocus()}">[FEED_ENCRYPTED]</div>
+                            
+                            <!-- Sniper/Target reticle overlay for director -->
+                            <div *ngIf="directorFocus()" class="absolute inset-0 pointer-events-none border border-error/50 m-4 flex items-center justify-center">
+                                <div class="w-16 h-16 border border-error/50 rounded-full flex items-center justify-center animate-pulse">
+                                    <div class="w-1 h-1 bg-error/50"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -357,7 +369,7 @@
                             <app-pixi-map [mode]="'spectator'" [characters]="gameState().characters || {}" [currentLevel]="currentLevel()" class="absolute inset-0 w-full h-full block"></app-pixi-map>
                         </ng-container>
                         <ng-template #threeDViewSpec>
-                            <app-threejs-map [characters]="gameState().characters || {}" [mode]="'spectator'" class="absolute inset-0 w-full h-full block"></app-threejs-map>
+                            <app-threejs-map [characters]="gameState().characters || {}" [sensoryData]="gameState().sensoryData || {}" [mode]="'spectator'" class="absolute inset-0 w-full h-full block"></app-threejs-map>
                         </ng-template>
                         <div class="absolute inset-0 border-[1px] border-primary/20 m-4 pointer-events-none"></div>
                     </div>
@@ -365,17 +377,24 @@
 
                 <!-- Right Top: Squad Status (Col 4, Row 1) -->
                 <section class="bg-surface border border-outline-variant flex flex-col overflow-hidden">
-                    <div class="h-8 border-b border-outline-variant bg-surface-container-lowest flex items-center px-density-tight shrink-0">
+                    <div class="h-8 border-b border-outline-variant bg-surface-container-lowest flex items-center px-density-tight shrink-0 justify-between">
                         <div class="font-label-caps text-label-caps text-primary">SQUAD_VITALS</div>
+                        <div class="font-data-sm text-[10px] text-secondary">{{ squadVitalsKeys().length }} ASSETS</div>
                     </div>
-                    <div class="flex-1 p-3 flex-shrink-0 overflow-hidden flex flex-col gap-2">
-                        <div *ngFor="let key of getCharacterKeys()" class="border border-outline-variant p-2 flex flex-col gap-1 bg-surface-container-lowest" [ngClass]="{'border-error bg-error-container': (gameState().characters[key].stats?.hp_current || 100) <= 0}">
-                            <div class="flex justify-between items-center border-b border-outline-variant pb-1" [ngClass]="{'border-error/50': (gameState().characters[key].stats?.hp_current || 100) <= 0}">
-                                <span class="font-label-caps text-label-caps text-primary" [ngClass]="{'text-error': (gameState().characters[key].stats?.hp_current || 100) <= 0}">{{ gameState().characters[key].name }}</span>
+                    <div class="flex-1 p-2 flex-shrink-0 overflow-hidden grid grid-cols-2 grid-rows-2 gap-2 bg-surface-container-lowest">
+                        <div *ngFor="let key of squadVitalsKeys()" class="border border-outline-variant p-2 flex flex-col justify-between bg-surface-container-lowest" [ngClass]="{'border-error bg-error-container': (gameState().characters[key].hp || gameState().characters[key].stats?.hp_current || 100) <= 0}">
+                            <div class="flex justify-between items-center border-b border-outline-variant pb-1" [ngClass]="{'border-error/50': (gameState().characters[key].hp || gameState().characters[key].stats?.hp_current || 100) <= 0}">
+                                <span class="font-label-caps text-label-caps text-primary truncate text-xs" [ngClass]="{'text-error': (gameState().characters[key].hp || gameState().characters[key].stats?.hp_current || 100) <= 0}">{{ gameState().characters[key].name || key }}</span>
                             </div>
-                            <div class="flex justify-between items-end mt-1 font-data-sm">
-                                <div>HP: <span class="font-data-lg" [ngClass]="{'text-error': (gameState().characters[key].stats?.hp_current || 100) <= 20}">{{ gameState().characters[key].stats?.hp_current || 100 }}</span></div>
-                                <div>STR: <span class="font-data-lg text-secondary">{{ gameState().characters[key].stats?.stress_current || 0 }}</span></div>
+                            <div class="flex flex-col mt-1 font-data-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-[10px] text-secondary">HP</span>
+                                    <span class="font-data-lg leading-none" [ngClass]="{'text-error': (gameState().characters[key].hp || gameState().characters[key].stats?.hp_current || 100) <= 20}">{{ gameState().characters[key].hp || gameState().characters[key].stats?.hp_current || 100 }}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-[10px] text-secondary">STR</span>
+                                    <span class="font-data-lg leading-none text-secondary">{{ gameState().characters[key].stats?.stress_current || 0 }}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -394,12 +413,14 @@
                             </app-progress-clock>
                         </div>
                         <!-- Feed -->
-                        <div class="flex-1 overflow-hidden font-data-sm text-secondary flex flex-col gap-1">
-                            <div *ngFor="let roll of gameState().recentRolls || []" class="border-b border-outline-variant/30 py-1 hover:bg-surface-container transition-none flex gap-2">
-                                <span class="w-16 shrink-0">{{ roll.timestamp | date:'HH:mm:ss' }}</span>
-                                <span class="text-primary">{{ roll.player }}</span>
-                                <span>-></span>
-                                <span class="font-bold" [ngClass]="{'text-error': roll.result === 'Fail', 'text-primary': roll.result !== 'Fail'}">{{ roll.result }}</span>
+                        <div class="flex-1 overflow-hidden font-data-sm text-secondary flex flex-col gap-1 relative">
+                            <div *ngIf="traumaLogArray().length === 0" class="absolute inset-0 flex items-center justify-center opacity-50 uppercase tracking-widest text-[10px]">
+                                [NO_THREATS_LOGGED]
+                            </div>
+                            <div *ngFor="let log of traumaLogArray().slice(0, 8)" class="border-b border-outline-variant/30 py-1 hover:bg-surface-container transition-none flex gap-2">
+                                <span class="w-16 shrink-0">{{ log.timestamp | date:'HH:mm:ss' }}</span>
+                                <span class="text-primary font-bold" [ngClass]="{'text-error': log.severity === 'CRITICAL' || log.severity === 'WARNING'}">[{{ log.civilian }}]</span>
+                                <span [ngClass]="{'text-error font-bold': log.severity === 'CRITICAL' || log.severity === 'WARNING'}">{{ log.message }}</span>
                             </div>
                         </div>
                     </div>
@@ -408,7 +429,7 @@
         </div>
       }
 
-      @defer (when isPlayerMode()) {
+      @defer (when isPlayerMode(); prefetch on idle) {
         <!-- Player View Tailwind Re-design -->
         <div class="bg-background text-on-background h-screen w-screen overflow-hidden flex flex-col font-body-main text-body-main selection:bg-primary selection:text-on-primary">
             <!-- TopAppBar -->
@@ -456,7 +477,7 @@
                             <app-pixi-map [mode]="'player'" [characters]="gameState().characters || {}" [activePlayerId]="activePlayerId()" [currentLevel]="currentLevel()" (playerMoved)="onPlayerMoved($event)" class="absolute inset-0 w-full h-full block" [style.opacity]="(gridStore.rooms() | keyvalue).length === 0 ? 0 : 1"></app-pixi-map>
                         </ng-container>
                         <ng-template #threeDViewPlayer>
-                            <app-threejs-map [characters]="gameState().characters || {}" [mode]="'player'" class="absolute inset-0 w-full h-full block"></app-threejs-map>
+                            <app-threejs-map [characters]="gameState().characters || {}" [sensoryData]="gameState().sensoryData || {}" [activePlayerId]="activePlayerId()" [mode]="'player'" class="absolute inset-0 w-full h-full block"></app-threejs-map>
                         </ng-template>
                         <div class="absolute inset-0 border-[1px] border-primary/20 m-4 pointer-events-none"></div>
                     </div>
@@ -506,7 +527,7 @@
         </div>
       }
 
-      @defer (when is3dMode()) {
+      @defer (when is3dMode(); prefetch on idle) {
         <!-- 3D View Tailwind Re-design -->
         <div class="bg-background text-on-background h-screen w-screen overflow-hidden flex flex-col font-body-main text-body-main selection:bg-primary selection:text-on-primary">
             <header class="bg-surface text-primary font-data-sm flex justify-between items-center px-edge-margin w-full shrink-0 h-10 border-b border-outline-variant z-20">
@@ -521,13 +542,13 @@
         </div>
       }
 
-      @defer (when mode() === 'billboard_v2') {
+      @defer (when mode() === 'billboard_v2'; prefetch on idle) {
          <div style="height: 100dvh; max-height: 100dvh; overflow: hidden;">
             <app-billboard></app-billboard>
          </div>
       }
 
-      @defer (when mode() === 'player_v2') {
+      @defer (when mode() === 'player_v2'; prefetch on idle) {
          <div style="height: 100dvh; max-height: 100dvh; overflow: hidden;">
             <app-player-uplink></app-player-uplink>
          </div>

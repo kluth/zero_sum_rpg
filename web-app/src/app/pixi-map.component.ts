@@ -12,6 +12,7 @@ import { GridStore } from './grid.store';
 })
 export class PixiMapComponent implements AfterViewInit, OnDestroy {
   @Input() characters: Record<string, any> = {};
+  @Input() sensoryData: any = {};
   @Input() activePlayerId: string | null = null;
   @Input() currentLevel: number = 1;
   @Input() mode: 'gm' | 'spectator' | 'player' | 'billboard' | 'netrunner' = 'gm';
@@ -26,20 +27,39 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
   private viewport!: Viewport;
   private gridStore = inject(GridStore);
   
-  private sprites: Record<string, PIXI.Sprite | PIXI.Graphics> = {};
+  private staticLayer!: PIXI.Container;
+  private roomLayer!: PIXI.Container;
+  private dynamicLayer!: PIXI.Container;
+
+  private cachedCells: Record<string, PIXI.Container> = {};
   private roomGraphics: Record<string, PIXI.Graphics> = {};
   private charGraphics: Record<string, PIXI.Graphics | PIXI.Text> = {};
+  private acousticsSprites: Record<string, PIXI.Graphics> = {};
+
+  private lastGridRef: any = null;
+  private lastRoomsRef: any = null;
+  private lastDimRef: any = null;
+  private lastLevel: number = -1;
 
   constructor() {
     effect(() => {
       const grid = this.gridStore.grid();
       const rooms = this.gridStore.rooms();
       const dim = this.gridStore.dimensions();
-      // To react to character changes, we just read this.characters in renderMap.
-      // But we need a signal for characters. Wait, Angular @Input is not a signal by default unless we use input().
-      // For now, we will rely on ngOnChanges or just let the effect trigger when grid/rooms change.
-      // Actually we should just call renderMap.
-      this.renderMap(dim, grid, rooms);
+      
+      let staticChanged = false;
+      if (grid !== this.lastGridRef || rooms !== this.lastRoomsRef || dim !== this.lastDimRef || this.currentLevel !== this.lastLevel) {
+          staticChanged = true;
+          this.lastGridRef = grid;
+          this.lastRoomsRef = rooms;
+          this.lastDimRef = dim;
+          this.lastLevel = this.currentLevel;
+      }
+      
+      if (staticChanged) {
+          this.renderStaticMap(dim, grid, rooms);
+      }
+      this.renderDynamicEntities(dim, grid, rooms);
     });
   }
 
@@ -51,8 +71,21 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
          this.viewport.plugins.resume('drag');
        }
      }
+     
      const dim = this.gridStore.dimensions();
-     this.renderMap(dim, this.gridStore.grid(), this.gridStore.rooms());
+     const grid = this.gridStore.grid();
+     const rooms = this.gridStore.rooms();
+
+     let staticChanged = false;
+     if (this.currentLevel !== this.lastLevel) {
+          staticChanged = true;
+          this.lastLevel = this.currentLevel;
+     }
+
+     if (staticChanged) {
+         this.renderStaticMap(dim, grid, rooms);
+     }
+     this.renderDynamicEntities(dim, grid, rooms);
   }
 
   private emitPaint(e: any) {
@@ -86,6 +119,14 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
 
     this.app.stage.addChild(this.viewport);
     this.viewport.drag().pinch().wheel().decelerate();
+
+    this.staticLayer = new PIXI.Container();
+    this.roomLayer = new PIXI.Container();
+    this.dynamicLayer = new PIXI.Container();
+
+    this.viewport.addChild(this.staticLayer);
+    this.viewport.addChild(this.roomLayer);
+    this.viewport.addChild(this.dynamicLayer);
 
     let isPainting = false;
     this.viewport.on('pointerdown', (e) => {
@@ -139,8 +180,11 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
 
     // Hydrate the view if state arrived before initialization completed
     const dim = this.gridStore.dimensions();
+    const grid = this.gridStore.grid();
+    const rooms = this.gridStore.rooms();
     if (dim) {
-       this.renderMap(dim, this.gridStore.grid(), this.gridStore.rooms());
+       this.renderStaticMap(dim, grid, rooms);
+       this.renderDynamicEntities(dim, grid, rooms);
     }
   }
 
@@ -166,133 +210,184 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
     return true;
   }
 
-  private renderMap(dim: any, grid: any, rooms: any) {
-    if (!this.viewport || !dim) return;
+  private renderStaticMap(dim: any, grid: any, rooms: any) {
+    if (!this.viewport || !dim || !this.staticLayer) return;
 
-    // Clear old graphics
-    Object.values(this.sprites).forEach(s => this.viewport.removeChild(s));
-    Object.values(this.roomGraphics).forEach(g => this.viewport.removeChild(g));
-    Object.values(this.charGraphics).forEach(g => this.viewport.removeChild(g));
-    this.sprites = {};
-    this.roomGraphics = {};
-    this.charGraphics = {};
+    // Clear existing static cells
+    Object.values(this.cachedCells).forEach(c => {
+        this.staticLayer.removeChild(c);
+        c.destroy({children: true});
+    });
+    this.cachedCells = {};
+
+    for (let x = 0; x < dim.width; x++) {
+      for (let y = 0; y < dim.height; y++) {
+         const key = `${x},${y},${this.currentLevel}`;
+         const fallbackKey = `${x},${y}`;
+         const cell = grid[key] || grid[fallbackKey];
+
+         // We always create a container for the cell so we can toggle it later
+         const cellContainer = new PIXI.Container();
+         cellContainer.x = x * 32;
+         cellContainer.y = y * 32;
+         
+         // Store cell info on the container for easy access in dynamic phase
+         (cellContainer as any).cellX = x;
+         (cellContainer as any).cellY = y;
+         (cellContainer as any).cellType = cell?.type || 'empty';
+         (cellContainer as any).roomId = cell?.roomId || null;
+
+         this.cachedCells[`${x},${y}`] = cellContainer;
+         this.staticLayer.addChild(cellContainer);
+
+         const g = new PIXI.Graphics();
+         cellContainer.addChild(g);
+
+         if (!cell || cell.type === 'empty' || cell.type === 'floor') {
+            g.rect(0, 0, 32, 32);
+            g.fill({ color: 0x111111 });
+            g.stroke({ color: 0x222222, width: 1 });
+         } else if (cell.type === 'wall') {
+            g.rect(0, 0, 32, 32);
+            g.fill({ color: 0x00E5FF });
+         } else if (cell.type === 'structure_wall') {
+            g.rect(0, 0, 32, 32);
+            g.fill({ color: 0x555555 });
+         } else if (cell.type === 'door_locked') {
+            g.rect(0, 0, 32, 32);
+            g.fill({ color: 0xFF003C });
+         } else if (cell.type === 'door_open') {
+            g.rect(0, 0, 32, 32);
+            g.fill({ color: 0x111111 });
+            g.stroke({ color: 0x00FF66, width: 2 });
+         } else if (cell.type === 'cctv') {
+            g.rect(0, 0, 32, 32);
+            g.fill({ color: 0x111111 });
+            g.stroke({ color: 0x222222, width: 1 });
+            g.circle(16, 16, 8);
+            g.fill({ color: 0xFFFF00 });
+         } else if (cell.type === 'furniture') {
+            g.rect(0, 0, 32, 32);
+            g.fill({ color: 0x111111 });
+            g.stroke({ color: 0x222222, width: 1 });
+            g.rect(4, 4, 24, 24);
+            g.fill({ color: 0x888888 });
+         } else if (cell.type === 'breakable_wall') {
+            g.rect(0, 0, 32, 32);
+            g.fill({ color: 0x111111 });
+            g.stroke({ color: 0xaa5522, width: 2 });
+            g.moveTo(4, 4);
+            g.lineTo(28, 28);
+            g.stroke({ color: 0xaa5522, width: 1 });
+         } else if (cell.type === 'cupboard') {
+            g.rect(0, 0, 32, 32);
+            g.fill({ color: 0x444444 });
+            g.stroke({ color: 0x222222, width: 1 });
+         } else if (cell.type === 'storage_box') {
+            g.rect(0, 0, 32, 32);
+            g.fill({ color: 0x111111 });
+            g.stroke({ color: 0x666666, width: 2 });
+            g.rect(8, 8, 16, 16);
+            g.fill({ color: 0x666666 });
+         } else if (cell.type === 'server_rack') {
+            g.rect(2, 2, 28, 28);
+            g.fill({ color: 0x111111 });
+            g.stroke({ color: 0x00aaff, width: 2 });
+         } else if (['chair', 'bed', 'locker', 'sofa', 'plant', 'table', 'monitor'].includes(cell.type)) {
+            g.rect(4, 4, 24, 24);
+            g.fill({ color: 0x888888 });
+            g.stroke({ color: 0x555555, width: 1 });
+            
+            const text = new PIXI.Text({ text: cell.type.substring(0,2).toUpperCase(), style: { fontSize: 10, fill: 0xffffff } });
+            text.x = 16 - text.width / 2;
+            text.y = 16 - text.height / 2;
+            cellContainer.addChild(text);
+         } else if (cell.type === 'grass') {
+            g.rect(0, 0, 32, 32);
+            g.fill({ color: 0x051105 });
+            g.stroke({ color: 0x113311, width: 1 });
+            g.moveTo(8, 24); g.lineTo(10, 16);
+            g.stroke({ color: 0x00FF00, width: 1 });
+         } else if (cell.type === 'street') {
+            g.rect(0, 0, 32, 32);
+            g.fill({ color: 0x1a1a1a });
+            g.stroke({ color: 0x2a2a2a, width: 1 });
+            if (x % 2 === 0) {
+                g.rect(14, 10, 4, 12);
+                g.fill({ color: 0xDDDD00 });
+            }
+         } else if (cell.type === 'water') {
+            g.rect(0, 0, 32, 32);
+            g.fill({ color: 0x001133 });
+            g.stroke({ color: 0x002255, width: 1 });
+            g.moveTo(8, 16); g.lineTo(24, 16);
+            g.stroke({ color: 0x0088FF, width: 1 });
+         }
+         
+         if (cell && cell.inventory && Array.isArray(cell.inventory) && cell.inventory.length > 0) {
+            g.rect(20, 20, 8, 8);
+            g.fill({ color: 0xFFFF00 });
+            g.stroke({ color: 0xFF8800, width: 1 });
+         }
+      }
+    }
+  }
+
+  private renderDynamicEntities(dim: any, grid: any, rooms: any) {
+    if (!this.viewport || !dim || !this.staticLayer) return;
 
     let myChar: any = null;
     if (this.mode === 'player' && this.activePlayerId && this.characters) {
        myChar = this.characters[this.activePlayerId];
     }
-
-    // 1. Draw base grid points
-    const baseGrid = new PIXI.Graphics();
-    for(let x=0; x<dim.width; x++){
-      for(let y=0; y<dim.height; y++){
-        let isVisible = true;
-        if (this.mode === 'player' && myChar) {
-           const dist = Math.sqrt(Math.pow(x - myChar.x, 2) + Math.pow(y - myChar.y, 2));
-           if (dist > (myChar.fowRadius || 6)) {
-               isVisible = false;
-           } else {
-               isVisible = this.hasLineOfSight(Math.floor(myChar.x), Math.floor(myChar.y), x, y, grid);
-           }
-        }
-        
-        if (isVisible) {
-           const cell = grid[`${x},${y},${this.currentLevel}`] || grid[`${x},${y}`];
-           if (!cell || cell.type === 'empty' || cell.type === 'floor') {
-              baseGrid.rect(x * 32, y * 32, 32, 32);
-              baseGrid.fill({ color: 0x111111 });
-              baseGrid.stroke({ color: 0x222222, width: 1 });
-           } else if (cell.type === 'wall') {
-              baseGrid.rect(x * 32, y * 32, 32, 32);
-              baseGrid.fill({ color: 0x00E5FF });
-           } else if (cell.type === 'door_locked') {
-              baseGrid.rect(x * 32, y * 32, 32, 32);
-              baseGrid.fill({ color: 0xFF003C });
-           } else if (cell.type === 'door_open') {
-              baseGrid.rect(x * 32, y * 32, 32, 32);
-              baseGrid.fill({ color: 0x111111 });
-              baseGrid.stroke({ color: 0x00FF66, width: 2 });
-           } else if (cell.type === 'cctv') {
-              baseGrid.rect(x * 32, y * 32, 32, 32);
-              baseGrid.fill({ color: 0x111111 });
-              baseGrid.stroke({ color: 0x222222, width: 1 });
-              baseGrid.circle(x * 32 + 16, y * 32 + 16, 8);
-              baseGrid.fill({ color: 0xFFFF00 });
-           } else if (cell.type === 'furniture') {
-              baseGrid.rect(x * 32, y * 32, 32, 32);
-              baseGrid.fill({ color: 0x111111 });
-              baseGrid.stroke({ color: 0x222222, width: 1 });
-              baseGrid.rect(x * 32 + 4, y * 32 + 4, 24, 24);
-              baseGrid.fill({ color: 0x888888 });
-           } else if (cell.type === 'breakable_wall') {
-              baseGrid.rect(x * 32, y * 32, 32, 32);
-              baseGrid.fill({ color: 0x111111 });
-              baseGrid.stroke({ color: 0xaa5522, width: 2 });
-              // Draw a dashed inner box to indicate breakable
-              baseGrid.moveTo(x * 32 + 4, y * 32 + 4);
-              baseGrid.lineTo(x * 32 + 28, y * 32 + 28);
-              baseGrid.stroke({ color: 0xaa5522, width: 1 });
-           } else if (cell.type === 'cupboard') {
-              baseGrid.rect(x * 32, y * 32, 32, 32);
-              baseGrid.fill({ color: 0x444444 });
-              baseGrid.stroke({ color: 0x222222, width: 1 });
-           } else if (cell.type === 'storage_box') {
-              baseGrid.rect(x * 32, y * 32, 32, 32);
-              baseGrid.fill({ color: 0x111111 });
-              baseGrid.stroke({ color: 0x666666, width: 2 });
-              baseGrid.rect(x * 32 + 8, y * 32 + 8, 16, 16);
-              baseGrid.fill({ color: 0x666666 });
-           } else if (cell.type === 'server_rack') {
-               const rect = new PIXI.Graphics();
-               rect.rect(x * 32 + 2, y * 32 + 2, 28, 28);
-               rect.fill({ color: 0x111111 });
-               rect.stroke({ color: 0x00aaff, width: 2 });
-               this.viewport.addChild(rect);
-               this.sprites[`${x},${y}`] = rect;
-           } else if (['chair', 'bed', 'locker', 'sofa', 'plant', 'table', 'monitor'].includes(cell.type)) {
-               // Generic fallback for all new furniture
-               const rect = new PIXI.Graphics();
-               rect.rect(x * 32 + 4, y * 32 + 4, 24, 24);
-               rect.fill({ color: 0x888888 });
-               rect.stroke({ color: 0x555555, width: 1 });
-               this.viewport.addChild(rect);
-               this.sprites[`${x},${y}`] = rect;
-               
-               const text = new PIXI.Text({ text: cell.type.substring(0,2).toUpperCase(), style: { fontSize: 10, fill: 0xffffff } });
-               text.x = x * 32 + 16 - text.width / 2;
-               text.y = y * 32 + 16 - text.height / 2;
-               this.viewport.addChild(text);
-               // Note: text won't be easily trackable for cleanup but since it's a static map generation it's okay for GM layout.
-           } else if (cell.type === 'grass') {
-               baseGrid.rect(x * 32, y * 32, 32, 32);
-               baseGrid.fill({ color: 0x051105 });
-               baseGrid.stroke({ color: 0x113311, width: 1 });
-               // some grass blades
-               baseGrid.moveTo(x * 32 + 8, y * 32 + 24); baseGrid.lineTo(x * 32 + 10, y * 32 + 16);
-               baseGrid.stroke({ color: 0x00FF00, width: 1 });
-            } else if (cell.type === 'street') {
-               baseGrid.rect(x * 32, y * 32, 32, 32);
-               baseGrid.fill({ color: 0x1a1a1a });
-               baseGrid.stroke({ color: 0x2a2a2a, width: 1 });
-               if (x % 2 === 0) {
-                   baseGrid.rect(x * 32 + 14, y * 32 + 10, 4, 12);
-                   baseGrid.fill({ color: 0xDDDD00 });
-               }
-            } else if (cell.type === 'water') {
-               baseGrid.rect(x * 32, y * 32, 32, 32);
-               baseGrid.fill({ color: 0x001133 });
-               baseGrid.stroke({ color: 0x002255, width: 1 });
-               // ripples
-               baseGrid.moveTo(x * 32 + 8, y * 32 + 16); baseGrid.lineTo(x * 32 + 24, y * 32 + 16);
-               baseGrid.stroke({ color: 0x0088FF, width: 1 });
-            }
-        }
-      }
+    const playerFov = (myChar && this.sensoryData?.fov?.[myChar.id]) ? this.sensoryData.fov[myChar.id] : [];
+    
+    // Create a fast lookup for FOV
+    const fovSet = new Set<string>();
+    if (this.mode === 'player' && myChar) {
+       for (const c of playerFov) {
+           fovSet.add(`${c.x},${c.y}`);
+       }
     }
-    this.viewport.addChild(baseGrid);
-    this.roomGraphics['base'] = baseGrid;
 
-    // 2. Draw Rooms
+    // 1. Update static cells visibility (Fog of War)
+    for (const key in this.cachedCells) {
+        const cellContainer = this.cachedCells[key];
+        const cx = (cellContainer as any).cellX;
+        const cy = (cellContainer as any).cellY;
+        const type = (cellContainer as any).cellType;
+        const roomId = (cellContainer as any).roomId;
+
+        let isVisible = true;
+        let isRevealed = false;
+
+        if (this.mode === 'player' && myChar) {
+            if (fovSet.has(key)) {
+                isVisible = true;
+            } else {
+                isVisible = false;
+                const parentRoom = roomId ? rooms[roomId] : null;
+                isRevealed = parentRoom?.metadata?.revealedTo && parentRoom.metadata.revealedTo[this.activePlayerId!];
+            }
+        } else if (this.mode === 'spectator' && roomId) {
+            const parentRoom = rooms[roomId];
+            isRevealed = parentRoom?.metadata?.revealedTo && Object.values(parentRoom.metadata.revealedTo).some(v => v === true);
+            isVisible = isRevealed; // Spectator sees revealed rooms as fully visible
+        }
+
+        if (isVisible) {
+            cellContainer.visible = true;
+            cellContainer.alpha = 1;
+        } else if (isRevealed && type === 'structure_wall') {
+            cellContainer.visible = true;
+            cellContainer.alpha = 1;
+        } else {
+            cellContainer.visible = false;
+        }
+    }
+
+    // 2. Update Rooms
+    const activeRooms = new Set<string>();
     for (const [roomId, room] of Object.entries(rooms) as [string, any][]) {
       if (!room || !room.bounds) continue;
       let isVisible = true;
@@ -302,11 +397,10 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
          const isRevealed = room.metadata?.revealedTo && Object.values(room.metadata.revealedTo).some(v => v === true);
          if (!isRevealed) isVisible = false;
       } else if (this.mode === 'player' && myChar) {
-         // Determine if room is in FoW
          const cx = Math.floor(room.bounds.x + room.bounds.w/2);
          const cy = Math.floor(room.bounds.y + room.bounds.h/2);
-         const dist = Math.sqrt(Math.pow(cx - myChar.x, 2) + Math.pow(cy - myChar.y, 2));
-         const hasLos = dist <= (myChar.fowRadius || 6) && this.hasLineOfSight(Math.floor(myChar.x), Math.floor(myChar.y), cx, cy, grid);
+         const hasLos = fovSet.has(`${cx},${cy}`) || playerFov.some((c: any) => c.x >= room.bounds.x && c.x <= room.bounds.x + room.bounds.w && c.y >= room.bounds.y && c.y <= room.bounds.y + room.bounds.h);
+         
          if (hasLos) {
             isVisible = true;
             isMemory = false;
@@ -322,8 +416,18 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
       }
 
       if (!isVisible) continue;
+      activeRooms.add(roomId);
 
-      const g = new PIXI.Graphics();
+      let g = this.roomGraphics[roomId];
+      if (!g) {
+          g = new PIXI.Graphics();
+          this.roomLayer.addChild(g);
+          this.roomGraphics[roomId] = g;
+      } else {
+          g.clear();
+          g.removeChildren();
+      }
+
       const bounds = room.bounds;
       const isCritical = room.metadata?.threat === 'critical';
       const color = isMemory ? 0x555555 : (isCritical ? 0xff0000 : 0x00E5FF);
@@ -333,9 +437,6 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
       g.fill({ color, alpha });
       g.stroke({ color, width: 2, alpha: isMemory ? 0.3 : 1 });
       
-      this.viewport.addChild(g);
-      this.roomGraphics[roomId] = g;
-      
       if (!isMemory) {
           const text = new PIXI.Text({ text: room.tag || roomId, style: { fontSize: 14, fill: color, fontFamily: 'monospace' }});
           text.x = bounds.x * 32 + 5;
@@ -344,83 +445,125 @@ export class PixiMapComponent implements AfterViewInit, OnDestroy {
       }
     }
 
-    // 3. Draw Grid cells & walls
-    for (const [key, cell] of Object.entries(grid) as [string, any][]) {
-      const [x, y] = key.split(',').map(Number);
-      
-      let isVisible = true;
-      if (this.mode === 'player' && myChar) {
-         const dist = Math.sqrt(Math.pow(x - myChar.x, 2) + Math.pow(y - myChar.y, 2));
-         if (dist > (myChar.fowRadius || 6)) {
-             const parentRoom = cell.roomId ? rooms[cell.roomId] : null;
-             const isRevealed = parentRoom?.metadata?.revealedTo && parentRoom.metadata.revealedTo[this.activePlayerId!];
-             if (!isRevealed) isVisible = false;
-         }
-      } else if (this.mode === 'spectator' && cell.roomId) {
-         const parentRoom = rooms[cell.roomId];
-         const isRevealed = parentRoom?.metadata?.revealedTo && Object.values(parentRoom.metadata.revealedTo).some(v => v === true);
-         if (!isRevealed) isVisible = false;
-      }
+    // Cleanup unused rooms
+    Object.keys(this.roomGraphics).forEach(key => {
+        if (!activeRooms.has(key)) {
+            const g = this.roomGraphics[key];
+            this.roomLayer.removeChild(g);
+            g.destroy({children: true});
+            delete this.roomGraphics[key];
+        }
+    });
 
-      if (!isVisible) continue;
-
-      if (cell.type === 'structure_wall') {
-        const wall = new PIXI.Graphics();
-        wall.rect(x * 32, y * 32, 32, 32);
-        wall.fill({ color: 0x555555 });
-        this.viewport.addChild(wall);
-        this.sprites[key] = wall;
-      }
-    }
-
-    // 4. Draw Characters
+    // 3. Update Characters
+    const activeChars = new Set<string>();
     if (this.characters) {
        for (const [charId, char] of Object.entries(this.characters) as [string, any][]) {
-          // FoW check
           let isVisible = true;
           if (this.mode === 'player' && myChar) {
-              const dist = Math.sqrt(Math.pow(char.x - myChar.x, 2) + Math.pow(char.y - myChar.y, 2));
-              if (dist > (myChar.fowRadius || 6)) isVisible = false;
+              isVisible = fovSet.has(`${char.x},${char.y}`);
           } else if (this.mode === 'spectator') {
-              // Spectator sees characters only if they are in a revealed room or in the open
-              let inRevealedRoom = false;
-              for(const room of Object.values(rooms) as any[]) {
-                 if (char.x >= room.bounds.x && char.x < room.bounds.x + room.bounds.w &&
-                     char.y >= room.bounds.y && char.y < room.bounds.y + room.bounds.h) {
-                     if (room.metadata?.revealedTo && Object.values(room.metadata.revealedTo).some(v => v === true)) {
-                         inRevealedRoom = true; break;
-                     }
-                 }
-              }
-              if (!inRevealedRoom) isVisible = false;
+              isVisible = true;
           }
 
           if (!isVisible && charId !== this.activePlayerId) continue;
+          activeChars.add(charId);
+          activeChars.add(charId + '_label');
 
-          const cg = new PIXI.Graphics();
-          const isMe = charId === this.activePlayerId;
-          const color = isMe ? 0x00FF00 : 0xFF2A2A;
+          let cg = this.charGraphics[charId] as PIXI.Graphics;
+          if (!cg) {
+              cg = new PIXI.Graphics();
+              this.dynamicLayer.addChild(cg);
+              this.charGraphics[charId] = cg;
+          } else {
+              cg.clear();
+          }
+
+          const isPlayer = charId.startsWith('p');
+          const cx = char.x * 32 + 16;
+          const cy = char.y * 32 + 16;
           
-          cg.circle(char.x * 32 + 16, char.y * 32 + 16, 12);
-          cg.fill({ color });
-          cg.stroke({ color: 0xFFFFFF, width: isMe ? 2 : 0 });
+          if (isPlayer) {
+              const color = charId === this.activePlayerId ? 0x00FF00 : 0x00AAFF;
+              cg.circle(cx, cy, 12);
+              cg.fill({ color });
+              cg.stroke({ color: 0xFFFFFF, width: charId === this.activePlayerId ? 2 : 1 });
+              
+              const rot = char.rotation || 0;
+              cg.moveTo(cx, cy);
+              cg.arc(cx, cy, 64, rot - 0.6, rot + 0.6);
+              cg.lineTo(cx, cy);
+              cg.fill({ color: 0xFFFFFF, alpha: 0.2 });
+          } else {
+              cg.moveTo(cx, cy - 14);
+              cg.lineTo(cx + 14, cy);
+              cg.lineTo(cx, cy + 14);
+              cg.lineTo(cx - 14, cy);
+              cg.fill({ color: 0xFF2A2A });
+              cg.stroke({ color: 0xFF0000, width: 2 });
+          }
 
-          // Draw indicator ring based on stealth: green if >= 50, red if < 50
-          const stealthVal = char.stealth !== undefined ? char.stealth : 100;
-          const ringColor = stealthVal >= 50 ? 0x00FF00 : 0xFF2A2A;
-          cg.circle(char.x * 32 + 16, char.y * 32 + 16, 17);
-          cg.stroke({ color: ringColor, width: 2 });
+          const labelId = charId + '_label';
+          let label = this.charGraphics[labelId] as PIXI.Text;
+          if (!label) {
+              label = new PIXI.Text({ text: char.name, style: { fontSize: 10, fill: 0xFFFFFF } });
+              this.dynamicLayer.addChild(label);
+              this.charGraphics[labelId] = label;
+          } else {
+              label.text = char.name;
+          }
 
-          this.viewport.addChild(cg);
-          this.charGraphics[charId] = cg;
-
-          const label = new PIXI.Text({ text: char.name, style: { fontSize: 10, fill: 0xFFFFFF } });
           label.x = char.x * 32;
           label.y = char.y * 32 - 15;
-          this.viewport.addChild(label);
-          this.charGraphics[charId + '_label'] = label;
        }
     }
+
+    Object.keys(this.charGraphics).forEach(key => {
+        if (!activeChars.has(key)) {
+            const g = this.charGraphics[key];
+            this.dynamicLayer.removeChild(g);
+            g.destroy({children: true});
+            delete this.charGraphics[key];
+        }
+    });
+    
+    // 4. Update Acoustics
+    const activeAcoustics = new Set<string>();
+    if (this.sensoryData?.acoustics && Array.isArray(this.sensoryData.acoustics)) {
+        for (let i = 0; i < this.sensoryData.acoustics.length; i++) {
+             const sound = this.sensoryData.acoustics[i];
+             const key = `acoustics_${i}`;
+             activeAcoustics.add(key);
+
+             let sndGr = this.acousticsSprites[key];
+             if (!sndGr) {
+                 sndGr = new PIXI.Graphics();
+                 this.dynamicLayer.addChild(sndGr);
+                 this.acousticsSprites[key] = sndGr;
+             } else {
+                 sndGr.clear();
+             }
+             
+             sndGr.circle(sound.x * 32 + 16, sound.y * 32 + 16, sound.radius * 32);
+             sndGr.stroke({ color: sound.type === 'GUNFIRE' ? 0xFF0000 : 0x00FFFF, width: 2, alpha: 0.5 });
+             
+             if (sound.cells && Array.isArray(sound.cells)) {
+                 for (const cell of sound.cells) {
+                     sndGr.rect(cell.x * 32, cell.y * 32, 32, 32);
+                     sndGr.fill({ color: sound.type === 'GUNFIRE' ? 0xAA0000 : 0x00AAAA, alpha: 0.2 });
+                 }
+             }
+        }
+    }
+
+    Object.keys(this.acousticsSprites).forEach(key => {
+        if (!activeAcoustics.has(key)) {
+            const s = this.acousticsSprites[key];
+            this.dynamicLayer.removeChild(s);
+            s.destroy({children: true});
+            delete this.acousticsSprites[key];
+        }
+    });
   }
 
   ngOnDestroy() {

@@ -196,10 +196,19 @@ input[type="text"], input[type="number"], select {
 
 /* Alert styling */
 .pulsating-alert-bar {
+  position: fixed;
+  top: 40px;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  box-sizing: border-box;
   animation: corporate-alert 2s infinite alternate !important;
   color: #f43f5e !important;
   border: 1px solid rgba(244, 63, 94, 0.3) !important;
-  background: rgba(244, 63, 94, 0.05) !important;
+  border-left: none !important;
+  border-right: none !important;
+  background: rgba(20, 0, 0, 0.9) !important;
+  backdrop-filter: blur(4px);
   font-family: 'JetBrains Mono', monospace;
   font-size: clamp(14px, 2vh, 20px) !important;
   letter-spacing: 0.15em;

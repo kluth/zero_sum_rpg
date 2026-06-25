@@ -55,7 +55,9 @@ export class GrpcAcousticsServer {
   }
 
   public start(port: number = 50053) {
-    this.server.bindAsync(`0.0.0.0:${port}`, grpc.ServerCredentials.createInsecure(), () => {
+    this.server.bindAsync(`127.0.0.1:${port}`, grpc.ServerCredentials.createInsecure(), (err, port) => {
+      if (err) { console.error(err); return; }
+      this.server.start();
       console.log(`Acoustics gRPC Agent listening on port ${port}`);
     });
   }

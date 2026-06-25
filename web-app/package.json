@@ -18,6 +18,7 @@
     "@angular/platform-browser": "^17.3.0",
     "@angular/platform-browser-dynamic": "^17.3.0",
     "@angular/router": "^17.3.0",
+    "@angular/service-worker": "^17.3.0",
     "@ngrx/signals": "^17.2.0",
     "core-domain": "file:../core-domain",
     "firebase": "^12.15.0",
