@@ -52,3 +52,19 @@ func (h *Handler) FindEligiblePlayers(players []*Player, hotspot *Hotspot) []*Pl
 
 	return eligible
 }
+
+func (h *Handler) GenerateQuest(player *Player, hotspot *Hotspot) *Quest {
+	var title, desc string
+	reward := hotspot.HeatLevel * 100
+
+	if player.Reputation > 50 {
+		title = "High Profile Extraction"
+		desc = "Target located at " + hotspot.Name + ". Proceed with caution. Briefing: They know you are coming."
+		reward += 500
+	} else {
+		title = "Data Retrieval"
+		desc = "Recover loose data drives around " + hotspot.Name + ". Briefing: Stay out of sight."
+	}
+
+	return NewQuest("q_"+player.ID+"_"+hotspot.ID, title, desc, reward)
+}

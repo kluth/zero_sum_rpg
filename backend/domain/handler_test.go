@@ -70,3 +70,35 @@ func TestHandler_FindEligiblePlayers(t *testing.T) {
 		}
 	})
 }
+
+func TestHandler_GenerateQuest(t *testing.T) {
+	handler := NewHandler()
+	hotspot := NewHotspot("h1", "Downtown")
+	hotspot.HeatLevel = 5
+
+	t.Run("high rep player", func(t *testing.T) {
+		p := NewPlayer("p1", "Alice")
+		p.Reputation = 60
+		q := handler.GenerateQuest(p, hotspot)
+
+		if q.Title != "High Profile Extraction" {
+			t.Errorf("expected high profile title, got %s", q.Title)
+		}
+		if q.Reward != 1000 {
+			t.Errorf("expected 1000 reward, got %d", q.Reward)
+		}
+	})
+
+	t.Run("low rep player", func(t *testing.T) {
+		p := NewPlayer("p2", "Bob")
+		p.Reputation = 10
+		q := handler.GenerateQuest(p, hotspot)
+
+		if q.Title != "Data Retrieval" {
+			t.Errorf("expected data retrieval title, got %s", q.Title)
+		}
+		if q.Reward != 500 {
+			t.Errorf("expected 500 reward, got %d", q.Reward)
+		}
+	})
+}
