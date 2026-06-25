@@ -1,0 +1,16 @@
+<div class="frequenz-container" [class.hijacked]="isHijacked">
+  <div class="static-overlay"></div>
+  
+  <header class="warning-header">
+    <div class="signal-lost">SIGNAL COMPROMISED // FREQUENZ-X OVERRIDE</div>
+  </header>
+  
+  <main class="rebel-stream">
+    <div class="stream-line" *ngFor="let msg of messages">
+      <span class="glitch-text">{{ msg.content }}</span>
+    </div>
+    <div class="prompt">
+      <span class="blinking-cursor">█</span>
+    </div>
+  </main>
+</div>
