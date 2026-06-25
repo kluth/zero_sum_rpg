@@ -19,6 +19,13 @@ export interface RollResult {
   readonly consequences: string[];
 }
 
+export interface FreeformRollRequest {
+  readonly hero: any; // Using any or EverydayHero, but we want loose coupling
+  readonly skill: string;
+  readonly difficultyPenalty: number;
+  readonly bonuses: any[]; // DynamicBonus[]
+}
+
 export class ResolutionEngine {
   /**
    * Resolves an action using the new strict Bounded Accuracy (d20) system.
@@ -73,5 +80,20 @@ export class ResolutionEngine {
       degree,
       consequences
     };
+  }
+
+  /**
+   * Resolves an action using the freeform JobTags and DynamicBonuses
+   */
+  public static evaluateFreeform(request: FreeformRollRequest, randomProvider: () => number = Math.random): RollResult {
+    // calculate baseModifier from bonuses that match the skill
+    const matchingBonuses = request.bonuses.filter(b => b.getSkill() === request.skill);
+    const baseModifier = matchingBonuses.reduce((sum, b) => sum + b.getModifier(), 0);
+
+    return this.resolve({
+      playerId: request.hero.getId(),
+      baseModifier,
+      difficultyPenalty: request.difficultyPenalty
+    }, randomProvider);
   }
 }
