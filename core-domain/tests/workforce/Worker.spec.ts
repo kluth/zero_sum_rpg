@@ -6,10 +6,13 @@ import { KoffeinPegel } from '../../src/workforce/KoffeinPegel';
 
 describe('Worker and Tag-System', () => {
   const createWorker = (tags: Tag[] = []) => {
-    const nr = Nervenkostuem.create(100).value as Nervenkostuem;
-    const br = BurnoutMeter.create(0).value as BurnoutMeter;
-    const kr = KoffeinPegel.create(100).value as KoffeinPegel;
-    return Worker.create('worker-1', 'Test Worker', nr, br, kr, tags);
+    const nr = Nervenkostuem.create(100);
+    const br = BurnoutMeter.create(0);
+    const kr = KoffeinPegel.create(100);
+    if (nr.isSuccess() && br.isSuccess() && kr.isSuccess()) {
+      return Worker.create('worker-1', 'Test Worker', nr.value, br.value, kr.value, tags);
+    }
+    throw new Error('Could not create attributes');
   };
 
   it('should be able to perform Triage if it has the Triage tag', () => {
