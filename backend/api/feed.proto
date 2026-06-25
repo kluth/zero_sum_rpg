@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package feed;
+
+option go_package = "zero_sum_rpg_backend/api/feed";
+
+enum NetworkID {
+  UNKNOWN_NETWORK = 0;
+  WHISPERNET = 1;
+  OCGF = 2;
+  FREQUENZ_X = 3;
+  NEON_LOTUS = 4;
+}
+
+enum QuestState {
+  UNKNOWN_STATE = 0;
+  AVAILABLE = 1;
+  IN_PROGRESS = 2;
+  COMPLETED = 3;
+  FAILED = 4;
+}
+
+message QuestEvent {
+  string quest_id = 1;
+  string title = 2;
+  string description = 3;
+  NetworkID network = 4;
+  QuestState state = 5;
+  int32 reward = 6;
+  string timestamp = 7;
+}
+
+message FeedRequest {
+  string player_id = 1;
+}
+
+service FeedService {
+  rpc StreamQuests(FeedRequest) returns (stream QuestEvent);
+}
