@@ -29,7 +29,7 @@ import { FrequenzXComponent } from '../../ui/frequenz-x/frequenz-x.component';
       </div>
     </header>
 
-    <div class="dashboard-content" style="display: grid; grid-template-columns: 280px 1fr 350px; gap: 24px; padding: 24px; height: calc(100vh - 64px);">
+    <div class="dashboard-content" style="display: grid; grid-template-columns: 280px 1fr 350px; gap: 24px; padding: 24px; min-height: calc(100vh - 64px);">
       <!-- Left Sidebar: Controls & Vitals -->
       <aside style="display: flex; flex-direction: column; gap: 24px;">
         <div class="clean-panel widget">
@@ -77,27 +77,27 @@ import { FrequenzXComponent } from '../../ui/frequenz-x/frequenz-x.component';
       </aside>
 
       <!-- Center: Main Feed & Comms -->
-      <main style="display: flex; flex-direction: column; gap: 24px; overflow: hidden;">
-        <div class="clean-panel module" style="flex: 2; display: flex; flex-direction: column; overflow: hidden;">
+      <main style="display: flex; flex-direction: column; gap: 24px;">
+        <div class="clean-panel module" style="flex: 2; display: flex; flex-direction: column;">
           <div class="module-header" style="flex-shrink: 0; padding-bottom: 12px; border-bottom: 1px solid var(--surface-border); margin-bottom: 12px;">
             <h3 style="margin: 0;">Global Oversight (OCGF)</h3>
             <span class="badge">Monitoring Active</span>
           </div>
-          <div style="flex: 1; overflow: hidden;">
+          <div style="flex: 1;">
             <app-ocgf></app-ocgf>
           </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; flex: 1; overflow: hidden;">
-          <div class="clean-panel module" style="display: flex; flex-direction: column; overflow: hidden;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; flex: 1;">
+          <div class="clean-panel module" style="display: flex; flex-direction: column;">
             <h3 style="flex-shrink: 0; margin-bottom: 12px; font-size: 14px; color: var(--text-muted); text-transform: uppercase;">Whispernet Intercept</h3>
-            <div style="flex: 1; overflow: hidden;">
+            <div style="flex: 1;">
               <app-whispernet></app-whispernet>
             </div>
           </div>
-          <div class="clean-panel module" style="display: flex; flex-direction: column; overflow: hidden;">
+          <div class="clean-panel module" style="display: flex; flex-direction: column;">
             <h3 style="flex-shrink: 0; margin-bottom: 12px; font-size: 14px; color: var(--text-muted); text-transform: uppercase;">Frequenz X Intercept</h3>
-            <div style="flex: 1; overflow: hidden;">
+            <div style="flex: 1;">
               <app-frequenz-x></app-frequenz-x>
             </div>
           </div>
@@ -106,14 +106,15 @@ import { FrequenzXComponent } from '../../ui/frequenz-x/frequenz-x.component';
 
       <!-- Right Sidebar: Quick Actions & Logs -->
       <aside style="display: flex; flex-direction: column; gap: 24px;">
-        <div class="clean-panel widget" style="flex: 1; overflow-y: auto;">
+        <div class="clean-panel widget" style="flex: 1; overflow-y: auto; max-height: 800px;">
           <h3 style="margin-bottom: 16px;">System Logs</h3>
           <div style="display: flex; flex-direction: column; gap: 8px; font-family: monospace; font-size: 12px; color: var(--text-muted);">
-            <div style="padding: 8px; background: #f9fafb; border-radius: 4px;">[12:00:01] System boot complete.</div>
-            <div style="padding: 8px; background: #f9fafb; border-radius: 4px;">[12:00:05] Agent 01 authenticated.</div>
-            <div style="padding: 8px; background: #fef2f2; color: #991b1b; border-radius: 4px;">[12:05:12] Agent 03 heart rate spiked.</div>
-            <div style="padding: 8px; background: #f9fafb; border-radius: 4px;">[12:10:00] Location ping sent.</div>
-            <div style="padding: 8px; background: #eff6ff; color: #1d4ed8; border-radius: 4px;">[12:15:30] Whispernet message intercepted.</div>
+            <div *ngIf="systemLogs.length === 0" style="padding: 8px; background: var(--surface-variant); border-radius: 4px;">No incoming logs.</div>
+            <div *ngFor="let log of systemLogs" style="padding: 8px; background: var(--surface-variant); border-radius: 4px;"
+                 [ngStyle]="{'border-left': log.metadata === 'URGENT_KPI' ? '3px solid var(--alert-red)' : 'none'}">
+              <strong style="color: var(--primary);">[{{ log.timestamp | date:'HH:mm:ss' }}] [{{ log.network | uppercase }}]</strong>
+              {{ log.content }}
+            </div>
           </div>
         </div>
       </aside>
@@ -121,9 +122,18 @@ import { FrequenzXComponent } from '../../ui/frequenz-x/frequenz-x.component';
   </div>
   `
 })
-export class GmViewComponent {
+export class GmViewComponent implements OnInit {
   private feedService = inject(FeedService);
   public uiState = inject(UiStateService);
+
+  systemLogs: any[] = [];
+
+  ngOnInit() {
+    this.feedService.streamMessages().subscribe(msg => {
+      this.systemLogs.unshift(msg);
+      if (this.systemLogs.length > 50) this.systemLogs.pop();
+    });
+  }
 
   broadcast() {
     this.feedService.injectMessage('ocgf', 'SYSTEM BROADCAST: Status update required from all agents.', 'URGENT_KPI');
