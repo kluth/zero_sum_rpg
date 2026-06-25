@@ -16,7 +16,22 @@ export class FeedService {
   private messagesSubject = new Subject<FeedMessage>();
 
   constructor() {
-    // Simulated gRPC-Web connection
+    console.log('[FeedService] Connecting to Live Backend SSE stream...');
+    const eventSource = new EventSource('http://localhost:8080/events');
+
+    eventSource.onmessage = (event) => {
+      try {
+        const msg = JSON.parse(event.data);
+        console.log('[FeedService] Received live event:', msg);
+        this.pushMessage(msg);
+      } catch (e) {
+        console.error('[FeedService] Failed to parse SSE event', e);
+      }
+    };
+
+    eventSource.onerror = (error) => {
+      console.error('[FeedService] SSE Connection error:', error);
+    };
   }
 
   streamMessages(): Observable<FeedMessage> {
