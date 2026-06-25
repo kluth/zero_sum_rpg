@@ -55,7 +55,7 @@ export class GmViewComponent {
     this.status = 'Injecting...';
     const token = localStorage.getItem('zero_sum_token');
     const serverUrl = localStorage.getItem('zero_sum_server_url') || 'http://localhost:8080';
-    const targetUrl = serverUrl.replace(/\/$/, '');
+    const targetUrl = serverUrl.endsWith('/') ? serverUrl.slice(0, -1) : serverUrl;
 
     fetch(`${targetUrl}/api/message`, {
       method: 'POST',

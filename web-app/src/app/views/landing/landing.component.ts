@@ -60,7 +60,7 @@ export class LandingComponent {
     this.error = 'Connecting...';
     
     // Ensure URL has no trailing slash
-    const targetUrl = this.serverUrl.replace(/\\/$/, '');
+    const targetUrl = this.serverUrl.endsWith('/') ? this.serverUrl.slice(0, -1) : this.serverUrl;
 
     fetch(targetUrl + '/api/auth', {
       method: 'POST',
