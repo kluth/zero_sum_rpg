@@ -13,6 +13,7 @@ import { PlayerUplinkComponent } from './ui/player-uplink/player-uplink.componen
 import { ActionQueueService } from './core/services/ActionQueueService';
 import { WebRTCService } from './core/services/webrtc.service';
 import { AIEngineService, AIPersona } from './core/services/ai-engine.service';
+import { FacilityGeneratorService } from './core/services/facility-generator.service';
 
 let fbApp: any;
 let fbDb: any;
@@ -45,6 +46,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private webrtc = inject(WebRTCService);
   public aiEngine = inject(AIEngineService);
   private injector = inject(Injector);
+  private facilityGenerator = inject(FacilityGeneratorService);
   gameState = signal<any>({ characters: {}, map: null, traumaLog: {}, clocks: {}, flashbacks: {} });
   heatLevel = computed(() => this.gameState().heatLevel || 1);
   chaosMarketValue = computed(() => this.gameState()?.chaosMarketValue || 0);
@@ -303,96 +305,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   generateProceduralFacility() {
     this.wfcError.set("INITIALIZING PROCEDURAL GENERATION...");
-    
-    // Clean slate for current level
     const currentZ = this.currentLevel();
-    // Keep other levels intact, only clear this level's cells and rooms (simplification: we'll just clear rooms for now)
-    this.gridStore.setState({ dimensions: { width: 50, height: 30 } }); // state is preserved, we just overwrite
-    
-    // BSP / Sequential Connected Rooms
-    const newRooms: Record<string, any> = {};
-    const roomCenters: {x: number, y: number}[] = [];
-    
-    for (let i = 0; i < 6; i++) {
-        const roomId = `room_${Math.random().toString(36).substr(2, 6)}`;
-        const w = Math.floor(Math.random() * 6) + 5;
-        const h = Math.floor(Math.random() * 6) + 5;
-        const x = Math.floor(Math.random() * (48 - w)) + 1;
-        const y = Math.floor(Math.random() * (28 - h)) + 1;
-        
-        newRooms[roomId] = {
-            tag: `Sector ${i+1}`,
-            bounds: { x, y, z: currentZ, w, h },
-            color: i === 0 ? '#FF003C' : '#39FF14',
-            metadata: { threat: i === 0 ? 'critical' : 'medium', vfx: i === 0 ? 'flash_red_alert' : 'none' }
-        };
-        
-        // Fill floor
-        for (let r_x = x + 1; r_x < x + w - 1; r_x++) {
-            for (let r_y = y + 1; r_y < y + h - 1; r_y++) {
-               this.updateCell(r_x, r_y, { type: 'floor', roomId: roomId });
-            }
-        }
-        
-        // Add walls
-        for (let r_x = x; r_x < x + w; r_x++) {
-            for (let r_y = y; r_y < y + h; r_y++) {
-               if (r_x === x || r_x === x + w - 1 || r_y === y || r_y === y + h - 1) {
-                   this.updateCell(r_x, r_y, { type: 'structure_wall', roomId: roomId });
-               }
-            }
-        }
-        
-        roomCenters.push({ x: Math.floor(x + w/2), y: Math.floor(y + h/2) });
-    }
-    
-    // Connect rooms sequentially to guarantee traversability
-    for (let i = 1; i < roomCenters.length; i++) {
-        const c1 = roomCenters[i-1];
-        const c2 = roomCenters[i];
-        
-        // Draw L-shaped corridor
-        let cx = c1.x;
-        let cy = c1.y;
-        while (cx !== c2.x) {
-            cx += cx < c2.x ? 1 : -1;
-            // Carve floor and doors
-            const cell = this.gridStore.grid()[`${cx},${cy},${currentZ}`];
-            if (cell && cell.type === 'structure_wall') {
-                this.updateCell(cx, cy, { type: Math.random() > 0.5 ? 'door_locked' : 'breakable_wall' });
-            } else if (!cell || cell.type === 'empty') {
-                this.updateCell(cx, cy, { type: 'floor' });
-                // Add corridor walls if empty
-                if (!this.gridStore.grid()[`${cx},${cy-1},${currentZ}`]) this.updateCell(cx, cy-1, { type: 'structure_wall' });
-                if (!this.gridStore.grid()[`${cx},${cy+1},${currentZ}`]) this.updateCell(cx, cy+1, { type: 'structure_wall' });
-            }
-        }
-        while (cy !== c2.y) {
-            cy += cy < c2.y ? 1 : -1;
-            const cell = this.gridStore.grid()[`${cx},${cy},${currentZ}`];
-            if (cell && cell.type === 'structure_wall') {
-                this.updateCell(cx, cy, { type: Math.random() > 0.5 ? 'door_locked' : 'door_open' });
-            } else if (!cell || cell.type === 'empty') {
-                this.updateCell(cx, cy, { type: 'floor' });
-                if (!this.gridStore.grid()[`${cx-1},${cy},${currentZ}`]) this.updateCell(cx-1, cy, { type: 'structure_wall' });
-                if (!this.gridStore.grid()[`${cx+1},${cy},${currentZ}`]) this.updateCell(cx+1, cy, { type: 'structure_wall' });
-            }
-        }
-    }
-    
-    // Add outdoor grass/street near edges
-    for (let x = 0; x < 50; x++) {
-        for (let y = 0; y < 30; y++) {
-            if (!this.gridStore.grid()[`${x},${y},${currentZ}`]) {
-                if (Math.random() > 0.95) this.updateCell(x, y, { type: 'grass' });
-                else if (Math.random() > 0.98) this.updateCell(x, y, { type: 'street' });
-            }
-        }
-    }
-    
-    Object.keys(newRooms).forEach(k => this.gridStore.updateRoom(k, newRooms[k]));
-    
-    this.wfcError.set("FACILITY GENERATED SUCCESSFULLY. ALL ROOMS CONNECTED.");
+    const resultMsg = this.facilityGenerator.generateProceduralFacility(currentZ);
+    this.wfcError.set(resultMsg);
   }
 
   getRoomTag() {
@@ -449,83 +364,7 @@ export class AppComponent implements OnInit, OnDestroy {
   applyRoomTemplate(templateName: string) {
     const roomId = this.selectedRoomId();
     if (!roomId) return;
-    const room = this.gridStore.rooms()[roomId];
-    if (!room || !room.bounds) return;
-
-    const { x, y, w, h } = room.bounds;
-
-    // Clear interior
-    for (let r_x = x + 1; r_x < x + w - 1; r_x++) {
-        for (let r_y = y + 1; r_y < y + h - 1; r_y++) {
-            this.updateCell(r_x, r_y, { type: 'floor', roomId: roomId } as any);
-        }
-    }
-
-    if (templateName === 'office') {
-       this.updateRoomTag("Corporate Office");
-       // Place cupboards (lockers) in corners
-       this.updateCell(x + 1, y + 1, { type: 'cupboard', roomId: roomId } as any);
-       this.updateCell(x + w - 2, y + h - 2, { type: 'cupboard', roomId: roomId } as any);
-       // Add a center terminal
-       this.updateCell(x + Math.floor(w/2), y + Math.floor(h/2), { type: 'furniture', roomId: roomId } as any);
-       // Add data pad
-       this.updateCell(x + Math.floor(w/2) + 1, y + Math.floor(h/2), { type: 'floor', roomId: roomId, inventory: [{ id: 'datapad', name: 'Secure Datapad' }] } as any);
-    } 
-    else if (templateName === 'storage') {
-       this.updateRoomTag("Storage Area");
-       // Place random clusters of crates (inventory) and large storage boxes
-       for (let r_x = x + 1; r_x < x + w - 1; r_x++) {
-           for (let r_y = y + 1; r_y < y + h - 1; r_y++) {
-               const rand = Math.random();
-               if (rand > 0.8) {
-                   this.updateCell(r_x, r_y, { type: 'storage_box', roomId: roomId } as any);
-               } else if (rand > 0.6) {
-                   this.updateCell(r_x, r_y, { type: 'floor', roomId: roomId, inventory: [{ id: 'scrap', name: 'Tech Scrap' }] } as any);
-               }
-           }
-       }
-       // Make one of the surrounding walls breakable for a secret hideout
-       this.updateCell(x + Math.floor(w/2), y, { type: 'breakable_wall', roomId: roomId } as any);
-    }
-    else if (templateName === 'server_room') {
-       this.updateRoomTag("Server Mainframe");
-       this.updateRoomVfx('flicker_blue_data');
-       this.updateRoomThreat('medium');
-       // Create rows of servers
-       for (let r_x = x + 2; r_x < x + w - 2; r_x += 2) {
-           for (let r_y = y + 1; r_y < y + h - 1; r_y++) {
-               if (r_y !== y + Math.floor(h/2)) { // Leave a center aisle
-                   this.updateCell(r_x, r_y, { type: 'server_rack', roomId: roomId } as any);
-               }
-           }
-       }
-    }
-    else if (templateName === 'medbay') {
-       this.updateRoomTag("Medical Bay");
-       this.updateRoomVfx('flash_red_alert');
-       this.updateRoomThreat('critical');
-       // Place beds along the wall
-       for (let r_x = x + 1; r_x < x + w - 1; r_x += 2) {
-           this.updateCell(r_x, y + 1, { type: 'furniture', roomId: roomId } as any);
-           this.updateCell(r_x, y + 2, { type: 'floor', roomId: roomId, inventory: [{ id: 'medkit', name: 'Emergency Medkit' }] } as any);
-       }
-    }
-
-    // Ensure there is at least one door on the border
-    let hasDoor = false;
-    for (let r_x = x; r_x < x + w; r_x++) {
-        for (let r_y = y; r_y < y + h; r_y++) {
-           if (r_x === x || r_x === x + w - 1 || r_y === y || r_y === y + h - 1) {
-              const cell = this.gridStore.grid()[`${r_x},${r_y}`];
-              if (cell && (cell.type === 'door_locked' || cell.type === 'door_open')) {
-                 hasDoor = true;
-              }
-           }
-        }
-    }
-    if (!hasDoor) {
-       this.updateCell(x + Math.floor(w/2), y, { type: 'door_locked', roomId: roomId } as any);
-    }
+    this.facilityGenerator.applyRoomTemplate(roomId, templateName, this.currentLevel());
   }
   setTab(tab: 'blocks' | 'paint' | 'properties') {
     this.activeTab.set(tab);
