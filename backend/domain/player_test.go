@@ -123,3 +123,42 @@ func TestPlayer_Inventory(t *testing.T) {
 		t.Errorf("expected error removing non-existent item")
 	}
 }
+
+func TestPlayer_Economy(t *testing.T) {
+	p := NewPlayer("p2", "Trinity")
+
+	if p.Credits != 0 {
+		t.Errorf("expected 0 starting credits, got %d", p.Credits)
+	}
+
+	// Add Credits
+	res := p.AddCredits(500)
+	if !res.IsOk() || p.Credits != 500 {
+		t.Errorf("expected 500 credits, got %d", p.Credits)
+	}
+
+	// Spend Credits
+	resSpend := p.SpendCredits(200)
+	if !resSpend.IsOk() || p.Credits != 300 {
+		t.Errorf("expected 300 credits after spending 200, got %d", p.Credits)
+	}
+
+	// Insufficient Credits
+	resFail := p.SpendCredits(1000)
+	if resFail.IsOk() {
+		t.Errorf("expected error when overspending")
+	}
+	if p.Credits != 300 {
+		t.Errorf("expected credits to remain 300 after failed spend, got %d", p.Credits)
+	}
+
+	// Negative amounts
+	resNeg1 := p.AddCredits(-100)
+	if resNeg1.IsOk() {
+		t.Errorf("expected error adding negative credits")
+	}
+	resNeg2 := p.SpendCredits(-100)
+	if resNeg2.IsOk() {
+		t.Errorf("expected error spending negative credits")
+	}
+}

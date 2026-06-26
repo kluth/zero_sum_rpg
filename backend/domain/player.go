@@ -3,9 +3,10 @@ package domain
 import "errors"
 
 var (
-	ErrInsufficientAP = errors.New("insufficient action points")
-	ErrInventoryFull  = errors.New("inventory is full")
-	ErrItemNotFound   = errors.New("item not found in inventory")
+	ErrInsufficientAP      = errors.New("insufficient action points")
+	ErrInventoryFull       = errors.New("inventory is full")
+	ErrItemNotFound        = errors.New("item not found in inventory")
+	ErrInsufficientCredits = errors.New("insufficient credits")
 )
 
 type ItemType string
@@ -36,6 +37,7 @@ type Player struct {
 	Reputation        int
 	HeatLevel         int
 	AP                int // Action Points
+	Credits           int
 	Inventory         []Item
 	InventoryCapacity int
 	IsBlindSpot       bool
@@ -48,6 +50,7 @@ func NewPlayer(id, name string) *Player {
 		Reputation:        0,
 		HeatLevel:         0,
 		AP:                10, // Default start AP
+		Credits:           0,
 		Inventory:         make([]Item, 0),
 		InventoryCapacity: 10,
 		IsBlindSpot:       false,
@@ -110,4 +113,23 @@ func (p *Player) RemoveItem(itemID string) Result[struct{}] {
 		}
 	}
 	return Err[struct{}](ErrItemNotFound)
+}
+
+func (p *Player) AddCredits(amount int) Result[struct{}] {
+	if amount < 0 {
+		return Err[struct{}](ErrInvalidAmount)
+	}
+	p.Credits += amount
+	return Ok(struct{}{})
+}
+
+func (p *Player) SpendCredits(amount int) Result[struct{}] {
+	if amount < 0 {
+		return Err[struct{}](ErrInvalidAmount)
+	}
+	if p.Credits < amount {
+		return Err[struct{}](ErrInsufficientCredits)
+	}
+	p.Credits -= amount
+	return Ok(struct{}{})
 }
