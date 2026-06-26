@@ -1,10 +1,21 @@
 package domain
 
+import "errors"
+
+var ErrInsufficientAP = errors.New("insufficient action points")
+
+type Action struct {
+	ID     string
+	Name   string
+	APCost int
+}
+
 type Player struct {
 	ID          string
 	Name        string
 	Reputation  int
 	HeatLevel   int
+	AP          int
 	IsBlindSpot bool
 }
 
@@ -14,6 +25,7 @@ func NewPlayer(id, name string) *Player {
 		Name:        name,
 		Reputation:  0,
 		HeatLevel:   0,
+		AP:          10,
 		IsBlindSpot: false,
 	}
 }
@@ -45,4 +57,12 @@ func (p *Player) EnterBlindSpot() {
 
 func (p *Player) LeaveBlindSpot() {
 	p.IsBlindSpot = false
+}
+
+func (p *Player) ExecuteAction(action Action) Result[struct{}] {
+	if p.AP < action.APCost {
+		return Err[struct{}](ErrInsufficientAP)
+	}
+	p.AP -= action.APCost
+	return Ok(struct{}{})
 }

@@ -46,3 +46,31 @@ func TestPlayer_BlindSpot(t *testing.T) {
 		t.Errorf("expected false, got true")
 	}
 }
+
+func TestPlayer_ExecuteAction(t *testing.T) {
+	p := NewPlayer("p1", "Neo")
+	
+	// Default AP should be 10 (or whatever we initialize it to, let's say 10)
+	if p.AP != 10 {
+		t.Errorf("expected 10 initial AP, got %d", p.AP)
+	}
+
+	hackAction := Action{ID: "act-1", Name: "Hack Firewall", APCost: 4}
+	
+	res := p.ExecuteAction(hackAction)
+	if !res.IsOk() {
+		t.Errorf("expected success, got error: %v", res.Err)
+	}
+	if p.AP != 6 {
+		t.Errorf("expected 6 AP left, got %d", p.AP)
+	}
+
+	heavyAction := Action{ID: "act-2", Name: "Upload Virus", APCost: 10}
+	res2 := p.ExecuteAction(heavyAction)
+	if res2.IsOk() {
+		t.Errorf("expected failure due to insufficient AP, but got success")
+	}
+	if p.AP != 6 {
+		t.Errorf("expected AP to remain 6, got %d", p.AP)
+	}
+}
