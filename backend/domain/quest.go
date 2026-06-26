@@ -22,6 +22,7 @@ type Quest struct {
 	Description string
 	State       QuestState
 	Reward      int
+	AssigneeID  string
 }
 
 func NewQuest(id, title, description string, reward int) *Quest {
@@ -38,6 +39,15 @@ func (q *Quest) Start() Result[struct{}] {
 	if q.State != QuestStateAvailable {
 		return Err[struct{}](ErrInvalidStateTransition)
 	}
+	q.State = QuestStateInProgress
+	return Ok(struct{}{})
+}
+
+func (q *Quest) AcceptQuest(playerID string) Result[struct{}] {
+	if q.State != QuestStateAvailable {
+		return Err[struct{}](ErrInvalidStateTransition)
+	}
+	q.AssigneeID = playerID
 	q.State = QuestStateInProgress
 	return Ok(struct{}{})
 }
