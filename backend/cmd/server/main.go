@@ -7,6 +7,8 @@ import (
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	"google.golang.org/grpc"
 
+	"zero_sum_rpg_backend/adapter/db"
+	"zero_sum_rpg_backend/api/rest"
 	"zero_sum_rpg_backend/domain"
 	"zero_sum_rpg_backend/feed"
 )
@@ -31,6 +33,11 @@ func main() {
 	
 	mux := http.NewServeMux()
 	feed.RegisterSSEHandler(mux, h)
+	
+	// REST API Setup
+	playerRepo := db.NewInMemoryPlayerRepository()
+	playerHandler := rest.NewPlayerHandler(playerRepo)
+	playerHandler.RegisterRoutes(mux)
 	
 	httpServer := &http.Server{
 		Addr: port,
