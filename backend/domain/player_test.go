@@ -74,3 +74,52 @@ func TestPlayer_ExecuteAction(t *testing.T) {
 		t.Errorf("expected AP to remain 6, got %d", p.AP)
 	}
 }
+
+func TestPlayer_Inventory(t *testing.T) {
+	p := NewPlayer("p1", "Neo")
+	
+	if p.InventoryCapacity != 10 {
+		t.Errorf("expected default capacity 10, got %d", p.InventoryCapacity)
+	}
+
+	item := Item{ID: "i-1", Name: "Cyberdeck", Type: ItemTypeHardware}
+	
+	// Add Item
+	res := p.AddItem(item)
+	if !res.IsOk() {
+		t.Fatalf("expected item to be added, got error %v", res.Err)
+	}
+	if len(p.Inventory) != 1 {
+		t.Errorf("expected inventory size 1, got %d", len(p.Inventory))
+	}
+
+	// Fill Inventory
+	for i := 0; i < 9; i++ {
+		p.AddItem(Item{ID: "dummy", Name: "Dummy Item", Type: ItemTypeSoftware})
+	}
+
+	if len(p.Inventory) != 10 {
+		t.Errorf("expected inventory size 10, got %d", len(p.Inventory))
+	}
+
+	// Exceed capacity
+	resFail := p.AddItem(item)
+	if resFail.IsOk() {
+		t.Errorf("expected error when adding past capacity")
+	}
+
+	// Remove item
+	resRemove := p.RemoveItem("i-1")
+	if !resRemove.IsOk() {
+		t.Errorf("expected successful removal")
+	}
+	if len(p.Inventory) != 9 {
+		t.Errorf("expected inventory size 9 after removal, got %d", len(p.Inventory))
+	}
+
+	// Remove non-existent
+	resRemoveFail := p.RemoveItem("ghost-item")
+	if resRemoveFail.IsOk() {
+		t.Errorf("expected error removing non-existent item")
+	}
+}
