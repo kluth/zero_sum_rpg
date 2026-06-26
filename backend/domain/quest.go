@@ -67,3 +67,13 @@ func (q *Quest) Fail() Result[struct{}] {
 	q.State = QuestStateFailed
 	return Ok(struct{}{})
 }
+
+// CancelQuest is a GM override to forcefully unassign and reset a quest
+func (q *Quest) CancelQuest() Result[struct{}] {
+	if q.State != QuestStateInProgress {
+		return Err[struct{}](ErrInvalidStateTransition)
+	}
+	q.AssigneeID = ""
+	q.State = QuestStateAvailable
+	return Ok(struct{}{})
+}

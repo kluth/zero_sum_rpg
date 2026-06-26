@@ -12,9 +12,10 @@ var (
 type ItemType string
 
 const (
-	ItemTypeHardware ItemType = "Hardware"
-	ItemTypeSoftware ItemType = "Software"
-	ItemTypeIntel    ItemType = "Intel"
+	ItemTypeHardware   ItemType = "Hardware"
+	ItemTypeSoftware   ItemType = "Software"
+	ItemTypeIntel      ItemType = "Intel"
+	ItemTypeConsumable ItemType = "Consumable"
 )
 
 type Item struct {
@@ -108,6 +109,23 @@ func (p *Player) AddItem(item Item) Result[struct{}] {
 func (p *Player) RemoveItem(itemID string) Result[struct{}] {
 	for i, item := range p.Inventory {
 		if item.ID == itemID {
+			p.Inventory = append(p.Inventory[:i], p.Inventory[i+1:]...)
+			return Ok(struct{}{})
+		}
+	}
+	return Err[struct{}](ErrItemNotFound)
+}
+
+func (p *Player) ConsumeItem(itemID string) Result[struct{}] {
+	for i, item := range p.Inventory {
+		if item.ID == itemID {
+			if item.Type != ItemTypeConsumable {
+				return Err[struct{}](errors.New("item is not consumable"))
+			}
+			// Hardcoded for now: Consumables restore 5 AP
+			p.AP += 5
+			
+			// Remove from inventory
 			p.Inventory = append(p.Inventory[:i], p.Inventory[i+1:]...)
 			return Ok(struct{}{})
 		}
