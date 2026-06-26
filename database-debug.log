@@ -1,8 +1,8 @@
-22:19:31.506 [NamespaceSystem-akka.actor.default-dispatcher-5] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started
-22:19:32.005 [main] INFO com.firebase.server.forge.App$ - Listening at 127.0.0.1:9000
-22:19:33.608 [NamespaceSystem-akka.actor.default-dispatcher-6] INFO com.firebase.core.namespace.NamespaceActor - zero-sum-rpg-2026-default-rtdb successfully activated FBKV (SurveyIdle(0)) wait: 749ms, init: 0ms
-22:19:34.134 [NamespaceSystem-blocking-namespace-operation-dispatcher-7] INFO com.firebase.core.namespace.StateManager - Namespace zero-sum-rpg-2026-default-rtdb status Active to Active
-22:22:44.233 [Thread-0] INFO com.firebase.server.forge.App$ - Attempting graceful shutdown.
-22:22:44.257 [NamespaceSystem-akka.actor.default-dispatcher-10] INFO com.firebase.core.namespace.Terminator$Terminator - 1 actors left to terminate: zero-sum-rpg-2026-default-rtdb
-22:22:44.278 [NamespaceSystem-akka.actor.default-dispatcher-5] INFO com.firebase.core.namespace.NamespaceActor - stopped namespace actor for zero-sum-rpg-2026-default-rtdb
-22:22:44.295 [Thread-0] INFO com.firebase.server.forge.App$ - Graceful shutdown complete.
+18:43:56.706 [NamespaceSystem-akka.actor.default-dispatcher-5] INFO akka.event.slf4j.Slf4jLogger - Slf4jLogger started
+18:43:57.364 [main] INFO com.firebase.server.forge.App$ - Listening at 127.0.0.1:9000
+18:43:58.526 [NamespaceSystem-akka.actor.default-dispatcher-6] INFO com.firebase.core.namespace.NamespaceActor - zero-sum-rpg-2026-default-rtdb successfully activated FBKV (SurveyIdle(0)) wait: 363ms, init: 0ms
+18:43:59.230 [NamespaceSystem-blocking-namespace-operation-dispatcher-7] INFO com.firebase.core.namespace.StateManager - Namespace zero-sum-rpg-2026-default-rtdb status Active to Active
+18:45:26.001 [Thread-0] INFO com.firebase.server.forge.App$ - Attempting graceful shutdown.
+18:45:26.048 [NamespaceSystem-akka.actor.default-dispatcher-12] INFO com.firebase.core.namespace.Terminator$Terminator - 1 actors left to terminate: zero-sum-rpg-2026-default-rtdb
+18:45:26.096 [NamespaceSystem-akka.actor.default-dispatcher-12] INFO com.firebase.core.namespace.NamespaceActor - stopped namespace actor for zero-sum-rpg-2026-default-rtdb
+18:45:26.146 [Thread-0] INFO com.firebase.server.forge.App$ - Graceful shutdown complete.

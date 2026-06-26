@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { DomainEvent } from '../events/DomainEvent';
+import { DomainEvent } from '@core-domain/events/DomainEvent';
 
 @Injectable({
   providedIn: 'root'

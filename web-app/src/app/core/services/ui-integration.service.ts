@@ -31,7 +31,7 @@ export class UiIntegrationService {
       .subscribe(event => {
         this.currentAlert.set({
           message: `Logistik-Engpass in ${event.facilityId}: ${event.missingItem} fehlt.`,
-          severity: event.severity,
+          severity: event.severity === 'LOW' ? 'INFO' : (event.severity === 'MEDIUM' ? 'WARNING' : 'CRITICAL'),
           flavourText: 'Wer hat wieder das Lager nicht aufgefüllt?'
         });
       });

@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { FacilityGeneratorService } from './facility-generator.service';
-import { GridStore } from '../grid.store';
+import { GridStore } from '../../grid.store';
 
 describe('FacilityGeneratorService', () => {
   let service: FacilityGeneratorService;
@@ -8,11 +8,11 @@ describe('FacilityGeneratorService', () => {
 
   beforeEach(() => {
     mockGridStore = {
-      setState: jest.fn(),
-      updateRoom: jest.fn(),
-      updateCell: jest.fn(),
-      grid: jest.fn().mockReturnValue({}),
-      rooms: jest.fn().mockReturnValue({})
+      setState: jasmine.createSpy('setState'),
+      updateRoom: jasmine.createSpy('updateRoom'),
+      updateCell: jasmine.createSpy('updateCell'),
+      grid: jasmine.createSpy('grid').and.returnValue({}),
+      rooms: jasmine.createSpy('rooms').and.returnValue({})
     };
 
     TestBed.configureTestingModule({
@@ -34,8 +34,8 @@ describe('FacilityGeneratorService', () => {
 
   it('should apply an office template to a room', () => {
     const mockRoom = { bounds: { x: 0, y: 0, w: 10, h: 10 } };
-    mockGridStore.rooms.mockReturnValue({ 'room1': mockRoom });
+    mockGridStore.rooms.and.returnValue({ 'room1': mockRoom });
     service.applyRoomTemplate('room1', 'office', 1);
-    expect(mockGridStore.updateRoom).toHaveBeenCalledWith('room1', expect.objectContaining({ tag: 'Corporate Office' }));
+    expect(mockGridStore.updateRoom).toHaveBeenCalledWith('room1', jasmine.objectContaining({ tag: 'Corporate Office' }));
   });
 });

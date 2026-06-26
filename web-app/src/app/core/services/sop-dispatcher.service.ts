@@ -1,7 +1,12 @@
 import { Injectable } from '@angular/core';
 import { DomainEventDispatcher } from './domain-event-dispatcher.service';
-import { WorkforceBase } from '../../../../../core-domain/src/workforce/WorkforceBase';
-import { Result } from '../../../../../core-domain/src/shared/Result';
+import { DomainEvent } from '@core-domain/events/DomainEvent';
+import { Result } from '@core-domain/shared/Result';
+
+export interface HasDomainEvents {
+  getDomainEvents(): DomainEvent[];
+  clearDomainEvents(): void;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +18,7 @@ export class SOPDispatcherService {
    * Executes an action on a domain entity, and if successful, 
    * publishes any domain events that were generated during the action.
    */
-  public dispatch<T extends WorkforceBase, R>(
+  public dispatch<T extends HasDomainEvents, R>(
     entity: T,
     action: (entity: T) => Result<R, string>
   ): Result<R, string> {

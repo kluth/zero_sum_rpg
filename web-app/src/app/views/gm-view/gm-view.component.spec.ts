@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { GmViewComponent } from './gm-view.component';
 
@@ -8,7 +9,8 @@ describe('GmViewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GmViewComponent]
+      imports: [GmViewComponent],
+      providers: [provideRouter([])]
     })
     .compileComponents();
     

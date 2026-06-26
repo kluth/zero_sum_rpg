@@ -1,13 +1,32 @@
 import { TestBed } from '@angular/core/testing';
-import { SOPDispatcherService } from './sop-dispatcher.service';
+import { SOPDispatcherService, HasDomainEvents } from './sop-dispatcher.service';
 import { DomainEventDispatcher } from './domain-event-dispatcher.service';
-import { WorkforceBase } from '../../../../../core-domain/src/workforce/WorkforceBase';
-import { Nervenkostuem } from '../../../../../core-domain/src/workforce/Nervenkostuem';
-import { BurnoutMeter } from '../../../../../core-domain/src/workforce/BurnoutMeter';
-import { KoffeinPegel } from '../../../../../core-domain/src/workforce/KoffeinPegel';
-import { Result, success, failure } from '../../../../../core-domain/src/shared/Result';
+import { DomainEvent } from '@core-domain/events/DomainEvent';
+import { Nervenkostuem } from '@core-domain/workforce/Nervenkostuem';
+import { BurnoutMeter } from '@core-domain/workforce/BurnoutMeter';
+import { KoffeinPegel } from '@core-domain/workforce/KoffeinPegel';
+import { Result, success, failure } from '@core-domain/shared/Result';
 
-class MockWorkforce extends WorkforceBase {
+class MockWorkforce implements HasDomainEvents {
+  private domainEvents: DomainEvent[] = [];
+  constructor(
+    public readonly id: string,
+    public readonly name: string,
+    public readonly nr: Nervenkostuem,
+    public readonly br: BurnoutMeter,
+    public readonly kr: KoffeinPegel
+  ) {}
+
+  public getDomainEvents(): DomainEvent[] {
+    return [...this.domainEvents];
+  }
+  public clearDomainEvents(): void {
+    this.domainEvents = [];
+  }
+  public addDomainEvent(event: DomainEvent): void {
+    this.domainEvents.push(event);
+  }
+
   public doSomethingSuccess(): Result<string, string> {
     this.addDomainEvent({ eventName: 'MockEvent', occurredOn: new Date() });
     return success('Success');

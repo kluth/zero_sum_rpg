@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { SpectatorViewComponent } from './spectator-view.component';
 
@@ -8,7 +9,8 @@ describe('SpectatorViewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SpectatorViewComponent]
+      imports: [SpectatorViewComponent],
+      providers: [provideRouter([])]
     })
     .compileComponents();
     

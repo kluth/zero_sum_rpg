@@ -10,6 +10,10 @@ describe('ThreeJsMapComponent', () => {
   let store: any;
 
   beforeEach(async () => {
+    // Stub prototype methods before compilation to completely prevent real ThreeJS initialization in tests
+    ThreeJsMapComponent.prototype.ngAfterViewInit = function() {};
+    (ThreeJsMapComponent.prototype as any).initThreeJs = function() {};
+
     rendererServiceSpy = jasmine.createSpyObj('ThreeJsRendererService', [
       'buildMap',
       'updateCharacters',
@@ -27,9 +31,6 @@ describe('ThreeJsMapComponent', () => {
     fixture = TestBed.createComponent(ThreeJsMapComponent);
     component = fixture.componentInstance;
     store = TestBed.inject(GridStore);
-    
-    // Mock ngAfterViewInit so real ThreeJS doesn't crash headless DOM
-    ThreeJsMapComponent.prototype.ngAfterViewInit = async function() {};
 
     fixture.detectChanges();
   });

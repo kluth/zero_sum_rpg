@@ -35,7 +35,7 @@ describe('UiIntegrationService', () => {
   });
 
   it('should update state when LogisticsBottleneckDetectedEvent is published', () => {
-    const event = new LogisticsBottleneckDetectedEvent('fac-1', 'Medkit', 'WARNING');
+    const event = new LogisticsBottleneckDetectedEvent('fac-1', 'Medkit', 'MEDIUM');
     dispatcher.publish(event);
 
     const alert = service.currentAlert();
