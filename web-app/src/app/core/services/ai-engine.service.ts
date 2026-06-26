@@ -1,4 +1,5 @@
 import { Injectable, signal } from '@angular/core';
+import { environment } from '../../../environments/environment';
 
 export interface AIPersona {
   id: string;
@@ -20,17 +21,16 @@ export interface AIResponse {
 })
 export class AIEngineService {
   // Store the API Key (In production, this should be handled via a secure backend proxy)
-  public apiKey = signal<string>('');
+  public apiKey = signal<string>(environment.geminiApiKey);
   
   constructor() {}
 
   /**
    * Prompts the AI (Google Gemini via REST) to simulate a player's turn based on their Persona.
    */
-  public async generateTurn(persona: AIPersona, context: { heat: number, situation: string }): Promise<AIResponse | null> {
-    if (!this.apiKey()) {
-       console.error('[AI Engine] No API Key configured. Returning fallback.');
-       return this.fallbackMockResponse(persona, context);
+  public async generateTurn(persona: AIPersona, context: { heat: number, situation: string }): Promise<AIResponse> {
+    if (!this.apiKey() || this.apiKey() === 'REPLACE_WITH_REAL_KEY') {
+       throw new Error('[AI Engine] FATAL: Missing API Key. Refusing to mock response.');
     }
 
     const systemInstruction = `
@@ -80,10 +80,10 @@ export class AIEngineService {
       if (text) {
          return JSON.parse(text) as AIResponse;
       }
-      return null;
+      throw new Error('[AI Engine] Empty response from Gemini.');
     } catch (error) {
-      console.error('[AI Engine] Failed to generate turn. Using fallback.', error);
-      return this.fallbackMockResponse(persona, context);
+      console.error('[AI Engine] Failed to generate turn.', error);
+      throw error;
     }
   }
 
@@ -91,8 +91,8 @@ export class AIEngineService {
    * Generates a Game Master event based on current heat level.
    */
   public async generateGmEvent(heat: number, recentActions: string[]): Promise<string> {
-    if (!this.apiKey()) {
-       return `[MOCK GM] The Corporate Guards lock down Sector 4. Heat rises.`;
+    if (!this.apiKey() || this.apiKey() === 'REPLACE_WITH_REAL_KEY') {
+       throw new Error('[AI Engine] FATAL: Missing API Key for GM Event. Refusing to mock.');
     }
 
     const prompt = `
@@ -118,14 +118,4 @@ export class AIEngineService {
     }
   }
 
-  // A local mock to ensure the game doesn't crash if no API key is provided
-  private fallbackMockResponse(persona: AIPersona, context: { heat: number, situation: string }): AIResponse {
-    const isReckless = persona.riskTolerance > 0.5;
-    return {
-      thought: `(Mocked AI) I am ${persona.name}. The situation is: ${context.situation}. I must act.`,
-      action: isReckless ? 'attack' : 'sneak',
-      target: isReckless ? 'Nearest Enemy' : 'Shadows',
-      apCost: isReckless ? 3 : 1
-    };
-  }
 }

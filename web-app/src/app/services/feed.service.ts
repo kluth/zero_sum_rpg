@@ -11,15 +11,7 @@ export interface FeedMessage {
   metadata?: any;
 }
 
-const firebaseConfig = {
-  projectId: "zero-sum-rpg-2026",
-  appId: "1:941946145190:web:89539148cced56ecf42767",
-  storageBucket: "zero-sum-rpg-2026.firebasestorage.app",
-  apiKey: "AIzaSyCAPKXPuhtVJ48dXIP5ZlEXk5jI_3fpWd0",
-  authDomain: "zero-sum-rpg-2026.firebaseapp.com",
-  messagingSenderId: "941946145190",
-  databaseURL: "https://zero-sum-rpg-2026-default-rtdb.europe-west1.firebasedatabase.app"
-};
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -31,20 +23,34 @@ export class FeedService {
 
   constructor(private zone: NgZone) {
     if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-      this.sessionId = (localStorage.getItem('zero_sum_token') || 'demo').replace(/[\.#\$\[\]\/]/g, '_');
+      const rawToken = localStorage.getItem('zero_sum_token');
+      // Validate token: Must be alphanumeric/UUID format (no strange injections)
+      if (rawToken && /^[a-zA-Z0-9\-_]+$/.test(rawToken)) {
+         this.sessionId = rawToken;
+      } else {
+         this.sessionId = 'demo';
+      }
       
-      const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+      const app = getApps().length === 0 ? initializeApp(environment.firebaseConfig) : getApp();
       this.db = getDatabase(app);
 
       if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         try {
           connectDatabaseEmulator(this.db, 'localhost', 9000);
-        } catch (e) {
-          // Suppress error if already connected
-        }
+        } catch (e) {}
       }
 
       console.log('[FeedService] Connecting to Firebase Realtime Database for Session:', this.sessionId);
+
+      // Handle Online/Offline Status Resiliency
+      const connectedRef = ref(this.db, '.info/connected');
+      onChildAdded(connectedRef, (snap) => {
+        if (snap.val() === true) {
+          console.log('[FeedService] Firebase connection ESTABLISHED.');
+        } else {
+          console.warn('[FeedService] Firebase connection LOST. Attempting cache fallback.');
+        }
+      });
       
       const feedRef = ref(this.db, `sessions/${this.sessionId}/feed`);
       onChildAdded(feedRef, (snapshot) => {

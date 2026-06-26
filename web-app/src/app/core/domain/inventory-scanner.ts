@@ -11,12 +11,40 @@ export class InventoryScanner {
   public scanItem(code: string): Result<Item> {
     if (!code || code.trim() === '') return Result.failure('Invalid code');
     
-    // Mock resolving an NFC/QR tag
+    // Remote/Backend resolution required instead of hardcoded strings
     const itemName = this.resolveCodeToName(code);
     const item: Item = { id: code, name: itemName };
     this.items.push(item);
     
     return Result.success(item);
+  }
+
+  public async scanPhysicalTag(): Promise<Result<Item>> {
+    try {
+      if (typeof window === 'undefined' || !('NDEFReader' in window)) {
+        return Result.failure('Hardware scanning not available in this context.');
+      }
+      
+      const ndef = new (window as any).NDEFReader();
+      await ndef.scan();
+      
+      return new Promise((resolve) => {
+        ndef.addEventListener("reading", ({ message }: any) => {
+          const record = message.records[0];
+          if (!record) return resolve(Result.failure('Empty NFC Tag'));
+          
+          const decoder = new TextDecoder();
+          const code = decoder.decode(record.data);
+          resolve(this.scanItem(code));
+        }, { once: true });
+        
+        ndef.addEventListener("readingerror", () => {
+          resolve(Result.failure('NFC read error. Try again.'));
+        }, { once: true });
+      });
+    } catch (e: any) {
+      return Result.failure(`Scanner failed: ${e.message}`);
+    }
   }
 
   public getItems(): Item[] {

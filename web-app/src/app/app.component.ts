@@ -155,11 +155,6 @@ export class AppComponent implements OnInit, OnDestroy {
   private db: any;
   private app: any;
   
-  builderMapArchetype = 'Custom Facility';
-  terminalCommand = '';
-  terminalLogs = signal<string[]>(['System Ready. Declarative Web MCP initialized.', 'Local LLM ICE loaded.', 'Awaiting command...']);
-  currentLevel = signal<number>(1);
-  
   recentTrauma = signal<any>(null);
   directorFocus = signal<{charId: string, reason: string} | null>(null);
 
@@ -177,16 +172,8 @@ export class AppComponent implements OnInit, OnDestroy {
      return players;
   });
 
-  // Architect Store and UI State
   gridStore = inject(GridStore);
   actionQueue = inject(ActionQueueService);
-  activeTab = signal<'blocks' | 'paint' | 'properties'>('blocks');
-  activePrefab = signal<string>('corridor');
-  activePaintMode = signal<string | null>(null);
-  selectedRoomId = signal<string | null>(null);
-  selectedCell = signal<{x: number, y: number} | null>(null);
-  blockPoolUsed = computed(() => Object.keys(this.gridStore.grid() || {}).length);
-  wfcError = signal<string | null>(null);
 
   constructor() {
     this.router.events.subscribe((event) => {
@@ -304,127 +291,7 @@ export class AppComponent implements OnInit, OnDestroy {
      
   }
 
-  // --- PixiJS & WFC Builder Methods ---
-  
-  onCanvasCellClicked(pos: {x: number, y: number}) {
-    // Unlimited blocks as requested
-    this.selectedRoomId.set(null);
-    this.activeTab.set('blocks');
-    
-    // Instantiate prefab at clicked location
-    const roomId = `room_${Math.random().toString(36).substr(2, 6)}`;
-    const prefabType = this.activePrefab();
-    
-    // Create new structure based on prefab (simulated 2x2 for simplicity)
-    const newRoomData: RoomData = {
-      tag: prefabType.toUpperCase(),
-      bounds: { x: pos.x, y: pos.y, w: 2, h: 2 },
-      metadata: { vfx: 'none', threat: 'low' }
-    };
-    
-    this.gridStore.updateRoom(roomId, newRoomData);
-    
-    // Occupy grid cells
-    for(let dx=0; dx<2; dx++) {
-      for(let dy=0; dy<2; dy++) {
-         this.updateCell(pos.x + dx, pos.y + dy, { type: 'structure_wall', roomId: roomId });
-      }
-    }
-  }
-
-  onCanvasRoomClicked(roomId: string) {
-    this.selectedRoomId.set(roomId);
-    this.activeTab.set('properties');
-  }
-
-  selectPrefab(prefabName: string) {
-    this.activePrefab.set(prefabName);
-  }
-
-  generateProceduralFacility() {
-    this.wfcError.set("INITIALIZING PROCEDURAL GENERATION...");
-    const currentZ = this.currentLevel();
-    const resultMsg = this.facilityGenerator.generateProceduralFacility(currentZ);
-    this.wfcError.set(resultMsg);
-  }
-
-  getRoomTag() {
-    const roomId = this.selectedRoomId();
-    return roomId ? this.gridStore.rooms()[roomId]?.tag || '' : '';
-  }
-  updateRoomTag(tag: string) {
-    const roomId = this.selectedRoomId();
-    if (roomId) {
-       const room = { ...this.gridStore.rooms()[roomId], tag };
-       this.gridStore.updateRoom(roomId, room);
-    }
-  }
-
-  getRoomVfx() {
-    const roomId = this.selectedRoomId();
-    return roomId ? this.gridStore.rooms()[roomId]?.metadata?.vfx || 'none' : 'none';
-  }
-  updateRoomVfx(vfx: string) {
-    const roomId = this.selectedRoomId();
-    if (roomId) {
-       const room = this.gridStore.rooms()[roomId];
-       const updatedRoom = { ...room, metadata: { ...room.metadata, vfx } };
-       this.gridStore.updateRoom(roomId, updatedRoom);
-    }
-  }
-
-  getRoomThreat() {
-    const roomId = this.selectedRoomId();
-    return roomId ? this.gridStore.rooms()[roomId]?.metadata?.threat || 'low' : 'low';
-  }
-  updateRoomThreat(threat: string) {
-    const roomId = this.selectedRoomId();
-    if (roomId) {
-       const room = this.gridStore.rooms()[roomId];
-       const updatedRoom = { ...room, metadata: { ...room.metadata, threat } };
-       this.gridStore.updateRoom(roomId, updatedRoom);
-    }
-  }
-
-  getRoomHeight() {
-    const roomId = this.selectedRoomId();
-    return roomId ? this.gridStore.rooms()[roomId]?.metadata?.zHeight || 1 : 1;
-  }
-  updateRoomHeight(zHeight: number) {
-    const roomId = this.selectedRoomId();
-    if (roomId) {
-       const room = this.gridStore.rooms()[roomId];
-       const updatedRoom = { ...room, metadata: { ...room.metadata, zHeight: Number(zHeight) } };
-       this.gridStore.updateRoom(roomId, updatedRoom);
-    }
-  }
-
-  applyRoomTemplate(templateName: string) {
-    const roomId = this.selectedRoomId();
-    if (!roomId) return;
-    this.facilityGenerator.applyRoomTemplate(roomId, templateName, this.currentLevel());
-  }
-  setTab(tab: 'blocks' | 'paint' | 'properties') {
-    this.activeTab.set(tab);
-    if (tab === 'paint') {
-      this.activePaintMode.set('wall');
-    } else {
-      this.activePaintMode.set(null);
-    }
-  }
-
-  updateCell(x: number, y: number, cellData: any) {
-    this.gridStore.updateCell(x, y, this.currentLevel(), cellData);
-  }
-
-  onCellPainted(event: {x: number, y: number, type: string}) {
-    if (event.type === 'floor') {
-      // Treat 'floor' as eraser
-      this.updateCell(event.x, event.y, { type: 'empty' } as any);
-    } else {
-      this.updateCell(event.x, event.y, { type: event.type } as any);
-    }
-  }
+  // --- Core Methods ---
 
 
   getCharacterKeys() {
@@ -704,36 +571,7 @@ export class AppComponent implements OnInit, OnDestroy {
     });
   }
 
-  executeIceCommand() {
-     const cmd = this.terminalCommand.toLowerCase().trim();
-     this.terminalLogs.update(logs => [...logs, cmd]);
-     this.terminalCommand = '';
-     
-     // Local Netrunner ICE processor
-     if (cmd === 'help') {
-        this.terminalLogs.update(logs => [
-           ...logs, 
-           'LOCAL TERMINAL V2.4', 
-           '  help     - Display all available commands', 
-           '  grep     - Search and extract metadata', 
-           '  overload - Bypass grid regulators (Crash chaos market)'
-        ]);
-     } else if (cmd.startsWith('overload')) {
-        this.terminalLogs.update(logs => [...logs, '>>> INTRUSION SUCCESS: GRID OVERLOADED.', '>>> CHAOS MARKET FORCED TO 0.']);
-        if (this.db && this.sessionId()) {
-          fbDb.set(fbDb.ref(this.db, `sessions/${this.sessionId()}/gameState/chaosMarketValue`), 0);
-        }
-     } else if (cmd.startsWith('grep')) {
-        const query = cmd.replace('grep', '').trim();
-        if (query) {
-           this.terminalLogs.update(logs => [...logs, `>>> EXTRACTING "${query}"...`, `[DATA] Found encrypted signatures matching "${query}".`]);
-        } else {
-           this.terminalLogs.update(logs => [...logs, 'ERR: grep requires a target argument.']);
-        }
-     } else {
-        this.terminalLogs.update(logs => [...logs, `ERR: Command '${cmd}' not recognized.`]);
-     }
-  }
+  // Removed ICE Terminal processing. Logic migrated to specific view components.
 
   async initTmiClient(channel: string) {
     const tmi = await import('tmi.js');
@@ -857,18 +695,18 @@ export class AppComponent implements OnInit, OnDestroy {
 
   async connectBleBeacon() {
      if (typeof window === 'undefined' || !(window.navigator as any).bluetooth) {
-         this.terminalLogs.update(logs => [...logs, 'SYSTEM: Physical BLE Hardware missing on this terminal. Physical validation impossible.']);
+         console.warn('SYSTEM: Physical BLE Hardware missing on this terminal. Physical validation impossible.');
          return;
      }
      try {
-         this.terminalLogs.update(logs => [...logs, 'SYSTEM: Scanning physical playing room for Bluetooth Low Energy beacons...']);
+         console.log('SYSTEM: Scanning physical playing room for Bluetooth Low Energy beacons...');
          const device = await (window.navigator as any).bluetooth.requestDevice({
              acceptAllDevices: true,
              optionalServices: ['battery_service']
          });
-         this.terminalLogs.update(logs => [...logs, `SYSTEM: Connected to ${device.name}. Proximity verified. Mainframe access granted.`]);
+         console.log(`SYSTEM: Connected to ${device.name}. Proximity verified. Mainframe access granted.`);
      } catch (error: any) {
-         this.terminalLogs.update(logs => [...logs, `SYSTEM: Air-gap connection failed. ${error.message}`]);
+         console.error(`SYSTEM: Air-gap connection failed. ${error.message}`);
      }
   }
   
@@ -967,48 +805,5 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  playerAction(action: string) {
-    if (!this.sessionId() || !this.activePlayerId()) return;
-    this.actionQueue.dispatchAction(this.sessionId()!, this.activePlayerId()!, action.toUpperCase(), { apCost: 1 });
-  }
-  
-  onDragStart(event: DragEvent, itemId: string) {
-     event.dataTransfer?.setData('text/plain', itemId);
-  }
-  
-  onDropItem(event: DragEvent) {
-     event.preventDefault();
-     const itemId = event.dataTransfer?.getData('text/plain');
-     if (!itemId) return;
-     
-     // Note: Real world position from screen would need Pixi viewport coordinates.
-     // For this simulation, we simulate the drop resolution based on the active player's position
-     // since they must be near the object to interact anyway!
-     const pid = this.activePlayerId();
-     const chars = this.gameState()?.characters || {};
-     const myChar = chars[pid!];
-     if (!myChar) return;
-     
-     // Expand the hitbox: check a 1.5 radius around the player instead of strict integer match
-     const grid = this.gameState()?.map?.grid || {};
-     let interacted = false;
-     
-     // Audit and expand interaction bounding boxes to accommodate drag-and-drop (1.5 radius)
-     const radius = 1.5;
-     for (const [key, cell] of Object.entries(grid) as [string, any][]) {
-        if (cell.type === 'server_rack' || cell.type === 'cupboard' || cell.type === 'storage_box') {
-            const [cx, cy] = key.split(',').map(Number);
-            const dist = Math.sqrt(Math.pow(myChar.x - cx, 2) + Math.pow(myChar.y - cy, 2));
-            if (dist <= radius) {
-                interacted = true;
-                this.playerAction(`Used ${itemId} on ${cell.type} at ${cx},${cy}`);
-                break;
-            }
-        }
-     }
-     
-     if (!interacted) {
-         this.playerAction(`Dropped ${itemId} on the floor.`);
-     }
-  }
+  // Removed legacy drag and drop code from God Component.
 }

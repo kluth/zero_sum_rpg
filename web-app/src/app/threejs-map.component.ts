@@ -92,6 +92,10 @@ export class ThreeJsMapComponent implements AfterViewInit, OnDestroy, OnChanges 
     this.sharedGeometries = {};
     this.mapMeshes.clear();
     
+    if (this.controls) {
+        this.controls.dispose();
+    }
+    
     if (this.renderer) {
         this.renderer.dispose();
         this.renderer.forceContextLoss();

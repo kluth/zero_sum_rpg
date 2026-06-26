@@ -13,6 +13,34 @@ import { FrequenzXComponent } from '../../ui/frequenz-x/frequenz-x.component';
   imports: [CommonModule, FormsModule, OcgfComponent, WhispernetComponent, FrequenzXComponent],
   styleUrls: ['./gm-view.component.scss'],
   template: `
+  <style>
+    .responsive-grid {
+      display: grid;
+      grid-template-columns: 280px 1fr 350px;
+      gap: 24px;
+      padding: 24px;
+      min-height: calc(100vh - 64px);
+    }
+    .center-comms-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      flex: 1;
+    }
+    @media (max-width: 1200px) {
+      .responsive-grid {
+        grid-template-columns: 280px 1fr;
+      }
+    }
+    @media (max-width: 900px) {
+      .responsive-grid {
+        grid-template-columns: 1fr;
+      }
+      .center-comms-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
   <div class="modern-dashboard">
     <header class="top-nav">
       <div class="branding">
@@ -29,7 +57,7 @@ import { FrequenzXComponent } from '../../ui/frequenz-x/frequenz-x.component';
       </div>
     </header>
 
-    <div class="dashboard-content" style="display: grid; grid-template-columns: 280px 1fr 350px; gap: 24px; padding: 24px; min-height: calc(100vh - 64px);">
+    <div class="dashboard-content responsive-grid">
       <!-- Left Sidebar: Controls & Vitals -->
       <aside style="display: flex; flex-direction: column; gap: 24px;">
         <div class="clean-panel widget">
@@ -88,7 +116,7 @@ import { FrequenzXComponent } from '../../ui/frequenz-x/frequenz-x.component';
           </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; flex: 1;">
+        <div class="center-comms-grid">
           <div class="clean-panel module" style="display: flex; flex-direction: column;">
             <h3 style="flex-shrink: 0; margin-bottom: 12px; font-size: 14px; color: var(--text-muted); text-transform: uppercase;">Whispernet Intercept</h3>
             <div style="flex: 1;">
