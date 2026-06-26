@@ -1,0 +1,2 @@
+json_key_file("/tmp/google-play-api-key.json")
+package_name("com.zerosumrpg.zerosumandroid")

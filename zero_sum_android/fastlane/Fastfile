@@ -1,0 +1,14 @@
+default_platform(:android)
+
+platform :android do
+  desc "Submit a new build to the Google Play Internal Testing track"
+  lane :deploy do
+    gradle(task: "bundleRelease")
+    
+    upload_to_play_store(
+      track: 'internal',
+      aab: 'app/build/outputs/bundle/release/app-release.aab',
+      ack_bundle_installation_warning: true
+    )
+  end
+end
