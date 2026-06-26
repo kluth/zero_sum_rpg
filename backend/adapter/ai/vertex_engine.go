@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -21,6 +22,9 @@ type VertexAIEngine struct {
 
 // NewVertexAIEngine initializes the adapter. If baseURL is empty, it uses the default Gemini endpoint.
 func NewVertexAIEngine(apiKey, baseURL string) *VertexAIEngine {
+	if apiKey == "" {
+		apiKey = os.Getenv("GEMINI_API_KEY")
+	}
 	if baseURL == "" {
 		baseURL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
 	}

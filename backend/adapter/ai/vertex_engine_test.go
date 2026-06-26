@@ -51,3 +51,11 @@ func TestVertexAIEngine_GenerateQuestPayload_HTTPError(t *testing.T) {
 		t.Fatal("expected failure on 500 status")
 	}
 }
+
+func TestVertexAIEngine_APIKey_Fallback(t *testing.T) {
+	t.Setenv("GEMINI_API_KEY", "env-fake-key")
+	engine := NewVertexAIEngine("", "")
+	if engine.apiKey != "env-fake-key" {
+		t.Errorf("expected engine.apiKey to fall back to env-fake-key, got %s", engine.apiKey)
+	}
+}

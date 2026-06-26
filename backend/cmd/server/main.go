@@ -25,7 +25,9 @@ func main() {
 	feed.Register(grpcServer, feedServer)
 
 	// 3. Wrap gRPC server with gRPC-Web proxy
-	wrappedGrpc := grpcweb.WrapServer(grpcServer, grpcweb.WithOriginFunc(func(origin string) bool { return true })) // Allow all CORS for now
+	wrappedGrpc := grpcweb.WrapServer(grpcServer, grpcweb.WithOriginFunc(func(origin string) bool {
+		return origin == "http://localhost:4200" || origin == "http://localhost:9000" || origin == "http://localhost:4000"
+	}))
 
 	// 4. Start HTTP Server for gRPC-Web and SSE
 	port := ":8080"
