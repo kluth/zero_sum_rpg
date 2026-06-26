@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OcgfComponent } from '../../ui/ocgf/ocgf.component';
 import { WhispernetComponent } from '../../ui/whispernet/whispernet.component';
 import { FrequenzXComponent } from '../../ui/frequenz-x/frequenz-x.component';
+import { ActivatedRoute } from '@angular/router';
+import { FeedService } from '../../services/feed.service';
 
 @Component({
   selector: 'app-spectator-view',
@@ -66,4 +68,14 @@ import { FrequenzXComponent } from '../../ui/frequenz-x/frequenz-x.component';
   `,
   styleUrls: ['./spectator-view.component.scss']
 })
-export class SpectatorViewComponent {}
+export class SpectatorViewComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private feedService = inject(FeedService);
+
+  ngOnInit() {
+    const sessionId = this.route.snapshot.paramMap.get('sessionId');
+    if (sessionId) {
+      this.feedService.connectToSession(sessionId);
+    }
+  }
+}

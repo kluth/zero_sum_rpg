@@ -9,12 +9,28 @@
   overflow: hidden; /* NO SCROLLBARS */
 }
 
+@media (max-width: 1024px) {
+  .spectator-layout {
+    grid-template-columns: 1fr;
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto;
+  }
+}
+
 .spec-col {
   display: flex;
   flex-direction: column;
   gap: 16px;
   height: calc(100vh - 32px);
   overflow: hidden;
+}
+
+@media (max-width: 1024px) {
+  .spec-col {
+    height: auto;
+    min-height: 50vh;
+  }
 }
 
 .spec-panel {

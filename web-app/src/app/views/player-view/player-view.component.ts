@@ -5,6 +5,8 @@ import { FrequenzXComponent } from '../../ui/frequenz-x/frequenz-x.component';
 import { UiStateService } from '../../services/ui-state.service';
 import { Observable, interval } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
+import { FeedService } from '../../services/feed.service';
 
 @Component({
   selector: 'app-player-view',
@@ -25,15 +27,15 @@ import { map } from 'rxjs/operators';
            [style.top]="windowPositions['browser'] ? windowPositions['browser'].y + 'px' : '5%'"
            (mousedown)="focusWindow('browser'); $event.stopPropagation()"
            (touchstart)="focusWindow('browser'); $event.stopPropagation()"
-           style="width: 50%; height: 50%;">
+           style="width: min(800px, 90vw); height: 50%;">
         <div class="window-titlebar"
              (mousedown)="onWindowDragStart($event, 'browser', browserWin)"
              (touchstart)="onWindowDragStart($event, 'browser', browserWin)"
              style="cursor: move;">
           <div class="window-controls">
-            <div class="win-btn close" (click)="showBrowser = false"></div>
-            <div class="win-btn minimize" (click)="showBrowser = false"></div>
-            <div class="win-btn maximize"></div>
+            <button class="win-btn close" (click)="showBrowser = false" aria-label="Close window"></button>
+            <button class="win-btn minimize" (click)="showBrowser = false" aria-label="Minimize window"></button>
+            <button class="win-btn maximize" aria-label="Maximize window"></button>
           </div>
           <span class="window-title">Z-Browser - Frequenz X</span>
         </div>
@@ -49,15 +51,15 @@ import { map } from 'rxjs/operators';
            [style.top]="windowPositions['messenger'] ? windowPositions['messenger'].y + 'px' : '10%'"
            (mousedown)="focusWindow('messenger'); $event.stopPropagation()"
            (touchstart)="focusWindow('messenger'); $event.stopPropagation()"
-           style="width: 400px; height: 500px;">
+           style="width: min(400px, 90vw); height: 500px; max-height: 80vh;">
         <div class="window-titlebar"
              (mousedown)="onWindowDragStart($event, 'messenger', messengerWin)"
              (touchstart)="onWindowDragStart($event, 'messenger', messengerWin)"
              style="cursor: move;">
           <div class="window-controls">
-            <div class="win-btn close" (click)="showMessenger = false"></div>
-            <div class="win-btn minimize" (click)="showMessenger = false"></div>
-            <div class="win-btn maximize"></div>
+            <button class="win-btn close" (click)="showMessenger = false" aria-label="Close window"></button>
+            <button class="win-btn minimize" (click)="showMessenger = false" aria-label="Minimize window"></button>
+            <button class="win-btn maximize" aria-label="Maximize window"></button>
           </div>
           <span class="window-title">Whispernet Secure Messenger</span>
         </div>
@@ -73,15 +75,15 @@ import { map } from 'rxjs/operators';
            [style.top]="windowPositions['maps'] ? windowPositions['maps'].y + 'px' : '15%'"
            (mousedown)="focusWindow('maps'); $event.stopPropagation()"
            (touchstart)="focusWindow('maps'); $event.stopPropagation()"
-           style="width: 45%; height: 45%;">
+           style="width: min(600px, 90vw); height: 45%;">
         <div class="window-titlebar"
              (mousedown)="onWindowDragStart($event, 'maps', mapsWin)"
              (touchstart)="onWindowDragStart($event, 'maps', mapsWin)"
              style="cursor: move;">
           <div class="window-controls">
-            <div class="win-btn close" (click)="showMaps = false"></div>
-            <div class="win-btn minimize" (click)="showMaps = false"></div>
-            <div class="win-btn maximize"></div>
+            <button class="win-btn close" (click)="showMaps = false" aria-label="Close window"></button>
+            <button class="win-btn minimize" (click)="showMaps = false" aria-label="Minimize window"></button>
+            <button class="win-btn maximize" aria-label="Maximize window"></button>
           </div>
           <span class="window-title">Global Nav</span>
         </div>
@@ -100,18 +102,18 @@ import { map } from 'rxjs/operators';
            [style.right]="windowPositions['controlPanel'] ? null : '2%'"
            (mousedown)="$event.stopPropagation()"
            (touchstart)="$event.stopPropagation()"
-           style="width: 380px; height: 85%; z-index: 20; display: flex; flex-direction: column;">
+           style="width: min(380px, 95vw); height: 85%; z-index: 20; display: flex; flex-direction: column;">
         <div class="window-titlebar"
              (mousedown)="onWindowDragStart($event, 'controlPanel', controlPanelWin)"
              (touchstart)="onWindowDragStart($event, 'controlPanel', controlPanelWin)"
              style="cursor: move;">
           <span class="window-title">SYSTEM CONTROL PANEL</span>
         </div>
-        <div class="window-content" style="padding: 12px; display: flex; flex-direction: column; gap: 12px; background: #0c0f12; color: #33ff33; font-family: monospace; overflow-y: auto;">
+        <div class="window-content" style="padding: 12px; display: flex; flex-direction: column; gap: 12px; background: var(--surface-color); color: var(--text-main); font-family: monospace; overflow-y: auto;">
           
           <!-- Theme & Stabilizer -->
           <div class="control-section">
-            <span style="font-weight: bold; color: #00ffcc;">SYSTEM SETTINGS</span>
+            <span style="font-weight: bold; color: var(--primary-color);">SYSTEM SETTINGS</span>
             <div style="display: flex; gap: 8px; margin-top: 4px;">
               <button data-test-id="theme-toggle" (click)="uiState.toggleTheme()" class="zs-btn" style="flex: 1; padding: 6px 12px; font-size: 11px;">Theme Shift</button>
               <button data-test-id="stabilizer-toggle" (click)="uiState.toggleStabilizer()" class="zs-btn" style="flex: 1; padding: 6px 12px; font-size: 11px;">Stabilizer</button>
@@ -120,7 +122,7 @@ import { map } from 'rxjs/operators';
 
           <!-- Biometric Scanner -->
           <div class="control-section">
-            <span style="font-weight: bold; color: #00ffcc;">BIOMETRIC AUTHENTICATION</span>
+            <span style="font-weight: bold; color: var(--primary-color);">BIOMETRIC AUTHENTICATION</span>
             <div data-test-id="biometric-scanner"
                  [class.scan-success]="scanSuccess"
                  [class.scanning]="isScanning"
@@ -129,7 +131,7 @@ import { map } from 'rxjs/operators';
                  (mouseleave)="onScanEnd($event)"
                  (touchstart)="onScanStart($event)"
                  (touchend)="onScanEnd($event)"
-                 style="width: 100%; height: 50px; display: flex; align-items: center; justify-content: center; border: 2px dashed #33ff33; cursor: pointer; border-radius: 4px; user-select: none; transition: background 0.3s; position: relative; margin-top: 4px; min-width: 44px; min-height: 44px;">
+                 style="width: 100%; height: 50px; display: flex; align-items: center; justify-content: center; border: 2px dashed var(--primary-color); cursor: pointer; border-radius: 4px; user-select: none; transition: background 0.3s; position: relative; margin-top: 4px; min-width: 44px; min-height: 44px;">
               <span style="font-size: 12px;">{{ scannerText }}</span>
               <div class="scan-pulse" *ngIf="isScanning"></div>
             </div>
@@ -137,7 +139,7 @@ import { map } from 'rxjs/operators';
 
           <!-- NDA Signature -->
           <div class="control-section" style="display: flex; flex-direction: column; gap: 4px;">
-            <span style="font-weight: bold; color: #00ffcc;">NDA AUTHORIZATION</span>
+            <span style="font-weight: bold; color: var(--primary-color);">NDA AUTHORIZATION</span>
             <div style="position: relative;">
               <canvas #ndaCanvas
                       data-test-id="nda-canvas"
@@ -150,27 +152,27 @@ import { map } from 'rxjs/operators';
                       (touchstart)="onDrawStart($event)"
                       (touchmove)="onDrawMove($event)"
                       (touchend)="onDrawEnd($event)"
-                      style="border: 1px solid #33ff33; background: #05070a; width: 100%; height: 90px; display: block;"></canvas>
+                      style="border: 1px solid var(--primary-color); background: var(--surface-color); width: 100%; height: 90px; display: block;"></canvas>
               <button (click)="clearCanvas()" class="zs-btn" style="position: absolute; right: 4px; top: 4px; font-size: 9px; padding: 2px 4px;">Clear</button>
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <button data-test-id="nda-approve-btn" [disabled]="strokes.length === 0" (click)="approveNDA()" class="zs-btn" style="padding: 6px 12px; font-size: 11px;">Approve NDA</button>
-              <span *ngIf="ndaApproved" data-test-id="nda-approved-label" style="color: #00ff00; font-size: 11px; font-weight: bold;">[NDA Approved]</span>
+              <span *ngIf="ndaApproved" data-test-id="nda-approved-label" style="color: var(--success-green); font-size: 11px; font-weight: bold;">[NDA Approved]</span>
             </div>
           </div>
 
           <!-- Emergency Heal -->
           <div class="control-section">
-            <span style="font-weight: bold; color: #00ffcc;">NANITE INJECTOR</span>
-            <button data-test-id="emergency-heal-btn" (click)="onEmergencyHeal()" class="zs-btn" style="width: 100%; background: #990000; border: 1px solid #ff3333; color: white; padding: 8px 12px; font-size: 12px; margin-top: 4px; font-weight: bold; letter-spacing: 1px;">
+            <span style="font-weight: bold; color: var(--primary-color);">NANITE INJECTOR</span>
+            <button data-test-id="emergency-heal-btn" (click)="onEmergencyHeal()" class="zs-btn" style="width: 100%; background: var(--alert-red); color: white; padding: 8px 12px; font-size: 12px; margin-top: 4px; font-weight: bold; letter-spacing: 1px;">
               EMERGENCY HEAL
             </button>
           </div>
 
           <!-- Netrunner Terminal -->
           <div class="control-section" style="flex: 1; display: flex; flex-direction: column; min-height: 140px;">
-            <span style="font-weight: bold; color: #00ffcc;">NETRUNNER TERMINAL</span>
-            <div data-test-id="terminal-logs" style="flex: 1; border: 1px solid #33ff33; background: #05070a; padding: 6px; font-size: 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; margin-top: 4px; min-height: 80px;">
+            <span style="font-weight: bold; color: var(--primary-color);">NETRUNNER TERMINAL</span>
+            <div data-test-id="terminal-logs" style="flex: 1; border: 1px solid var(--surface-border); background: var(--bg-color); padding: 6px; font-size: 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; margin-top: 4px; min-height: 80px;">
               <div *ngFor="let log of terminalLogs">
                 {{ log }}
               </div>
@@ -179,7 +181,7 @@ import { map } from 'rxjs/operators';
                    #termInput
                    (keydown.enter)="handleTerminalCommand(termInput.value); termInput.value = ''"
                    placeholder="type status/help/clear..."
-                   style="width: 100%; border: 1px solid #33ff33; background: #000; color: #33ff33; padding: 4px 8px; font-family: monospace; outline: none; margin-top: 4px; font-size: 11px;" />
+                   style="width: 100%; border: 1px solid var(--surface-border); background: var(--bg-color); color: var(--text-main); padding: 4px 8px; font-family: monospace; outline: none; margin-top: 4px; font-size: 11px;" />
           </div>
 
         </div>
@@ -194,15 +196,15 @@ import { map } from 'rxjs/operators';
       </div>
       
       <div class="taskbar-apps">
-        <div class="taskbar-icon" [class.active]="showBrowser" (click)="toggleWindow('browser')">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-        </div>
-        <div class="taskbar-icon" [class.active]="showMessenger" (click)="toggleWindow('messenger')">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-        </div>
-        <div class="taskbar-icon" [class.active]="showMaps" (click)="toggleWindow('maps')">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon><line x1="9" y1="3" x2="9" y2="18"></line><line x1="15" y1="6" x2="15" y2="21"></line></svg>
-        </div>
+        <button class="taskbar-icon" [class.active]="showBrowser" (click)="toggleWindow('browser')" aria-label="Toggle Browser Window">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+        </button>
+        <button class="taskbar-icon" [class.active]="showMessenger" (click)="toggleWindow('messenger')" aria-label="Toggle Messenger Window">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+        </button>
+        <button class="taskbar-icon" [class.active]="showMaps" (click)="toggleWindow('maps')" aria-label="Toggle Maps Window">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon><line x1="9" y1="3" x2="9" y2="18"></line><line x1="15" y1="6" x2="15" y2="21"></line></svg>
+        </button>
       </div>
 
       <div class="taskbar-tray">
@@ -218,6 +220,8 @@ export class PlayerViewComponent implements OnInit, AfterViewInit {
   @ViewChild('ndaCanvas', { static: false }) canvasRef!: ElementRef<HTMLCanvasElement>;
 
   public uiState = inject(UiStateService);
+  private route = inject(ActivatedRoute);
+  private feedService = inject(FeedService);
 
   time$: Observable<Date> = new Observable();
 
@@ -279,9 +283,12 @@ export class PlayerViewComponent implements OnInit, AfterViewInit {
     let newX = this.dragStartWindowX + deltaX;
     let newY = this.dragStartWindowY + deltaY;
 
-    // Boundary snapping: clamp coordinates (X >= 0, Y >= 0)
-    newX = Math.max(0, newX);
-    newY = Math.max(0, newY);
+    // Boundary snapping: clamp coordinates to prevent dragging off-screen
+    const maxX = window.innerWidth > 100 ? window.innerWidth - 100 : 0;
+    const maxY = window.innerHeight > 100 ? window.innerHeight - 100 : 0;
+    
+    newX = Math.max(0, Math.min(newX, maxX));
+    newY = Math.max(0, Math.min(newY, maxY));
 
     this.windowPositions[this.draggingWindow] = { x: newX, y: newY };
   }
@@ -320,6 +327,10 @@ export class PlayerViewComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.time$ = interval(1000).pipe(map(() => new Date()));
+    const sessionId = this.route.snapshot.paramMap.get('sessionId');
+    if (sessionId) {
+      this.feedService.connectToSession(sessionId);
+    }
   }
 
   ngAfterViewInit() {
@@ -333,6 +344,19 @@ export class PlayerViewComponent implements OnInit, AfterViewInit {
   onResize() {
     this.initCanvasSize();
     this.redrawCanvas();
+    this.clampAllWindowPositions();
+  }
+
+  clampAllWindowPositions() {
+    const maxX = window.innerWidth > 100 ? window.innerWidth - 100 : 0;
+    const maxY = window.innerHeight > 100 ? window.innerHeight - 100 : 0;
+    
+    for (const winId in this.windowPositions) {
+      if (this.windowPositions[winId]) {
+        this.windowPositions[winId].x = Math.max(0, Math.min(this.windowPositions[winId].x, maxX));
+        this.windowPositions[winId].y = Math.max(0, Math.min(this.windowPositions[winId].y, maxY));
+      }
+    }
   }
 
   toggleWindow(win: string) {
@@ -491,7 +515,8 @@ export class PlayerViewComponent implements OnInit, AfterViewInit {
     if (!ctx) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.strokeStyle = '#33ff33';
+    const computedStyle = getComputedStyle(document.body);
+    ctx.strokeStyle = computedStyle.getPropertyValue('--primary-color').trim() || '#33ff33';
     ctx.lineWidth = 3;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
@@ -535,6 +560,11 @@ export class PlayerViewComponent implements OnInit, AfterViewInit {
       this.onEmergencyHeal();
     } else {
       this.terminalLogs.push(`Unknown command: ${cmd}`);
+    }
+
+    // Prevent memory leaks from infinite terminal spam
+    if (this.terminalLogs.length > 50) {
+      this.terminalLogs = this.terminalLogs.slice(this.terminalLogs.length - 50);
     }
   }
 
