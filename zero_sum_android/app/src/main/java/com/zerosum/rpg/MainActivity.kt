@@ -21,9 +21,18 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import android.os.Vibrator
+import android.os.VibrationEffect
 import android.Manifest
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
@@ -41,12 +50,26 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.content.Context
+import androidx.compose.foundation.Canvas
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.selection.selectableGroup
 
 val NeonRed = Color(0xFFFF003C)
 val NeonBlue = Color(0xFF00F0FF)
 val AcidGreen = Color(0xFF39FF14)
 val DarkBackground = Color(0xFF0A0A0C)
 val GlassBackground = Color(0x0500F0FF)
+val ToughpadArmor = Color(0xFF1E211D)
+val ArmorHighlight = Color(0xFF454B41)
+val TerminalGreen = Color(0xFF4AF626)
+val TerminalDark = Color(0xFF091F05)
+val DangerRed = Color(0xFFFF2A00)
+val WarningAmber = Color(0xFFFFB300)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -168,6 +191,23 @@ fun GameScreen(sessionId: String) {
         mutableStateOf(ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) 
     }
     val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { hasMicPermission = it }
+    
+    val uiState by NetworkManager.uiState.collectAsStateWithLifecycle()
+    val isCritical = (uiState.dataLimit - uiState.dataUsed) < 30f
+    
+    val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+    LaunchedEffect(isCritical) {
+        if (isCritical) {
+            while(isActive) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
+                } else {
+                    vibrator.vibrate(500)
+                }
+                delay(1000)
+            }
+        }
+    }
 
     LaunchedEffect(Unit) {
         if (!hasMicPermission) {
@@ -233,12 +273,24 @@ fun GameScreen(sessionId: String) {
             } catch (e: Exception) { }
         }
     }
+    
+    val infiniteTransition = rememberInfiniteTransition()
+    val flashAlpha by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 0.5f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(500, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "CriticalFlash"
+    )
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
         HeaderSection(sessionId)
         Spacer(modifier = Modifier.height(16.dp))
         Column(modifier = Modifier.weight(1f)) {
@@ -252,6 +304,11 @@ fun GameScreen(sessionId: String) {
             Spacer(modifier = Modifier.height(16.dp))
             RemoteCommsSection(modifier = Modifier.weight(1f))
         }
+        }
+    }
+    
+    if (isCritical) {
+        Box(modifier = Modifier.fillMaxSize().background(Color.Red.copy(alpha = flashAlpha)))
     }
 }
 
@@ -276,7 +333,7 @@ fun HeaderSection(sessionId: String) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("SESSION: $sessionId", color = Color.White, fontSize = 12.sp, modifier = Modifier.align(Alignment.CenterVertically))
             Spacer(modifier = Modifier.width(8.dp))
-            Text("LIVE SERVER SYNC", color = NeonRed, fontSize = 12.sp, modifier = Modifier.align(Alignment.CenterVertically))
+            Text("AUTO-DEPLOY ACTIVE", color = NeonRed, fontSize = 12.sp, modifier = Modifier.align(Alignment.CenterVertically))
         }
     }
 }
@@ -285,112 +342,227 @@ fun HeaderSection(sessionId: String) {
 fun CharacterSheetSection(modifier: Modifier = Modifier) {
     val uiState by NetworkManager.uiState.collectAsStateWithLifecycle()
     val character = uiState.character
-
-    val haptic = LocalHapticFeedback.current
-    val name = character?.name ?: "KAIRO 'GHOST' CHEN"
-    val role = character?.role ?: "CYBER-INFILTRATOR"
     val hp = character?.stats?.hp_current ?: 78
-    val stealth = character?.stats?.stealth_total ?: 85
-    val stress = character?.stats?.stress_current ?: 60
-
-    val hacking = character?.hacking ?: 90
-    val reflexes = character?.reflexes ?: 75
-    val tech = character?.tech ?: 80
-
-    val context = androidx.compose.ui.platform.LocalContext.current
-    var mockHeartRate by remember { mutableStateOf(80) }
+    val maxHp = 100
     
-    DisposableEffect(Unit) {
-        val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as? SensorManager
-        val heartRateSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_HEART_RATE)
-        val listener = object : SensorEventListener {
-            override fun onSensorChanged(event: SensorEvent?) {
-                event?.values?.firstOrNull()?.let { hr ->
-                    if (hr > 0) mockHeartRate = hr.toInt()
-                }
-            }
-            override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
-        }
-        
-        if (heartRateSensor != null) {
-            sensorManager.registerListener(listener, heartRateSensor, SensorManager.SENSOR_DELAY_NORMAL)
-        } else {
-            // Fallback for emulators without hardware sensor: slow random walk around 80
-            mockHeartRate = 80
-        }
-        
-        onDispose {
-            sensorManager?.unregisterListener(listener)
-        }
-    }
+    var selectedClass by remember { mutableStateOf("IT-Techniker") }
+    val classes = listOf("IT-Techniker", "Sanitäter", "Aktivist", "Journalist")
+    
+    val dataUsed = uiState.dataUsed
+    val dataLimit = uiState.dataLimit
+    
+    val haptic = LocalHapticFeedback.current
 
-    val isCyberpsychosis = stress > 75
-    val displayHp = if (isCyberpsychosis && Random.nextFloat() > 0.7f) {
-        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-        Random.nextInt(1, 15)
-    } else hp
-
-    val glitchOffset by animateFloatAsState(if (isCyberpsychosis) Random.nextInt(-30, 30).toFloat() else 0f)
-    val glitchOffsetY by animateFloatAsState(if (isCyberpsychosis) Random.nextInt(-10, 10).toFloat() else 0f)
-
-    LaunchedEffect(isCyberpsychosis) {
-        if (isCyberpsychosis) {
-            while (true) {
-                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                delay(50)
-            }
-        }
-    }
-
-    Column(
+    // Toughpad Chassis
+    Box(
         modifier = modifier
             .fillMaxHeight()
-            .offset(x = glitchOffset.dp, y = glitchOffsetY.dp)
-            .background(GlassBackground)
-            .border(4.dp, if (isCyberpsychosis) NeonRed else NeonBlue)
-            .padding(20.dp)
+            .background(ToughpadArmor, RoundedCornerShape(16.dp))
+            .border(4.dp, ArmorHighlight, RoundedCornerShape(16.dp))
+            .padding(12.dp)
     ) {
-        Text("CHARACTER SHEET", color = Color.Gray, fontSize = 12.sp)
-        Text("HEART RATE: $mockHeartRate BPM", color = if (mockHeartRate > 120) NeonRed else NeonBlue, fontSize = 10.sp)
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(name, color = Color.White, fontWeight = FontWeight.Bold)
-        Text(role, color = NeonRed, fontSize = 12.sp)
-        
-        Spacer(modifier = Modifier.height(24.dp))
-        StatBar("HEALTH // BIOMETRIC", displayHp, 100, if (displayHp < 20) NeonRed else AcidGreen)
-        Spacer(modifier = Modifier.height(12.dp))
-        StatBar("STEALTH // OBFUSCATION", stealth, 100, NeonBlue)
-        Spacer(modifier = Modifier.height(12.dp))
-        StatBar("HACKING // ICE", hacking, 100, NeonBlue)
-        Spacer(modifier = Modifier.height(12.dp))
-        StatBar("REFLEXES // KINETIC", reflexes, 100, NeonBlue)
-        Spacer(modifier = Modifier.height(12.dp))
-        StatBar("TECH // ENG", tech, 100, NeonBlue)
-        Spacer(modifier = Modifier.height(12.dp))
-        StatBar("STRESS // ALLOSTATIC LOAD", stress, 100, NeonRed)
-        
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(
-            onClick = {
-                NetworkManager.processIntent(PlayerIntent.EmergencyHeal(25))
-            },
-            colors = ButtonDefaults.buttonColors(containerColor = NeonRed.copy(alpha = 0.2f)),
-            modifier = Modifier.fillMaxWidth().border(1.dp, NeonRed, RoundedCornerShape(4.dp))
+        // Inner Screen
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(TerminalDark, RoundedCornerShape(8.dp))
+                .border(2.dp, TerminalGreen.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
+                .padding(16.dp)
         ) {
-            Text("EMERGENCY HEAL", color = NeonRed, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+            // Screen Content
+            Column(modifier = Modifier.fillMaxSize()) {
+                // Header
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "SYS.OS.MIL // OFFLINE",
+                        fontFamily = FontFamily.Monospace,
+                        color = TerminalGreen,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "UPLINK ERR",
+                        fontFamily = FontFamily.Monospace,
+                        color = DangerRed,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.background(DangerRed.copy(alpha = 0.2f)).padding(horizontal = 4.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                // DATA LIMIT
+                Text(
+                    text = "SECURE DATA CHUNK: ${String.format(java.util.Locale.US, "%.1f", dataUsed)}MB / ${dataLimit.toInt()}MB",
+                    fontFamily = FontFamily.Monospace,
+                    color = WarningAmber,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                LinearProgressIndicator(
+                    progress = dataUsed / dataLimit,
+                    modifier = Modifier.fillMaxWidth().height(16.dp).border(1.dp, WarningAmber),
+                    color = WarningAmber,
+                    trackColor = TerminalDark,
+                )
+                
+                Spacer(modifier = Modifier.height(24.dp))
+                
+                // HP
+                Text(
+                    text = "OPERATOR VITAL SIGN (HP): $hp / $maxHp",
+                    fontFamily = FontFamily.Monospace,
+                    color = if (hp < 30) DangerRed else TerminalGreen,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                LinearProgressIndicator(
+                    progress = hp.toFloat() / maxHp,
+                    modifier = Modifier.fillMaxWidth().height(24.dp).border(1.dp, TerminalGreen),
+                    color = if (hp < 30) DangerRed else TerminalGreen,
+                    trackColor = TerminalDark,
+                )
+                
+                Spacer(modifier = Modifier.height(24.dp))
+                
+                // CLASS SELECTOR
+                Text(
+                    text = "ASSIGNED ROLE (MOS):",
+                    fontFamily = FontFamily.Monospace,
+                    color = TerminalGreen,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                Column(modifier = Modifier.selectableGroup()) {
+                    classes.forEach { className ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp)
+                                .background(if (selectedClass == className) TerminalGreen.copy(alpha = 0.2f) else Color.Transparent)
+                                .border(1.dp, if (selectedClass == className) TerminalGreen else TerminalGreen.copy(alpha = 0.3f))
+                                .padding(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
+                                selected = (selectedClass == className),
+                                onClick = { 
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    selectedClass = className 
+                                },
+                                colors = RadioButtonDefaults.colors(
+                                    selectedColor = TerminalGreen,
+                                    unselectedColor = TerminalGreen.copy(alpha = 0.5f)
+                                )
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = className.uppercase(),
+                                fontFamily = FontFamily.Monospace,
+                                color = if (selectedClass == className) TerminalGreen else TerminalGreen.copy(alpha = 0.7f),
+                                fontWeight = if (selectedClass == className) FontWeight.Bold else FontWeight.Normal,
+                                fontSize = 14.sp
+                            )
+                        }
+                    }
+                }
+                
+                Spacer(modifier = Modifier.weight(1f))
+                
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Button(
+                        onClick = {
+                            NetworkManager.processIntent(PlayerIntent.EmergencyHeal(25))
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = TerminalDark),
+                        modifier = Modifier.weight(1f).border(1.dp, TerminalGreen, RoundedCornerShape(4.dp)),
+                        shape = RoundedCornerShape(4.dp)
+                    ) {
+                        Text("MEDKIT (+25)", color = TerminalGreen, fontSize = 12.sp, fontFamily = FontFamily.Monospace)
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Button(
+                        onClick = {
+                            NetworkManager.pullData(10f)
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = TerminalDark),
+                        modifier = Modifier.weight(1f).border(1.dp, WarningAmber, RoundedCornerShape(4.dp)),
+                        shape = RoundedCornerShape(4.dp)
+                    ) {
+                        Text("PULL DATA", color = WarningAmber, fontSize = 12.sp, fontFamily = FontFamily.Monospace)
+                    }
+                }
+            }
+            
+            // Cracked Screen Overlay
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                val path = Path().apply {
+                    moveTo(size.width * 0.8f, 0f)
+                    lineTo(size.width * 0.7f, size.height * 0.3f)
+                    lineTo(size.width * 0.9f, size.height * 0.5f)
+                    lineTo(size.width * 0.6f, size.height * 0.8f)
+                    lineTo(size.width * 0.75f, size.height)
+                }
+                drawPath(
+                    path = path,
+                    color = Color.White.copy(alpha = 0.15f),
+                    style = Stroke(width = 3f)
+                )
+                val path2 = Path().apply {
+                    moveTo(size.width * 0.7f, size.height * 0.3f)
+                    lineTo(size.width * 0.3f, size.height * 0.4f)
+                    lineTo(0f, size.height * 0.35f)
+                }
+                drawPath(
+                    path = path2,
+                    color = Color.White.copy(alpha = 0.1f),
+                    style = Stroke(width = 2f)
+                )
+                val path3 = Path().apply {
+                    moveTo(size.width * 0.6f, size.height * 0.8f)
+                    lineTo(size.width * 0.4f, size.height)
+                }
+                drawPath(
+                    path = path3,
+                    color = Color.White.copy(alpha = 0.1f),
+                    style = Stroke(width = 1.5f)
+                )
+            }
+            
+            // Scanlines Overlay
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                val barHeight = 2.dp.toPx()
+                val gap = 4.dp.toPx()
+                var y = 0f
+                while (y < size.height) {
+                    drawRect(
+                        color = Color.Black.copy(alpha = 0.1f),
+                        topLeft = Offset(0f, y),
+                        size = Size(size.width, barHeight)
+                    )
+                    y += barHeight + gap
+                }
+            }
         }
         
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(
-            onClick = {
-                val stressMultiplier = if (mockHeartRate > 120) 2 else 1
-                NetworkManager.processIntent(PlayerIntent.InjectStress(stressMultiplier))
-            },
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-            modifier = Modifier.fillMaxWidth().border(1.dp, NeonRed, RoundedCornerShape(4.dp))
-        ) {
-            Text("INJECT STRESS SIMULATION", color = NeonRed, fontSize = 10.sp)
-        }
+        // Screws in the corners of the chassis
+        val screwColor = Color(0xFF111111)
+        val screwRadius = 6.dp
+        Box(modifier = Modifier.align(Alignment.TopStart).padding(4.dp).size(screwRadius * 2).background(screwColor, CircleShape))
+        Box(modifier = Modifier.align(Alignment.TopEnd).padding(4.dp).size(screwRadius * 2).background(screwColor, CircleShape))
+        Box(modifier = Modifier.align(Alignment.BottomStart).padding(4.dp).size(screwRadius * 2).background(screwColor, CircleShape))
+        Box(modifier = Modifier.align(Alignment.BottomEnd).padding(4.dp).size(screwRadius * 2).background(screwColor, CircleShape))
     }
 }
 
