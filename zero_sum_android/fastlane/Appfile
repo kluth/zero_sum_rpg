@@ -1,2 +1,2 @@
 json_key_file("/tmp/google-play-api-key.json")
-package_name("kluth.cloud.zero_sum")
+package_name("cloud.kluth.zero_sum")
