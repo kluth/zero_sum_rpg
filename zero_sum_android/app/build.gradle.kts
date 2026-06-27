@@ -9,7 +9,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.zerosum.rpg"
+        applicationId = "kluth.cloud.zero_sum"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -59,6 +59,9 @@ dependencies {
     // Firebase Realtime Database
     implementation(platform("com.google.firebase:firebase-bom:34.12.0"))
     implementation("com.google.firebase:firebase-database")
+    
+    // OkHttp for WebSockets
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
     
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
