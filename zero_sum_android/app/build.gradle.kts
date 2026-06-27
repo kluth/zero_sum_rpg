@@ -12,8 +12,9 @@ android {
         applicationId = "cloud.kluth.zero_sum"
         minSdk = 24
         targetSdk = 35
-        versionCode = 2
-        versionName = "1.0.1"
+        val autoVersion = (System.currentTimeMillis() / 1000).toInt() - 1780000000
+        versionCode = autoVersion
+        versionName = "1.0.$autoVersion"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
