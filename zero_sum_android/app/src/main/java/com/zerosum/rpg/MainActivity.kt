@@ -56,9 +56,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.graphics.Shadow
 
 val NeonRed = Color(0xFFFF003C)
 val NeonBlue = Color(0xFF00F0FF)
@@ -140,20 +143,34 @@ fun LobbyScreen(onHost: () -> Unit, onJoin: (String) -> Unit) {
     var joinPin by remember { mutableStateOf("") }
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(32.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(DarkBackground, Color(0xFF0D1B2A), DarkBackground)
+                )
+            )
+            .padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text("ZERO SUM", color = NeonBlue, fontSize = 48.sp, fontWeight = FontWeight.Bold, letterSpacing = 4.sp)
+        Text(
+            "ZERO SUM", 
+            color = NeonBlue, 
+            fontSize = 48.sp, 
+            fontWeight = FontWeight.Bold, 
+            letterSpacing = 4.sp,
+            style = TextStyle(shadow = Shadow(color = NeonBlue.copy(alpha = 0.5f), blurRadius = 24f))
+        )
         Spacer(modifier = Modifier.height(64.dp))
         
         Button(
             onClick = onHost,
-            colors = ButtonDefaults.buttonColors(containerColor = NeonRed.copy(alpha = 0.2f)),
+            colors = ButtonDefaults.buttonColors(containerColor = NeonRed.copy(alpha = 0.15f)),
             modifier = Modifier.fillMaxWidth().height(64.dp).border(2.dp, NeonRed, RoundedCornerShape(8.dp)),
             shape = RoundedCornerShape(8.dp)
         ) {
-            Text("HOST NEW OPERATION", color = NeonRed, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            Text("HOST NEW OPERATION", color = NeonRed, fontWeight = FontWeight.Bold, fontSize = 18.sp, style = TextStyle(shadow = Shadow(color = NeonRed.copy(alpha = 0.5f), blurRadius = 12f)))
         }
         
         Spacer(modifier = Modifier.height(32.dp))
@@ -176,11 +193,11 @@ fun LobbyScreen(onHost: () -> Unit, onJoin: (String) -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = { if (joinPin.length >= 4) onJoin(joinPin) },
-            colors = ButtonDefaults.buttonColors(containerColor = NeonBlue.copy(alpha = 0.2f)),
+            colors = ButtonDefaults.buttonColors(containerColor = NeonBlue.copy(alpha = 0.15f)),
             modifier = Modifier.fillMaxWidth().height(64.dp).border(2.dp, NeonBlue, RoundedCornerShape(8.dp)),
             shape = RoundedCornerShape(8.dp)
         ) {
-            Text("JOIN SQUAD", color = NeonBlue, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            Text("JOIN SQUAD", color = NeonBlue, fontWeight = FontWeight.Bold, fontSize = 18.sp, style = TextStyle(shadow = Shadow(color = NeonBlue.copy(alpha = 0.5f), blurRadius = 12f)))
         }
     }
 }
@@ -276,7 +293,7 @@ fun GameScreen(sessionId: String) {
     }
     
     val infiniteTransition = rememberInfiniteTransition()
-    val flashAlpha by infiniteTransition.animateFloat(
+    val flashAlphaState = infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = 0.5f,
         animationSpec = infiniteRepeatable(
@@ -292,24 +309,27 @@ fun GameScreen(sessionId: String) {
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-        HeaderSection(sessionId)
-        Spacer(modifier = Modifier.height(16.dp))
-        Column(modifier = Modifier.weight(1f)) {
-            CharacterSheetSection(modifier = Modifier.weight(1f))
+            HeaderSection(sessionId)
             Spacer(modifier = Modifier.height(16.dp))
-            Column(modifier = Modifier.weight(2f)) {
-                DiceRollerSection(modifier = Modifier.weight(1f))
+            Column(modifier = Modifier.weight(1f)) {
+                CharacterSheetSection(modifier = Modifier.weight(1f))
                 Spacer(modifier = Modifier.height(16.dp))
-                MapGeneratorSection(modifier = Modifier.weight(1.5f))
+                Column(modifier = Modifier.weight(2f)) {
+                    DiceRollerSection(modifier = Modifier.weight(1f))
+                    Spacer(modifier = Modifier.height(16.dp))
+                    MapGeneratorSection(modifier = Modifier.weight(1.5f))
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                RemoteCommsSection(modifier = Modifier.weight(1f))
             }
-            Spacer(modifier = Modifier.height(16.dp))
-            RemoteCommsSection(modifier = Modifier.weight(1f))
         }
-        }
-    }
-    
-    if (isCritical) {
-        Box(modifier = Modifier.fillMaxSize().background(Color.Red.copy(alpha = flashAlpha)))
+        
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .graphicsLayer { alpha = if (isCritical) flashAlphaState.value else 0f }
+                .background(Color.Red)
+        )
     }
 }
 
@@ -506,7 +526,7 @@ fun CharacterSheetSection(modifier: Modifier = Modifier) {
                 }
             }
             
-            // Overlays (Cracked Screen & Scanlines)
+            // Cracked Screen & Scanlines Overlay Optimized
             Spacer(modifier = Modifier.fillMaxSize().drawWithCache {
                 val path1 = Path().apply {
                     moveTo(size.width * 0.8f, 0f)
@@ -524,9 +544,10 @@ fun CharacterSheetSection(modifier: Modifier = Modifier) {
                     moveTo(size.width * 0.6f, size.height * 0.8f)
                     lineTo(size.width * 0.4f, size.height)
                 }
+                
                 val barHeight = 2.dp.toPx()
                 val gap = 4.dp.toPx()
-
+                
                 onDrawBehind {
                     drawPath(path = path1, color = Color.White.copy(alpha = 0.15f), style = Stroke(width = 3f))
                     drawPath(path = path2, color = Color.White.copy(alpha = 0.1f), style = Stroke(width = 2f))
@@ -619,7 +640,6 @@ fun DiceRollerSection(modifier: Modifier = Modifier) {
         
         Button(
             onClick = {
-                if (isCalculating) return@Button
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 coroutineScope.launch {
                     isCalculating = true
