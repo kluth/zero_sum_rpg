@@ -140,10 +140,18 @@ func RegisterSSEHandler(mux *http.ServeMux, h *domain.Handler) {
 			log.Printf("SSE client disconnected")
 		}()
 
+		ticker := time.NewTicker(15 * time.Second)
+		defer ticker.Stop()
+
 		for {
 			select {
 			case <-r.Context().Done():
 				return
+			case <-ticker.C:
+				fmt.Fprint(w, ":\n\n")
+				if f, ok := w.(http.Flusher); ok {
+					f.Flush()
+				}
 			case msg := <-clientChan:
 				fmt.Fprint(w, msg)
 				if f, ok := w.(http.Flusher); ok {

@@ -79,13 +79,21 @@ sealed class PlayerIntent {
 }
 
 object NetworkManager {
+    init {
+        try {
+            FirebaseDatabase.getInstance("https://zero-sum-rpg-2026-default-rtdb.europe-west1.firebasedatabase.app").setPersistenceEnabled(true)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
     private val database = FirebaseDatabase.getInstance("https://zero-sum-rpg-2026-default-rtdb.europe-west1.firebasedatabase.app").reference
 
     private val _uiState = MutableStateFlow(PlayerState())
     val uiState: StateFlow<PlayerState> = _uiState
 
     private var sessionId: String = "DEFAULT"
-    private var valueEventListener: ValueEventListener? = null
+    private var charEventListener: ValueEventListener? = null
+    private var mapEventListener: ValueEventListener? = null
     
     private var webSocket: WebSocket? = null
     private val client = OkHttpClient()
@@ -193,9 +201,8 @@ object NetworkManager {
     }
 
     private fun parseCharacterState(map: Map<*, *>): CharacterState? {
-        val chars = map["characters"] as? Map<*, *> ?: return null
         val charId = "char_1"
-        val rawChar = chars[charId] as? Map<*, *> ?: chars.values.firstOrNull() as? Map<*, *> ?: return null
+        val rawChar = map[charId] as? Map<*, *> ?: map.values.firstOrNull() as? Map<*, *> ?: return null
         val rawId = rawChar["id"] as? String ?: charId
         
         val rawStats = rawChar["stats"] as? Map<*, *>
@@ -225,8 +232,7 @@ object NetworkManager {
         return newSessionId
     }
 
-    private fun parseMapState(stateMap: Map<*, *>): MapState? {
-        val mapData = stateMap["map"] as? Map<*, *> ?: return null
+    private fun parseMapState(mapData: Map<*, *>): MapState? {
         val archetype = mapData["archetype"] as? String ?: "UNKNOWN"
         val gridList = mutableListOf<GridCell>()
         val roomList = mutableListOf<MapRoom>()
@@ -259,22 +265,46 @@ object NetworkManager {
     }
 
     fun joinSession(newSessionId: String) {
-        valueEventListener?.let {
-            database.child("sessions/$sessionId/gameState").removeEventListener(it)
+        charEventListener?.let {
+            database.child("sessions/$sessionId/gameState/characters").removeEventListener(it)
+        }
+        mapEventListener?.let {
+            database.child("sessions/$sessionId/gameState/map").removeEventListener(it)
         }
         sessionId = newSessionId
         _uiState.value = PlayerState(null)
         
-        val listener = object : ValueEventListener {
+        val cListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     try {
                         val stateMap = snapshot.value as? Map<*, *>
                         if (stateMap != null) {
                             val charState = parseCharacterState(stateMap)
+                            _uiState.value = _uiState.value.copy(
+                                character = charState
+                            )
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                error.toException().printStackTrace()
+            }
+        }
+        charEventListener = cListener
+        database.child("sessions/$sessionId/gameState/characters").addValueEventListener(cListener)
+
+        val mListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    try {
+                        val stateMap = snapshot.value as? Map<*, *>
+                        if (stateMap != null) {
                             val mapState = parseMapState(stateMap)
                             _uiState.value = _uiState.value.copy(
-                                character = charState,
                                 map = mapState
                             )
                         }
@@ -283,27 +313,20 @@ object NetworkManager {
                     }
                 }
             }
-
             override fun onCancelled(error: DatabaseError) {
                 error.toException().printStackTrace()
             }
         }
-        valueEventListener = listener
-        database.child("sessions/$sessionId/gameState").addValueEventListener(listener)
+        mapEventListener = mListener
+        database.child("sessions/$sessionId/gameState/map").addValueEventListener(mListener)
     }
 
     private fun logTrauma(player: String, amount: Int) {
         val traumaRef = database.child("sessions/$sessionId/gameState/traumaLog").push()
-        val names = listOf("ELIAS VANCE", "S. NAKAMURA", "R. VANCE", "M. KLEMENT", "J. DOE", "L. CHEN")
-        val ages = (18..75).random()
-        val jobs = listOf("MAINTENANCE", "CLERK", "TEACHER", "ENGINEER", "MEDIC", "UNEMPLOYED")
-        val family = listOf("SURVIVED BY 2 DAUGHTERS", "NO KNOWN NEXT OF KIN", "SURVIVED BY SPOUSE", "SURVIVED BY 1 SON")
-        val victimDossier = "${names.random()}, $ages. ${jobs.random()}. ${family.random()}."
         traumaRef.setValue(mapOf(
             "player" to player,
             "amount" to amount,
-            "timestamp" to System.currentTimeMillis(),
-            "civilian" to victimDossier
+            "timestamp" to System.currentTimeMillis()
         ))
     }
 
