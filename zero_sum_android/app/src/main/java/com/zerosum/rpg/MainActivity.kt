@@ -712,38 +712,59 @@ fun DiceRollerSection(modifier: Modifier = Modifier) {
 
 @Composable
 fun RemoteCommsSection(modifier: Modifier = Modifier) {
-    val context = androidx.compose.ui.platform.LocalContext.current
-    val nfcManager = context.getSystemService(android.content.Context.NFC_SERVICE) as? android.nfc.NfcManager
-    val nfcAdapter = nfcManager?.defaultAdapter
-    val hasNfc = nfcAdapter != null
-    val nfcEnabled = nfcAdapter?.isEnabled == true
+    var hashInput by remember { mutableStateOf("") }
+    var decryptedMessage by remember { mutableStateOf<String?>(null) }
+    
+    val SilkBg = Color(0xFFE8EAF0)
+    val SilkIndigo = Color(0xFF6366F1)
+    val SilkShadow = Color(0xFFC8CAD3)
+    val SilkLight = Color(0xFFFFFFFF)
 
     Column(
         modifier = modifier
-            .fillMaxHeight()
-            .background(GlassBackground, RoundedCornerShape(8.dp))
-            .border(1.dp, TerminalGreen.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
-            .padding(16.dp)
+            .fillMaxWidth()
+            .background(SilkBg, RoundedCornerShape(16.dp))
+            .border(2.dp, SilkLight, RoundedCornerShape(16.dp))
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("INFOSEC KINETIC HACKING", color = Color.Gray, fontSize = 12.sp)
+        Text("SILK ANALOG SYNC", color = SilkIndigo, fontSize = 16.sp, fontWeight = FontWeight.Bold, letterSpacing = 2.sp)
+        Spacer(modifier = Modifier.height(8.dp))
+        Text("Gib den 4-stelligen Hash-Code vom physischen PnP-Handout ein, um die Daten zu entschlüsseln.", color = Color.DarkGray, fontSize = 12.sp, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
         Spacer(modifier = Modifier.height(16.dp))
         
-        if (hasNfc) {
-            if (nfcEnabled) {
-                Text("NFC HARDWARE: ONLINE", color = TerminalGreen, fontSize = 14.sp, fontWeight = FontWeight.Bold)
-                Text("Awaiting physical NFC Air-Gap contact...", color = Color.Gray, fontSize = 12.sp)
-            } else {
-                Text("NFC HARDWARE: OFFLINE", color = WarningAmber, fontSize = 14.sp, fontWeight = FontWeight.Bold)
-                Text("Enable NFC to execute Air-Gap hacks.", color = Color.Gray, fontSize = 12.sp)
-            }
-        } else {
-            Text("NFC HARDWARE: NOT DETECTED", color = WarningAmber, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+        OutlinedTextField(
+            value = hashInput,
+            onValueChange = { 
+                val input = it.uppercase().take(4)
+                hashInput = input
+                if (input == "7B42") decryptedMessage = "GEHEIM: Verstecktes Medkit in Sektor B gefunden."
+                else if (input == "9901") decryptedMessage = "WARNUNG: Nächster Raum ist mit EMP-Minen gesichert."
+                else if (input.length == 4) decryptedMessage = "FEHLER: Hash-Code unbekannt oder beschädigt."
+                else decryptedMessage = null
+            },
+            label = { Text("HASH-CODE EINGEBEN", color = SilkIndigo, fontSize = 10.sp) },
+            modifier = Modifier.fillMaxWidth(0.7f),
+            singleLine = true,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = SilkIndigo,
+                unfocusedBorderColor = SilkShadow,
+                focusedTextColor = SilkIndigo,
+                unfocusedTextColor = Color.DarkGray
+            )
+        )
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        if (decryptedMessage != null) {
+            Text(
+                text = decryptedMessage!!,
+                color = if (decryptedMessage!!.startsWith("FEHLER")) Color.Red else SilkIndigo,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                modifier = Modifier.fillMaxWidth().background(SilkLight, RoundedCornerShape(8.dp)).padding(8.dp)
+            )
         }
-        
-        Spacer(modifier = Modifier.height(16.dp))
-        Text("ADVERSARIAL FASHION & GAIT", color = Color.White, fontSize = 12.sp)
-        Text("STATUS: CV DAZZLE ACTIVE", color = TerminalGreen, fontSize = 10.sp)
-        Text("AI CLASSIFICATION: TOYOTA COROLLA", color = Color.Gray, fontSize = 10.sp)
     }
 }
 
