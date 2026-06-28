@@ -46,6 +46,17 @@ steps:
         fastlane deploy
     secretEnv: ['PLAY_STORE_KEY', 'ANDROID_KEYSTORE_B64']
 
+  # 5. Automated AI Testing via Firebase Test Lab (Robo Test)
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud firebase test android run \
+          --type robo \
+          --app zero_sum_android/app/build/outputs/bundle/release/app-release.aab \
+          --device model=Pixel3,version=30,locale=en,orientation=portrait \
+          --timeout 3m
 availableSecrets:
   secretManager:
     - versionName: projects/$PROJECT_ID/secrets/play_store_key/versions/latest
