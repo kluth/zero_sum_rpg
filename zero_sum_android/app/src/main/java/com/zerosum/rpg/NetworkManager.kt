@@ -321,7 +321,18 @@ object NetworkManager {
     }
 
     fun disconnect() {
-        // Firebase handles this automatically
+        valueEventListener?.let {
+            database.child("sessions/$sessionId/gameState").removeEventListener(it)
+        }
+        valueEventListener = null
+        try {
+            webSocket?.close(1000, "App disconnecting")
+        } catch (e: Exception) {}
+        webSocket = null
+        try {
+            client.dispatcher.executorService.shutdown()
+            client.connectionPool.evictAll()
+        } catch (e: Exception) {}
     }
 
     fun incrementHeatLevel() {

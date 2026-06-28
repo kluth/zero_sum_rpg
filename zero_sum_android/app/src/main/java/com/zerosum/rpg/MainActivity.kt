@@ -56,6 +56,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.selection.selectableGroup
 
@@ -505,55 +506,43 @@ fun CharacterSheetSection(modifier: Modifier = Modifier) {
                 }
             }
             
-            // Cracked Screen Overlay
-            Canvas(modifier = Modifier.fillMaxSize()) {
-                val path = Path().apply {
+            // Overlays (Cracked Screen & Scanlines)
+            Spacer(modifier = Modifier.fillMaxSize().drawWithCache {
+                val path1 = Path().apply {
                     moveTo(size.width * 0.8f, 0f)
                     lineTo(size.width * 0.7f, size.height * 0.3f)
                     lineTo(size.width * 0.9f, size.height * 0.5f)
                     lineTo(size.width * 0.6f, size.height * 0.8f)
                     lineTo(size.width * 0.75f, size.height)
                 }
-                drawPath(
-                    path = path,
-                    color = Color.White.copy(alpha = 0.15f),
-                    style = Stroke(width = 3f)
-                )
                 val path2 = Path().apply {
                     moveTo(size.width * 0.7f, size.height * 0.3f)
                     lineTo(size.width * 0.3f, size.height * 0.4f)
                     lineTo(0f, size.height * 0.35f)
                 }
-                drawPath(
-                    path = path2,
-                    color = Color.White.copy(alpha = 0.1f),
-                    style = Stroke(width = 2f)
-                )
                 val path3 = Path().apply {
                     moveTo(size.width * 0.6f, size.height * 0.8f)
                     lineTo(size.width * 0.4f, size.height)
                 }
-                drawPath(
-                    path = path3,
-                    color = Color.White.copy(alpha = 0.1f),
-                    style = Stroke(width = 1.5f)
-                )
-            }
-            
-            // Scanlines Overlay
-            Canvas(modifier = Modifier.fillMaxSize()) {
                 val barHeight = 2.dp.toPx()
                 val gap = 4.dp.toPx()
-                var y = 0f
-                while (y < size.height) {
-                    drawRect(
-                        color = Color.Black.copy(alpha = 0.1f),
-                        topLeft = Offset(0f, y),
-                        size = Size(size.width, barHeight)
-                    )
-                    y += barHeight + gap
+
+                onDrawBehind {
+                    drawPath(path = path1, color = Color.White.copy(alpha = 0.15f), style = Stroke(width = 3f))
+                    drawPath(path = path2, color = Color.White.copy(alpha = 0.1f), style = Stroke(width = 2f))
+                    drawPath(path = path3, color = Color.White.copy(alpha = 0.1f), style = Stroke(width = 1.5f))
+                    
+                    var y = 0f
+                    while (y < size.height) {
+                        drawRect(
+                            color = Color.Black.copy(alpha = 0.1f),
+                            topLeft = Offset(0f, y),
+                            size = Size(size.width, barHeight)
+                        )
+                        y += barHeight + gap
+                    }
                 }
-            }
+            })
         }
         
         // Screws in the corners of the chassis
@@ -630,6 +619,7 @@ fun DiceRollerSection(modifier: Modifier = Modifier) {
         
         Button(
             onClick = {
+                if (isCalculating) return@Button
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 coroutineScope.launch {
                     isCalculating = true
