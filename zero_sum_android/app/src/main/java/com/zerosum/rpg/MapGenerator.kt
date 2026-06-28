@@ -72,6 +72,13 @@ fun MapGeneratorSection(modifier: Modifier = Modifier) {
             
             val maxGridX = mapState.grid.maxOfOrNull { it.x } ?: 9
             val columnsCount = maxGridX + 1
+            
+            val gridMap = remember(mapState) {
+                mapState.grid.associateBy { Pair(it.x, it.y) }
+            }
+            val roomsMap = remember(mapState) {
+                mapState.rooms.associateBy { it.id }
+            }
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(Math.max(1, columnsCount)), 
@@ -83,16 +90,16 @@ fun MapGeneratorSection(modifier: Modifier = Modifier) {
                 items(totalCells) { index ->
                     val x = index % columnsCount
                     val y = index / columnsCount
-                    val cell = mapState.grid.find { it.x == x && it.y == y }
-                    val room = mapState.rooms.find { it.id == cell?.roomId }
+                    val cell = gridMap[Pair(x, y)]
+                    val room = roomsMap[cell?.roomId]
                     
                     val isRevealed = room?.revealed ?: false
 
                     if (cell != null && isRevealed) {
-                        val hasN = mapState.grid.find { it.x == x && it.y == y - 1 }?.let { nCell -> mapState.rooms.find { it.id == nCell.roomId }?.revealed == true } ?: false
-                        val hasS = mapState.grid.find { it.x == x && it.y == y + 1 }?.let { sCell -> mapState.rooms.find { it.id == sCell.roomId }?.revealed == true } ?: false
-                        val hasE = mapState.grid.find { it.x == x + 1 && it.y == y }?.let { eCell -> mapState.rooms.find { it.id == eCell.roomId }?.revealed == true } ?: false
-                        val hasW = mapState.grid.find { it.x == x - 1 && it.y == y }?.let { wCell -> mapState.rooms.find { it.id == wCell.roomId }?.revealed == true } ?: false
+                        val hasN = gridMap[Pair(x, y - 1)]?.let { nCell -> roomsMap[nCell.roomId]?.revealed == true } ?: false
+                        val hasS = gridMap[Pair(x, y + 1)]?.let { sCell -> roomsMap[sCell.roomId]?.revealed == true } ?: false
+                        val hasE = gridMap[Pair(x + 1, y)]?.let { eCell -> roomsMap[eCell.roomId]?.revealed == true } ?: false
+                        val hasW = gridMap[Pair(x - 1, y)]?.let { wCell -> roomsMap[wCell.roomId]?.revealed == true } ?: false
 
                         Box(
                             modifier = Modifier
