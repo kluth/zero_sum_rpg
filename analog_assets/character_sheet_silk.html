@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zero Sum RPG - Analog Character Sheet (Silk OS)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --silk-bg: #e8eaf0;
+            --silk-indigo: #6366f1;
+            --silk-violet: #7c3aed;
+            --silk-text: #334155;
+            --silk-light: #ffffff;
+            --silk-shadow: #c8cad3;
+            
+            --neo-raised: 8px 8px 16px var(--silk-shadow), -8px -8px 16px var(--silk-light);
+            --neo-inset: inset 6px 6px 12px var(--silk-shadow), inset -6px -6px 12px var(--silk-light);
+        }
+
+        body {
+            background-color: var(--silk-bg);
+            color: var(--silk-text);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .sheet {
+            width: 210mm;
+            min-height: 297mm;
+            background: var(--silk-bg);
+            border-radius: 32px;
+            box-shadow: var(--neo-raised);
+            padding: 40px;
+            box-sizing: border-box;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid transparent;
+            box-shadow: 0 4px 2px -2px var(--silk-shadow);
+        }
+
+        .header h1 {
+            color: var(--silk-indigo);
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin: 0;
+        }
+
+        .header .os-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--silk-violet);
+            letter-spacing: 1px;
+            background: var(--silk-bg);
+            padding: 8px 16px;
+            border-radius: 20px;
+            box-shadow: var(--neo-raised);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .neo-box {
+            background: var(--silk-bg);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: var(--neo-raised);
+        }
+
+        .neo-input {
+            width: 100%;
+            background: var(--silk-bg);
+            border: none;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: var(--neo-inset);
+            color: var(--silk-indigo);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            box-sizing: border-box;
+            outline: none;
+            margin-top: 10px;
+        }
+
+        .neo-label {
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--silk-text);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .tracker-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .tracker-pip {
+            aspect-ratio: 1;
+            background: var(--silk-bg);
+            border-radius: 50%;
+            box-shadow: var(--neo-raised);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tracker-pip:hover {
+            box-shadow: var(--neo-inset);
+        }
+
+        .tracker-pip.filled {
+            box-shadow: var(--neo-inset);
+            background: var(--silk-indigo);
+        }
+
+        .tracker-pip.filled-red {
+            box-shadow: var(--neo-inset);
+            background: #ef4444;
+        }
+
+        .section-title {
+            color: var(--silk-indigo);
+            font-size: 18px;
+            font-weight: 800;
+            margin: 0 0 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex-grow: 1;
+            height: 2px;
+            background: var(--silk-shadow);
+            border-radius: 2px;
+        }
+
+        .skills-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .skill-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            border-radius: 12px;
+            box-shadow: var(--neo-raised);
+        }
+
+        .skill-value {
+            background: var(--silk-bg);
+            padding: 8px 15px;
+            border-radius: 8px;
+            box-shadow: var(--neo-inset);
+            color: var(--silk-indigo);
+            font-weight: 800;
+        }
+
+        .qr-placeholder {
+            width: 100px;
+            height: 100px;
+            background: var(--silk-bg);
+            box-shadow: var(--neo-inset);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            text-align: center;
+            color: var(--silk-shadow);
+            font-weight: bold;
+        }
+        
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 10px;
+            color: var(--silk-shadow);
+            font-weight: 600;
+        }
+
+        /* Print optimization */
+        @media print {
+            body { background: white; padding: 0; }
+            .sheet { box-shadow: none; border: 2px solid #e2e8f0; border-radius: 0; width: 100%; min-height: 100%; padding: 20px; }
+            .neo-box, .header .os-label, .tracker-pip, .skill-item {
+                box-shadow: none; border: 1px solid #cbd5e1;
+            }
+            .neo-input, .skill-value, .qr-placeholder {
+                box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #cbd5e1;
+            }
+            /* To keep the neomorphic look somewhat intact on high-quality prints, 
+               you can comment out the print media query or tweak it for color printing */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sheet">
+        <div class="header">
+            <h1>ZERO SUM RPG</h1>
+            <div class="os-label">SURVIVAL OS v1.0 // SILK</div>
+        </div>
+
+        <div class="grid-2">
+            <div class="neo-box">
+                <label class="neo-label">Identität</label>
+                <input type="text" class="neo-input" placeholder="Ziviler Name">
+            </div>
+            <div class="neo-box">
+                <label class="neo-label">Rolle / Profession</label>
+                <input type="text" class="neo-input" placeholder="z.B. IT-Techniker">
+            </div>
+        </div>
+
+        <div class="neo-box" style="margin-bottom: 30px;">
+            <div class="section-title">Gesundheit (HP)</div>
+            <label class="neo-label">Physischer Zustand (Abstreichen)</label>
+            <div class="tracker-grid">
+                <!-- 20 HP Pips -->
+                <script>
+                    for(let i=0; i<20; i++) document.write('<div class="tracker-pip"></div>');
+                </script>
+            </div>
+        </div>
+
+        <div class="neo-box" style="margin-bottom: 30px;">
+            <div class="section-title" style="color: #ef4444;">Stresslevel</div>
+            <label class="neo-label">Mentale Belastung (Abstreichen) - ACHTUNG: Bei Max Stress Overclocking erzwingen</label>
+            <div class="tracker-grid">
+                <!-- 10 Stress Pips -->
+                <script>
+                    for(let i=0; i<10; i++) document.write('<div class="tracker-pip" onclick="this.classList.toggle(\'filled-red\')"></div>');
+                </script>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="neo-box">
+                <div class="section-title">Kern-Attribute</div>
+                <div class="skills-list">
+                    <div class="skill-item">
+                        <span class="neo-label" style="margin:0;">Technik & Logik</span>
+                        <div class="skill-value">____</div>
+                    </div>
+                    <div class="skill-item">
+                        <span class="neo-label" style="margin:0;">Agilität & Stealth</span>
+                        <div class="skill-value">____</div>
+                    </div>
+                    <div class="skill-item">
+                        <span class="neo-label" style="margin:0;">Charisma & Bluff</span>
+                        <div class="skill-value">____</div>
+                    </div>
+                    <div class="skill-item">
+                        <span class="neo-label" style="margin:0;">Medizin & Erste Hilfe</span>
+                        <div class="skill-value">____</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="neo-box">
+                <div class="section-title">Ausrüstung & Notizen</div>
+                <textarea class="neo-input" rows="8" placeholder="Gefundene analoge Gegenstände hier eintragen..."></textarea>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                    <div>
+                        <label class="neo-label">Digitaler Sync Code</label>
+                        <div style="font-size: 10px; color: var(--silk-text);">Scanne den PnP-Code mit der Android App.</div>
+                    </div>
+                    <div class="qr-placeholder">
+                        QR / HASH<br>PLATZHALTER
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            ZERO SUM RPG ANALOG COMPONENT // AUTHORIZED BY SURVIVAL OS PROTOCOL
+        </div>
+    </div>
+
+</body>
+</html>
