@@ -344,10 +344,14 @@ object NetworkManager {
     }
 
     fun disconnect() {
-        valueEventListener?.let {
-            database.child("sessions/$sessionId/gameState").removeEventListener(it)
+        charEventListener?.let {
+            database.child("sessions/$sessionId/gameState/characters").removeEventListener(it)
         }
-        valueEventListener = null
+        charEventListener = null
+        mapEventListener?.let {
+            database.child("sessions/$sessionId/gameState/map").removeEventListener(it)
+        }
+        mapEventListener = null
         try {
             webSocket?.close(1000, "App disconnecting")
         } catch (e: Exception) {}
