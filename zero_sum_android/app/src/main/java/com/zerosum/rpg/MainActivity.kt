@@ -315,6 +315,7 @@ fun GameScreen(sessionId: String) {
             RemoteCommsSection(modifier = Modifier.weight(1f), onLightTableActivate = { isLightTableMode = true })
         }
         }
+        }
     }
     
     if (isCritical && !isBlackout) {

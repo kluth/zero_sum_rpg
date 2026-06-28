@@ -6,6 +6,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import org.json.JSONArray
 import org.json.JSONObject
 import okhttp3.OkHttpClient
@@ -76,6 +77,7 @@ sealed class PlayerIntent {
     data class JoinSession(val sessionId: String) : PlayerIntent()
     object HostSession : PlayerIntent()
     data class SetupInitialProfile(val charState: CharacterState) : PlayerIntent()
+    data class ConsumeData(val amountMB: Float) : PlayerIntent()
 }
 
 object NetworkManager {
