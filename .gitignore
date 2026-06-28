@@ -16,3 +16,7 @@ build/
 *.jpg
 capture_screenshots*.js
 !test_suite/**/*.png
+*.hprof
+upload-keystore.jks
+backend/server
+backend/simulator

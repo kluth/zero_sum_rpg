@@ -1,0 +1,48 @@
+<div class="zs-dashboard">
+  <div class="header">
+    <span>> Z-S_SYS_MONITOR</span>
+    <span class="blink">_</span>
+  </div>
+
+  <!-- Hit Points -->
+  <div class="metric-block">
+    <div class="label">
+      <span>VITALS.SYS</span>
+      <span>[{{ currentHp | number:'1.0-0' }} / {{ currentMaxHp }}]</span>
+    </div>
+    <div class="bar-container">
+      <div class="bar-fill hp-fill" 
+           [class.warning]="hpStatus() === 'warning'"
+           [class.critical]="hpStatus() === 'critical'"
+           [style.width.%]="hpPercentage()">
+      </div>
+    </div>
+  </div>
+
+  <!-- Team Limit -->
+  <div class="metric-block" [class.glitching]="isGlitching()">
+    <div class="label">
+      <span>TEAM_CAPACITY_MB</span>
+      <span>[{{ currentTeamMemory | number:'1.0-1' }} / {{ currentTeamMemoryMax }} MB]</span>
+    </div>
+    <div class="bar-container">
+      <div class="bar-fill team-fill"
+           [class.high-load]="teamMemoryStatus() === 'high-load'"
+           [style.width.%]="teamMemoryPercentage()">
+      </div>
+    </div>
+  </div>
+
+  <!-- Offline-Speicher -->
+  <div class="metric-block shadow-cache-glitch" *ngIf="isMedicOrSupporter">
+    <div class="label shadow-label">
+      <span>OFFLINE_SPEICHER_ALLOC</span>
+      <span>[{{ currentShadowCache | number:'1.0-1' }} / {{ shadowCacheMax }} MB]</span>
+    </div>
+    <div class="bar-container shadow-container">
+      <div class="bar-fill shadow-fill"
+           [style.width.%]="shadowCachePercentage()">
+      </div>
+    </div>
+  </div>
+</div>

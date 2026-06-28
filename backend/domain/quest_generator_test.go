@@ -1,4 +1,5 @@
 package domain
+
 import (
 	"errors"
 	"testing"
@@ -16,8 +17,8 @@ func (m *MockAIEngine) GenerateQuestPayload(context string) Result[GeneratedQues
 		return Err[GeneratedQuestPayload](errors.New("AI timeout"))
 	}
 	return Ok(GeneratedQuestPayload{
-		Title:       m.MockTitle,
-		Description: m.MockDesc,
+		Title:           m.MockTitle,
+		Description:     m.MockDesc,
 		SuggestedReward: 500,
 	})
 }

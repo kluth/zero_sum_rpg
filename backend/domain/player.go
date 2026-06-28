@@ -124,7 +124,7 @@ func (p *Player) ConsumeItem(itemID string) Result[struct{}] {
 			}
 			// Hardcoded for now: Consumables restore 5 AP
 			p.AP += 5
-			
+
 			// Remove from inventory
 			p.Inventory = append(p.Inventory[:i], p.Inventory[i+1:]...)
 			return Ok(struct{}{})

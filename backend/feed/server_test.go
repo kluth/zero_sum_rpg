@@ -46,7 +46,7 @@ func TestStreamQuests(t *testing.T) {
 	client := pb.NewFeedServiceClient(conn)
 
 	req := &pb.FeedRequest{PlayerId: "p1"}
-	
+
 	streamCtx, cancel := context.WithTimeout(ctx, 3*time.Second)
 	defer cancel()
 

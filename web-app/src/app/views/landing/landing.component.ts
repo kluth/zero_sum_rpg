@@ -15,7 +15,10 @@ import { SessionService, GameSession } from '../../services/session.service';
       <div class="lobby-header">
         <h1 class="glitch-text" data-text="ZERO-SUM NEXUS">ZERO-SUM NEXUS</h1>
         <p class="subtitle">Global Operations Lobby</p>
-        <button class="zs-btn" (click)="uiState.toggleTheme()" style="position: absolute; right: 24px; top: 24px;">Toggle Theme</button>
+        <div style="position: absolute; right: 24px; top: 24px; display: flex; gap: 10px;">
+          <button class="zs-btn" (click)="router.navigate(['/mission-map'])">Tactical Map</button>
+          <button class="zs-btn" (click)="uiState.toggleTheme()">Toggle Theme</button>
+        </div>
       </div>
 
       <div class="lobby-grid">

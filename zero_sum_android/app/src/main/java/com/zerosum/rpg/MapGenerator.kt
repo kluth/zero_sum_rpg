@@ -52,7 +52,7 @@ fun MapGeneratorSection(modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxHeight()
             .background(GlassBackground, RoundedCornerShape(8.dp))
-            .selectiveBorder(true, true, true, true, NeonBlue.copy(alpha = 0.3f), 2f)
+            .selectiveBorder(true, true, true, true, TerminalGreen.copy(alpha = 0.3f), 2f)
             .padding(16.dp)
     ) {
         Row(
@@ -67,18 +67,15 @@ fun MapGeneratorSection(modifier: Modifier = Modifier) {
 
         if (mapState != null && mapState.grid.isNotEmpty()) {
             Text("TARGET: ${mapState.archetype}", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
-            Text("LAYOUT: GRID-BASED", color = NeonRed, fontSize = 12.sp)
+            Text("LAYOUT: GRID-BASED", color = WarningAmber, fontSize = 12.sp)
             Spacer(modifier = Modifier.height(12.dp))
             
-            val maxGridX = mapState.grid.maxOfOrNull { it.x } ?: 9
+            val maxGridX = remember(mapState.grid) { mapState.grid.maxOfOrNull { it.x } ?: 9 }
+            val maxGridY = remember(mapState.grid) { mapState.grid.maxOfOrNull { it.y } ?: 9 }
             val columnsCount = maxGridX + 1
-            
-            val gridMap = remember(mapState) {
-                mapState.grid.associateBy { Pair(it.x, it.y) }
-            }
-            val roomsMap = remember(mapState) {
-                mapState.rooms.associateBy { it.id }
-            }
+
+            val roomMap = remember(mapState.rooms) { mapState.rooms.associateBy { it.id } }
+            val gridMap = remember(mapState.grid) { mapState.grid.associateBy { "${it.x},${it.y}" } }
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(Math.max(1, columnsCount)), 
@@ -86,30 +83,30 @@ fun MapGeneratorSection(modifier: Modifier = Modifier) {
                 horizontalArrangement = Arrangement.spacedBy(0.dp),
                 verticalArrangement = Arrangement.spacedBy(0.dp)
             ) {
-                val totalCells = columnsCount * ((mapState.grid.maxOfOrNull { it.y } ?: 9) + 1)
+                val totalCells = columnsCount * (maxGridY + 1)
                 items(totalCells) { index ->
                     val x = index % columnsCount
                     val y = index / columnsCount
-                    val cell = gridMap[Pair(x, y)]
-                    val room = roomsMap[cell?.roomId]
+                    val cell = gridMap["$x,$y"]
+                    val room = cell?.roomId?.let { roomMap[it] }
                     
                     val isRevealed = room?.revealed ?: false
 
                     if (cell != null && isRevealed) {
-                        val hasN = gridMap[Pair(x, y - 1)]?.let { nCell -> roomsMap[nCell.roomId]?.revealed == true } ?: false
-                        val hasS = gridMap[Pair(x, y + 1)]?.let { sCell -> roomsMap[sCell.roomId]?.revealed == true } ?: false
-                        val hasE = gridMap[Pair(x + 1, y)]?.let { eCell -> roomsMap[eCell.roomId]?.revealed == true } ?: false
-                        val hasW = gridMap[Pair(x - 1, y)]?.let { wCell -> roomsMap[wCell.roomId]?.revealed == true } ?: false
+                        val hasN = gridMap["$x,${y - 1}"]?.roomId?.let { roomMap[it]?.revealed } == true
+                        val hasS = gridMap["$x,${y + 1}"]?.roomId?.let { roomMap[it]?.revealed } == true
+                        val hasE = gridMap["${x + 1},$y"]?.roomId?.let { roomMap[it]?.revealed } == true
+                        val hasW = gridMap["${x - 1},$y"]?.roomId?.let { roomMap[it]?.revealed } == true
 
                         Box(
                             modifier = Modifier
                                 .aspectRatio(1f)
-                                .background(NeonBlue.copy(alpha = 0.15f))
-                                .selectiveBorder(!hasN, !hasS, !hasW, !hasE, NeonBlue, 4f),
+                                .background(TerminalGreen.copy(alpha = 0.15f))
+                                .selectiveBorder(!hasN, !hasS, !hasW, !hasE, TerminalGreen, 4f),
                             contentAlignment = Alignment.Center
                         ) {
                             if (room?.threat == "critical") {
-                                Text("!", color = NeonRed, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                                Text("!", color = WarningAmber, fontWeight = FontWeight.Bold, fontSize = 14.sp)
                             }
                         }
                     } else {
@@ -125,7 +122,7 @@ fun MapGeneratorSection(modifier: Modifier = Modifier) {
             
             Spacer(modifier = Modifier.height(16.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(modifier = Modifier.size(10.dp).background(NeonRed))
+                Box(modifier = Modifier.size(10.dp).background(WarningAmber))
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("CRITICAL THREAT DETECTED", color = Color.Gray, fontSize = 10.sp)
             }

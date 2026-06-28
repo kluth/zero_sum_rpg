@@ -15,7 +15,7 @@ var tracer = otel.Tracer("zero_sum_rpg/feed")
 // TraceBroadcast creates a span for a news broadcast (quest event)
 func TraceBroadcast(ctx context.Context, event *pb.QuestEvent) (context.Context, trace.Span) {
 	ctx, span := tracer.Start(ctx, "BroadcastQuestEvent")
-	
+
 	span.SetAttributes(
 		attribute.String("quest.id", event.QuestId),
 		attribute.String("quest.title", event.Title),
@@ -23,6 +23,6 @@ func TraceBroadcast(ctx context.Context, event *pb.QuestEvent) (context.Context,
 		attribute.String("quest.state", event.State.String()),
 		attribute.Int("quest.reward", int(event.Reward)),
 	)
-	
+
 	return ctx, span
 }

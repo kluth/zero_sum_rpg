@@ -49,14 +49,14 @@ func TestPlayer_BlindSpot(t *testing.T) {
 
 func TestPlayer_ExecuteAction(t *testing.T) {
 	p := NewPlayer("p1", "Neo")
-	
+
 	// Default AP should be 10 (or whatever we initialize it to, let's say 10)
 	if p.AP != 10 {
 		t.Errorf("expected 10 initial AP, got %d", p.AP)
 	}
 
 	hackAction := Action{ID: "act-1", Name: "Hack Firewall", APCost: 4}
-	
+
 	res := p.ExecuteAction(hackAction)
 	if !res.IsOk() {
 		t.Errorf("expected success, got error: %v", res.Err)
@@ -77,13 +77,13 @@ func TestPlayer_ExecuteAction(t *testing.T) {
 
 func TestPlayer_Inventory(t *testing.T) {
 	p := NewPlayer("p1", "Neo")
-	
+
 	if p.InventoryCapacity != 10 {
 		t.Errorf("expected default capacity 10, got %d", p.InventoryCapacity)
 	}
 
 	item := Item{ID: "i-1", Name: "Cyberdeck", Type: ItemTypeHardware}
-	
+
 	// Add Item
 	res := p.AddItem(item)
 	if !res.IsOk() {

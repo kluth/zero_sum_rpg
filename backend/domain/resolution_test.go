@@ -42,7 +42,7 @@ func TestResolutionEngine_Evaluate(t *testing.T) {
 			t.Errorf("expected OutcomeFailure, got %v", res.Value)
 		}
 	})
-	
+
 	// Critical Success (Natural 12)
 	t.Run("Critical Success", func(t *testing.T) {
 		engine := NewResolutionEngine(&MockRNG{FixedRoll: 12})

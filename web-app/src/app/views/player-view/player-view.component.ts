@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, HostListener, 
 import { CommonModule } from '@angular/common';
 import { WhispernetComponent } from '../../ui/whispernet/whispernet.component';
 import { FrequenzXComponent } from '../../ui/frequenz-x/frequenz-x.component';
+import { ZeroSumDashboardComponent } from '../../components/zero-sum-dashboard/zero-sum-dashboard.component';
 import { UiStateService } from '../../services/ui-state.service';
 import { Observable, interval } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -11,7 +12,7 @@ import { FeedService } from '../../services/feed.service';
 @Component({
   selector: 'app-player-view',
   standalone: true,
-  imports: [CommonModule, WhispernetComponent, FrequenzXComponent],
+  imports: [CommonModule, WhispernetComponent, FrequenzXComponent, ZeroSumDashboardComponent],
   template: `
   <div class="os-desktop" [class.stabilized]="uiState.isStabilized()">
     <!-- Swipe Area wraps the desktop-area -->
@@ -20,6 +21,17 @@ import { FeedService } from '../../services/feed.service';
          (touchstart)="onSwipeStart($event)" (touchend)="onSwipeEnd($event)"
          (touchmove)="onTouchMove($event)">
          
+      <!-- HUD Dashboard -->
+      <div style="position: absolute; top: 20px; right: 20px; z-index: 5; width: 320px; pointer-events: none;">
+        <app-zero-sum-dashboard 
+            [hp]="currentHp" 
+            [maxHp]="100" 
+            [teamMemoryUsed]="teamMemoryUsed" 
+            [isMedicOrSupporter]="true" 
+            [shadowCacheUsed]="shadowCacheUsed">
+        </app-zero-sum-dashboard>
+      </div>
+
       <!-- Browser Window (Social Network) -->
       <div class="os-window" #browserWin *ngIf="showBrowser" 
            [style.zIndex]="activeWindow === 'browser' ? 10 : 1" 
@@ -224,6 +236,11 @@ export class PlayerViewComponent implements OnInit, AfterViewInit {
   private feedService = inject(FeedService);
 
   time$: Observable<Date> = new Observable();
+
+  // Dashboard State
+  currentHp = 35;
+  teamMemoryUsed = 138;
+  shadowCacheUsed = 14;
 
   // Draggable Window State
   windowPositions: { [key: string]: { x: number, y: number } } = {};

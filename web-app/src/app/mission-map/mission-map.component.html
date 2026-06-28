@@ -1,0 +1,22 @@
+<div class="drone-feed-container">
+  <div class="scanlines"></div>
+  <div class="overlay-text top-left">REC <span class="blink">●</span></div>
+  <div class="overlay-text top-right">UAV SATELLITE LINK ACTIVE // SECURE</div>
+  <div class="overlay-text bottom-left">LAT 45.9082 N / LON 14.1209 E</div>
+  <div class="overlay-text bottom-right">ZOOM: 14x OPTICAL</div>
+  
+  <button class="zs-btn back-btn" (click)="goBack()">[ ABORT LINK ]</button>
+
+  <div class="city-map">
+    <div class="grid-overlay"></div>
+    
+    <div *ngFor="let m of missions" class="mission-pin" [style.left.%]="m.x" [style.top.%]="m.y">
+      <div class="pin-dot blink"></div>
+      <div class="pin-label">
+        <div class="mission-id">M-{{m.id}}</div>
+        <div class="mission-name">{{m.name}}</div>
+        <div class="mission-status">{{m.status}}</div>
+      </div>
+    </div>
+  </div>
+</div>

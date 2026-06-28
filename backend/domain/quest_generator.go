@@ -39,7 +39,7 @@ func (s *QuestGeneratorService) GenerateQuest(narrativeContext string) Result[*Q
 	id := generateSecureID()
 
 	quest := NewQuest(id, payload.Title, payload.Description, payload.SuggestedReward)
-	
+
 	return Ok(quest)
 }
 

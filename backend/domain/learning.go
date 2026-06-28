@@ -2,17 +2,27 @@ package domain
 
 import "errors"
 
+// CharacterClass represents the role of a character.
+type CharacterClass string
+
+const (
+	ClassStandard CharacterClass = "Standard"
+	ClassSupport  CharacterClass = "Support"
+)
+
 // Character represents a game entity with cognitive capacity constraints.
 type Character struct {
 	maxCapacity int
 	skills      map[string]int
+	Class       CharacterClass
 }
 
-// NewCharacter creates a new character with a specific cognitive capacity limit.
-func NewCharacter(max int) *Character {
+// NewCharacter creates a new character with a specific cognitive capacity limit and class.
+func NewCharacter(max int, class CharacterClass) *Character {
 	return &Character{
 		maxCapacity: max,
 		skills:      make(map[string]int),
+		Class:       class,
 	}
 }
 
@@ -44,8 +54,8 @@ func (c *Character) SkillLevel(name string) int {
 	return c.skills[name]
 }
 
-// ApplyAtrophy reduces all skills linearly based on the days of inactivity.
-func (c *Character) ApplyAtrophy(daysInactive int) {
+// ApplyTraumaAbstumpfung reduces all skills linearly based on the days of inactivity.
+func (c *Character) ApplyTraumaAbstumpfung(daysInactive int) {
 	for name, cost := range c.skills {
 		// A simple linear atrophy model for the test
 		atrophied := cost - daysInactive

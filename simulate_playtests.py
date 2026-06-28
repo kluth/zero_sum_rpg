@@ -3,7 +3,7 @@ import subprocess
 import time
 
 TOTAL_SESSIONS = 50
-START_SESSION = 2
+START_SESSION = 1
 LOG_FILE = "Mass_Playtest_Aggregated_Log.md"
 
 def run_session(session_id):

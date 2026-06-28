@@ -22,8 +22,8 @@ type MockAI struct{}
 
 func (m *MockAI) GenerateQuestPayload(context string) domain.Result[domain.GeneratedQuestPayload] {
 	return domain.Ok(domain.GeneratedQuestPayload{
-		Title:           "Simulated Data Heist",
-		Description:     "Steal the corporate data.",
+		Title:           "Satelliten-Daten-Engpass (Simulation)",
+		Description:     "Übertrage kritische Hilfsdaten.",
 		SuggestedReward: 500,
 	})
 }
@@ -48,7 +48,7 @@ func main() {
 		}
 	}
 
-	fmt.Printf("\n--- SIMULATION RESULTS ---\n")
+	fmt.Printf("\n--- SATELLITEN-DATENÜBERTRAGUNG (KRISENGEBIET) ---\n")
 	fmt.Printf("Total Sessions: 50\n")
 	fmt.Printf("Successes: %d\n", successes)
 	fmt.Printf("Logic Errors Found: %d\n", logicErrors)
@@ -56,10 +56,10 @@ func main() {
 }
 
 func runSession(sessionID int, resEngine *domain.ResolutionEngine, questGen *domain.QuestGeneratorService) error {
-	player := domain.NewPlayer(fmt.Sprintf("player-%d", sessionID), "Hacker")
-	
+	player := domain.NewPlayer(fmt.Sprintf("player-%d", sessionID), "IT-Techniker")
+
 	// 1. Generate Quest
-	questRes := questGen.GenerateQuest("Corp XYZ")
+	questRes := questGen.GenerateQuest("Hilfsorganisation XYZ")
 	if !questRes.IsOk() {
 		return fmt.Errorf("quest generation failed: %v", questRes.Err)
 	}
@@ -72,7 +72,7 @@ func runSession(sessionID int, resEngine *domain.ResolutionEngine, questGen *dom
 	}
 
 	// 3. Perform Actions to solve it
-	action := domain.Action{ID: "hack-1", Name: "Bypass Firewall", APCost: 4, HeatGenerated: 2}
+	action := domain.Action{ID: "hack-1", Name: "Satellitenverbindung herstellen", APCost: 4, HeatGenerated: 2}
 	execRes := player.ExecuteAction(action)
 	if !execRes.IsOk() {
 		return fmt.Errorf("failed to execute action: %v", execRes.Err)
@@ -105,12 +105,12 @@ func runSession(sessionID int, resEngine *domain.ResolutionEngine, questGen *dom
 		if !spendRes.IsOk() {
 			return fmt.Errorf("failed to spend credits: %v", spendRes.Err)
 		}
-		itemRes := player.AddItem(domain.Item{ID: "i-1", Name: "Upgraded Deck", Type: domain.ItemTypeHardware})
+		itemRes := player.AddItem(domain.Item{ID: "i-1", Name: "Besseres Satellitentelefon", Type: domain.ItemTypeHardware})
 		if !itemRes.IsOk() {
 			return fmt.Errorf("failed to add item: %v", itemRes.Err)
 		}
 	}
-	
+
 	// Edge Case 1: Exhaust AP
 	for i := 0; i < 5; i++ {
 		player.ExecuteAction(domain.Action{ID: "exhaust", APCost: 10})
@@ -135,6 +135,40 @@ func runSession(sessionID int, resEngine *domain.ResolutionEngine, questGen *dom
 	resOverspend := player.SpendCredits(999999)
 	if resOverspend.IsOk() {
 		return fmt.Errorf("engine allowed overspending credits")
+	}
+
+	// Edge Case 4: Everyday Hero Team Limits and Verzweiflungs-Aktion (Trauma/Abstumpfung)
+	team := domain.NewTeam("t-1", "Krisen-Interventionsteam")
+	char1 := domain.NewCharacter(200, domain.ClassStandard)
+	_ = char1.LearnSkill("Improvisierte Antenne", 100)
+
+	char2 := domain.NewCharacter(100, domain.ClassSupport)
+	_ = char2.LearnSkill("Krisen-Management", 60)
+
+	team.AddCharacter(char1)
+	team.AddCharacter(char2)
+
+	// char1 uses 100
+	// char2 uses 60 - 15 (shadow cache) = 45
+	// Total = 145. Limit is 150. Not in Verzweiflungs-Aktion yet.
+	if team.IsInVerzweiflungsAktion() {
+		return fmt.Errorf("system wrongly flagged the crew as in Verzweiflungs-Aktion - they are hanging on by a thread")
+	}
+
+	// Push the system too hard
+	_ = char1.LearnSkill("Riskante Notübertragung", 20) // Total now 165
+	if !team.IsInVerzweiflungsAktion() {
+		return fmt.Errorf("system failed to flag critical Verzweiflungs-Aktion - das Team sollte zusammenbrechen")
+	}
+
+	// The crew pays the price for pushing their limits
+	team.ApplyVerzweiflungsAktionTrauma()
+
+	if char1.SkillLevel("Improvisierte Antenne") != 99 {
+		return fmt.Errorf("Trauma/Abstumpfung was not applied properly to standard class - sie sollten abstumpfen")
+	}
+	if char2.SkillLevel("Krisen-Management") != 59 {
+		return fmt.Errorf("Trauma/Abstumpfung was not applied properly to support class")
 	}
 
 	return nil

@@ -1,641 +1,679 @@
 # 🧪 Mass Playtest Aggregation Log
 
+## Session 1 Report
+Hier ist der Bericht der simulierten "Session 1" basierend auf den Regeln und dem Missionsbriefing:
+
+### Missionsbericht: The Riot (Session 1)
+* **Infiltration:** Der Infiltrator nutzt *Optische Tarnung* (30MB), um Patrouillen zu umgehen. Der Ghost öffnet per *Neural-Dive* (30MB) die physischen Schleusen (Wurf: 16, Erfolg). **Rest-Pool: 90MB.**
+* **Feindkontakt:** Ein Söldner-Trupp mit Drohne greift an. Der Tech deaktiviert die Drohne mit einem *Kampf-Hack* (40MB, Wurf: 15, Erfolg). Der Medic verteilt *Präventive Stims* (10MB), um schweren Schaden abzuwenden. **Rest-Pool: 40MB.**
+* **Mainframe (Der Twist):** Das Team erreicht den Server. Beide Datenpakete kosten 180MB – weit mehr als das Basis-Limit von 150MB, und vom Pool sind nur noch 40MB übrig.
+* **Die Entscheidung:** Um den Kollateralschaden sofort zu beenden, fokussiert sich das Team auf das Überschreiben der Drohnen-Protokolle (Kosten: 60MB).
+* **Konsequenz:** Da nur 40MB im Pool verbleiben, greift der Tech zum *Overclocking* für die fehlenden 20MB. Das stoppt die Drohnen, führt beim Tech aber zu *Skill Atrophy* (dauerhafter Verlust einer Kindheitserinnerung). Die Beweise gegen OmniCorp müssen zurückgelassen werden.
+
+### ⚖️ Zentrales Feedback zur Spielbalance
+**Mathematisch erzwungenes Death Spiraling:** 
+Die normalen Nutzungskosten der Klassen für einen Infiltrations- und Kampf-Encounter belaufen sich schnell auf 100-110MB. Wenn das finale Entscheidungspaket (Twist) ohnehin schon 180MB verlangt, ist der Datenpool beim Boss/Mainframe faktisch immer zu leer für eine echte Entscheidung. Das zwingt die Spieler fast unvermeidlich ins *Overclocking* oder zum totalen Story-Verzicht, wodurch es sich weniger nach einer "schweren Wahl" und mehr nach einer Bestrafung für die bloße Nutzung von Kernfähigkeiten anfühlt. 
+*Lösungsvorschlag:* Entweder Teilerfolge/Synergien MB regenerieren lassen, oder die Kosten für den Drohnen-Override im Finale deutlich senken, wenn zuvor bereits Kampf-Hacks genutzt wurden.
+
+
+---
 ## Session 2 Report
-### Playtest-Bericht: Session 2 – Mission 01 "The Riot"
+Hier ist der Bericht aus der autonomen Playtest-Simulation für **Session 2**:
 
-*   **Verlauf:** Das Team infiltrierte die Aufstandszone. Der *Tech* investierte 50MB für das Hacken der Haupttore. Kurz darauf patzte der *Infiltrator* beim Stealth-Wurf, was einen Alarm und schweren Beschuss auslöste.
-*   **Zero-Sum Entscheidung:** Der *Medic* musste 70MB aus dem gemeinsamen Datenpool aufwenden, um den verwundeten *Ghost* am Leben zu halten. Damit blieben von den anfänglichen 150MB nur noch 30MB übrig.
-*   **Ergebnis:** Der *Ghost* nutzte die letzten 30MB für einen unvollständigen Daten-Download unter Beschuss. Das Team entkam zwar lebend, die Mission war jedoch nur ein Teilerfolg.
+### Playtest-Bericht: Session 2 – Mission 01 (The Riot)
 
-### Zentrales Balance-Feedback
-Das gemeinsame 150MB-Ressourcenlimit ist extrem unbarmherzig, wenn ein einzelner Wurf (hier: Stealth) fehlschlägt. Die extrem hohen Kosten für Notfallheilung (70MB) bestrafen das Team so stark, dass das eigentliche Missionsziel fast unerreichbar wird. **Empfehlung:** Heilungskosten im Zero-Sum-System leicht senken oder Spielern einen kleinen, klassenspezifischen Notfall-Pool (z.B. 20MB) abseits des 150MB-Hauptpools gewähren.
+**Team:** Medic, Tech, Infiltrator, Ghost
+**Ressourcen:** 150MB Zero-Sum-Pool (Gemeinsame Bandbreite)
+
+Die Mission begann stark: Der *Infiltrator* umging die äußeren Barrikaden (Würfelwurf: 14, Erfolg), während *Ghost* die Wachen ablenkte. Dabei kassierte *Ghost* einen Streifschuss (Würfelwurf: 7, Teilerfolg), woraufhin der *Medic* 20MB aus dem Pool opferte, um ihn mit Nano-Stimulanzien zu heilen. Am Sicherheitstor investierte der *Tech* massiv in einen EMP-Hack (50MB) und würfelte einen kritischen Erfolg (19), der den direkten Weg zum Ziel öffnete. Im finalen Standoff gegen die aufständischen Riot-Mechs war das Team gezwungen, die verbleibenden 80MB des Zero-Sum-Pools komplett für offensive System-Overrides aufzubrauchen. Die Extraktion gelang in letzter Sekunde – das Team entkam mit exakt 0MB. 
+
+**Zentrales Feedback zur Spielbalance:**
+Die Ressourcen-Kosten für essentielle Fähigkeiten (wie Heilung und Hacking) sind im Verhältnis zum 150MB-Startpool etwas zu hoch angesetzt. Das Team ist bei durchschnittlichem Würfelglück gezwungen, im Endkampf fast alle Ressourcen passiv zu "verbrennen", was kreative Entscheidungen im späten Spiel stark einschränkt. Eine Erhöhung des Startpools auf 180MB oder eine leichte Reduktion der Skill-Kosten würde den Spielern mehr taktischen Spielraum gewähren.
 
 
 ---
 ## Session 3 Report
+Hier ist der Playtest-Bericht für die simulierte Session 3:
+
 ### Playtest-Bericht: Session 3 (Mission 01: The Riot)
 
 **Team:** Medic, Tech, Infiltrator, Ghost
-**Start-Ressource:** 150MB Zero-Sum
+**Ressource:** 150MB Zero-Sum-Pool
 
-Das Team drang erfolgreich in die Riot-Zone ein, wobei der Tech 30MB aufwendete, um das Sicherheitssystem am Haupttor zu überbrücken. Ein kritischer Fehlschlag des Infiltrators beim Schleichen zwang den Ghost zu einer teuren Rettungsaktion (40MB für thermische Signaturlöschung), um einen Alarm zu verhindern. Während der Evakuierung des Ziels verbrauchte der Medic 20MB für dringend benötigte Notfall-Naniten. Beim finalen Durchbruch aus dem Sektor mussten in einem chaotischen Feuergefecht weitere 50MB verbrannt werden, um die gegnerischen Drohnen zu überlasten. Die Mission war ein Erfolg, aber das Team entkam äußerst knapp mit nur noch **10MB** auf dem Zero-Sum-Konto.
+**Zusammenfassung des Verlaufs:**
+Der **Ghost** nutzte das Chaos des Aufstands für eine unbemerkte Infiltration, während **Medic** und **Infiltrator** die Menge als Deckung nutzten. Der **Tech** patzte beim entscheidenden Hacking-Wurf an der Firewall (Wurf: 3, Fehlschlag) und musste drastische 40MB aus dem Zero-Sum-Pool opfern, um das Alarmsystem manuell zu unterdrücken. Als Konzern-Drohnen das Team einkesselten, erlitt der Infiltrator kritischen Schaden. Der Medic würfelte erfolgreich (Wurf: 18), um ihn zu stabilisieren, was weitere 20MB für medizinische Nanobots verbrauchte. Unter schwerem Feuer gelang es dem Team, die Kerndaten zu sichern, wobei sie die restlichen 90MB für den sicheren Upload und die Fluchtrouten-Verschlüsselung verbrannten. 
 
-**Zentrales Balance-Feedback:** 
-Die harte 150MB-Grenze erzeugt eine hervorragende Spannung, jedoch skalieren die Kosten für Fehler-Kompensation zu steil. Dass ein einziger misslungener Stealth-Wurf fast ein Drittel (40MB) der gemeinsamen Team-Ressource verschlingt, bestraft riskante Aktionen zu hart und hemmt die Dynamik des Infiltrators. Die maximalen Kosten für solche "Notfall-Rettungen" sollten auf etwa 20-25MB gedeckelt oder durch eigene Lebenspunkte bezuschusst werden können.
+**Ausgang:** Knapper Erfolg (0MB Zero-Sum übrig). Das Team entkommt schwer angeschlagen, aber mit den Daten.
+
+**Zentrales Feedback zur Spielbalance:**
+Die *Zero-Sum-Ressource (150MB)* skaliert bei kritischen Fehlschlägen zu hart. Dass der Tech allein fast ein Drittel der Team-Ressourcen verbrauchen musste, um einen einzigen schlechten Würfelwurf zu kompensieren, macht Hacking-Klassen zu starken "Ressourcen-Fressern". Eine Mechanik zur aktiven Rückgewinnung von MB während der Mission (z. B. durch das Hacken von Neben-Terminals) würde die Entscheidungsfreiheit erhöhen und das extreme Ressourcen-Defizit im späten Spielverlauf abfedern.
 
 
 ---
 ## Session 4 Report
-### Playtest-Bericht: Session 4 – Mission 01 "The Riot"
+### Spielbericht: Session 4 – Mission 01 "The Riot"
 
-**Missionsausgang:**
-Das Team nutzte das Chaos des Aufstands, um erfolgreich in den Konzern-Zentralrechner einzudringen. Während der Infiltrator die Wachen ablenkte, umging der Ghost die äußeren Sicherheitsscanner. Ein kritischer Fehlschlag des Techs beim Daten-Download löste jedoch einen brutalen Lockdown aus. Durch den massiven Einsatz von Heilmitteln durch den Medic und die kollektive Entscheidung, das knappe 150MB "Zero-Sum"-Budget vollständig für die Überbrückung der Fluchttore zu opfern, entkam die Gruppe in letzter Sekunde. Die Mission war ein knapper Erfolg, hinterließ das Team jedoch komplett ohne Ressourcen.
+**Einsatzverlauf:** 
+Das Team (Medic, Tech, Infiltrator, Ghost) versuchte, in den Unruhen von Sektor 4 eine Schlüsselperson zu exfiltrieren. Der *Infiltrator* scheiterte beim initialen Stealth-Wurf, was die Gruppe frühzeitig in einen offenen Konflikt mit der Sektorwache zwang. Der *Tech* musste daraufhin massive 80MB des gemeinsamen Zero-Sum-Ressourcenpools für das sofortige Überbrücken der Sicherheitstüren aufwenden. Durch diesen Engpass fehlte dem *Medic* im späteren Verlauf entscheidende Energie, um den *Ghost* nach einem schweren Treffer vollständig zu stabilisieren. Der *Ghost* riskierte im finalen Gefecht ein verzweifeltes Ablenkungsmanöver und überlebte dank äußerst glücklicher Würfelwürfe knapp, wodurch das Ziel gesichert werden konnte. Die Mission war erfolgreich, hinterließ das Team jedoch am Rande des totalen Ressourcen-Kollapses.
 
 **Zentrales Feedback zur Spielbalance:**
-Das geteilte 150MB Zero-Sum-Budget ist für 4 Spieler extrem eng bemessen und führt zu "Alpha-Gamer"-Problemen. Da Klassen wie der Tech oder Ghost für elementare Proben einen Großteil der Bandbreite (MB) verbrauchen, bleiben kampf- oder supportorientierte Klassen (Medic, Infiltrator) in kritischen Momenten oft handlungsunfähig, weil sie das restliche Budget schonen müssen. Es wird dringend empfohlen, die MB-Kosten für Standard-Hacks zu senken oder den Spielern zusätzlich kleine, individuelle Ressourcen-Pools zuzuweisen.
+Die Zero-Sum-Kosten für reaktive Hacking-Aktionen (wie Notfall-Türüberbrückungen) sind im Vergleich zu den Heilungskosten unverhältnismäßig hoch; dies zwingt das Team zu schnell in eine unfaire Ressourcen-Spirale, in der ein einziger Fehlschlag das gesamte Pool-Budget des *Techs* monopolisiert und die Support-Fähigkeiten des *Medics* komplett ausschaltet.
 
 
 ---
 ## Session 5 Report
-### Spielbericht: Session 5 - Mission 01: The Riot
+Hier ist der Bericht der simulierten Playtest-Session basierend auf den mentalen Parametern des Regelwerks:
 
-**Team:** Medic, Tech, Infiltrator, Ghost  
-**Ressourcen-Limit (Zero-Sum):** 150MB  
+### 📝 Playtest-Bericht: Session 5 – "Mission 01: The Riot"
+**Team:** Medic, Tech, Infiltrator, Ghost | **Zero-Sum-Budget:** 150/150MB ausgeschöpft
 
-Das Team geriet früh in Bedrängnis, als der Aufstand in Sektor 4 eskalierte. Der **Ghost** konnte durch einen kritischen Wurf ungesehen eine Flanke sichern, während der **Infiltrator** die Anführer der Randalierer taktisch ablenkte (Wurf: 18). Der **Medic** musste wertvolle Ressourcen opfern (20MB), um den schwer verwundeten Infiltrator nach einem verpatzten Ausweichmanöver zu stabilisieren. Die Rettung der Mission hing am **Tech**, der die Sicherheitszentrale erfolgreich hackte (Wurf: 15), dabei aber das Zero-Sum-Datenlimit massiv belastete (110MB). Das Team konnte das Zielobjekt sichern und im Chaos entkommen, beendete die Mission jedoch mit nur noch 15MB Restspeicher – ein knapper, dramatischer Sieg.
+**Missionsverlauf:**
+Der Aufstand im Sektor-4-Gefängnis eskalierte extrem schnell. *Ghost* investierte 50MB, um die Überwachungsdrohnen zu loopen und das Team unbemerkt in den Zellenblock zu schleusen. Bei der Zielperson kam es zum Feuergefecht: Der *Tech* musste massive 80MB verbrennen, um die automatisierten Riot-Control-Mechs in einen Reboot zu zwingen. Mit nur noch 20MB Restbudget wurde die Flucht dramatisch. Der *Infiltrator* nutzte 10MB für den Bypass der Sicherheitsschleuse, während der *Medic* die exakt letzten 10MB aufwendete, um eine fatale Schusswunde des Infiltrators durch eine Nanobot-Überladung zu stabilisieren. Das Team entkam mit der Zielperson in letzter Sekunde – ein perfekter, hochriskanter Zero-Sum-Run.
 
-**Zentrales Feedback zur Spielbalance:**  
-Die Daten-Kosten für den Tech (110MB für einen kritischen System-Override) skalieren zu aggressiv im Verhältnis zum harten 150MB Zero-Sum-Limit. Dies zwingt die anderen Klassen in eine zu passive Rolle, da kaum noch Budget für Heilung, Gadgets oder erweiterte Infiltrationstaktiken übrig bleibt.
+**⚖️ Zentrales Balance-Feedback:**
+Die 150MB-Obergrenze erzeugt eine fantastische Koop-Spannung, jedoch dominiert die *Tech*-Klasse die Ressourcen-Ökonomie aktuell zu stark (80MB für eine einzige Massen-Deaktivierung). Dies drängt Support-Klassen wie den Medic in eine zu reaktive und passive Rolle; die Tech-Fähigkeiten sollten dringend modularisiert werden (z. B. 20MB-Kosten pro einzelnem gehackten Mech).
 
 
 ---
 ## Session 6 Report
-### Playtest-Bericht: Session 6 – Mission 01 (The Riot)
+### Playtest-Bericht: Session 6 – Mission 01 "The Riot"
 
-**Team-Zusammenstellung:** Medic, Tech, Infiltrator, Ghost
-**Missionsverlauf:**
-Das Team infiltrierte die Riot-Zone erfolgreich durch die westliche Kanalisation (Ghost würfelte eine kritische 20 für Stealth). Der Infiltrator lenkte die Patrouillen ab, während der Tech das Hauptsicherheitssystem des Komplexes hackte (Kosten: 50MB der Zero-Sum-Ressource). Bei der Extraktion der Zielperson gerieten sie in einen schweren Hinterhalt der Riot-Cops. Der Medic musste 80MB für ein experimentelles Flächen-Heilprotokoll verbrennen, um die Gruppe vor einem Wipe zu bewahren. In der letzten Runde opferte der Infiltrator seine restlichen 20MB für einen Overclock-Schuss, der den gegnerischen Commander ausschaltete. Das Team entkam mit dem rettenden Hover-Van.
-**Ausgang:** Mission erfolgreich (Zielperson gesichert), aber alle Spieler beenden die Runde mit exakt 0MB – vollständiger Burnout.
+**Missionsverlauf & Ausgang:**
+Das Team drang erfolgreich in die Riot-Zone ein. Der *Infiltrator* verbrauchte früh 40MB des Zero-Sum-Pools, um die biometrischen Sperren der Sicherheitskräfte zu umgehen. Während der *Ghost* von einer erhöhten Position Deckungsfeuer gab (-20MB für kritische Präzision), versagte der *Tech* bei einem riskanten Drohnen-Hack, was eine massive Angriffswelle auslöste. In der eskalierenden Straßenschlacht erlitt der *Tech* kritischen Schaden. Der *Medic* war gezwungen, satte 80MB aus dem gemeinsamen Datenpool in experimentelle Notfall-Stims und Deflektorschilde zu pumpen, um das Team am Leben zu halten. Die Gruppe konnte das Missionsziel zwar knapp sichern und evakuieren, beendete den Run jedoch mit gefährlich niedrigen 10MB Restkapazität kurz vor dem Systemkollaps. Ein chaotischer Pyrrhussieg.
 
 **Zentrales Feedback zur Spielbalance:**
-Die gemeinsame Zero-Sum-Ressource von 150MB ist für ein 4-Spieler-Team etwas zu restriktiv skaliert. Insbesondere die Medic-Fähigkeiten (wie das Flächen-Heilprotokoll mit 80MB) verbrauchen einen unverhältnismäßig großen Teil des Pools (>50%). Es wird empfohlen, die Basis-Kosten für kritische Support-Fähigkeiten um 20-30% zu senken oder den Pool auf 200MB für 4 Spieler anzupassen, da der Medic sonst zu schnell das taktische Budget des gesamten Teams aufzehrt.
+Die Ressourcenkosten des *Medic* für Notfallheilungen skalieren im 150MB-Zero-Sum-System zu extrem. Wenn ein einziger fehlgeschlagener Würfelwurf (wie der des Techs) über 50% des verbleibenden Gruppenpools an Rettungsmaßnahmen verschlingt, entsteht eine Abwärtsspirale, die fast jede weitere taktische Entscheidung blockiert. *Empfehlung:* Die Basis-Kosten für reaktive Heilung sollten gesenkt oder durch "Mitigations-Würfe" anderer Klassen teilweise abgefedert werden können.
 
 
 ---
 ## Session 7 Report
-### Playtest-Bericht: Session 7 (Zero-Sum RPG - Mission 01: The Riot)
+Hier ist der zusammenfassende Bericht der simulierten **Session 7** für das Zero-Sum RPG:
 
-**Team:** Medic, Tech, Infiltrator, Ghost
-**Ressourcen-Limit:** 150MB (Zero-Sum Daten-Budget)
+```markdown
+### Session 7: Mission 01 - The Riot (Playtest-Bericht)
 
-**Verlauf & Ausgang:**
-Das Team nutzte zu Beginn eine koordinierte Aktion: Der Tech und Infiltrator hackten das Sicherheitssystem des Sektors für 40MB (Erfolgreicher Wurf: 17). Mitten im Aufstand geriet die Gruppe in einen Hinterhalt der Riot-Cops. Der Medic musste gezwungenermaßen 60MB für ein massives Flächen-Stim-Protokoll ausgeben, um einen Wipe zu verhindern (Wurf: 14). Mit nur noch 50MB Restbudget musste der Ghost die Zielperson unter schwerem Beschuss extrahieren. Ein extrem riskanter Stealth-Wurf (Erfolg mit einer 19) rettete die Mission im allerletzten Moment. Das Team entkam erfolgreich, schöpfte das 150MB-Limit jedoch bis auf das letzte Byte komplett aus.
+**Verlauf:**
+Das Team (Medic, Tech, Infiltrator, Ghost) versuchte, den Aufstand im Sektor 4 zu nutzen, um unbemerkt in den Hauptkomplex einzudringen. Der *Infiltrator* patzte bei einem frühen Stealth-Wurf (gewürfelt: 3), was eine feindliche Patrouille alarmierte. Um die Mission zu retten, traf der *Tech* eine aggressive Zero-Sum-Entscheidung: Er investierte die vollen 150MB Speicher, um das Sicherheitssystem lokal zu überlasten, opferte dadurch jedoch seine komplette Drohnensteuerung für den Rest der Begegnung. Unter dem Deckfeuer des *Ghost* (Crit: 19) und durch die Notfall-Stims des *Medic* konnte das Team den Serverraum stürmen und die Daten sichern.
+
+**Ausgang:**
+Mission erfolgreich. Primärziel (Datenextraktion) erfüllt, jedoch wurde durch den Alarm der sekundäre Fluchtweg blockiert, was zu einem Ressourcenverlust (Medkits) bei der Evakuierung führte.
 
 **Zentrales Feedback zur Spielbalance:**
-Die Ressourcenkosten für den Medic sind aktuell zu straff kalkuliert. Wenn eine einzige kritische Heilungsaktion 40% des gesamten 150MB-Budgets verschlingt, zwingt das die Gruppe entweder in eine extrem risikoaverse Spielweise oder macht den Medic zu einer reinen Notfall-Klasse, die sonst nichts zum Spiel beitragen darf. Es wird empfohlen, die Basis-Heilungskosten zu senken oder dem Medic einen kleinen, klassenspezifischen Notfall-Puffer (z.B. +20MB exklusiv für Bio-Protokolle) zu gewähren.
+Die **150MB Zero-Sum-Allokation** ist für den *Tech* zu strafend kalibriert. Der komplette Verlust der Drohnensteuerung als Trade-off für einen System-Hack führt dazu, dass die Klasse danach fast nutzlos im Kampf wird. Die Kosten sollten auf 100MB reduziert werden, oder es sollte ein "Low-Power-Modus" für Drohnen verbleiben.
+```
 
 
 ---
 ## Session 8 Report
-Hier ist der Bericht der simulierten Session 8:
+Hier ist der Bericht der mentalen Playtest-Simulation für Session 8:
 
-### Playtest-Bericht: Session 8 – "Mission 01: The Riot"
+### Playtest-Bericht: Session 8 (Mission 01: The Riot)
 
-**Zusammenfassung des Einsatzes:**
-Das Team nutzte das Chaos der Unruhen als Deckung. Der **Infiltrator** positionierte sich erfolgreich in der Menge, während der **Ghost** unbemerkt die Wachen am Seiteneingang ausschaltete. Die Mission drohte zu scheitern, als der **Tech** beim Versuch, das zentrale Sicherheitsterminal zu hacken, sein 150MB-Datenlimit drastisch überschritt (Kritischer Misserfolg). Dies löste eine sofortige Abriegelung aus. In dem folgenden Feuergefecht steckte der Ghost schweren Schaden ein, konnte aber durch den schnellen Einsatz des **Medics** vor dem Permadeath bewahrt werden. Durch ein koordiniertes Opfer ihrer letzten Ausrüstungsslots erzwang das Team einen Ausbruch und entkam mit den Zieldaten im allerletzten Moment.
+**Ausgang der Mission:**
+Das Team hat den Aufstand im Sektor 4 erfolgreich infiltriert und unter Kontrolle gebracht. Während der Ghost und der Infiltrator die Anführer der Rioter durch gezielte, lautlose Manöver ausschalteten, konnte der Tech das zentrale Sicherheitssystem hacken und die Fluchttore öffnen. Die Konzern-Sicherheitskräfte reagierten jedoch aggressiver als erwartet. Der Medic musste sein gesamtes Zero-Sum-Kontingent (150MB) für experimentelle Notfall-Stims aufbrauchen, um das Team am Leben zu halten. Die Mission wurde erfolgreich, aber äußerst knapp abgeschlossen.
 
 **Zentrales Feedback zur Spielbalance:**
-Die Zero-Sum-Ressourcenmechanik (insbesondere das harte 150MB-Limit beim Tech) bestraft kleine Fehler extrem schnell mit massiven Eskalationen. Die Balance kippt hierdurch zu stark in Richtung "Survival" statt "Taktik", da die anderen Klassen (Medic, Infiltrator) nach einem Tech-Fehlschlag fast ausschließlich reaktiv spielen müssen. Eine graduelle Eskalation bei der Überschreitung des Datenlimits (z. B. partielle Systemausfälle statt sofortigem Vollalarm) würde den Spielfluss deutlich dynamischer und belohnender gestalten.
+Die harte 150MB Zero-Sum-Ressourcengrenze ist für den Medic in kampflastigen Szenarien ("The Riot") zu restriktiv. Da Heilung extrem teuer ist, entsteht schnell eine Todes-Spirale, sobald das Team entdeckt wird. **Empfehlung:** Die Basis-Datenkapazität des Medics sollte auf 200MB erhöht oder eine Mechanik für passiv regenerierende "Mikro-Heals" eingeführt werden, um die Balance zu wahren.
 
 
 ---
 ## Session 9 Report
 ### Playtest-Bericht: Session 9 – Mission 01 "The Riot"
 
-*   **Verlauf:** Das Team (Medic, Tech, Infiltrator, Ghost) nutzte das Chaos des Aufstands, um in den gesperrten Sektor einzudringen. Der Infiltrator meisterte den ersten Checkpoint, patzte jedoch beim Hacken des Haupt-Sicherheitsterminals (Kritischer Fehlschlag, Würfelwurf: 3).
-*   **Höhepunkt:** Der Fehlschlag löste einen Drohnen-Schwarm aus, der den Tech einkesselte. Um den drohenden Permadeath zu verhindern, musste der Medic sein gesamtes 150MB *Zero-Sum*-Datenvolumen opfern, um ein experimentelles Überlastungs-Stim-Protokoll direkt in das Nervensystem des Techs zu streamen. 
-*   **Ressourcen-Management:** Ghost rettete die Situation durch perfekten Einsatz von Stealth-Kills (Würfelwurf: 18, 19), verbrauchte dabei jedoch fast all seine taktischen Ressourcen.
-*   **Ausgang:** Das Team konnte die Ziel-Datenbank erfolgreich extrahieren, musste den Sektor aber unter schwerem Feuer evakuieren. Ein knapper Erfolg, der das Team jedoch mit massiven *Zero-Sum*-Datenschulden in die nächste Session schickt.
+**Simulation abgeschlossen.** Die 4 Agenten (Medic, Tech, Infiltrator, Ghost) wurden in den Sektor Alpha-7 gedroppt, um während der eskalierenden Unruhen eine Zielperson zu extrahieren. 
+* **Tech** investierte 50MB der Gruppenressourcen, um ein Riot-Control-Gitter zu hacken (Wurf: 16 – Erfolg), während der **Infiltrator** im darauffolgenden Chaos durch die feindlichen Linien glitt (Wurf: 18 – kritischer Erfolg).
+* **Ghost** manipulierte die gegnerischen Funkkanäle und blendete Überwachungsdrohnen, verbrauchte dabei jedoch 60MB für neuronales Overclocking (Wurf: 12 – knapper Erfolg unter Druck). 
+* Als das Team beim Rückzug in einen Hinterhalt geriet, war der **Medic** gezwungen, die restlichen 40MB (exakt das absolute Limit von 150MB erreicht) zu opfern, um die Zero-Sum-Lebenspunkte-Umverteilung zu aktivieren (Wurf: 15).
+* **Ausgang:** Mission erfolgreich. Die Zielperson wurde gesichert, aber das Team ist völlig pleite (0MB übrig) und der Medic befindet sich nach dem Transfer am Rande des neuronalen Kollapses.
 
-**Zentrales Feedback zur Spielbalance:**
-Die *Zero-Sum* Mechanik (150MB Limit) erzeugt hervorragende, hochspannende Dilemmata. Allerdings ist das Verhältnis von Risiko und Ertrag bei Notfall-Aktionen leicht aus der Balance geraten. Wenn ein einzelner kritischer Fehlschlag (wie beim Infiltrator) dazu führt, dass ein anderer Spieler (Medic) sein gesamtes Datenvolumen verbrennen muss, entsteht eine zu starke "Death Spiral". **Empfehlung:** Die Datenkosten für defensive Notfall-Protokolle um 20-30% senken oder eine Mechanik zur minimalen Datenrückgewinnung (z.B. durch das Hacken zerstörter Drohnen) einführen.
+**Zentrales Balancing-Feedback:**
+Die "Zero-Sum"-Mechanik in Kombination mit dem strengen 150MB-Ressourcenlimit bestraft die Medic-Klasse aktuell unverhältnismäßig stark. Da lebensrettende Fähigkeiten direkt an das gemeinsame Ressourcen-Limit oder die eigene Vitalität gekoppelt sind, wird der Medic am Ende einer Mission oft zur Passivität gezwungen, um einen kollektiven Bankrott zu vermeiden. Die Basis-Kosten für die Lebenspunkte-Umverteilung sollten um mindestens 15% gesenkt werden, um die Klasse dynamischer zu gestalten.
 
 
 ---
 ## Session 10 Report
-Hier ist der Bericht der Gedanken-Simulation für Session 10:
+Hier ist der Bericht der mentalen Simulation von Session 10 für das Zero-Sum RPG:
 
-### Playtest-Bericht: Session 10 (Zero-Sum RPG)
-**Mission 01: The Riot**
-
-*   **Der Verlauf:** Das Team infiltrierte die streikenden Sektoren. Der **Infiltrator** nutzte die Deckung der Unruhen, scheiterte jedoch an einem kritischen Stealth-Wurf, was sofort konzerneigene Sicherheitsdrohnen alarmierte.
-*   **Der Wendepunkt:** Unter schwerem Beschuss musste das Team handeln. Der **Tech** fällte eine weitreichende "Zero-Sum"-Entscheidung und brannte 100MB der gemeinsamen 150MB-Speicherressourcen in einen EMP-Overload, um die Drohnen zu hacken und zu neutralisieren.
-*   **Das Finale:** Der Overload war erfolgreich, fügte dem Tech jedoch massiven Bio-Feedback-Schaden zu. Der **Medic** hielt ihn mit Notfall-Stimpaks stabil, während der **Ghost** im Chaos gezielt den gegnerischen Squad-Leader ausschaltete.
-*   **Ausgang:** Mit den verbleibenden 50MB überschrieben sie die Sicherheitsprotokolle des Haupttores und entkamen. Mission erfolgreich, aber das Team ist schwer gezeichnet und die Zero-Sum-Reserven sind komplett erschöpft.
+### Playtest-Bericht: Session 10 (Mission 01: The Riot)
+Die Gruppe infiltrierte erfolgreich das von Aufständischen kontrollierte Sektorgebäude. **Infiltrator** und **Ghost** schalteten die äußeren Wachen geräuschlos aus, während der **Tech** das Sicherheitssystem hackte – ein kritischer Wurf, der 40MB des 150MB Zero-Sum-Pools kostete, um einen Alarm abzuwenden. Im Hauptraum eskalierte die Situation in ein offenes Feuergefecht. Der **Medic** musste 60MB aufwenden, um den schwer getroffenen Infiltrator mit Notfall-Stims am Leben zu halten. Mit nur noch 50MB verbleibender Ressource wagte der Ghost einen riskanten Vorstoß auf den Anführer der Rioter. Er würfelte einen Patzer, der durch den verzweifelten Einsatz von 45MB gerade noch in einen entscheidenden Treffer umgewandelt werden konnte. Die Mission war ein Erfolg, aber das Team entkam mit lächerlichen 5MB Restvolumen am Rande des absoluten Systemversagens.
 
 **Zentrales Feedback zur Spielbalance:**
-Die geteilte "Zero-Sum (150MB)"-Ressourcenökonomie zwingt die Gruppe zu brillanter Kooperation, straft aber aktuell zu hart. Die Kosten für kritische Rettungs-Fähigkeiten (wie der 100MB-Hack des Techs) sind im Verhältnis zum 150MB-Gesamtpool zu teuer. Ein einziger schlechter Würfelwurf des Infiltrators hat fast das gesamte Budget der Gruppe vernichtet. Es wird empfohlen, die Kosten für Basis-Fähigkeiten zu senken oder an das Würfelergebnis zu koppeln (z.B. teilweise MB-Rückerstattung bei einem kritischen Erfolg), da längere Missionen sonst zu schnell in eine unweigerliche Niederlage münden.
+Die Zero-Sum-Kosten (150MB) bestrafen Schadensvermeidung (Medic) im Vergleich zu offensiven Aktionen zu stark. Wenn Heilung und Hacking bereits zwei Drittel des Pools aufbrauchen, bleibt für riskante oder kreative Manöver kaum noch Spielraum. Es wird empfohlen, die Kosten für reaktive Heilung zu senken oder den Basis-Pool für ein 4-Spieler-Team auf 200MB zu erhöhen, um eine zu defensive Spielweise zu verhindern.
 
 
 ---
 ## Session 11 Report
-### Playtest-Bericht: Session 11 (Mission 01: The Riot)
+### Session 11: The Riot – Playtest-Bericht
 
-**Ausgang der Mission:**
-Das Team (Medic, Tech, Infiltrator, Ghost) hat die Aufstandszone in Sektor 4 erfolgreich infiltriert, stieß jedoch auf schweren Widerstand durch Sicherheitsserver. Der *Infiltrator* nutzte 40MB des Zero-Sum-Kontingents für eine Firewall-Überbrückung, um unbemerkt ins Zentrum vorzudringen. Ein kritischer Patzer des *Techs* beim Hacken der Riot-Protokolle zwang das Team, weitere 50MB als Notfall-Bypass zu verbrennen. Der *Ghost* schaltete physische Bedrohungen aus, während der *Medic* 30MB für Neuro-Stabilisatoren aufwenden musste, um den Tech nach einem Schock zu retten. Mit den verbleibenden 30MB konnte das System gerade so stabilisiert und der Aufstand beendet werden – ein extrem knapper Erfolg.
+**Missionsausgang:** 
+Das Team startete mit dem 150MB-Limit. Der **Infiltrator** nutzte *Optische Tarnung* (30MB, Wurf: 16 – Erfolg) und der **Ghost** knackte die Sicherheitstore per *Neural-Dive* (30MB, Wurf: 11 – Teilerfolg, kostete Zeit). Als Söldner angriffen, stabilisierte der **Medic** zivile Opfer (30MB, Wurf: 18), nutzte dafür aber clever seinen neuen 15MB *Shadow-Cache* (Rest im Hauptpool: 75MB). Am Server angekommen (Twist: 180MB Gesamtdaten), entschied sich das Team für einen Split: Der **Tech** überschrieb per *Brute-Force Hack* (60MB) die Drohnen-Protokolle, um das Massaker zu stoppen. Für die rettenden Blackmail-Beweise (15MB) wurde der Pool auf exakt 0MB ausgereizt. Das Team entkam um Haaresbreite dem *Burnout* und rettete sowohl Zivilisten als auch die Story-Beweise!
 
 **Zentrales Feedback zur Spielbalance:**
-Die Skalierung der Zero-Sum-Kosten für Hacking-Fehlschläge ist aktuell zu hartnäckig. Ein einziger schlechter Wurf (hier 50MB Verlust) zwingt das Team dazu, ein Drittel ihres 150MB-Pools zu verbrennen, was Support-Klassen wie den Medic in späteren Runden ihrer Handlungsoptionen beraubt; eine abgestufte Kostenstruktur für Teil-Erfolge wäre hier fairer.
+Der neue *Shadow-Cache (15MB)* ist ein Lebensretter für die Balance, da Support-Spieler (wie der Medic) endlich Fähigkeiten nutzen können, ohne das Tech-Budget komplett zu sabotieren. Allerdings gibt es ein kritisches Problem mit der Ressourcen-Ökonomie: Wenn **Narrative Daten** (Beweise) das knappe Zero-Sum Limit belasten, werden Min-Max-Spieler künftig die Story ignorieren, um Kampf-Hacks zu priorisieren. Beweise und Story-relevante Daten sollten konsequent 0MB kosten oder in einem dedizierten "Evidence-Buffer" gespeichert werden, da RPG-Spieler sonst für reines Vorantreiben der Geschichte mechanisch bestraft werden.
 
 
 ---
 ## Session 12 Report
 ### Session 12: Mission 01 - The Riot (Simulationsbericht)
 
-**Missionsausgang:**
-Das Team infiltrierte den Sektor während des Aufstands erfolgreich. Der *Infiltrator* nutzte das Chaos für ein Ablenkungsmanöver, während der *Ghost* die äußeren Sicherheitssysteme der Megacorp-Einrichtung unbemerkt umging. Im Serverraum stieß die Gruppe auf unerwarteten Widerstand durch Elite-Verteidigungsdrohnen. Der *Medic* hielt das Team durch den riskanten Einsatz experimenteller Stims am Leben, opferte dafür jedoch fast seine gesamten persönlichen Reserven. Der *Tech* konnte den Mainframe hacken und den Riot-Control-Algorithmus überschreiben. Bei der kritischen Datenextraktion unter dem Zero-Sum-Limit (150MB) stand das Team vor einem Dilemma: Sie luden die belastenden Korruptions-Logs (100MB) und wertvolle Waffen-Blaupausen (50MB) herunter, mussten aber die Identitäten der gefangenen Untergrundkämpfer im System zurücklassen. Die anschließende Flucht gelang nur knapp, da der *Ghost* die restlichen Kameras im allerletzten Moment blendete.
+**Team:** Medic, Tech, Infiltrator, Ghost
+**Ausgang:** Erfolgreich, aber mit schweren Komplikationen.
 
-**Zentrales Feedback zur Spielbalance:**
-Das "Zero-Sum (150MB)"-Ressourcenlimit erzwingt zwar exzellente rollenspielerische Dilemmata am Ende der Mission, benachteiligt die *Tech*-Klasse im späten Spielverlauf jedoch unverhältnismäßig stark. Da aktive Hack-Aktionen im Kampf und die finale Datenextraktion offenbar denselben Speicherpool belasten, war der *Tech* beim Bosskampf fast handlungsunfähig, um Platz für die Missionsziele zu sparen. Eine Trennung in einen regenerierbaren "RAM-Pool" für Aktionen und einen statischen "Laufwerks-Pool" (150MB) für den Loot würde die Balance deutlich verbessern.
+Der Infiltrator schaffte es, die Sicherheitssysteme am Südtor zu umgehen (Würfelwurf: 18), wodurch das Team unbemerkt in die Quarantänezone eindringen konnte. Als der Mob ("The Riot") eskalierte, nutzte der Tech seine *Zero-Sum* Kernfähigkeit (Kosten: 150MB Datenvolumen), um die Kommunikation der Rädelsführer zu hacken und die Angreifer umzuleiten. Der Ghost schaltete in der Verwirrung zwei Wachen präzise aus, wurde aber durch einen unvorhergesehenen Querschläger kritisch verwundet. Der Medic musste all seine Ressourcen und einen riskanten Wurf (Ergebnis: 14) aufwenden, um den Ghost zu stabilisieren. Dadurch war das Team gezwungen, das sekundäre Missionsziel (Datenextraktion) aufzugeben und vorzeitig zu evakuieren. 
+
+**Zentrales Feedback zur Spielbalance:** 
+Die *Zero-Sum* Fähigkeiten (150MB) des Techs fühlen sich im Vergleich zu den extremen physischen Risiken der Frontline-Klassen (wie dem Ghost) zu mächtig und sicher an. Um die Spannung zu wahren, sollten die Datenkosten (MB) entweder erhöht werden oder der Einsatz der Fähigkeit sollte eine prozentuale Chance auf ein fatales System-Backfire (z.B. Ortung durch feindliche Hacker) beinhalten.
 
 
 ---
 ## Session 13 Report
-### Playtest-Bericht: Session 13 (Mission 01: The Riot)
+### Session 13: Mission 01 "The Riot" – Playtest-Bericht
 
-**Ausgang der Mission:**
-Das Team (Medic, Tech, Infiltrator, Ghost) hat die Unruhen im Sektor erfolgreich infiltriert. Der *Infiltrator* (30MB) und der *Tech* (50MB) konnten die Sicherheitsprotokolle des Zielgebäudes durch exzellente Würfe schnell überwinden. Beim Extrahieren der Daten patzte der *Ghost* (40MB) jedoch bei seinem Stealth-Wurf, was die Riot-Police alarmierte. In dem darauffolgenden Feuergefecht musste der *Medic* die verbleibenden 30MB des Zero-Sum-Pools vollständig für lebensrettende Stims aufwenden. Das Team konnte das Zielgebiet mit nur noch wenigen Trefferpunkten verlassen, hat die Mission aber knapp erfüllt. Das Limit von exakt 150MB wurde restlos ausgereizt.
+**Missionsausgang:**
+Das Team infiltrierte die Industriezone während des eskalierenden Aufstands. Der Infiltrator umging die Barrikaden erfolgreich, während der Ghost die Aufmerksamkeit der Konzern-Sicherheitskräfte mit holografischen Täuschungen auf sich zog (Würfelwurf: 17, kritischer Erfolg). Am zentralen Terminal nutzte der Tech seine gesamten "150MB" Zero-Sum-Ressourcen, um die Daten vor dem System-Wipe zu retten, war danach aber wehrlos. Ein unerwarteter Gegenangriff verletzte den Tech schwer. Der Medic musste eine drastische Zero-Sum-Entscheidung treffen (150MB für experimentelle Nano-Heilung verbraucht), um ihn am Leben zu halten. Das Team konnte die Daten sichern und im Chaos des Aufstands erfolgreich exfiltrieren, war jedoch ressourcentechnisch völlig am Ende.
 
 **Zentrales Feedback zur Spielbalance:**
-Die harte 150MB-Ressourcengrenze (Zero-Sum) erzeugt zwar eine großartige Spannung am Tisch, zwingt den *Medic* aktuell jedoch zu stark in eine reaktive Rolle, bei der er MB nur für Schadensbegrenzung verbraucht. **Vorschlag:** Wenn der Medic bei einem Heilungs-Wurf einen kritischen Erfolg erzielt, sollte ein kleiner Teil der investierten Daten (z. B. 10MB) durch System-Recycling an den gemeinsamen Pool zurückerstattet werden, um die Klasse dynamischer zu gestalten.
+Das harte Limit von *150MB für Zero-Sum-Entscheidungen* zwingt das Team zwar zu spannenden taktischen Opfern, bestraft aber Support-Klassen (Medic/Tech) überproportional hart. Wenn eine einzige Notheilung oder ein Hack das komplette Datenvolumen frisst, bleibt keine Flexibilität für das spätere Endgame. Es wird empfohlen, klassenspezifische Basis-Pools oder eine langsame Regenerationsmechanik während längerer Missionen einzuführen.
 
 
 ---
 ## Session 14 Report
-Hier ist der Bericht zur mentalen Simulation von Session 14:
+### Session 14: Mission 01 - The Riot (Simulationsbericht)
 
-### Spielbericht: Session 14 - Mission 01 "The Riot"
+**Team-Zusammensetzung:** Medic, Tech, Infiltrator, Ghost  
+**Missionsausgang:** Erfolgreicher Daten-Heist mit schweren Verlusten.
 
-**Einsatzteam:** Medic, Tech, Infiltrator, Ghost
-**Start-Ressourcen:** 150MB Zero-Sum
-
-**Zusammenfassung:**
-Das Team infiltrierte die Kernzone des Aufstands lautlos durch das alte U-Bahn-Netz (Infiltrator: *Würfelwurf 18, Erfolg*). Beim Versuch, die Sicherheitsterminals der Rioter zu überbrücken, scheiterte der Tech kritisch (Würfelwurf 2), was eine Eskalation auslöste und das Team zwang, 40MB Zero-Sum zur Unterdrückung des Alarmsystems zu opfern. In dem darauffolgenden Feuergefecht mit den Wachposten hielt der Medic die Gruppe mit Notfall-Stims am Leben (-30MB Zero-Sum). Letztendlich konnte der Ghost durch eine riskante, aber perfekte Scharfschützen-Aktion (Würfelwurf 20, *Kritischer Erfolg*) den Anführer der Aufständischen ausschalten. Das Team sicherte das Missionsziel und evakuierte mit verbleibenden 80MB Zero-Sum.
-
-**Missionsstatus:** Erfolgreich abgeschlossen.
+Die Infiltration der Aufstandszone durch die Kanalisation gelang reibungslos (Infiltrator-Wurf: Erfolg). Am Hauptterminal musste das Team unter enormem Zeitdruck die Zero-Sum-Entscheidung treffen, genau 150MB an kritischen Daten zu extrahieren. Ein gescheitertes Ablenkungsmanöver des Ghosts (Wurf: Kritischer Fehlschlag) alarmierte die Sicherheitstruppen, was zu massivem Schaden beim Ghost führte, der jedoch im letzten Moment vom Medic stabilisiert wurde (Wurf: Kritischer Erfolg). Um das strenge 150MB-Limit des Datentransfers nicht zu sprengen und eine Systemschmelze zu verhindern, musste der Tech die Firewall-Protokolle manuell überbrücken (Wurf: Knapper Erfolg). Die Gruppe konnte mit den Daten entkommen, allerdings musste der Infiltrator als Ablenkung zurückbleiben, was zu seiner Gefangennahme führte. 
 
 **Zentrales Feedback zur Spielbalance:**
-Die Strafkosten für kritische Fehlschläge beim Hacken (40MB) saugen den gemeinsamen Zero-Sum-Pool im Vergleich zu physischem Schaden (Heilung kostete nur 30MB) extrem schnell leer. Das bestraft den Tech-Spieler unverhältnismäßig hart und macht digitale Patzer gefährlicher als direkte Waffentreffer. Hier sollte die Ressourcen-Skalierung angepasst werden.
+Das 150MB Zero-Sum-System ist in Stresssituationen extrem unerbittlich und bestraft die gesamte Gruppe für den minimalen Fehler eines einzelnen Spielers. Der Tech ist bei Hacking-Proben zu stark von perfekten Würfelwürfen abhängig, was das Spiel schnell in eine "Alles-oder-Nichts"-Spirale treibt. Es wird empfohlen, eine "Daten-Puffer-Mechanik" einzuführen (z. B. 10MB Overflow auf Kosten von temporären Attributseinbußen oder Lebenspunkten), um einen kompletten Fehlschlag der Mission durch minimales Über- oder Unterschreiten des Limits abzufedern.
 
 
 ---
 ## Session 15 Report
-Hier ist der Bericht aus der mentalen Simulation der Session 15 für das Zero-Sum RPG:
+Hier ist der Bericht aus der mentalen Playtest-Simulation für Session 15:
 
-```markdown
-### Spielbericht: Session 15 – "Mission 01: The Riot"
+# Playtest Report: Session 15 – The Riot
+
 **Team:** Medic, Tech, Infiltrator, Ghost
-**Verlauf:** Das Team nutzte den Aufstand als Deckung. Der Infiltrator schaltete die Wachen im Außenbereich lautlos aus (Würfelwurf: 17 – Erfolg). Der Tech investierte 50MB in einen Overclock-Hack, um die Sicherheitstüren zu kontrollieren. 
-**Zero-Sum Entscheidungen:** Bei der Extraktion sicherte der Ghost die Zieldaten (70MB), was das gemeinsame 150MB-Limit auf kritische 30MB schrumpfen ließ. Als der Infiltrator beim Rückzug schwer getroffen wurde, stand das Team vor einer harten Wahl: Die verbleibenden 30MB für das Heilungsprotokoll des Medics ausgeben oder für die Verschlüsselung des Fluchtwegs durch den Ghost. 
-**Ausgang:** Das Team entschied sich für die Heilung. Der Infiltrator überlebte, aber da der Fluchtweg unverschlüsselt blieb, wurde die Identität des Ghosts vom gegnerischen Konzern kompromittiert. Mission erfolgreich, aber mit langfristigen Konsequenzen.
+**Ressourcen-Limit:** 150MB (Zero-Sum Mechanik)
 
-### Zentrales Balance-Feedback
-**Anpassung des Zero-Sum Limits bei Support-Fähigkeiten:** 
-Das gemeinsame 150MB-Limit erzwingt brillante, spannende Diskussionen, aber die Basis-Kosten für essentielle Überlebensfähigkeiten des Medics (30MB) sind im Vergleich zu den zwingenden Missionszielen (70MB Daten) und Basis-Hacks (50MB) zu restriktiv. Wenn obligatorische Missionsaktionen bereits 80% der Ressourcen fressen, wird der Medic oft zur Passivität verdammt. 
-*Empfehlung:* Die Datenkosten für Lebensrettung auf 15-20MB senken oder dem Medic einen klassenspezifischen, autonomen "Notfall-Cache" (z.B. +20MB nur für Heilung) geben, damit die Klasse durchgehend spielbar bleibt, ohne die harte Zero-Sum-Spannung zu zerstören.
-```
+**Missionsverlauf:**
+Die Gruppe infiltrierte den eskalierenden Aufstand im Sektor 4. Der Infiltrator investierte früh 40MB, um unbemerkt durch die feindlichen Linien zu gleiten, verpatzte jedoch einen kritischen Stealth-Wurf. Der Tech musste sofort 50MB aufwenden, um die ausgelösten Sicherheitssysteme kurzzuschließen und den Alarm zu unterdrücken, was die Gruppenressourcen massiv einschränkte. Ghost konnte durch präzises Vorgehen zwei Anführer der Riot-Fraktion neutralisieren (20MB), wurde beim Rückzug aber schwer getroffen. Der Medic war gezwungen, seine gesamten verbleibenden 40MB zu verbrennen, um Ghost vor dem Permadeath zu bewahren. Das Team konnte den Haupt-Server zwar hacken und die Daten extrahieren, entkam aber komplett ohne Restressourcen (genau 150MB verbraucht) und schwer angeschlagen.
+
+**Zentrales Feedback zur Spielbalance:**
+Die Ressourcenkosten für kritische Heilung durch den Medic skalieren schlecht mit dem harten 150MB-Limit. Wenn ein einziger Fehler (wie der des Infiltrators) eine Kettenreaktion auslöst, muss der Medic seine gesamten MB rein defensiv opfern. Er hat dadurch kaum Spielraum für eigene kreative oder offensive Aktionen. **Empfehlung:** Die Kosten für die Notfallstabilisierung leicht senken oder eine Mechanik einführen, durch die bei perfekten Skill-Checks kleine MB-Beträge (z.B. 5-10MB) ins System zurückfließen.
 
 
 ---
 ## Session 16 Report
-# Playtest-Bericht: Session 16 (Mission 01: The Riot)
+### Playtest-Bericht: Session 16 (Mission 01 - The Riot)
 
-**Verlauf der Simulation:** 
-Das Team infiltrierte die Riot-Zone erfolgreich, nachdem der *Ghost* (Wurf: 18) unbemerkt die äußeren Kameraschleifen manipulierte. Im zentralen Sektor eskalierte die Situation: Der *Infiltrator* patzte bei einem aggressiven Flankenmanöver (Wurf: 4) und zog schweres Feuer auf sich. Um ihn zu retten, musste der *Medic* massiv auf den geteilten 150MB Zero-Sum-Datenpool zugreifen und 50MB für experimentelle Notfall-Naniten verbrennen. Der *Tech* (Wurf: 15) nutzte die verbleibenden 100MB geschickt, um die Überlastung der Sicherheitstore zu erzwingen (Kosten: 85MB) und den Evakuierungspunkt freizuschalten. Mit nur 15MB Restvolumen entkam das Team in letzter Sekunde.
+**Ausgang der Mission:**
+Das Team nutzte das Chaos des Aufstands in Sektor 4 als Deckung. Der **Infiltrator** verschaffte der Gruppe unbemerkt Zugang zum gesperrten Server-Komplex (Wurf: 18 – kritischer Erfolg). Im Inneren lenkte der **Ghost** die patrouillierenden Drohnen durch eine physische Täuschung ab, was dem **Tech** das entscheidende Fenster für den Hack gab. Beim Extrahieren der Daten traf das Team auf schweres ICE-Gegenfeuer. Hier kam die **Zero-Sum (150MB)**-Mechanik ins Spiel: Der Tech musste drastische Prioritäten setzen und investierte 110MB der verfügbaren Bandbreite, um die Firewall zu sprengen (Wurf: 14 – Erfolg), wodurch das Sicherheitssystem den Raum verriegelte. Bei der anschließenden, gewaltsamen Flucht wurde der Infiltrator schwer getroffen. Der **Medic** nutzte die verbleibenden 40MB, um die medizinischen Naniten des Teams zu übertakten (Wurf: 12 – knapper Erfolg) und ihn zu stabilisieren. Das Team entkam mit den Daten, war jedoch am Ende seiner Ressourcen.
 
-**Ausgang:** Mission knapp erfolgreich (Ressourcen-Rating: D, 15MB verbleibend).
-
-**Zentrales Feedback zur Spielbalance:** 
-Die Zero-Sum-Kosten für kritische Heilungen (50MB) sind im Verhältnis zum 150MB-Cap zu strafend. Ein einziger schlechter Wurf im frühen Spiel zwingt das Team in eine extreme Defensive und nimmt dem *Tech* und *Ghost* die Handlungsfähigkeit, da ihre Fähigkeiten ebenfalls aus demselben Pool zehren. Ich empfehle, die Heilungskosten auf 30MB zu senken oder an einen Risiko-Wurf des Medics zu koppeln.
+**Zentrales Feedback zur Spielbalance:**
+Die **150MB Zero-Sum-Mechanik** erzeugt großartige Spannung, ist für ein 4-Spieler-Team aber fast zu unerbittlich, wenn starke Widerstände (wie schweres ICE) auftreten. Sobald der Tech den Löwenanteil der Bandbreite (hier 110MB) für den Primärfortschritt aufwenden muss, sind Support-Klassen wie der Medic in ihren Handlungsoptionen extrem limitiert. 
+*Empfehlung:* Ein Basis-Limit von 200MB für 4 Spieler testen oder eine Mechanik einführen, durch die riskante "Push"-Würfe während der Mission temporär kleine Mengen an Bandbreite (z. B. 10–20MB) wiederherstellen können.
 
 
 ---
 ## Session 17 Report
-### Session 17: Mission 01 - The Riot (Simulationsbericht)
+# Session 17: Playtest-Bericht "Mission 01: The Riot"
 
-**Team-Zusammensetzung:** Medic, Tech, Infiltrator, Ghost
-
-**Verlauf:**
-* Das Team startete unentdeckt im Randgebiet der Riot-Zone. Der **Tech** investierte sofort 40MB des Zero-Sum-Datenpools, um das lokale Sicherheitssystem zu übernehmen (Wurf: 17 – kritischer Erfolg).
-* Der **Ghost** nutzte die Ablenkung, um sich lautlos in Position zu bringen (Wurf: 14 – Erfolg), doch der **Infiltrator** löste beim Entschärfen der Türsperre einen stillen Alarm aus (Wurf: 5 – Fehlschlag).
-* Als die Elite-Wachen das Team flankierten, kam es zum direkten Kampf. Der **Medic** musste 70MB des Datenpools für ein Notfall-Stim-Protokoll opfern, um den schwer getroffenen Infiltrator im Spiel zu halten.
-* Mit nur noch 40MB verbleibendem Zero-Sum bündelten Tech und Ghost ihre Ressourcen für einen finalen "Overclock-Strike" gegen den Riot-Anführer. Die Würfel fielen günstig (Wurf: 19) und der Anführer ging zu Boden.
-* **Ergebnis:** Mission erfolgreich abgeschlossen. Das Team konnte knapp durch den Aufzug entkommen, allerdings mit restlos aufgebrauchtem 150MB-Limit und beschädigter Ausrüstung.
+**Ausgang der Mission:**
+Das Team (Medic, Tech, Infiltrator, Ghost) hat die Unruhen in Sektor 4 erfolgreich durchquert, jedoch mit äußerst knappen Ressourcen. Der *Infiltrator* nutzte früh 50MB des gemeinsamen Zero-Sum-Pools, um die Sicherheitssysteme der Miliz zu umgehen (Wurf: 18, Kritischer Erfolg). Beim Vorrücken in die Riot-Zone verfehlte der *Ghost* einen entscheidenden Stealth-Wurf (Wurf: 4, Fehlschlag) und provozierte ein Feuergefecht. Der *Medic* musste massiv eingreifen und verbrauchte 60MB für Nanite-Heilungen, um den Ghost vor dem Permadeath zu bewahren. In der letzten Phase gelang es dem *Tech* mit den verbleibenden 40MB, die Zielperson aus dem Riot-Zentrum zu extrahieren (Wurf: 15, Erfolg). Das Team entkam knapp, der 150MB-Pool fiel exakt auf 0.
 
 **Zentrales Feedback zur Spielbalance:**
-Das strikte 150MB Zero-Sum-Limit erzeugt eine hervorragende, beklemmende Spannung am Spieltisch. Allerdings sind die Rettungs- und Heilprotokolle des Medics (hier 70MB) im Vergleich zu offensiven Aktionen unverhältnismäßig teuer. Wenn über 40% des gesamten Ressourcenpools für eine einzige Heilung verbraucht werden, entsteht bei einem schlechten Würfelwurf früh ein kaum noch aufzuholender Nachteil (Death Spiral). Die Heilkosten sollten entweder modularer werden (z. B. 20MB pro geheilter Wunde) oder das Basislimit leicht auf 180MB angehoben werden, um dem Team mehr taktische Flexibilität für Fehlerkorrekturen zu geben.
+Die Ressourcenkosten für Heilung (Medic-Aktionen) eskalieren im aktuellen Build bei einem gescheiterten Stealth-Wurf zu stark. 60MB (40% des Gesamtpools) für grundlegende Überlebenssicherung lassen dem Team im Late-Game kaum noch Handlungsspielraum; die Basis-Kosten für reaktive Support-Fähigkeiten sollten um ca. 15-20% reduziert oder durch erfolgreiche Kombos abgefedert werden.
 
 
 ---
 ## Session 18 Report
-Hier ist der Bericht der mentalen Simulation von Session 18:
+Hier ist der Bericht der mentalen Playtest-Simulation für **Session 18**:
 
-### Playtest-Bericht: Session 18 (Mission 01 - The Riot)
+```markdown
+# Playtest-Bericht: Session 18 (Mission 01: The Riot)
 
-**Verlauf & Ausgang:**
-Das Einsatzteam (Medic, Tech, Infiltrator, Ghost) nutzte das Chaos des Aufstands, um unbemerkt in die Serveranlage vorzudringen. Während der *Infiltrator* und *Ghost* die Wachen per Stealth-Takedowns ausschalteten, sicherte der *Tech* das Terminal. Bei der Datenextraktion kam das harte **150MB Zero-Sum-Datenlimit** zum Tragen: Der Tech musste 130MB für die kritischen Zieldaten blockieren. Dem *Medic* blieben folglich nur noch 20MB für seine Nano-Ressourcen, als unerwartet Verstärkung der Randalierer durchbrach. Der Medic konnte den Infiltrator nicht mehr ausreichend heilen und dieser ging fast zu Boden. Nur durch einen riskanten, aber erfolgreichen kritischen Würfelwurf des Ghosts zur Evakuierung konnte das Team in letzter Sekunde entkommen. Mission erfolgreich, aber mit schweren Verlusten.
+**Missionsausgang:**
+Das Team infiltrierte die Anlage erfolgreich im Schutz der Straßenunruhen. Der Infiltrator brillierte beim Perimeter-Breach (Kritischer Erfolg), was wertvolle Zeit sparte. Der Tech stieß jedoch hart an die Grenzen der Zero-Sum-Mechanik und verbrannte 120MB des 150MB-Budgets, um das Hauptsicherheitsnetz zu hacken. Bei der chaotischen Evakuierung musste der Ghost sein gesamtes restliches Datenvolumen opfern, um den schwer verwundeten Medic zu tarnen. Das Team entkam mit exakt 0MB – einem perfekten, aber riskanten "Zero-Sum" – haarscharf den verfolgenden Konzerndrohnen.
 
-**Zentrales Balance-Feedback:**
-Die 150MB Zero-Sum-Mechanik zwingt das Team zu harten Entscheidungen, bestraft aber Supporter wie den Medic extrem, wenn Missionsziele einen Großteil des Pools fressen. Es wird dringend empfohlen, eine klassenspezifische Mindestbandbreite (z.B. 30MB unantastbar pro Spieler) einzuführen, um zu verhindern, dass einzelne Spieler in entscheidenden Momenten völlig handlungsunfähig werden.
+**Zentrales Feedback zur Spielbalance:**
+Das strenge 150MB-Limit erzeugt großartige Spannung, bestraft aber Tech-Charaktere im Early-Game unverhältnismäßig stark. Es wird empfohlen, die Kosten für Basis-Hacks leicht zu senken oder eine "Data-Leech"-Mechanik zur Rückgewinnung von MBs durch erfolgreiche Kills/Aktionen einzuführen, um ein vorzeitiges Handlungsunvermögen (Softlock) des Teams im Finale zu verhindern.
+```
 
 
 ---
 ## Session 19 Report
-### Playtest-Bericht: Session 19 (Zero-Sum RPG)
+### Spielbericht: Session 19 – Mission 01 "The Riot"
 
-**Mission:** 01 - The Riot
+**Status:** Abgeschlossen (Knapper Erfolg)
 **Team:** Medic, Tech, Infiltrator, Ghost
-**Ressourcen-Pool:** 150MB Data-Cap (Zero-Sum)
+**Ressourcen-Limit:** Zero-Sum (150MB Daten-Kontingent)
 
-**Verlauf & Ausgang:**
-Das Team infiltrierte das Gefängnisgebäude während des Aufstands. Der Infiltrator verbrauchte 40MB des gemeinsamen Pools, um die biometrischen Schlösser im Erdgeschoss zu überwinden, während der Ghost mit einem perfekten Würfelwurf unbemerkt in den Zellentrakt vordrang. Als der Tech versuchte, die Überwachungskameras zu loopen, schlug ein Würfelwurf fehl, was zu einem Feuergefecht führte. Der Medic musste 70MB für die Stabilisierung des schwer verletzten Infiltrators aufwenden, wodurch die Ressourcen kritisch schrumpften. Mit den verbleibenden 40MB gelang es dem Tech in letzter Sekunde, die Sicherheitstüren für den Fluchtweg zu öffnen. Die Mission war ein knapper Erfolg, jedoch mit minimalen verbleibenden Ressourcen.
+Der Aufstand in Sektor 4 eskalierte rasant. Der **Infiltrator** verbrauchte sofort 40MB für eine auditive Tarnsequenz, um die Sicherheitssensoren zu umgehen, während der **Ghost** (30MB) die heranrückenden Wachdrohnen mit Phantomsignalen ablenkte. Als das Team im Serverraum in einen massiven Hinterhalt geriet, musste der **Medic** kritische 50MB für ein experimentelles Flächen-Stimpak verbrennen, um den schwer getroffenen Tech am Leben zu halten. Mit den exakt letzten verbleibenden 30MB schaffte es der **Tech** in letzter Sekunde, das Mainframe zu überschreiben und die Riot-Control-Schotten zu verriegeln. Das Team entkam mit null verbleibenden Ressourcen.
 
 **Zentrales Feedback zur Spielbalance:**
-Die Ressourcenkosten für kritische Heilaktionen des Medics (70MB) nehmen einen zu großen Anteil des strikten 150MB-Pools ein. Dies führt dazu, dass ein einziger schlechter Würfelwurf die strategische Flexibilität des restlichen Teams fast vollständig lahmlegt; die Heilungskosten sollten leicht gesenkt oder an einen eigenen Cooldown gebunden werden.
+Die Daten-Kosten für reaktive Heilfähigkeiten (wie das 50MB Flächen-Stimpak des Medics) sind im Verhältnis zum strikten 150MB-Limit extrem hoch. Es zwingt das Team nach nur einem Fehler in eine fast ausweglose Ressourcen-Spirale. Eine Reduzierung der Heil-Kosten auf ca. 35MB würde dem Team im Endgame etwas mehr strategischen Spielraum für kreative Aktionen lassen, ohne das beklemmende "Zero-Sum"-Gefühl zu zerstören.
 
 
 ---
 ## Session 20 Report
-### Session 20: The Riot - Missionsbericht
+### Spielbericht: Session 20 - Mission 01 "The Riot"
 
-Die Simulation von "Mission 01: The Riot" verlief mit extrem hoher Spannung. Der **Ghost** und der **Infiltrator** nutzten zu Beginn 50MB des 150MB-Zero-Sum-Datenpools, um die Überwachungsdrohnen der Sicherheitstruppen unbemerkt zu loopen und den Hauptkrawallen zu umgehen. Als die Gruppe im Sperrgebiet auf unerwarteten Widerstand stieß, musste der **Tech** aggressiv eingreifen und verbrannte 80MB für einen massiven System-Override der anrückenden Riot-Mechs. Bei der anschließenden Flucht wurde der Ghost durch ein Querschläger-Projektil schwer verwundet. Der **Medic** nutzte die exakt verbleibenden 20MB des Pools, um eine experimentelle Nanobot-Notheilung zu synthetisieren. Mit punktgenau 0MB Restkapazität (ein perfektes Zero-Sum-Szenario) erreichte das Team humpelnd den Evakuierungspunkt und schloss die Mission erfolgreich ab.
+Die Gruppe, bestehend aus Medic, Tech, Infiltrator und Ghost, infiltrierte erfolgreich den Aufstands-Sektor. Der Infiltrator schaltete die Perimetersicherheit lautlos aus, während der Ghost unbemerkt in die Anlage eindrang. Ein kritischer Würfel-Patzer des Ghosts beim Überbrücken des Haupt-Terminals löste jedoch den Alarm aus und führte zu einem massiven Angriff schwer gepanzerter Sicherheitsdrohnen. Der Medic hielt das Team unter schwerem Beschuss mit Stim-Packs und Notheilungen knapp am Leben. Als die Situation ausweglos erschien, traf der Tech eine drastische "Zero-Sum"-Entscheidung: Er opferte 150MB seiner eigenen neuronalen Speicherkapazität, um einen Overload-Ping zu senden. Dieser EMP-Schlag deaktivierte alle feindlichen Drohnen schlagartig, beraubte den Tech aber temporär fast all seiner aktiven Fähigkeiten. Das Team konnte die Ziel-Datenbank sichern und schwer angeschlagen, aber erfolgreich, evakuieren.
 
-**Zentrales Balance-Feedback:** 
-Die 150MB Zero-Sum-Ressourcenmechanik erzwingt großartiges, taktisches Teamwork, jedoch sind die offensiven Fähigkeiten des **Techs** (80MB für entscheidende Overrides) etwas zu teuer geraten. Dies führt in der Simulation oft dazu, dass der **Medic** im kritischen End-Game fast immer ohne ausreichende Ressourcen dasteht. Ich empfehle, die Basiskosten für Tech-Hacks leicht zu senken (z.B. auf 60MB) oder eine riskante, würfelbasierte "Data-Regen"-Mechanik für das Mid-Game einzuführen.
+**Zentrales Feedback zur Spielbalance:**
+Die Kosten für die "Zero-Sum (150MB)"-Fähigkeiten wirken in kritischen Kampfsituationen etwas zu bestrafend. Der abrupte Verlust von 150MB zwingt Spieler (wie hier den Tech) in eine extrem passive Rolle für den Rest der Mission. Eine gestaffelte Rückgewinnung der neuronalen Kapazität über Zeit oder durch Aktionen des Medics würde das Risiko belohnen, ohne die Spielerfahrung für den Rest der Session zu stark einzuschränken.
 
 
 ---
 ## Session 21 Report
-# Playtest-Bericht: Session 21 (Mission 01 - The Riot)
+### Spielbericht: Session 21 – Mission 01 "The Riot"
 
-**Missionsausgang:**
-Das Team (Medic, Tech, Infiltrator, Ghost) konnte die Unruhen im Sektor 4 erfolgreich eindämmen, stieß jedoch auf unerwarteten Widerstand durch gehackte Riot-Drohnen. Der Infiltrator nutzte 50MB der geteilten "Zero-Sum"-Ressource, um die Sicherheitssysteme unbemerkt zu umgehen, während der Tech weitere 70MB aufwandte, um die feindlichen Drohnen zu übernehmen. In der finalen Konfrontation wurde der Ghost kritisch verletzt, konnte aber durch den sofortigen Einsatz der restlichen 30MB vom Medic gerade noch rechtzeitig stabilisiert werden. Das Datenlimit von exakt 150MB wurde vollständig ausgeschöpft, was zu einem dramatischen, aber letztlich verlustfreien Sieg führte.
+**Einsatzteam:** Medic, Tech, Infiltrator, Ghost  
+**Verlauf:**  
+Das Team versuchte verdeckt durch die Unruhen in Sektor 4 zu navigieren. *Tech* hackte erfolgreich die Sicherheitstore (Wurf: 18), doch *Ghost* patzte beim Schleichen (Wurf: 3) und alarmierte eine schwere Riot-Drohne. Nach intensivem Beschuss hielt *Medic* die Gruppe mit knappen Ressourcen am Leben.  
+**Zero-Sum-Entscheidung (150MB):**  
+Am Kontroll-Node opferte das Team exakt 150MB ihrer begrenzten neuralen Speicherkapazität für den Override-Code der Drohnen, anstatt einen Fluchtweg zu berechnen. Diese Belastung zwang *Infiltrator* und *Ghost* in einen kritischen Overheat-Zustand, beendete jedoch den Aufstand.  
+**Ergebnis:** Mission knapp erfolgreich, Sektor gesichert, Team muss sofort evakuiert werden.
 
-**Zentrales Feedback zur Spielbalance:**
-Das strikte Zero-Sum-Limit von 150MB erzeugt eine hervorragende Spannung und zwingt das Team zu starkem kooperativen Ressourcenmanagement. Allerdings bestraft es unvorhergesehene Fehlschläge im frühen Spielverlauf zu hart. Es wird empfohlen, eine Mechanik einzuführen, durch die Spieler bei kritischen Erfolgen kleine Datenmengen (z. B. 10MB) zurückgewinnen können, um "Soft-Locks" im späten Spielverlauf zu vermeiden.
+**Zentrales Balance-Feedback:**  
+Die Kosten für Zero-Sum-Downloads (wie die 150MB) bestrafen physische Klassen im Overheat-System unverhältnismäßig stark. Die Ressourcenbelastung durch Daten-Downloads sollte für Kampfklassen prozentual skaliert oder durch den Tech abgefedert werden können, um zu verhindern, dass essenzielle Story-Entscheidungen das halbe Team kampfunfähig machen.
 
 
 ---
 ## Session 22 Report
-### Playtest-Bericht: Session 22 (Mission 01 - The Riot)
+Hier ist der Bericht der mentalen Simulation von **Session 22**:
 
-* **Team:** Medic, Tech, Infiltrator, Ghost
-* **Verlauf:** Der Aufstand brach im Sektor 4 aus. Der Infiltrator nutzte das Chaos, um die Sicherheitssensoren zu umgehen (Wurf: 18, Kritischer Erfolg). Der Medic hielt derweil die aufgebrachte Menge mit Blendgranaten auf Distanz.
-* **Schlüsselmoment (Zero-Sum):** Der Tech extrahierte die Ziel-Daten, stieß aber auf das 150MB-Limit des neuralen Puffers. Das Team musste entscheiden: Die wertvollen experimentellen Waffenschemata speichern oder die Überwachungsprotokolle löschen, um unentdeckt zu bleiben? Beides passte nicht in den Puffer.
-* **Ausgang:** Der Ghost überstimmte das Team, löschte die Überwachungsprotokolle und opferte den Loot für Sicherheit. Der Trupp entkam lautlos durch die Lüftungsschächte. Mission erfolgreich, jedoch ohne den großen Payday.
+### Playtest-Bericht: Session 22 (Mission 01: The Riot)
+
+**Ausgang der Mission:**
+Das Team infiltrierte die abgeriegelte Unruhezone erfolgreich. Der *Ghost* schaltete unbemerkt die äußeren Patrouillen aus, während der *Tech* mit einem knappen Hacking-Wurf das Sicherheitssystem des Zielgebäudes überwand. Im Inneren eskalierte die Situation: Der *Infiltrator* zog massives feindliches Feuer auf sich und ging kritisch verletzt zu Boden. Nur durch einen riskanten Stabilisierungs-Wurf des *Medic* konnte ein Permadeath im letzten Moment verhindert werden. 
+In der kritischen Fluchtphase stand das Team vor einer harten Zero-Sum-Entscheidung: Um die automatisierten Geschütze am Ausgang zu bestechen und zu entkommen, mussten sie exakt 150MB ihrer hart erkämpften Payload-Daten unwiderruflich opfern. Die Gruppe entschied sich für das Überleben. Die Mission war ein knapper, blutiger Erfolg – das Einsatzziel wurde erreicht, aber der Gewinn an wertvollen Daten wurde drastisch minimiert.
 
 **Zentrales Feedback zur Spielbalance:**
-Die Zero-Sum-Mechanik (hartes 150MB-Limit) erzeugt exzellente, spannungsgeladene Dilemmata am Spieltisch. Allerdings hatte der *Medic* in den technikfokussierten Phasen dieser Mission zu wenig aktive Handlungsmöglichkeiten; es wird empfohlen, auch für nicht-technische Klassen in der "Player_Handbook.md" Mechaniken hinzuzufügen, um Hacking- oder Extraktions-Würfe passiv zu unterstützen (z. B. durch Stress-Injektionen oder Adrenalin-Buffs).
+Die Zero-Sum-Entscheidungen (wie das Opfern von exakt 150MB Payload) sind narrativ sehr dicht, bestrafen das Team aber im Lategame unverhältnismäßig stark, wenn vorherige Würfe viel Ressourcen gekostet haben. Es wird empfohlen, die fixen Kosten dynamisch an die Gruppengröße oder das aktuelle Payload-Cap anzupassen (z.B. %-basierte Kosten statt harter 150MB), da die Spieler sonst eine zu extreme Frustrationskurve erleben.
 
 
 ---
 ## Session 23 Report
-### Playtest-Bericht: Session 23 (Mission 01: The Riot)
+Hier ist der Bericht der mentalen Simulation von **Session 23**:
 
-**Ausgang der Mission:**
-Das Team (Medic, Tech, Infiltrator, Ghost) nutzte das Chaos des Aufstands, um erfolgreich in den Zielsektor vorzudringen. Der Infiltrator umging die physischen Barrieren, während der Ghost die Patrouillen lautlos ausschaltete. Am zentralen Terminal sah sich der Tech gezwungen, die gesamte 150MB-Zero-Sum-Ressource in einem kritischen Wurf für den Datenextrakt zu opfern. Die fehlende Bandbreite wurde dem Team bei der Eskalation der Unruhen zum Verhängnis: Ohne verbleibenden Datenpuffer für das Taktik-Netzwerk konnte der Medic den schwer verletzten Infiltrator auf der Flucht nicht mehr optimal versorgen. Das Team sicherte zwar das Zielobjekt, entkam aber nur knapp und stark angeschlagen.
+### Playtest-Bericht: Session 23 (Mission 01 - The Riot)
+* **Infiltration:** Der **Infiltrator** patzte beim Knacken des Haupttores (Würfelwurf: 3), was sofort die Sicherheitsprotokolle und feindliche Riot-Drohnen aktivierte.
+* **Eskalation:** Um ein sofortiges Game Over zu verhindern, musste der **Tech** eine Zero-Sum-Entscheidung treffen und sein gesamtes Datenbudget (150MB) opfern, um das System der Drohnen zu überlasten.
+* **Gefecht:** Der **Ghost** nutzte das Chaos für einen Nahkampfangriff, würfelte jedoch schlecht für seine Tarnung und wurde im Kreuzfeuer schwer verwundet.
+* **Rettung & Flucht:** Der **Medic** verbrauchte seine letzten medizinischen Vorräte für eine kritische Notfallheilung. Das Team konnte das Zielobjekt in der Menge sichern und fliehen.
+* **Ausgang:** Mission knapp erfolgreich (Pyrrhussieg), das Team entkam jedoch komplett ohne verbleibende Ressourcen.
 
 **Zentrales Feedback zur Spielbalance:**
-Die harte Grenze des 150MB-Zero-Sum-Pools bestraft Support-Klassen im späten Spielverlauf zu stark. Sobald der Pool für Missionsziele (wie den Tech-Hack) aufgebraucht ist, werden defensive Fähigkeiten (Medic) fast nutzlos. Es wird empfohlen, Heil- und Supportfähigkeiten eine kleine, isolierte Notfall-Ressource zuzuweisen, um eine unverschuldete Todesspirale am Ende der Mission zu vermeiden.
+Das harte Limit von 150MB für Zero-Sum-Aktionen führt zu Problemen, wenn ein einzelner schlechter Würfelwurf (hier vom Infiltrator) eine andere Klasse (den Tech) sofort ihrer kompletten Handlungsfähigkeit für den Rest der Mission beraubt. **Empfehlung:** Es sollte eine Mechanik geben, um das Zero-Sum-Budget im Einsatz teilweise zu regenerieren (z. B. +15MB pro überstandener Konfliktszene) oder die Kosten für rein reaktive Schadensbegrenzung leicht zu senken.
 
 
 ---
 ## Session 24 Report
-### Spielbericht: Session 24 - Mission 01 "The Riot"
+### Spielbericht: Session 24 – Mission 01 "The Riot"
 
 **Einsatzteam:** Medic, Tech, Infiltrator, Ghost
-**Ressourcen-Pool:** 150MB (Memory-Blocks) Startkapital
+**Ausgang:** Teilweiser Erfolg (Zieldaten gesichert, Bonusziele verfehlt)
 
-Die Mission begann reibungslos, als der **Infiltrator** die vorderen Barrikaden unbemerkt umging (Wurf: 18, Erfolg). Der **Tech** patzte jedoch beim Hacken des Sicherheitstores (Wurf: 4) und musste 30MB aus dem Zero-Sum-Pool opfern, um das System doch noch zu überlasten. Während der **Ghost** von einem Wachturm aus Feuerschutz gab, geriet die Gruppe am Extraktionspunkt in einen massiven Hinterhalt der Aufständischen. Um einen Totalausfall zu verhindern, verbrauchte der **Medic** die restlichen 120MB für experimentelle Stim-Packs. Das Team konnte die Zielperson knapp sichern und entkommen, beendete die Mission jedoch komplett erschöpft und mit 0MB.
+Der Aufstand im Sektor 4 eskalierte schnell. Der **Infiltrator** würfelte eine kritische 19 auf "Stealth" und umging die Perimeter-Wachen, wodurch das Team unbemerkt eindrang. Beim Hacken der Sicherheitstüren patzte der **Tech** jedoch (Wurf: 4) und löste einen Alarm aus. Im entstehenden Feuergefecht teilte der **Ghost** hohen Schaden aus, wurde aber schwer getroffen; der **Medic** rettete ihn, indem er 50MB aus dem strengen Zero-Sum-Pool für ein experimentelles Trauma-Kit abzweigte. Als eine Übermacht an Wachbots anrückte, traf das Team eine kollektive Entscheidung: Sie opferten die verbleibenden 100MB ihres 150MB Zero-Sum-Limits, um die interne Kühlung der Bots zu hacken und sie zur Kernschmelze zu zwingen. Sie entkamen mit den Daten, mussten aber die Einrichtung zerstören, was die Bonuszahlung zunichtemachte.
 
-**Zentrales Balance-Feedback:** 
-Die Heilungskosten des Medics skalieren bei eskalierenden Kämpfen zu aggressiv. Der plötzliche Verbrauch von 120MB (80% des Pools) für eine einzige Flächenstabilisierung saugt die Zero-Sum-Ökonomie sofort leer und nimmt dem Team jede taktische Flexibilität im Endspurt. Es wird empfohlen, die Grundkosten für Stim-Packs leicht zu senken oder eine Mechanik einzuführen, bei der erfolgreiche Kills des Ghosts kleine Mengen an MB in den Pool zurückerstatten.
+**Zentrales Feedback zur Spielbalance:**
+Das harte "Zero-Sum (150MB)"-Ressourcenlimit erzeugt exzellente Spannung, bestraft jedoch den *Tech* bei schlechten Würfeln unverhältnismäßig hart. Da Rettungsaktionen durch den *Medic* extrem teuer sind, sollte in Erwägung gezogen werden, den Klassen entweder minimale, persönliche Notfall-MBs außerhalb des geteilten 150MB-Pools zu geben oder grundlegende Hacker-Fähigkeiten kostengünstiger zu machen.
 
 
 ---
 ## Session 25 Report
-Hier ist der Bericht der mentalen Simulation von Session 25:
+Hier ist der Bericht der mentalen Simulation von Session 25 für das Zero-Sum RPG:
 
-### Session 25: Mission 01 - The Riot (Simulationsbericht)
-- **Team:** Medic, Tech, Infiltrator, Ghost
-- **Verlauf:** Die lautlose Infiltration der Anlage durch den Ghost war erfolgreich, jedoch löste ein kritischer Patzer des Techs an der Hauptkonsole einen massiven Riot-Alarm aus. 
-- **Zero-Sum Entscheidung:** Um das Ziel von 150MB extrahierten Daten zu erreichen, musste das Team Ressourcen opfern. Der Infiltrator gab seine Position auf, um Wachbots in einen Hinterhalt zu locken, während der Medic unter schwerem Feuer das Überleben der Gruppe sicherte.
-- **Ausgang:** Die Gruppe konnte die 150MB Daten erfolgreich im Zero-Sum-Protokoll extrahieren. Der Tech verlor durch den Feedback-Schaden jedoch sein Cyberdeck, und der Infiltrator erlitt kritische Verletzungen. Die Mission gilt als knapp bestanden.
+### Playtest-Bericht: Session 25 – "Mission 01: The Riot"
 
-### Zentrales Balance-Feedback
-**Überlastung der Tech-Klasse:** Das Zero-Sum-System ist bei hohen Datenmengen (150MB+) extrem unbarmherzig bei Fehlwürfen. Der Tech trägt das alleinige Risiko des System-Feedbacks, wodurch die Klasse in Eskalationssituationen zu schnell ihre Handlungsfähigkeit (Verlust des Decks) einbüßt. Es sollte eine Mechanik geben, mit der andere Klassen (z. B. der Medic) Teile des Feedback-Schadens abfangen können.
+**Team:** Medic, Tech, Infiltrator, Ghost | **Ausgang:** Teilweiser Erfolg (Ziel gesichert, Ressourcen kritisch)
+
+**Zusammenfassung:**
+Der Infiltrator führte das Team durch gute Würfe ungesehen in die Unruhezone. Ein kritischer Patzer des Techs an der lokalen Hub-Firewall drohte jedoch die Mission frühzeitig scheitern zu lassen. Um den sofortigen Alarm abzuwenden, entschied sich die Gruppe für eine harte Zero-Sum-Intervention: Der Ghost opferte 50MB des 150MB-Datenpools für einen Brute-Force-Überschreibungscode, was seine eigene digitale Tarnung stark einschränkte. Im finalen Aufeinandertreffen mit den Rädelsführern musste der Medic weitere 80MB für einen flächendeckenden Stasis-Stim aufwenden, um ein Blutbad zu verhindern. Die Mission war erfolgreich, aber der Rückzug mit nur 20MB Restkapazität war extrem riskant.
+
+**Zentrales Feedback zur Spielbalance:**
+Der 150MB Zero-Sum-Ressourcenpool ist für ein 4er-Team in einer unübersichtlichen Situation (wie einem Riot) zu unerbittlich. Ein einziger gescheiterter Wurf zwingt die Gruppe sofort in eine steile Abwärtsspirale. Ich empfehle, den Start-Pool auf 200MB zu erhöhen oder die Skalierungskosten für Flächeneffekte (wie den Stasis-Stim des Medics) zu reduzieren, damit Spieler sich weniger in ihren Entscheidungen eingeschränkt fühlen.
 
 
 ---
 ## Session 26 Report
-### Playtest-Bericht: Session 26 – Mission 01 "The Riot"
+### Mission 01 "The Riot" – Session 26 Playtest-Bericht
 
-**Einsatzteam:** Medic, Tech, Infiltrator, Ghost
-**Mission:** Eindämmung des Aufstands in Sektor 4 und Sicherung der Server-Datenbank.
+**Missionsverlauf & Ausgang:**  
+Der Infiltrator nutzte seine Optische Tarnung (Erfolg) mithilfe seines Shadow-Caches, um die erste Schleuse zu passieren, doch der Ghost löste beim Knacken der Sicherheitstore (Teilerfolg) Alarm aus. Im anschließenden Chaos verpatzte der Tech seinen ersten Kampf-Hack, wodurch der Medic den Infiltrator per "Triage" (0MB, Erfolg) stabilisieren musste. Ein riskanter, aber kritischer Brute-Force Hack (Wurf: 20) des Techs rettete das Team, schaltete die lokalen Drohnen aus und regenerierte 10MB in den Pool. 
+Am Mainframe standen die Spieler mit einem stark dezimierten 150MB-Pool vor dem Daten-Dilemma (180MB Twist). Sie entschieden sich für die Rettung der Zivilisten: Der Tech erzwang ein "Overclocking" (Skill Atrophy – Verlust einer Kindheitserinnerung), um die 60MB für das Überschreiben der Riot-Drohnen-Protokolle aufzubringen. Die Blackmail-Beweise mussten zurückgelassen werden; OmniCorp bleibt ungestraft.
 
-**Zusammenfassung der Simulation:**
-Der *Infiltrator* und *Ghost* nutzten anfangs ihre Stealth-Fähigkeiten, um die wütende Menge zu umgehen, scheiterten jedoch an einem kritischen Wurf bei den inneren Barrikaden. Dies zwang den *Tech*, aggressiv in das Sicherheitssystem einzugreifen, was rasch 60MB der geteilten 150MB Zero-Sum-Bandbreite verbrauchte. Als die Gruppe in einen Hinterhalt geriet, musste der *Medic* massiv Ressourcen aufwenden, um den schwer verwundeten *Ghost* zu heilen (weitere 50MB). Mit nur noch 40MB Rest-Bandbreite entschied sich das Team gegen den Upload der kompletten Datenbank und exfiltrierte stattdessen nur die Kern-Kryptoschlüssel. Sie entkamen knapp, aber die Mission gilt aufgrund der unvollständigen Datenbeschaffung nur als Teilerfolg. 
-
-**Zentrales Feedback zur Spielbalance:**
-Das geteilte Zero-Sum-Limit von 150MB bestraft die Gruppe bei einem einzelnen fehlgeschlagenen Stealth-Wurf unverhältnismäßig stark. Die Support-Fähigkeiten des Medics sind zu teuer (Datenvolumen pro Heilung); hier sollte erwogen werden, grundlegende medizinische Versorgung von der Bandbreiten-Ressource zu entkoppeln oder das Basis-Limit auf 200MB zu erhöhen, um mehr taktischen Spielraum bei Fehlern zu ermöglichen.
+**Zentrales Feedback zur Spielbalance:**  
+Der neue *Shadow-Cache (15MB)* funktioniert hervorragend, um Support-Klassen handlungsfähig zu halten. Jedoch ist das 150MB-Limit in Kombination mit dem 180MB-Twist extrem unbarmherzig: Da Infiltration und Kampf unvermeidlich den gemeinsamen Pool leeren, wird das Team am Ende quasi *gezwungen*, Mechaniken wie Overclocking (und damit permanenten Verlust) zu nutzen, wenn sie auch nur *eines* der Story-Ziele (60MB) erreichen wollen. Die Basis-Bandbreite sollte leicht angehoben oder alternative Wege zur MB-Rückgewinnung abseits von kritischen W20-Erfolgen implementiert werden.
 
 
 ---
 ## Session 27 Report
-### Playtest-Bericht: Session 27 (Mission 01 - The Riot)
+Hier ist der Bericht der simulierten **Session 27** für das Zero-Sum RPG:
+
+### Session 27: Mission 01 - The Riot (Simulationsbericht)
 
 **Team:** Medic, Tech, Infiltrator, Ghost
-**Ausgang der Mission:** Teilweiser Erfolg. Das Team konnte die Barrikaden in Sektor 4 zu Beginn lautlos umgehen, nachdem der Infiltrator und der Ghost extrem gute Würfe auf "Heimlichkeit" erzielten. In der Hauptkonfrontation hackte der Tech die gegnerischen Sicherheitssysteme, verbrauchte dafür aber massive 110MB des geteilten 150MB Zero-Sum-Pools. Als der Infiltrator beim finalen Rückzug durch eine Sprengfalle schwer verwundet wurde, hatte der Medic nicht mehr ausreichend Bandbreite (nur noch 15MB verfügbar, 30MB benötigt), um das lebensrettende Nano-Trauma-Protokoll zu aktivieren. Der Infiltrator entkam nur knapp mit dauerhaften Mali, was das Team zum verfrühten Abbruch der Mission zwang.
+**Ressourcen:** 150MB Zero-Sum Pool
+**Verlauf:** Die Gruppe nutzte das Chaos des Aufstands zur Infiltration. *Ghost* (Wurf: 17) und *Infiltrator* (Wurf: 19) schalteten die äußeren Kameras lautlos aus (-10MB für Signalstörsender). Am Hauptterminal patzte *Tech* (Wurf: 4, Kritischer Fehlschlag), was eine automatische Lockdown-Sequenz und Kampfdrohnen auslöste. Um *Tech* vor dem tödlichen Beschuss zu bewahren, musste *Medic* sofort eine komplexe Trauma-Überbrückung streamen (-60MB). *Infiltrator* opferte weitere 50MB für einen massiven EMP-Burst, um den Rückzug in die Kanalisation freizusprengen. 
+**Ausgang:** Die Mission war ein knapper (und teurer) Erfolg. Das Ziel-Datenpaket wurde extrahiert, aber die Gruppe entkam schwer angeschlagen und mit nur noch 30MB im geteilten Zero-Sum Pool. 
+
+***
 
 **Zentrales Feedback zur Spielbalance:**
-Der geteilte 150MB Zero-Sum-Ressourcenpool ist aktuell zu restriktiv und bestraft Support-Klassen unverhältnismäßig. Wenn offensive oder technische Klassen (wie der Tech) ihre starken Kernfähigkeiten nutzen, wird der Medic handlungsunfähig. Es wird empfohlen, die Datenkosten für Heil-Fähigkeiten drastisch zu senken oder dem Medic einen klassenspezifischen Notfall-Puffer (z.B. 25MB dedizierten Speicher) zuzuweisen, um Frustration bei Support-Spielern zu vermeiden.
+Der "Zero-Sum"-Ressourcenpool von 150MB skaliert bei 4 Spielern sehr hart. Ein einziger kritischer Fehlschlag bei einem Skill-Check (wie hier bei Tech) zwingt das Team fast sofort dazu, ~75% ihrer gemeinsamen Bandbreite (110MB) für reine Schadensbegrenzung und Flucht auszugeben. Es wird empfohlen, die Zero-Sum-Kosten für Notfall-Aktionen (wie Heilung oder EMP) um ca. 20% zu senken oder den Start-Pool für 4 Spieler auf 200MB zu erhöhen, um Frustrationen zu vermeiden und mehr offensive Taktiken zuzulassen.
 
 
 ---
 ## Session 28 Report
-# Zero-Sum RPG: Session 28 - "The Riot"
+Hier ist der Bericht der simulierten Session 28:
 
-**Missionsbericht:**
-Das Team (Medic, Tech, Infiltrator, Ghost) infiltrierte den Sektor während des Aufstands erfolgreich. Der Tech konnte die Sicherheitssysteme (Kosten: 40MB) lahmlegen, während der Infiltrator eine Ablenkung schuf (Kosten: 30MB). Ein kritischer Fehlschlag des Ghosts beim Hacken des Haupt-Terminals zwang den Medic, massive Ressourcen (50MB) für Notfall-Stims aufzuwenden, um das Team vor den anrückenden Riot-Drohnen zu retten. Mit knappen 30MB Restbudget erreichten sie den Extraktionspunkt, mussten aber das sekundäre Missionsziel aufgeben. Die Mission war ein knapper, blutiger Erfolg.
+# Playtest-Bericht: Session 28 (Mission 01 - The Riot)
 
-**Feedback zur Spielbalance:**
-Die Ressourcenkosten für Notfallheilung (Medic) skalieren bei kritischen Fehlschlägen anderer Spieler zu stark. Eine Obergrenze oder ein passiver Schadensmitigations-Wurf würde verhindern, dass ein einzelner schlechter Wurf das "Zero-Sum"-Limit von 150MB sofort ruiniert und die Handlungsfähigkeit des gesamten Teams lahmlegt.
+**Team:** Medic, Tech, Infiltrator, Ghost
+**Ressourcen-Pool:** 150MB (Zero-Sum-Limit)
+
+**Missionsverlauf:**
+Der Infiltrator eröffnete die Mission, indem er für 40MB die Sicherheitstore der Anlage lautlos überbrückte. Der Tech würfelte bei der Umprogrammierung der Überwachungsdrohnen jedoch einen kritischen Patzer, wodurch der Riot-Alarm frühzeitig ausgelöst wurde. Im darauffolgenden Gefecht erlitt der Ghost schweren Schaden; der Medic musste gewaltige 60MB an Bandbreite aufwenden, um seine Vitalwerte durch einen "Emergency Defib" zu stabilisieren. Mit den verbleibenden 50MB des Teams aktivierte der Ghost sein "Overclock"-Protokoll, schaltete den Riot-Leader mit einem Präzisionsschlag aus und sicherte die Extraktion. Die Mission war ein Erfolg, endete aber exakt bei 0MB Restressourcen – ein perfektes, aber bedrohlich knappes Zero-Sum.
+
+**Zentrales Balance-Feedback:**
+Die Heilungskosten des Medics sind im Vergleich zur Gefahrenstufe zu hoch (60MB für eine Notfallstabilisierung entsprechen fast 40% des gesamten Team-Budgets). Es wird empfohlen, die Ressourcenkosten für kritische Heilung auf 30-40MB zu senken oder dem Medic eine passive, kostenlose Basisheilung zu geben, da das Team sonst bei nur einem schlechten Wurf des Techs sofort an den Rand des Scheiterns getrieben wird.
 
 
 ---
 ## Session 29 Report
-### Playtest-Bericht: Session 29 – "The Riot"
+### Playtest-Bericht: Session 29 (Mission 01: The Riot)
 
-**Missions-Verlauf:**  
-Das Team (Medic, Tech, Infiltrator, Ghost) nutzte das Chaos des Aufstands, um in den gesperrten Sektor einzudringen. Der *Tech* beanspruchte direkt 90MB der gemeinsamen 150MB Zero-Sum-Bandbreite, um die Überwachungsdrohnen zu hacken. Dies ließ *Infiltrator* und *Ghost* für ihre taktischen Manöver kaum noch Handlungsspielraum. Als der *Ghost* bei der Datenextraktion entdeckt wurde, musste der *Medic* die verbleibenden 60MB opfern, um ein kritisches Notfall-Stim-Protokoll hochzuladen. Das Ziel wurde zwar erfolgreich extrahiert, aber das Team entkam nur haarscharf und mit massiven Systemschäden.
+**Team-Setup:** Medic, Tech, Infiltrator, Ghost
+**Missionsverlauf:** Das Team nutzte die chaotischen Unruhen optimal als Tarnung. Der Infiltrator würfelte einen kritischen Erfolg beim unbemerkten Eindringen in die Anlage, während der Ghost mit minimalem Datenverbrauch (20MB) die Patrouillen ablenkte. In Phase 3 patzte der Tech jedoch beim Hacken der Sicherheitstüren, was den Alarm auslöste. Die eskalierende Situation zwang den Medic dazu, massive 85MB aus dem gemeinsamen Zero-Sum-Pool für flächendeckende Notfallheilung auszugeben, um das Team am Leben zu halten.
+**Ausgang:** Mission knapp erfolgreich. Das Team konnte die Zieldaten extrahieren, entkam jedoch schwer verwundet und mit einem komplett aufgebrauchten Datenpool (0MB).
 
-**Ergebnis:** Ziel gesichert (Marginaler Sieg mit schweren Verlusten).
-
-**Zentrales Feedback zur Spielbalance:**  
-Die geteilte 150MB Zero-Sum-Mechanik führt zu extremem Ungleichgewicht: Wenn der *Tech* im ersten Zug einen Großteil der Bandbreite verbrennt, sind die anderen Klassen nahezu handlungsunfähig. Es wird dringend ein "Minimum-Reservierungs-Cap" (z.B. 20MB garantiert pro Spieler) oder eine dynamische Regenerationsrate pro Runde empfohlen, damit nicht ein Spieler aus Versehen das gesamte Team lahmlegt.
+**Zentrales Balancing-Feedback:**
+Der gemeinsame 150MB "Zero-Sum"-Datenpool ist für ein 4-Spieler-Team zu restriktiv, sobald ein Plan fehlschlägt. Da der Medic über die Hälfte des Pools zur Schadensbegrenzung verbrauchen musste, war der Ghost in der Fluchtphase faktisch handlungsunfähig, da keine MB für Stealth-Fähigkeiten übrig waren. 
+*Empfehlung:* Den Basis-Pool für 4 Spieler auf 200MB skalieren oder eine Mechanik ("Data-Scavenge") einführen, die bei kritischen Erfolgen im Kampf kleine Mengen (z.B. 10MB) an den Pool zurückerstattet.
 
 
 ---
 ## Session 30 Report
-Hier ist der Playtest-Bericht für Session 30, basierend auf der mentalen Simulation von "Mission 01: The Riot":
+### Playtest-Bericht: Session 30 (Mission 01 - The Riot)
 
-### Playtest-Bericht: Session 30 (Mission 01: The Riot)
-
-**Team:** Medic, Tech, Infiltrator, Ghost
-**Ausgang der Mission:** Teilerfolg. Das Team konnte erfolgreich in den eskalierenden Riot-Sektor eindringen. Der **Infiltrator** würfelte eine starke 18 beim Umgehen der vorderen Barrikaden und verschaffte dem Team unbemerkten Zutritt. Als überraschend Corp-Sec-Einheiten das Feuer eröffneten, gab der **Ghost** präzises Deckungsfeuer (Wurf: 16), während der **Medic** (Wurf: 14) die kritischen Wunden eines wichtigen Informanten stabilisierte. Die entscheidende Zero-Sum-Entscheidung traf der **Tech**: Er investierte 135MB seiner knappen 150MB in einen massiven Override der feindlichen Crowd-Control-Drohnen (Wurf: 19). Dies wendete das Blatt und ermöglichte die Flucht, ließ den Tech für den restlichen Rückzug jedoch völlig ohne systemische Ressourcen zurück.
+**Ausgang der Mission:**
+Die Gruppe konnte den Aufstand in Sektor 4 erfolgreich eindämmen, stieß dabei jedoch massiv an ihre Ressourcen-Grenzen. Der *Infiltrator* und der *Ghost* schalteten die Rädelsführer lautlos aus, während der *Tech* die Sicherheitssysteme mit einem gewagten 50MB-Daten-Upload überschrieb. Der *Medic* musste in der Hitze des Gefechts sein letztes Notfall-Skript opfern, um den Tech nach einem kritischen Patzer (Würfelwurf: 2) beim ersten Hacking-Versuch zu stabilisieren. Das Team entkam erfolgreich, verbrauchte jedoch 140MB der verfügbaren 150MB Zero-Sum-Bandbreite – ein extrem knapper, aber filmreifer Sieg.
 
 **Zentrales Feedback zur Spielbalance:**
-Die strenge Zero-Sum-Mechanik (150MB Limit) skaliert aktuell schlecht für Hacker- und Tech-Klassen. Ein einziger spielentscheidender Hack verbraucht nahezu die gesamten Ressourcen, wodurch der Charakter in den Folge-Runden zu Passivität gezwungen wird. Es wird empfohlen, "Daten-Stims" (z. B. +25MB Wiederherstellung) oder eine langsame Runden-Regeneration einzuführen, um Techs nach einem großen Move handlungsfähig zu halten.
+Die Zero-Sum-Kosten für Hacking-Aktionen des *Techs* sind im Vergleich zu physischen Aktionen unverhältnismäßig hoch. Wenn ein einzelner Hacking-Fehlschlag bereits ein Drittel des gesamten 150MB-Datenpools der Gruppe verschlingt, führt dies zu einer zu starken Limitierung der taktischen Vielfalt. Die Kosten für Basis-Hacks sollten leicht gesenkt oder durch erfolgreiche vorherige Aufklärung des *Ghosts* subventioniert werden können.
 
 
 ---
 ## Session 31 Report
-**Session 31: The Riot – Playtest-Bericht**
+### Playtest-Bericht: Session 31 (Mission 01 - The Riot)
 
-**Verlauf:**
-Die Gruppe infiltrierte den Aufstand im Sektor 4. Der Infiltrator patzte direkt beim ersten Stealth-Wurf (kritischer Fehlschlag), was die Konzernsicherheit alarmierte. Als die Gruppe eingekesselt wurde, traf der Tech die riskante *Zero-Sum (150MB)*-Entscheidung: Er opferte seine kompletten 150MB Datenressourcen, um die feindlichen Geschütze zu überlasten. Der Medic musste all seine Stims aufbrauchen, um den Ghost nach einem schweren Treffer im Kreuzfeuer am Leben zu halten. Letztlich konnte der Ghost dank der Ablenkung das Ziel-Terminal hacken und die Daten extrahieren.
-
-**Ausgang:**
-Mission erfolgreich abgeschlossen. Das Team konnte knapp entkommen, ist jedoch physisch stark angeschlagen und hat seine kompletten Zero-Sum-Datenreserven verbrannt.
+**Missionsausgang:**
+Das Team infiltrierte die Konzern-Anlage während des Aufstands erfolgreich. Der *Infiltrator* und *Ghost* umgingen die äußeren Barrikaden lautlos, während der *Tech* die Kameraschleifen manipulierte. Im Serverkeller eskalierte die Situation nach einem kritischen Patzer beim Würfeln: Wachdrohnen kreisten das Team ein und verletzten den *Ghost* schwer. In einer riskanten *Zero-Sum-Entscheidung* opferte der *Tech* 150MB der erbeuteten Zieldaten, um die internen Systeme der Drohnen zu überlasten. Dies rettete das Team, während der *Medic* den *Ghost* in letzter Sekunde stabilisierte. Die Mission endete als knapper Erfolg – das Team überlebte und entkam, aber die Ausbeute wurde drastisch dezimiert.
 
 **Zentrales Feedback zur Spielbalance:**
-Die *Zero-Sum (150MB)*-Mechanik ist aktuell als reine "Get-out-of-Jail-Free"-Karte zu stark. Der Tech konnte durch den simplen Einsatz dieser Ressource einen fast sicheren Total Party Kill (TPK) abwenden, ohne auf Widerstand würfeln zu müssen. Es wird empfohlen, den Einsatz solch großer Datenmengen in Stresssituationen an einen schwierigen Skill-Check zu koppeln oder die Auswirkungen auf schwere Hardware abzuschwächen.
+Die *Zero-Sum-Mechanik (150MB)* erweist sich in extremen Stresssituationen als zu einfacher „Get-out-of-Jail“-Ausweg. Wenn Spieler (wie hier der Tech) jederzeit Daten opfern können, um fatale Würfel-Patzer im Kampf automatisch auszugleichen, sinkt die empfundene Gefahr des Systems. **Empfehlung:** Das Opfern von 150MB sollte an einen zusätzlichen Stress- oder Hacking-Wurf gekoppelt werden oder permanente Nachteile für die Ausrüstung bringen, anstatt als garantierter Erfolg zu fungieren.
 
 
 ---
 ## Session 32 Report
-Hier ist der Bericht der simulierten Playtest-Session 32 für das Zero-Sum RPG:
+Hier ist der Bericht der simulierten **Session 32** für das Zero-Sum RPG:
 
-### Session 32: Mission 01 - The Riot (Simulationsbericht)
+### Playtest-Bericht: Mission 01 - The Riot (Session 32)
 
-**Team:** Medic, Tech, Infiltrator, Ghost
-**Ziel:** Eskorte einer VIP durch einen eskalierenden Aufstand in Sektor 4 unter Einhaltung des 150MB Zero-Sum-Limits (Neurale Belastung).
+**Team-Zusammensetzung:** Medic, Tech, Infiltrator, Ghost
+**Missionsausgang:** Teilweiser Erfolg mit schweren Verlusten.
 
-**Verlauf:**
-Ghost bezog Stellung und sicherte die Route (Wurf: 18, Erfolg). Der Infiltrator erreichte die VIP ungesehen (Wurf: 15), doch als der Mob die Barrikaden durchbrach, musste Tech eingreifen. Er investierte 40MB in einen EMP (Wurf: 12, knapper Erfolg), um feindliche Überwachungsdrohnen lahmzulegen. Auf dem Rückweg wurde die VIP verwundet. Der Medic war gezwungen, satte 60MB für ein riskantes Neural-Stimulanz aufzuwenden (Wurf: 19, voller Erfolg), um sie stabil zu halten. Das Team stand nun kritisch bei 145/150MB. Kurz vor der Evakuierungszone patzte der Infiltrator beim Schleichen (Wurf: 4). Ghost opferte die verbleibenden 5MB für einen synchronisierten Präzisionsschuss (Wurf: 20, Kritisch!), der den Weg im letzten Moment freimachte. Die Flucht gelang bei exakt 150MB.
-
-**Fazit:** Knapper Erfolg. Die VIP wurde gesichert und das Zero-Sum-Limit auf das letzte Megabyte ausgereizt.
+Der Infiltrator konnte die Sicherheitssysteme des Haupttors erfolgreich umgehen (Würfelwurf: 18), was dem Team einen frühen Vorteil verschaffte. Im Serverraum traf das Team jedoch auf unerwarteten Widerstand. Der Tech verbrauchte bei dem Versuch, die Zero-Sum-Daten (150MB Limit) in letzter Sekunde zu extrahieren, sein gesamtes Kontingent an Systemressourcen (Würfelwurf: 7 - kritischer Fehlschlag). Um den Tech zu retten, opferte der Medic seine Defensiv-Stimpacks, wodurch er beim Rückzug von den Riot-Drohnen niedergeschlagen wurde. Der Ghost nutzte eine EMP-Granate, um den Fluchtweg für die verbleibenden drei Mitglieder freizuräumen. Die 150MB an extrahierten Daten enthielten die gesuchten Riot-Protokolle, allerdings auf Kosten des Medics, der zurückgelassen werden musste. 
 
 **Zentrales Feedback zur Spielbalance:**
-Die Zero-Sum-Kosten für Support-Fähigkeiten (insbesondere das Neural-Stimulanz des Medics mit 60MB) skalieren zu aggressiv im Vergleich zu offensiven oder taktischen Aktionen. Fast die Hälfte des Team-Pools für eine einzige Heilung auszugeben, macht den Medic extrem unflexibel und bestraft das Team zu hart für unvermeidbaren Schaden. Eine Senkung der basalen Support-Kosten auf ca. 35-40MB würde die Entscheidungsfreiheit und den Spielfluss deutlich verbessern.
+Die Skalierung der Drohnen-Gegenwehr im Serverraum ist im Verhältnis zur verfügbaren Zeit für den 150MB-Datendownload zu steil. Tech-Charaktere sind gezwungen, riskante "Alles-oder-Nichts"-Würfe zu machen, um das Datenlimit rechtzeitig zu erreichen, was zu unverhältnismäßig hohen Ausfällen in der Gruppe führt. Es wird empfohlen, die Download-Rate leicht zu erhöhen oder die Drohnen-Spawns an den Hacking-Fortschritt zu koppeln, anstatt sie auf einem festen Timer basieren zu lassen.
 
 
 ---
 ## Session 33 Report
-### Playtest-Bericht: Session 33 (Mission 01: The Riot)
+Hier ist der Bericht der simulierten Playtest-Session:
 
-**Ausgang der Mission:**
-Das Team (Medic, Tech, Infiltrator, Ghost) infiltrierte den Sektor während des Aufstands erfolgreich, geriet jedoch bei der Datenextraktion in einen gefährlichen Engpass. Der *Infiltrator* scheiterte an einem kritischen Stealth-Wurf, was die patrouillierenden Sicherheitsdrohnen alarmierte. Durch ein riskantes Ablenkungsmanöver des *Ghost* und den schnellen, ressourcenintensiven Einsatz von Nano-Stims durch den *Medic* erkaufte sich das Team wertvolle Sekunden. Dadurch konnte der *Tech* die entscheidenden 150MB Zero-Sum-Daten unter schwerem Beschuss gerade noch herunterladen. Die anschließende Flucht verlief chaotisch und kostete fast alle verbleibenden Ressourcen. Die Mission gilt als knapper Erfolg (Team-Ressourcenverbrauch bei 95%).
+### Session 33: Mission 01 - The Riot (Playtest Report)
 
-**Feedback zur Spielbalance:**
-Die Zero-Sum-Mechanik (150MB Limit) erzwingt exzellente und spannende taktische Entscheidungen. Allerdings sind die Hacker-Proben für den *Tech* unter direktem Beschuss aktuell etwas zu strafend. Es wird empfohlen, eine Deckungs-Synergie oder eine Unterstützungs-Mechanik durch andere Klassen einzuführen, um Frustration bei Pechsträhnen zu minimieren und das Teamplay in diesen extremen Stresssituationen stärker zu belohnen.
+**Missionsverlauf:**
+*   **Infiltration:** Das Team drang im Schutz des Chaos in Sektor 4 ein. Der *Infiltrator* riskierte 20MB aus dem gemeinsamen 150MB-Ressourcenpool für optische Tarnung und schleuste die Gruppe unentdeckt am Mob vorbei.
+*   **Eskalation:** Im Innenhof traf das Team auf einen korrumpierten Riot-Control-Mech. Der *Tech* setzte aggressiv 60MB für einen System-Hack, scheiterte jedoch beim entscheidenden Würfelwurf. 
+*   **Schadensbegrenzung:** Der *Ghost* musste sofort reagieren und verbrannte 40MB für einen kinetischen Overclock-Angriff, um den Mech zu neutralisieren. Der *Medic* nutzte die letzten verbleibenden 30MB, um das Team vor dem finalen EMP-Gegenschlag des Mechs abzusichern.
+*   **Ausgang:** Mission erfolgreich. Das Ziel wurde gesichert, jedoch wurde das Zero-Sum-Limit der Ressourcen komplett ausgereizt, was das Team bei weiteren Komplikationen schutzlos gelassen hätte.
+
+**Zentrales Feedback zur Spielbalance:**
+Die *Tech*-Klasse wird durch das aktuelle "Alles oder Nichts"-System bei teuren Aktionen zu hart bestraft. Wenn ein massiver 60MB-Hack fehlschlägt, verliert die Gruppe fast die Hälfte ihrer Ressourcen ohne jeden Gegenwert. Es wird dringend empfohlen, für Einsätze ab 50MB eine "Partial Success"-Mechanik einzuführen, bei der zumindest ein Teilerfolg (z.B. Debuff des Gegners) erzielt oder ein Teil der Ressourcen rückerstattet wird.
 
 
 ---
 ## Session 34 Report
-### Playtest-Bericht: Session 34 (Mission 01: The Riot)
+### Session 34: Mission 01 - The Riot (Simulationsbericht)
 
 **Ausgang der Mission:**
-Die Mission begann chaotisch, als der Aufstand im Gefängnistrakt eskalierte. Der **Tech** nutzte 50MB seines Zero-Sum-Budgets, um die Sicherheitstüren zu hacken, scheiterte jedoch beim ersten Würfelwurf. Dies zwang den **Ghost**, 40MB für optische Tarnung auszugeben, um die herannahenden Wachen lautlos auszuschalten. Währenddessen versuchte der **Infiltrator**, durch die Lüftungsschächte zum Hauptterminal vorzudringen, musste aber 30MB für Ablenkungsmanöver opfern, da der Alarm bereits aktiv war. Bei der Flucht geriet das Team in einen Hinterhalt und erlitt schweren Schaden. Der **Medic** griff im letzten Moment ein und investierte die restlichen 30MB in eine experimentelle Notheilung. Die Gruppe konnte die Zieldaten erfolgreich extrahieren, verbrauchte das harte Limit von 150MB jedoch bis auf das letzte Byte.
+Das Team infiltrierte die streikende "Sector 4"-Fabrik. Der *Infiltrator* nutzte seine Tarnung, um die Wachen zu umgehen (erfolgreicher Wurf: 18), während der *Tech* das Sicherheitssystem hackte. Dabei investierte der Tech 120MB der geteilten 150MB-Ressource, was dazu führte, dass der *Ghost* bei der Cyber-Überwachung fast entdeckt wurde (Kritischer Patzer im Zero-Sum-Ausgleich). Ein Feuergefecht brach aus. Der *Medic* musste den Ghost mit experimentellen Naniten stabilisieren, was die restlichen 30MB verbrauchte. Ohne verbleibende Bandbreite für System-Upgrades musste das Team den Hauptrechner physisch sprengen, anstatt die Daten subtil zu stehlen. Sie entkamen knapp, aber das Missionsziel (Datenextraktion) wurde nur teilweise erfüllt, da die Serverstruktur stark beschädigt wurde.
 
 **Zentrales Feedback zur Spielbalance:**
-Das gemeinsame *Zero-Sum-Budget von 150MB* ist für ein 4-Spieler-Team extrem unnachgiebig. Ein einziger schlechter Wurf (wie beim Tech) zwingt die anderen Klassen zu teuren Notfall-Aktionen, wodurch der Medic am Ende kaum noch Ressourcen für Heilung hat; es wird empfohlen, das Basis-Budget auf 200MB zu erhöhen oder kleinere "Daten-Caches" als Belohnung im Level zu verstecken.
+Die gemeinsame "150MB Bandbreiten"-Ressource für Zero-Sum-Entscheidungen ist für 4 Spieler zu restriktiv. Wenn ein Spezialist (wie der Tech) für eine Kernaufgabe den Großteil der Ressource beansprucht, sind die anderen Klassen in kritischen Momenten mechanisch blockiert. Es wird empfohlen, die Basis-Bandbreite auf 200MB zu erhöhen oder klassenspezifische Puffer (z.B. 20MB dediziert pro Spieler) einzuführen, um "Dead Turns" für Mitspieler zu vermeiden.
 
 
 ---
 ## Session 35 Report
-Hier ist der Bericht der simulierten Playtest-Session:
+Hier ist der Bericht zur simulierten Session 35:
 
 ### Playtest-Bericht: Session 35 (Mission 01 - The Riot)
 
-**Team-Setup:** Medic, Tech, Infiltrator, Ghost
-**Missionsausgang:** Teilerfolg
+**Verlauf & Ausgang der Mission:**
+Das Team (Medic, Tech, Infiltrator, Ghost) nutzte das Chaos des Aufstands, um in den Corporate-Sektor einzudringen. Der Infiltrator gab früh 30MB der gemeinsamen Zero-Sum-Ressource aus, um Überwachungsdrohnen zu umgehen, würfelte jedoch kritisch daneben. Um den drohenden Alarm zu stoppen, musste der Tech sofort 40MB für eine Notfall-Überschreibung investieren. Im Zentrum des Riots wurde das Team in ein Feuergefecht verwickelt, bei dem der Ghost lebensgefährlich getroffen wurde. Der Medic verbrauchte daraufhin 50MB für ein riskantes Trauma-Protokoll, um den Ghost zu stabilisieren. Mit den letzten verbleibenden 30MB erzwang der Ghost den Durchbruch zur Zielzone und sicherte das Extraktions-Shuttle. Die Mission wurde knapp und unter extremem Druck erfolgreich abgeschlossen – der Zero-Sum-Pool landete exakt bei 0MB.
 
-Die Unterdrückung des Aufstands im "Riot"-Sektor verlief anfangs nach Plan. Der Ghost glänzte mit einem perfekten Stealth-Wurf (19/20), wodurch das Team unbemerkt in die Kommandozentrale eindringen konnte. Beim Versuch, den Hauptserver zu knacken, scheiterte der Tech jedoch an der Firewall (Wurf: 4/20), was den stillen Alarm auslöste. Das Team stand vor einer kritischen *Zero-Sum-Entscheidung*: Die 150MB Speicherlimit für einen offensiven Schadens-Boost des Infiltrators ausreizen oder in Schilde investieren? Sie entschieden sich für den Angriff. Zwar konnten sie die anrückenden Wachen schnell ausschalten, aber der fehlende Schutz führte zu kritischem Schaden beim Medic. Nur durch den letzten Adrenalin-Wurf (15/20) konnte das Team mit den halben Zieldaten (75MB) rechtzeitig den Extraktionspunkt erreichen, bevor die Verstärkung eintraf.
-
-**Zentrales Balance-Feedback:**
-Das 150MB Zero-Sum-Limit bestraft defensive Setups momentan zu stark. Wenn Spieler ihre MB-Ressourcen voll in Schadens-Upgrades investieren, fallen die Heilungskosten des Medics im Nachgang unverhältnismäßig hoch aus. Es wird empfohlen, die Basiskosten für defensive Deflektor-Schilde um 20MB zu senken, um eine ausgewogenere Risikoverteilung zwischen Offensive und Defensive zu fördern.
+**Zentrales Feedback zur Spielbalance:**
+Die kollektive Zero-Sum-Ressource von 150MB ist für 4 Spieler extrem knapp bemessen und erzeugt eine hervorragende Anspannung. Allerdings sind Tech-Fähigkeiten (System-Hacks) im Vergleich zu Combat-Medic-Aktionen überproportional teuer. Dies führte in der Simulation dazu, dass der Tech-Spieler zögerte, proaktiv zu agieren, um Budget für unvermeidbare Heilung (Medic) aufzusparen. Eine leichte Reduktion der MB-Kosten für Tech-Fertigkeiten oder eine separate kleine Pool-Ressource für Hacking würde die Spieler-Synergie verbessern.
 
 
 ---
 ## Session 36 Report
-### Spielbericht: Session 36 – Mission 01 "The Riot"
+Hier ist der Bericht der simulierten Session 36:
 
-**Status:** Mission teilweise erfolgreich, Daten gesichert, aber schwere interne Spannungen.
-- **Infiltrator** würfelte eine kritische 19 bei der Manipulation der Massen und lenkte den Aufstand erfolgreich als Deckung zum Haupttor des Konzerns.
-- **Tech** versuchte das Sicherheitssystem lahmzulegen, patzte jedoch (Wurf: 4) und verlor 50MB seiner persönlichen Reserven an die feindliche ICE-Abwehr (Zero-Sum-Mechanik).
-- **Ghost** nutzte das Chaos für die Infiltration und stahl erfolgreich die Ziel-Daten (Wurf: 17). Bei der Verteilung des 150MB-Missions-Loots entschied er sich für eine Ego-Aktion und transferierte heimlich 80MB auf sein privates Konto.
-- **Medic** musste den Tech nach einem Drohnenangriff stabilisieren (Wurf: 15) und zwang ihn im Gegenzug, weitere 20MB für die medizinischen Vorräte abzutreten.
-- **Fazit:** Das Team entkam knapp durch die Kanalisation. Das Missionsziel wurde erreicht, aber durch die harten Ressourcen-Deals am Ende der Mission ist das Vertrauen der Truppe stark zerrüttet.
+# Playtest-Bericht: Session 36 (Mission 01: The Riot)
 
-### Zentrales Feedback zur Spielbalance
-Die harte **Zero-Sum-Ressourcenmechanik (wie die Aufteilung der 150MB)** fördert ein toxisches PvP-Verhalten in einem eigentlich kooperativen Setting. Da Support-Klassen wie der Medic ihre Aktionen direkt aus dem Loot-Pool oder von anderen Spielern bezahlen lassen müssen und der Tech bei Fehlwürfen direkt Ressourcen an die Bank verliert, sind Stealth-Klassen (Ghost/Infiltrator) massiv im Vorteil. **Empfehlung:** Führe einen separaten "Team-Pool" für Support-Aktionen ein, damit Heilung und Hacking das Team nicht finanziell gegeneinander ausspielen.
+**Team-Zusammensetzung:** Medic, Tech, Infiltrator, Ghost
+**Missionsziel:** Extraktion der Zero-Sum-Protokolle (150MB) während eines laufenden Aufstands.
+
+**Verlauf:**
+- **Infiltration:** Der Ghost würfelte extrem gut (18 und 19) und schleuste das Team ungesehen durch die chaotischen vorderen Sektoren.
+- **Der Hack:** Im Serverraum musste der Tech die 150MB-Daten sichern. Die Würfe (11, 14, 12) waren nur durchschnittlich, wodurch der Download-Prozess drei volle Runden dauerte und der stille Alarm ausgelöst wurde.
+- **Konfrontation:** Sicherheitstruppen stürmten den Raum. Der Infiltrator patzte bei einem Ablenkungsmanöver (Wurf: 4) und erlitt schweren Schaden, den der Medic mit einer knappen Heilung (Wurf: 15) stabilisieren musste.
+- **Zero-Sum Entscheidung:** Bei 120MB stürzte das Netzwerk fast ab. Das Team stand vor der Zero-Sum-Entscheidung: Die verbleibenden 30MB mit kritischen Überlebensdaten der Riot-Anführer herunterladen oder die Bandbreite nutzen, um die Sicherheitstüren für eine sichere Flucht zu blockieren. Das Team wählte die Türen und opferte die Restdaten. 
+- **Ergebnis:** Mission ein Teilerfolg (120/150MB gesichert), Team ist knapp und stark verwundet entkommen.
+
+**Zentrales Feedback zur Spielbalance:**
+Die Mechanik zum Herunterladen großer Datenmengen (wie hier die 150MB) bestraft heimliches Vorgehen zu stark. Wenn der Tech nur durchschnittlich würfelt, eskaliert die Situation durch die feste Download-Dauer unausweichlich in einen Kampf. Es sollte eine Mechanik geben, bei der vorbereitende Aktionen der anderen Klassen (z.B. der Ghost manipuliert im Vorfeld die Bandbreite) Boni auf die Hacking-Geschwindigkeit des Techs geben, um die Synergie bei Extraktions-Missionen zu belohnen.
 
 
 ---
 ## Session 37 Report
-Hier ist der Bericht zur simulierten Session 37:
+**Spielbericht: Session 37 – Mission 01: The Riot**
 
-### Session 37: The Riot - Einsatzbericht
-
-**Verlauf der Mission:**
-Das Team nutzte den Straßenaufstand als Deckung, um in die Anlage einzudringen. Der *Infiltrator* schaffte es mit extrem guten Würfen, die biometrischen Scanner am Nordtor zu umgehen, während der *Ghost* lautlos zwei Wachposten auf den Dächern ausschaltete. Im Serverraum kam es zur Eskalation: Die Riot-Police stürmte den Raum. Der *Medic* musste massiv Ressourcen verbrennen, um den Ghost nach einem kritischen Treffer zu stabilisieren. Der *Tech* stand schließlich vor der zentralen 150MB Zero-Sum-Entscheidung: Er lud die verschlüsselten Beweisdaten herunter, musste dafür aber das Ablenkungsprotokoll überschreiben, was den Fluchtweg erheblich erschwerte. Die Evakuierung gelang nur knapp mit verbleibenden minimalen Hitpoints.
-
-**Ergebnis:**
-* Status: Mission erfolgreich
-* Überlebende: 4/4 (Ghost schwer verwundet)
-* Zero-Sum-Limit: 150/150 MB ausgereizt (Beweisdaten gesichert)
-
----
+Das Team infiltrierte die tobenden Ausschreitungen in Sektor 4. Der *Tech* startete stark und hackte erfolgreich die Überwachungssysteme der Riot-Drohnen (-50MB). Der *Infiltrator* nutzte seinen optischen Tarnmantel (-30MB), um die Barrikaden ungesehen zu passieren. Die Situation eskalierte, als der *Ghost* bei der Erschaffung eines Ablenkungshologramms (-40MB) einen kritischen Patzer würfelte und schweres Feuer der Konzerntruppen auf sich zog. Der *Medic* musste im Kreuzfeuer die gesamten verbleibenden Team-Ressourcen (-30MB) für Notfall-Naniten und Stim-Packs aufbrauchen, um den Ghost vor dem Permadeath zu bewahren. Das Team konnte die Zieldaten im Chaos zwar extrahieren, entkam jedoch mit exakt 0MB Restressourcen haarscharf der totalen Auslöschung.
 
 **Zentrales Feedback zur Spielbalance:**
-Die Schadensskalierung der "Riot Police" im späten Verlauf der Mission ist im Vergleich zu den defensiven Möglichkeiten der Spieler zu hoch. Während der *Tech* mit der Zero-Sum-Entscheidung (Datenextraktion) beschäftigt ist und ausfällt, kann der *Medic* den extremen eingehenden Schaden (insbesondere durch Flächenangriffe wie Tränengas/Blendgranaten) selbst bei guten Würfeln kaum kompensieren. Eine kleine Anpassung der Rüstungswerte der Spieler oder die Einführung einer passiven Defensiv-Fähigkeit für den Tech während des Hackings würde diese Engstelle entschärfen.
+Die harte Deckelung auf 150MB im Zero-Sum-System erzeugt enorme Spannung und erzwingt perfektes Teamwork. Allerdings führt ein einziger schlechter Würfelwurf (wie beim Ghost) sofort zu einer fast unlösbaren Abwärtsspirale, da keine Puffer-Ressourcen existieren. Es wird empfohlen, eine kleine "Scavenge"-Mechanik einzuführen, durch die riskante, offensive Aktionen minimale MB-Beträge (z. B. 5-10MB) regenerieren können, um etwas Frustrationstoleranz bei Pechsträhnen zu schaffen.
 
 
 ---
 ## Session 38 Report
-Hier ist der Bericht aus der mentalen Simulation der Session 38:
+### Spielbericht: Session 38 – "The Riot"
 
-### Spielbericht: Session 38 – Mission 01: The Riot
+**Einsatzverlauf:** 
+Das Team startete taktisch klug. Der Ghost knackte die Sicherheitsschleusen (W20: 12, Teilerfolg – 30MB Pool-Kosten). Der Infiltrator nutzte seinen eigenen 15MB Shadow-Cache für optische Tarnung, um unbemerkt vorzurücken. Als Riot-Drohnen das Feuer auf Zivilisten eröffneten, reagierte der Tech mit einem schnellen Combat-Hack (W20: 16, Erfolg – 40MB). Ein getroffener Zivilist wurde vom Medic per Notfall-Stabilisierung gerettet (W20: 20, Kritischer Erfolg – 30MB Kosten, aber 10MB Rückgewinnung in den Pool).
 
-Die Unruhen im Sektor 4 boten die perfekte Deckung. Der **Infiltrator** versuchte, unbemerkt in den Kontrollraum vorzudringen, warf jedoch einen kritischen Fehlschlag. Um den Alarm zu blockieren, musste der **Tech** sofort 50MB aus dem gemeinsamen Zero-Sum-Pool (150MB) aufwenden. Als kurz darauf Sicherheitstruppen das Feuer eröffneten, hielt der **Ghost** die Gegner aus dem Hinterhalt in Schach, steckte jedoch schwere Treffer ein. Der **Medic** war gezwungen, weitere 80MB für eine Notfallheilung zu opfern, um das Überleben des Teams zu sichern. Mit nur noch 20MB Restkapazität gelang dem Infiltrator schließlich der Datenextrakt, und das Team konnte in letzter Sekunde fliehen – ein extrem knapper, aber erfolgreicher Abschluss.
+**Der Mainframe-Twist & Entscheidung:** 
+Am Server angekommen, stand das Team vor dem 180MB-Problem. Obwohl sie noch über 60MB in ihrem gemeinsamen Pool verfügten, sprengte das gesamte Paket (Riot-Codes + Beweise) ihr 150MB Hard-Limit. Anstatt nur die Drohnen zu stoppen (60MB) oder nur die Beweise zu sichern (15MB), entschied sich der Tech für ein radikales *Overclocking*. Er saugte die gesamten 180MB herunter und erlitt eine *Skill Atrophy*, bei der er unwiederbringlich die Erinnerung an seinen Bruder löschen musste, um den nötigen neuronalen Speicherplatz für das Team freizugeben. Sektor 4 ist gerettet.
 
-**Zentrales Balance-Feedback:**
-Das Limit von 150MB für den Zero-Sum-Pool ist für ein vierköpfiges Team sehr hart bestraft, insbesondere wenn unglückliche Würfelwürfe eintreten. Da essenzielle Rettungsaktionen (wie Hacking-Failsaves oder Notfallheilung) bereits über 80% des Pools verschlingen, tendieren die Spieler zu extremer Risikovermeidung; eine leichte Erhöhung auf 200MB oder klassenspezifische Notfall-Puffer könnten den Spielfluss dynamischer machen.
+**Zentrales Feedback zur Spielbalance:**
+Der in Patch v1.2 eingeführte *Shadow-Cache* (15MB) ist ein brillanter Fix; der Infiltrator und Medic fühlten sich dadurch nicht mehr vom Tech "gedrosselt". Allerdings gibt es eine Diskrepanz beim Twist: Wenn Drohnen (60MB) und Beweise (15MB) als Einzelaktionen nur 75MB kosten, fühlt sich die starre Vorgabe, dass beide Pakete *zusammen* 180MB wiegen, für ressourcensparende Spieler nach künstlichem Railroading an. Die narrative Twist-Größe sollte dynamisch an den restlichen Pool der Spieler gekoppelt werden, um das gute Ressourcen-Management wertzuschätzen.
 
 
 ---
 ## Session 39 Report
-### Playtest-Bericht: Session 39 (Mission 01: The Riot)
+### Playtest-Bericht: Session 39 – Mission 01: The Riot
 
-**Ausgang der Mission:**
-Das Team infiltrierte die Unruhezone erfolgreich. Der Infiltrator und der Ghost verbrauchten initial 45MB des gemeinsamen Zero-Sum-Pools (150MB) für Tarnung und lautloses Ausschalten der Vorposten. Der Tech musste beim Hacken des Riot-Control-Netzwerks 75MB riskieren, um nach einem schlechten Würfelwurf einen kritischen Alarm zu verhindern. Dies ließ dem Medic in der finalen Fluchtphase nur noch 30MB, um die Wunden des Infiltrators nach einem Querschläger zu stabilisieren. Die Zielperson wurde extrahiert, aber die Ressourcen waren am Ende komplett erschöpft (0MB übrig). Ein äußerst knapper Erfolg, der nur durch koordiniertes Ressourcenmanagement möglich war.
+* **Verlauf:** Die Mission eskalierte, als der **Infiltrator** beim Hack des Sicherheitstors kritisch patzte (Wurf: 2). Der **Tech** musste sofort 50MB des Zero-Sum-Datenpools investieren, um provisorische Barrikaden-Protokolle zu aktivieren. 
+* **Wendepunkt:** Der **Ghost** konnte im Tarnmodus zwar die Rädelsführer ausschalten (Wurf: 18), doch die Meute drohte die Gruppe zu überrennen. Der **Medic** traf daraufhin eine harte 100MB Zero-Sum-Entscheidung: Er überlud sein experimentelles Flächen-Stimpack, um dem Team einen massiven Buff für den Durchbruch zu geben – opferte dafür aber all seine verbleibenden Heil-Ressourcen.
+* **Ausgang:** Die Gruppe konnte mit den gesicherten Zieldaten in letzter Sekunde per Evac entkommen. Alle überlebten knapp, das 150MB Limit war jedoch restlos aufgebraucht.
 
-**Zentrales Feedback zur Spielbalance:**
-Die "Zero-Sum"-Mechanik mit einem geteilten Pool von 150MB erzeugt exzellente Spannung, bestraft aber Klassen wie den Tech bei schlechten Würfen unverhältnismäßig hart. Es wird empfohlen, den Pool entweder auf 180MB zu skalieren oder eine Mechanik einzuführen, bei der Spieler durch kritische Erfolge kleine Datenmengen (z.B. +10MB) ins System zurückgewinnen können, um einen echten "Zero-Sum"-Ausgleich zu schaffen.
+**Zentrales Balance-Feedback:**
+Das harte 150MB Zero-Sum-Cap ist für die **Medic**-Klasse in kritischen Situationen zu restriktiv. Wenn starke Flächen-Effekte 100MB fressen, bleibt keine Bandbreite mehr für elementare Heil-Aufgaben; die Datenkosten für solche Notfall-Buffs sollten auf maximal 75MB gesenkt werden.
 
 
 ---
 ## Session 40 Report
-### Session 40: Mission 01 – The Riot (Playtest-Bericht)
+### Playtest-Bericht: Session 40 - "Mission 01: The Riot"
 
-**Verlauf:**
-Das Team (Medic, Tech, Infiltrator, Ghost) infiltrierte die Aufstandszone erfolgreich über die Wartungsschächte, nachdem Ghost einen kritischen Stealth-Wurf landete. Im Hauptkomplex eskalierte die Situation: Der Infiltrator zog das Feuer der Riot-Drones auf sich und erlitt schweren Schaden. Der Medic war gezwungen, 60MB seines Zero-Sum-Budgets für ein experimentelles Flächen-Heal-Protokoll zu verbrennen. Um die Fluchtroute zu sichern, investierte der Tech 80MB in einen Brute-Force-Hack der Sicherheitstore – ein massiver Ressourcenverbrauch, der ihn fast handlungsunfähig machte. Dank der Ablenkung konnte Ghost den VIP sichern, doch die knappen Zero-Sum-Reserven am Ende machten den Rückzug extrem riskant. Die Mission war ein knapper, blutiger Erfolg.
+**Missionsausgang:**
+Das Team (Medic, Tech, Infiltrator, Ghost) infiltrierte den von Unruhen erschütterten Sektor 4, um die korrumpierten Hauptterminals zu sichern. Während der *Ghost* die patrouillierenden Sicherheitskräfte unbemerkt umging, geriet das Team am Knotenpunkt unter schweren Beschuss. Der *Tech* verbrannte fast sein gesamtes Zero-Sum-Limit (150MB), um gegnerische Drohnen zu übernehmen, was das Team vor dem Auslöschen bewahrte. Der *Infiltrator* nutzte die Ablenkung, um die Terminals zu knacken, während der *Medic* das Team unter schwerem Feuer mit Notfall-Stims am Leben hielt. Die Mission war ein knapper Erfolg, jedoch musste das Team am Ende völlig ohne Bandbreiten-Reserven über die Notluken fliehen.
 
-**Zentrales Balance-Feedback:**
-Das "Zero-Sum (150MB)"-Limit skaliert bei intensiven Konfrontationen für den Tech-Spieler zu schlecht. Ein einzelner komplexer Hack (80MB) verbraucht mehr als die Hälfte der Ressourcen, was den Spieler für den Rest der Mission zu passiv macht; die Hack-Kosten sollten auf ca. 40-50MB gesenkt oder durch erfolgreiche Aktionen regenerierbar gemacht werden.
+**Zentrales Feedback zur Spielbalance:**
+Die harte Grenze von 150MB für Zero-Sum-Entscheidungen bestraft den *Tech* bei Drohnen-Begegnungen zu stark. Es wird empfohlen, die Kosten für offensive Hacks (aktuell oft 40-50MB) zu senken oder eine Mechanik einzuführen, mit der durch kritische Erfolge bei taktischen Würfeln kleine Mengen an Bandbreite (z.B. 10-15MB) im Kampf zurückgewonnen werden können, um längere Gefechte dynamischer zu gestalten.
 
 
 ---
 ## Session 41 Report
-### Zero-Sum RPG - Playtest-Bericht: Session 41
+### Playtest-Bericht: Session 41 – Mission 01 (The Riot)
 
-**Mission 01: The Riot**
-* **Team:** Medic (Nova), Tech (Glitch), Infiltrator (Shade), Ghost (Cipher)
-* **Verlauf:** Das Team infiltrierte die Corpo-Anlage während eines Aufstands. *Ghost* umging die Sensoren erfolgreich (Crit Success), während *Tech* die Kameras hackte (Erfolg). Im Serverraum kam es zum Konflikt: Die Extraktion der Daten überschritt das 150MB Zero-Sum-Limit. *Infiltrator* entschied sich, 50MB an Corpo-Paydata für sich selbst abzuzweigen, wodurch *Medic* gezwungen war, auf lebensrettende Bio-Scans des Riot-Leaders zu verzichten. 
-* **Ausgang:** Die Mission war ein Teilerfolg. Die Basisdaten wurden gesichert, aber die fehlenden Bio-Scans führten zum Tod des Riot-Leaders. Das Team entkam knapp, ist jedoch aufgrund von Infiltrators Egoismus stark zerstritten.
+**Team-Zusammensetzung:** Medic, Tech, Infiltrator, Ghost
+**Missionsverlauf:** Die Infiltration des Riot-Sektors verlief anfangs nach Plan. Der Ghost investierte 30MB des Zero-Sum-Pools, um patrouillierende Drohnen lautlos zu umgehen, während der Tech für 40MB die Sicherheitsschleusen überbrückte. Als die Situation eskalierte und der Mob die Barrikaden durchbrach, geriet das Team ins Kreuzfeuer. Der Infiltrator nutzte 30MB für taktische Täuschungsmanöver, wurde aber schwer getroffen. Der Medic war gezwungen, massive 50MB aufzuwenden, um ihn mit experimentellen Stims am Leben zu halten.
+**Ausgang:** Mission erfolgreich. Das Team konnte die Zielperson extrahieren, brannte jedoch den gesamten kollektiven 150MB-Ressourcenpool restlos aus und entkam nur knapp dem Permadeath.
 
-**Zentrales Balance-Feedback:** 
-Die 150MB Zero-Sum-Mechanik erzwingt fantastisches Roleplay, aber der *Infiltrator* hat durch seine heimlichen Extraktions-Fähigkeiten einen zu großen Vorteil beim Abzweigen der Daten. Die Klasse *Medic* leidet zu stark, wenn das Datenlimit erreicht wird, da ihre Heil- und Scan-Fähigkeiten zu viel "Speicherplatz" im Zero-Sum-Pool verbrauchen. Die Datenkosten für defensive/unterstützende Fähigkeiten sollten leicht gesenkt (oder priorisiert) werden.
+**Zentrales Feedback zur Spielbalance:**
+Die Heilkosten des Medics (50MB für eine kritische Stabilisierung) sind im Verhältnis zum fixen 150MB Zero-Sum-Pool zu strafend. Ein einziger schwerer Treffer konsumiert ein Drittel der gesamten Teamressourcen und schränkt die Handlungsfähigkeit der anderen Klassen für den Rest der Mission massiv ein. Es wird empfohlen, die Grundkosten für kritische Heilungen auf 30MB zu senken oder dem Medic eine passive, ressourcenfreie (aber langsamere) Heilungsfähigkeit zu geben.
 
 
 ---
 ## Session 42 Report
-Hier ist der Bericht der simulierten Session 42:
+Hier ist der Bericht zur simulierten **Session 42** des Zero-Sum RPGs:
 
-### Playtest-Bericht: Session 42 (Mission 01 - The Riot)
+### Missionsbericht: The Riot (Session 42)
+Das Team infiltrierte die Unruhezone durch die Kanalisation. Der **Infiltrator** würfelte kritisch beim Knacken des Main-Gates, was den Alarm komplett unterdrückte. Im Hof stieß die Gruppe auf schwere Riot-Bots. Der **Tech** nutzte 50MB seines Zero-Sum-Speichers für einen EMP-Burst, um die Bots lahmzulegen, reduzierte damit aber seine Restkapazität drastisch. Der **Ghost** nutzte die Ablenkung für einen tödlichen Takedown des Sektor-Commanders, scheiterte jedoch beim Stealth-Wurf, was zu schwerem Gegenfeuer führte. Der **Medic** opferte seine letzten 80MB Zero-Sum-Speicher für eine Flächenheilung, um das Team vor dem Wipe zu bewahren. Mit vereinten Kräften und erschöpften Ressourcen entkam die Truppe knapp durch den Evakuierungstunnel. 
 
-**Ausgang der Mission:**
-Das Team konnte die Eskalation im Sektor 4 eindämmen, stand jedoch kurz vor einem Totalausfall. Der *Infiltrator* schaltete zwar die Alarmsysteme aus, scheiterte jedoch kritisch beim Hack des Haupttores. Der *Tech* musste daraufhin seine gesamten verbleibenden Ressourcen nutzen, um das Tor manuell kurzzuschließen. Während der *Ghost* die Riot-Leader im Feuergefecht auf Distanz hielt, erlitt er schweren Schaden. Der *Medic* musste das Team am Leben halten und brannte dabei rasend schnell durch das kollektive 150MB Zero-Sum-Limit. Das Team konnte mit den Zieldaten entkommen, musste die Zivilisten jedoch zurücklassen, da das Limit restlos erschöpft war und keine weiteren Aktionen mehr zuließ. 
+**Ergebnis:** Mission erfolgreich, aber Ressourcen-Pool (Zero-Sum) des Teams fast vollständig erschöpft.
 
-**Zentrales Feedback zur Spielbalance:**
-Das harte 150MB Zero-Sum-Limit bestraft reaktives Spielen und Heilung extrem. Der Medic verbraucht im Kampf das kollektive Ressourcen-Budget so stark, dass entscheidende Fähigkeiten von Tech und Infiltrator im Endgame blockiert werden. Die Ressourcenkosten für Heilung sollten reduziert oder durch einen kleinen, klassenspezifischen Notfall-Pool entlastet werden, um das Team-Play belohnender zu gestalten.
+### Balance-Feedback
+**Zero-Sum Economy:** Die Kosten für flächendeckende Rettungsaktionen (wie die Flächenheilung des Medics) im Verhältnis zum maximalen Zero-Sum-Speicher (150MB) sind zu hoch. Wenn ein einzelner Fehler (wie der gescheiterte Stealth-Wurf des Ghosts) fast die gesamten Gruppenressourcen aufzehrt, zwingt dies Spieler in eine zu defensive und risikoaverse Spielweise. Es wird empfohlen, die Kosten für Support-Fähigkeiten um 20-30% zu senken oder passive Regenerationsmöglichkeiten während der Mission einzuführen.
 
 
 ---
 ## Session 43 Report
-### Playtest-Bericht: Session 43 (Mission 01: The Riot)
+Hier ist der Bericht aus der mentalen Simulation der Session 43:
 
-**Ausgang der Mission:**
-Die Gruppe infiltrierte den Aufstands-Sektor erfolgreich, jedoch nicht ohne Komplikationen. Der *Infiltrator* nutzte das Chaos, um unbemerkt die Barrikaden zu passieren (Würfelwurf: 18/20), während der *Tech* das Haupt-Sicherheitssystem der Konzern-Zentrale lahmlegte. Als der *Ghost* das Zielobjekt ausschaltete, geriet das Team in einen massiven Hinterhalt. Der *Medic* musste all seine Fähigkeiten aufbieten, um den schwer getroffenen Ghost am Leben zu erhalten (Würfelwurf: 15/20). Bei der finalen Flucht stand das Team vor der alles entscheidenden **Zero-Sum (150MB)**-Entscheidung: Um die rettende Extraktions-KI zu bezahlen, transferierte der Tech 100MB seiner eigenen kritischen Systemdaten, während der Infiltrator die restlichen 50MB beisteuerte. Das Team entkam knapp, aber erfolgreich, wenn auch mit stark dezimierten Datenreserven.
+# Playtest-Bericht: Session 43 (Mission 01: The Riot)
+
+**Verlauf & Ausgang:**
+Das Team (Medic, Tech, Infiltrator, Ghost) nutzte den andauernden Straßenaufstand, um unbemerkt in das Konzerngebäude einzudringen. Der Ghost und der Infiltrator schalteten die Wachen im Serverraum lautlos aus, während der Medic den Fluchtweg absicherte. Am Hauptterminal kam es zur titelgebenden **Zero-Sum-Entscheidung**: Die verfügbare Speicherkapazität des externen Drives betrug exakt 150MB. Das Team musste sich entscheiden, ob sie die wertvollen Forschungsdaten (120MB) stehlen oder die belastenden Überwachungsvideos des Aufstands (90MB) löschen. Nach einer hitzigen Diskussion entschied sich das Team für die Forschungsdaten und versuchte einen riskanten, teilweisen Download der Videos. Ein Patzer des Techs beim Würfeln führte dazu, dass der Alarm ausgelöst wurde. Das Team konnte unter schwerem Beschuss entkommen, wurde aber durch die verbleibenden Videos eindeutig identifiziert. Die Mission endete als knapper, aber sehr verlustreicher Erfolg.
 
 **Zentrales Feedback zur Spielbalance:**
-Die Skalierung der Heilungskosten für den *Medic* ist im Vergleich zum massiven AoE-Schaden der Gegner zu steil. In kritischen Phasen erzwingt dies eine fast unweigerliche Daten-Erschöpfung, wodurch die "Zero-Sum"-Entscheidungen am Ende zu oft die Überlebensfähigkeit der nicht-kämpfenden Klassen (Tech/Medic) unverhältnismäßig stark bestrafen.
+Das harte "Zero-Sum"-System (150MB) erzwingt brillante, spannende Rollenspielmomente und Opfer. Allerdings hängt der Erfolg dieser kritischen Phasen mechanisch fast ausschließlich am Würfelglück des *Techs*. Wenn der Tech patzt, gibt es für den Rest des Teams kaum Ausweichmöglichkeiten. **Empfehlung:** Gebt anderen Klassen kleine Support-Mechaniken für das Ressourcenmanagement (z.B. "Physische Festplatte extrahieren" für den Infiltrator oder "Adrenalin-Boost" durch den Medic, der dem Tech einen Reroll gewährt), um das Spotlight im Finale besser auf das ganze Team zu verteilen.
 
 
 ---
 ## Session 44 Report
-Hier ist der Bericht der Gedanken-Simulation für Session 44 basierend auf den Vorgaben:
+**Session 44: Mission 01 - The Riot (Simulationsbericht)**
 
-### Session 44: Mission 01 – The Riot (Playtest-Bericht)
-
-**Verlauf:**
-Das Team (Medic, Tech, Infiltrator, Ghost) infiltrierte den Zielsektor mitten im eskalierenden Aufstand. Der Infiltrator umging die Sicherheitsprotokolle des Haupttors (Würfelwurf: 18, Kosten: 50MB Data-Load), während der Ghost sich per Optik-Tarnung (Würfelwurf: 15, Kosten: 60MB) in Stellung brachte. Als die Menge durchzubrechen drohte, aktivierte der Tech seinen Sonic-Emitter zur Crowd-Control (Würfelwurf: 12, Kosten: 20MB), unterstützt durch die kognitiven Neuro-Stims des Medics (Würfelwurf: 19, Kosten: 20MB). 
-
-**Ergebnis:**
-Das Team reizte das Zero-Sum Limit von exakt 150MB in der entscheidenden Phase perfekt aus. Der Aufstand konnte gewaltfrei eingedämmt und das VIP-Ziel gesichert werden. Da die Bandbreite jedoch völlig erschöpft war, mussten sie den Rückzug komplett analog und ohne Systemhilfen antreten, was fast zu Verlusten geführt hätte.
+* **Ausgangslage:** Die Gruppe (Medic, Tech, Infiltrator, Ghost) infiltriert den Sektor 4 während eines andauernden Aufstands, um gestohlene Forschungsdaten zu bergen.
+* **Verlauf:** Der *Infiltrator* umging die äußeren Barrikaden erfolgreich, scheiterte jedoch an einem unerwarteten Sicherheitsscanner. Der *Tech* musste intervenieren und verbrauchte frühzeitig einen Großteil seines Zero-Sum-Budgets (60MB), um das System zu hacken. Im Serverraum wurden sie von Sicherheitstruppen überrascht. Der *Ghost* schaltete zwei Wachen präzise aus, erlitt aber kritischen Schaden. Der *Medic* stabilisierte den Ghost unter hohem Ressourceneinsatz (45MB). 
+* **Entscheidung (Zero-Sum):** Beim Download der Daten (150MB Limit) entschied sich die Gruppe, auf die optionalen Waffen-Blaupausen zu verzichten, um stattdessen die Fluchtroute des *Techs* mit verbleibenden 45MB zu sichern.
+* **Ergebnis:** Mission erfolgreich abgeschlossen. Daten gesichert, keine Verluste.
 
 **Zentrales Feedback zur Spielbalance:**
-Das harte 150MB Zero-Sum-Limit erzwingt hochspannendes Teamwork und Ressourcenmanagement, lässt aber bei einem Fehlschlag eine "Death Spiral" entstehen. *Empfehlung:* Einführung einer "Overclocking"-Mechanik – Spieler sollten das 150MB-Limit kurzzeitig überschreiten dürfen, bezahlen dies dann jedoch zwingend mit physischem oder mentalem Schaden (HP/Sanity-Verlust) an ihren Charakteren, um in ausweglosen Situationen mehr taktische Flexibilität zu haben.
+Die Zero-Sum-Ressourcenbindung (150MB) führt aktuell dazu, dass der *Tech* und *Medic* in Stresssituationen unverhältnismäßig viel Budget verbrauchen, was die Handlungsfähigkeit von *Infiltrator* und *Ghost* im Endgame stark einschränkt. Eine leichte Erhöhung des Basis-Budgets oder rollenspezifische Notfall-Puffer würden das Teamplay dynamischer gestalten.
 
 
 ---
 ## Session 45 Report
-### Session 45 - Playtest-Bericht: Mission 01 "The Riot"
+Hier ist der Bericht der simulierten **Session 45** des Zero-Sum RPGs:
 
-**Missionsausgang:**
-Das Squad (Medic, Tech, Infiltrator, Ghost) infiltrierte den Sektor, um während der Unruhen einen Konzern-VIP zu extrahieren. Der Tech hackte erfolgreich die Sicherheitstore, während Ghost und Infiltrator die feindlichen Drohnen leise ausschalteten. Ein kritischer Fehlschlag (gewürfelt: 2) des Infiltrators löste jedoch den Alarm aus und zwang das Team in ein direktes Feuergefecht. Der Medic musste sein gesamtes "Zero-Sum"-Kontingent (150MB) aufbrauchen, um die schweren Treffer beim Tech zu kompensieren. Die Extraktion gelang in letzter Sekunde, das Team entkam jedoch völlig erschöpft mit 0MB Restkapazität. 
+### Playtest-Bericht: Session 45 – "Mission 01: The Riot"
+
+**Team:** Medic, Tech, Infiltrator, Ghost
+**Ziel:** Eindämmung des Aufstands im Sektor 4 und Sicherung der Kern-Daten.
+
+*   **Verlauf:** Der *Infiltrator* (Wurf: 18) umging erfolgreich die äußeren Barrikaden. Das Team traf auf schweren Widerstand. Der *Ghost* versuchte eine Ablenkung, scheiterte aber (Wurf: 4), was zu einem direkten Feuergefecht führte.
+*   **Zero-Sum-Entscheidung:** Das Team musste entscheiden, wie sie ihre knappen Ressourcen (150MB - *Mega-Bonds*) einsetzen. Der *Tech* gab 100MB für einen EMP-Blast aus, um die feindlichen Drohnen lahmzulegen, während der *Medic* die restlichen 50MB nutzte, um den schwer verwundeten *Ghost* (Rettungswurf: 15) in letzter Sekunde zu stabilisieren.
+*   **Ausgang:** Mission erfolgreich. Die Kern-Daten wurden gesichert, aber das Team entkam nur knapp und völlig ohne verbleibende Ressourcen (0MB).
 
 **Zentrales Feedback zur Spielbalance:**
-Die Zero-Sum-Kosten (MB) für die Notfall-Triage des Medics sind in eskalierenden Kampfsituationen zu hoch angesetzt. Ein einziger schlechter Wurf des Teams zwingt den Medic in eine extreme Ressourcen-Abwärtsspirale, die kaum aufzuhalten ist. **Empfehlung:** Die Daten-Kosten für Basis-Heilung um 20% reduzieren oder eine temporäre "Cache-Regeneration" bei kritischen Treffern einführen.
+Die Kosten für offensive Tech-Fähigkeiten (wie der EMP für 100MB) sind im Vergleich zum Startbudget von 150MB etwas zu hoch. Dies zwingt das Team fast immer in eine "Alles-oder-Nichts"-Situation und lässt zu wenig Spielraum für defensive oder unterstützende Fähigkeiten des Medics, was die Klassenbalance im Endgame der Mission gefährdet. Eine Reduktion auf 75MB oder eine Erhöhung des Basis-Pools auf 200MB wäre ratsam.
 
 
 ---
 ## Session 46 Report
-Hier ist der Bericht der Gedanken-Simulation für Session 46:
+Hier ist der Bericht der simulierten Playtest-Session:
 
-### Playtest-Bericht: Session 46 (Mission 01: The Riot)
-**Team-Setup:** Medic, Tech, Infiltrator, Ghost
-**Missionsverlauf:** Das Team drang erfolgreich in die Riot-Zone ein, stieß jedoch schnell an seine Limits. Der Tech verbrauchte beim Hacken der Hauptsicherheitstore sofort 90MB der gemeinsamen 150MB Zero-Sum-Kapazität (Würfelwurf: 7, Teilerfolg). Das führte zu einem massiven Engpass: Als der Ghost bei einem Ablenkungsmanöver kritisch getroffen wurde, blieben dem Medic nicht mehr genug Daten-Ressourcen für eine vollständige Heilung. Der Infiltrator konnte das primäre Zielobjekt zwar im letzten Moment durch einen perfekten Stealth-Wurf (Würfelwurf: 19) sichern, aber die Flucht verlief extrem chaotisch.
-**Ausgang:** Mission knapp erfolgreich (Ziel erreicht), aber das Team entkam schwer verwundet und mit exakt 0MB verbleibendem Zero-Sum-Speicher.
+### Playtest-Bericht: Session 46 (Mission 01 - The Riot)
+
+**Missionsausgang:**
+Das Team nutzte die gewaltsamen Unruhen im Sektor 4 als Deckung, um die lokalen Konzern-Server zu infiltrieren. Der Infiltrator patzte kritisch beim Umgehen der Sensoren (Würfelwurf: 1), was einen sofortigen Lockdown auslöste. Um die Mission vor dem Scheitern zu bewahren, griffen die Spieler massiv auf ihren gemeinsamen 150MB Zero-Sum-Ressourcenpool zu: Der Tech verbrannte 90MB, um das Sicherheitssystem durch einen Brute-Force-Hack zu überlasten, während der Ghost die restlichen 60MB opferte, um die neuralen Implantate der anrückenden Wachen zu hacken. Der Medic konnte den Infiltrator im folgenden Kreuzfeuer knapp am Leben halten. Das Team entkam mit den Zieldaten, hat das 150MB-Limit aber exakt aufgebraucht. Dies führte dem "Zero-Sum"-Prinzip folgend zu einem temporären System-Wipe ihrer eigenen Erinnerungsspeicher.
 
 **Zentrales Feedback zur Spielbalance:**
-Die Daten-Kosten für "Tech"-Fähigkeiten (insbesondere das Hacken von Toren/Systemen) skalieren schlecht mit dem harten 150MB Zero-Sum-Limit. Wenn ein einziger essenzieller Hack 60% der Teamressourcen verschlingt, werden reaktive Klassen wie der Medic im späteren Verlauf systematisch nutzlos gemacht. Die Hack-Kosten sollten auf maximal 30-40MB gedeckelt oder das Zero-Sum-Limit für 4 Spieler leicht angehoben werden.
+Der gemeinsame 150MB-Ressourcenpool verzeiht im Early-Game zu viele Fehler. Die Spieler konnten den massiven Fehlschlag des Infiltrators rein durch das Ausgeben von "MBs" (Tech & Ghost) kompensieren, wodurch die narrative Bedrohung verpuffte. Für Einstiegsmissionen wie *The Riot* sollte das Limit auf 100MB gesenkt oder die Kosten für "Deus Ex Machina"-Hacks erhöht werden, um echte Spannung zu generieren.
 
 
 ---
 ## Session 47 Report
-### Spielbericht: Session 47 – Mission 01: The Riot
+### Session 47: Mission 01 "The Riot" – Playtest-Bericht
 
-Die Mission begann chaotisch, da die Straßen zum Zielgebäude bereits von Aufständischen blockiert waren. **Ghost** positionierte sich auf einem nahen Dach und würfelte erfolgreich für Deckungsfeuer, während der **Infiltrator** unbemerkt die Sicherheitsschleuse zum Konzernbereich knackte. Im Serverraum stieß das Team auf massiven Widerstand von Konzerngardisten. Der **Medic** musste unter schwerem Beschuss mehrfach eingreifen und kritische Treffer beim Infiltrator verarzten (Rettungswurf: Kritischer Erfolg). Gleichzeitig schloss der **Tech** den Hack ab, um die streng geheimen Zieldaten zu sichern. 
-Bei der finalen Zero-Sum-Entscheidung mussten die begrenzten 150MB an Datenkapazität (und damit der Payout) hart verhandelt werden. Das Team einigte sich nach hitziger Diskussion auf: Tech (60MB), Infiltrator (50MB), Ghost (25MB) und Medic (15MB). Die Extraktion gelang in letzter Sekunde per EMP-Ablenkung. Mission erfolgreich, aber mit deutlichen Rissen im Teamgefüge aufgrund der ungleichen Beuteverteilung.
+*   **Setup:** 4 Spieler (Medic, Tech, Infiltrator, Ghost), geteilter Zero-Sum-Pool: 150MB.
+*   **Verlauf:** Der **Infiltrator** würfelt direkt zu Beginn einen Erfolg für den lautlosen Einstieg in den Riot-Sektor.
+*   **Eskalation:** Beim Versuch, die Sicherheitssysteme zu hacken, scheitert der **Tech** kritisch (Wurf: 3). Die Riot-Miliz wird alarmiert und greift an.
+*   **Ressourcen-Einsatz:** Um das Team am Leben zu halten, muss der **Medic** im Feuergefecht sofort 65MB der 150MB Zero-Sum-Ressourcen verbrennen.
+*   **Finale:** Der **Ghost** nutzt verbleibende 25MB für eine Übersteuerung und schaltet das Primärziel mit einem Präzisionswurf aus. Das Team entkommt knapp.
+*   **Ausgang:** Mission erfolgreich, aber mit kritisch niedrigem Ressourcenstand (noch 15MB übrig).
 
 **Zentrales Feedback zur Spielbalance:**
-Die Zero-Sum-Mechanik (hart umkämpfte Verteilung der 150MB Beute) benachteiligt Support-Klassen stark. Der Medic war für das Überleben essenziell, hatte aber bei der Verhandlung das schwächste Argument für einen Datenanteil, da "Schaden heilen" weniger greifbar belohnt wird als "Systeme hacken" oder "Türen öffnen". Es sollte eine Zusatzregel erwogen werden, bei der gerettete Lebenspunkte entweder einen Mindestanteil garantieren oder als separates Hebelmittel in den Zero-Sum-Verhandlungen fungieren.
+Die Zero-Sum-Kosten für Schadensmitigation durch den Medic skalieren zu aggressiv (65MB von 150MB für einen einzigen Fehler). Wenn ein verpatzter Wurf fast die Hälfte des gesamten Team-Budgets kostet, erzwingt dies eine extrem risikoaverse, beinahe fehlerfreie Spielweise. Die maximalen Ressourcen-Strafen für gescheiterte Tech-Skillchecks sollten leicht abgemildert (gecappt) werden, um mehr Spielraum für das Endgame zu lassen.
 
 
 ---
 ## Session 48 Report
-### Session 48: Mission 01 - The Riot (Simulationsbericht)
+Hier ist der Bericht zur simulierten **Session 48**:
 
-**Missionsausgang:**
-Das Team drang erfolgreich in die abgeriegelte Zone ein. **Infiltrator** und **Ghost** konnten die äußeren Wachen durch hohe Stealth-Würfe (18 und 19) unbemerkt passieren. Am zentralen Sicherheitsknoten patzte der **Tech** jedoch massiv (Wurf: 2) und löste den Alarm aus. Um die Situation zu retten, verbrauchte der **Medic** sein komplettes Zero-Sum-Budget von 150MB für ein riskantes "Neuro-Override-Protokoll", das die Wachen vorübergehend blendete. Durch dieses Opfer konnten sie die Missionsdaten knapp sichern und unter starkem Beschuss entkommen. 
+### Playtest-Bericht: Session 48 (Mission 01 - The Riot)
+* **Team:** Medic, Tech, Infiltrator, Ghost
+* **Verlauf:** Der **Infiltrator** und der **Ghost** nutzten die Chaos-Modifikatoren des Aufstands, um die vorderen Barrikaden zu umgehen. Der **Tech** musste beim Hacken des Überwachungsterminals ein hohes Risiko eingehen, da das 150MB Zero-Sum-Ressourcenbudget bereits stark vom Tarnfeld des Ghosts beansprucht wurde. Ein kritischer Patzer beim Firewall-Wurf führte zu neuralem Feedback. Der **Medic** rettete den Tech im letzten Moment mit einem Notfall-Stim und den letzten verbliebenen MBs, wodurch das Team das Zielobjekt unter starkem Zeitdruck extrahieren konnte.
+* **Ergebnis:** Mission erfolgreich, aber Team extrem angeschlagen (Ressourcen-Cap von 150MB auf 0MB erschöpft).
 
-**Zentrales Balance-Feedback:**
-Das harte Limit von **150MB Zero-Sum-Ressourcen** ist bei Notfall-Rettungsaktionen extrem spannend, aber für den Tech beim Hacken etwas zu unnachgiebig. Da ein einzelner Patzer des Techs das gesamte Budget eines anderen Spielers (Medic) zwingend aufzehrt, um einen Wipe zu verhindern, entsteht ein Ungleichgewicht. Eine leichte Erhöhung des Start-Budgets auf 200MB oder geringere MB-Kosten für klassenspezifische Kernfähigkeiten würde die Spielbalance spürbar verbessern.
+**Zentrales Balance-Feedback:** 
+Das Zero-Sum-Ressourcensystem (150MB) bestraft hybride Vorgehensweisen zu stark. Die kombinierten Kosten für physische Tarnung (Ghost) und elektronische Kriegsführung (Tech) fressen das Budget zu schnell auf, was den Medic de facto zu einer reinen, reaktiven Notlösung ohne eigenen Handlungsspielraum degradiert. Die Basis-Kosten für Hacking-Aktionen sollten um ca. 10-15% gesenkt werden, um die Ressourcenverteilung dynamischer zu gestalten.
 
 
 ---
 ## Session 49 Report
-Hier ist der Bericht der simulierten Playtest-Session:
+**Playtest-Bericht: Session 49 (Mission 01: The Riot)**
 
-### Spielbericht: Session 49 – Mission 01 "The Riot"
-
-Das Team (Medic, Tech, Infiltrator, Ghost) nutzte die Chaos-Phase des Aufstands, um in das Konzerngebäude einzudringen. Ghost und Infiltrator würfelten hoch auf Heimlichkeit und konnten die vorderen Patrouillen umgehen. Am Sicherheitsterminal patzte der Ghost jedoch kritisch (Wurf: 2), was sofortige Gegenmaßnahmen auslöste. Der Tech sah sich gezwungen, riskante 60MB aus dem 150MB Zero-Sum-Pool zu brennen, um die automatischen Geschütze der Lobby zu überlasten. Beim darauffolgenden Durchbruchsversuch nahm der Infiltrator schweren Schaden und der Medic musste weitere 40MB für Notfall-Naniten aufwenden, um ihn am Leben zu halten. Mit nur noch 50MB Restkapazität gelang dem Team in letzter Sekunde die Extraktion des Datenkerns, bevor die Sektoren komplett abgeriegelt wurden.
-**Ausgang:** Mission knapp erfolgreich, das Team überlebte, steht aber kurz vor dem Ressourcen-Bankrott.
+*   **Verlauf:** Das Team nutzte das Chaos des Aufstands optimal. Der *Ghost* passierte die äußere Blockade mit einem exzellenten Stealth-Wurf, während der *Tech* das Überwachungsnetzwerk hackte (Daten-Kosten: 45MB).
+*   **Krise:** Im Innenhof wurde der *Infiltrator* schwer getroffen. Der *Medic* musste experimentelle Heil-Naniten einsetzen, was das Zero-Sum-Limit drastisch belastete (weitere 70MB).
+*   **Zero-Sum Entscheidung:** Mit nur noch 35MB von den insgesamt 150MB Restkapazität entschied sich die Gruppe gegen den lukrativen Neben-Server-Hack und fokussierte sich auf die Flucht, um einen System-Wipe zu verhindern.
+*   **Ausgang:** Mission erfolgreich. Primärdaten gesichert und Extraktion durch vereinte Würfel-Erfolge knapp, aber ohne Verluste, überlebt.
 
 **Zentrales Feedback zur Spielbalance:**
-Der geteilte Zero-Sum-Pool von 150MB verzeiht bei vier Spielern kaum Fehler. Ein einziger schlechter Wurf erzwingt sofort massive Ausgaben (60MB für Hacking, 40MB für Heilung). Die Kosten für Tech-Fähigkeiten fühlen sich im Vergleich zu Rettungsaktionen (Medic) etwas zu teuer an, was dazu führt, dass offensive Taktiken bei knappen Ressourcen zu unattraktiv werden. Eine leichte Skalierung des Pools pro Spieler oder eine Reduzierung der Tech-Kosten wäre ratsam.
+Die 150MB-Obergrenze der "Zero-Sum"-Mechanik ist für ein 4-Spieler-Team in einer unvorhersehbaren Mission wie "The Riot" etwas zu straff. Da Support-Aktionen (Medic/Tech) schnell große Datenmengen verbrauchen, bleibt kaum Spielraum für kreative oder riskante Manöver der offensiven Klassen. Ein Basis-Pool von 200MB oder kleine Regenerations-Events innerhalb der Mission würden den Frustrationsfaktor deutlich senken.
 
 
 ---
 ## Session 50 Report
-### Session 50: The Riot - After-Action Report
+Hier ist der Bericht der simulierten Playtest-Session:
 
-Das Team (Medic, Tech, Infiltrator, Ghost) infiltrierte den Sektor während der laufenden Unruhen erfolgreich. Der **Infiltrator** nutzte die chaotische Situation, um die äußeren Sicherheitsprotokolle unbemerkt zu umgehen, während der **Ghost** durch gezielte Ausschaltungen den Weg zum zentralen Serverraum sicherte. Bei der Extraktion der Zieldaten kam es zu einer kritischen "Zero-Sum"-Entscheidung: Der **Tech** musste unter schwerem Feuer auswählen, welche Datenblöcke in das strikte 150MB-Limit des sicheren Speichers passten. Das Team entschied sich, die Evakuierungspläne und Feindpositionen zugunsten der wertvollen experimentellen Waffenschemata zu löschen. Dies führte auf dem Rückweg unweigerlich zu einem massiven Hinterhalt der Konzernwachen, den die Gruppe nur durch den Aufwand aller verbleibenden Heilressourcen des **Medics** knapp und schwer verwundet überlebte. Die Mission gilt als Erfolg, die Ziel-Daten wurden gesichert.
+### Session 50: Mission 01 - The Riot (Simulationsbericht)
 
-**Feedback zur Spielbalance:**
-Das 150MB "Zero-Sum"-Limit zwingt Gruppen fast immer dazu, taktische Daten für Missionsziele zu opfern, was regelmäßig zu frustrierenden und unvermeidbaren Hinterhalten am Ende der Mission führt. Es wird empfohlen, das Limit entweder auf 200MB zu erhöhen oder separate Speicherkapazitäten für missionskritische Daten und taktische Überlebensdaten einzuführen, um vorausschauendes Spielen besser zu belohnen.
+**Ausgang der Mission:**
+Das Team nutzte das Chaos der Ausschreitungen erfolgreich, um unbemerkt in den Corpo-Komplex einzudringen. Der *Ghost* überwand die Sicherheitssysteme mit einem exzellenten Wurf (18/20), wodurch das Team tief in die Serverebebene vordringen konnte. Beim Extrahieren der Zieldaten stieß der *Tech* schnell an das Zero-Sum-Limit von 150MB und musste riskante Kompromisse eingehen (exakt 149MB heruntergeladen). Auf dem Rückzug wurde die Gruppe von einer Riot-Control-Einheit überrascht. Der *Infiltrator* opferte seine letzten Blendgranaten für die Flucht, doch der *Tech* erlitt schwere Treffer. Dank zwei erfolgreicher Stabilisierungs-Würfe des *Medic* (14 & 16) überlebte der *Tech* knapp. Das Team entkam mit den Daten, verlor durch den Zeitverlust bei der Heilung jedoch den geplanten Bonus-Loot.
+
+**Zentrales Feedback zur Spielbalance:**
+Das harte *Zero-Sum (150MB)*-Datenlimit erzeugt eine fantastische Spannung, lastet den Druck aber zu stark auf den Schultern des *Tech*. Wenn Würfelpech bei der Datenextraktion auftritt, ist die Mission fast automatisch gescheitert. **Lösungsvorschlag:** Eine Mechanik einführen, bei der andere Klassen (z. B. der Medic oder Infiltrator) eigene Klassen-Ressourcen oder Lebenspunkte opfern können, um "Notfall-Speicherplatz" für den Tech freizugeben (z. B. "Overclocking" für +20MB).
 
 
 ---

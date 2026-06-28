@@ -7,6 +7,10 @@ export const routes: Routes = [
     loadComponent: () => import('./views/landing/landing.component').then(m => m.LandingComponent) 
   },
   { 
+    path: 'mission-map', 
+    loadComponent: () => import('./mission-map/mission-map.component').then(m => m.MissionMapComponent) 
+  },
+  { 
     path: 'player/:sessionId', 
     loadComponent: () => import('./views/player-view/player-view.component').then(m => m.PlayerViewComponent), 
     canActivate: [authGuard],
