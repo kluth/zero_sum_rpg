@@ -207,6 +207,14 @@ fun GameScreen(sessionId: String) {
         }
     }
 
+    val bleManager = remember { BleMeshManager(context) }
+    LaunchedEffect(isBlackout) {
+        if (isBlackout) {
+            bleManager.startMeshNetworking(uiState.character?.id ?: "unknown")
+        } else {
+            bleManager.stopMeshNetworking()
+        }
+    }
     LaunchedEffect(Unit) {
         if (!hasMicPermission) {
             permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
@@ -340,14 +348,11 @@ fun HeaderSection(sessionId: String, remainingData: Float) {
             Spacer(modifier = Modifier.height(4.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                 Text("${remainingData.toInt()} MB", color = if (remainingData < 30f) Color.Red else Color.Cyan, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                Button(
+                SilkButton(
+                    text = "-25MB (SAT-LINK)",
                     onClick = { NetworkManager.processIntent(PlayerIntent.ConsumeData(25f)) },
-                    colors = ButtonDefaults.buttonColors(containerColor = TerminalGreen.copy(alpha = 0.2f)),
-                    modifier = Modifier.height(32.dp).border(1.dp, TerminalGreen, RoundedCornerShape(4.dp)),
-                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
-                ) {
-                    Text("-25MB (Sat-Link)", color = TerminalGreen, fontSize = 10.sp)
-                }
+                    modifier = Modifier.height(48.dp)
+                )
             }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -371,13 +376,12 @@ fun SystemBlackoutScreen() {
         Spacer(modifier = Modifier.height(16.dp))
         Text("Keine Verbindung zum Grid. Autonome Systeme kompromittiert. PnP Analog-Modus aktiv.", color = Color.Gray, fontSize = 12.sp, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
         Spacer(modifier = Modifier.height(64.dp))
-        Button(
+        SilkButton(
+            text = "ANALOGER REBOOT (FINDE OFFLINE-SERVER)",
             onClick = { NetworkManager.processIntent(PlayerIntent.ConsumeData(-150f)) },
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Red.copy(alpha = 0.2f)),
-            modifier = Modifier.fillMaxWidth().height(64.dp).border(2.dp, Color.Red, RoundedCornerShape(8.dp))
-        ) {
-            Text("ANALOGER REBOOT (Finde Offline-Server)", color = Color.Red, fontWeight = FontWeight.Bold)
-        }
+            modifier = Modifier.fillMaxWidth().height(64.dp),
+            isCritical = true
+        )
     }
 }
 
@@ -524,27 +528,17 @@ fun CharacterSheetSection(modifier: Modifier = Modifier) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Button(
-                        onClick = {
-                            NetworkManager.processIntent(PlayerIntent.EmergencyHeal(25))
-                        },
-                        colors = ButtonDefaults.buttonColors(containerColor = TerminalDark),
-                        modifier = Modifier.weight(1f).border(1.dp, TerminalGreen, RoundedCornerShape(4.dp)),
-                        shape = RoundedCornerShape(4.dp)
-                    ) {
-                        Text("MEDKIT (+25)", color = TerminalGreen, fontSize = 12.sp, fontFamily = FontFamily.Monospace)
-                    }
+                    SilkButton(
+                        text = "MEDKIT (+25)",
+                        onClick = { NetworkManager.processIntent(PlayerIntent.EmergencyHeal(25)) },
+                        modifier = Modifier.weight(1f)
+                    )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Button(
-                        onClick = {
-                            NetworkManager.pullData(10f)
-                        },
-                        colors = ButtonDefaults.buttonColors(containerColor = TerminalDark),
-                        modifier = Modifier.weight(1f).border(1.dp, WarningAmber, RoundedCornerShape(4.dp)),
-                        shape = RoundedCornerShape(4.dp)
-                    ) {
-                        Text("PULL DATA", color = WarningAmber, fontSize = 12.sp, fontFamily = FontFamily.Monospace)
-                    }
+                    SilkButton(
+                        text = "PULL DATA",
+                        onClick = { NetworkManager.pullData(10f) },
+                        modifier = Modifier.weight(1f)
+                    )
                 }
             }
             
@@ -659,9 +653,10 @@ fun DiceRollerSection(modifier: Modifier = Modifier) {
             }
         }
         
-        Button(
+        SilkButton(
+            text = if (isCalculating) "CALCULATING..." else "SOLVE PHYSICS",
             onClick = {
-                if (isCalculating) return@Button
+                if (isCalculating) return@SilkButton
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 coroutineScope.launch {
                     isCalculating = true
@@ -699,14 +694,8 @@ fun DiceRollerSection(modifier: Modifier = Modifier) {
                     isCalculating = false
                 }
             },
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(2.dp, TerminalGreen, RoundedCornerShape(8.dp)),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Text(if (isCalculating) "CALCULATING..." else "SOLVE PHYSICS", color = TerminalGreen, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-        }
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }
 
@@ -758,6 +747,37 @@ fun RemoteCommsSection(modifier: Modifier = Modifier, onLightTableActivate: () -
             )
         )
         
+        Spacer(modifier = Modifier.height(16.dp))
+
+        var isScannerOpen by remember { mutableStateOf(false) }
+        SilkButton(
+            text = "GLITCH SCANNER (QR)",
+            onClick = { isScannerOpen = true },
+            modifier = Modifier.fillMaxWidth(0.7f)
+        )
+        
+        if (isScannerOpen) {
+            androidx.compose.ui.window.Dialog(onDismissRequest = { isScannerOpen = false }, properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false)) {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    GlitchScannerScreen(
+                        onBarcodeScanned = { barcode ->
+                            val input = barcode.uppercase().take(4)
+                            hashInput = input
+                            isScannerOpen = false
+                            if (input == "7B42") decryptedMessage = "GEHEIM: Verstecktes Medkit in Sektor B gefunden."
+                            else if (input == "9901") decryptedMessage = "WARNUNG: Nächster Raum ist mit EMP-Minen gesichert."
+                            else if (input == "LITE") {
+                                decryptedMessage = "INITIATING LIGHT TABLE..."
+                                onLightTableActivate()
+                            }
+                            else if (input.length == 4) decryptedMessage = "FEHLER: Hash-Code unbekannt oder beschädigt."
+                            else decryptedMessage = null
+                        }
+                    )
+                }
+            }
+        }
+
         Spacer(modifier = Modifier.height(16.dp))
         if (decryptedMessage != null) {
             Text(
@@ -844,16 +864,11 @@ fun LightTableScreen(onClose: () -> Unit) {
             modifier = Modifier.align(Alignment.TopCenter).padding(top = 32.dp)
         )
 
-        Button(
+        SilkButton(
+            text = "PROTOKOLL BEENDEN",
             onClick = onClose,
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 32.dp)
-                .border(2.dp, Color(0xFF6366F1), RoundedCornerShape(8.dp))
-        ) {
-            Text("PROTOKOLL BEENDEN", color = Color(0xFF6366F1), fontWeight = FontWeight.Bold)
-        }
+            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 32.dp)
+        )
     }
 }
 
