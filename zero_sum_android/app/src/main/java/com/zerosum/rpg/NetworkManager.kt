@@ -8,6 +8,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.json.JSONArray
 import org.json.JSONObject
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.WebSocket
+import okhttp3.WebSocketListener
+import okhttp3.Response
 
 data class FlatStats(
     val hp_current: Int = 100,
@@ -59,7 +64,9 @@ data class MapState(
 data class PlayerState(
     val character: CharacterState? = null,
     val recentRolls: List<Roll> = emptyList(),
-    val map: MapState? = null
+    val map: MapState? = null,
+    val dataUsed: Float = 14.2f,
+    val dataLimit: Float = 150.0f
 )
 
 sealed class PlayerIntent {
@@ -79,6 +86,9 @@ object NetworkManager {
 
     private var sessionId: String = "DEFAULT"
     private var valueEventListener: ValueEventListener? = null
+    
+    private var webSocket: WebSocket? = null
+    private val client = OkHttpClient()
 
     fun connect(url: String = "") {
         if (url.isNotEmpty()) {
@@ -87,9 +97,45 @@ object NetworkManager {
                 val host = uri.host ?: "10.0.2.2"
                 val port = if (uri.port != -1) uri.port else 9000
                 database.database.useEmulator(host, port)
+                
+                connectWebSocket(host)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+        }
+    }
+    
+    private fun connectWebSocket(host: String) {
+        val request = Request.Builder().url("ws://$host:8080/ws").build()
+        webSocket = client.newWebSocket(request, object : WebSocketListener() {
+            override fun onMessage(webSocket: WebSocket, text: String) {
+                try {
+                    val json = JSONObject(text)
+                    if (json.has("data_used")) {
+                        val used = json.getDouble("data_used").toFloat()
+                        _uiState.value = _uiState.value.copy(dataUsed = used)
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+            override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+                t.printStackTrace()
+            }
+        })
+    }
+    
+    fun pullData(amount: Float) {
+        val newUsed = (_uiState.value.dataUsed + amount).coerceAtMost(_uiState.value.dataLimit)
+        _uiState.value = _uiState.value.copy(dataUsed = newUsed)
+        try {
+            val json = JSONObject().apply {
+                put("type", "pull_data")
+                put("amount", amount)
+            }
+            webSocket?.send(json.toString())
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
