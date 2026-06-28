@@ -288,7 +288,11 @@ fun GameScreen(sessionId: String) {
         label = "CriticalFlash"
     )
 
-    if (isBlackout) {
+    var isLightTableMode by remember { mutableStateOf(false) }
+
+    if (isLightTableMode) {
+        LightTableScreen(onClose = { isLightTableMode = false })
+    } else if (isBlackout) {
         SystemBlackoutScreen()
     } else {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -308,7 +312,7 @@ fun GameScreen(sessionId: String) {
                 MapGeneratorSection(modifier = Modifier.weight(1.5f))
             }
             Spacer(modifier = Modifier.height(16.dp))
-            RemoteCommsSection(modifier = Modifier.weight(1f))
+            RemoteCommsSection(modifier = Modifier.weight(1f), onLightTableActivate = { isLightTableMode = true })
         }
         }
     }
@@ -711,7 +715,7 @@ fun DiceRollerSection(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun RemoteCommsSection(modifier: Modifier = Modifier) {
+fun RemoteCommsSection(modifier: Modifier = Modifier, onLightTableActivate: () -> Unit = {}) {
     var hashInput by remember { mutableStateOf("") }
     var decryptedMessage by remember { mutableStateOf<String?>(null) }
     
@@ -740,6 +744,10 @@ fun RemoteCommsSection(modifier: Modifier = Modifier) {
                 hashInput = input
                 if (input == "7B42") decryptedMessage = "GEHEIM: Verstecktes Medkit in Sektor B gefunden."
                 else if (input == "9901") decryptedMessage = "WARNUNG: Nächster Raum ist mit EMP-Minen gesichert."
+                else if (input == "LITE") {
+                    decryptedMessage = "INITIATING LIGHT TABLE..."
+                    onLightTableActivate()
+                }
                 else if (input.length == 4) decryptedMessage = "FEHLER: Hash-Code unbekannt oder beschädigt."
                 else decryptedMessage = null
             },
@@ -764,6 +772,91 @@ fun RemoteCommsSection(modifier: Modifier = Modifier) {
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                 modifier = Modifier.fillMaxWidth().background(SilkLight, RoundedCornerShape(8.dp)).padding(8.dp)
             )
+        }
+    }
+}
+
+@Composable
+fun LightTableScreen(onClose: () -> Unit) {
+    val infiniteTransition = rememberInfiniteTransition()
+    val pulse by infiniteTransition.animateFloat(
+        initialValue = 0.5f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1500, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "Pulse"
+    )
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+            .padding(16.dp)
+    ) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val canvasWidth = size.width
+            val canvasHeight = size.height
+            val gridStep = 50.dp.toPx()
+
+            // Draw alignment grid
+            for (x in 0..canvasWidth.toInt() step gridStep.toInt()) {
+                drawLine(
+                    color = Color(0xFF6366F1).copy(alpha = 0.3f),
+                    start = Offset(x.toFloat(), 0f),
+                    end = Offset(x.toFloat(), canvasHeight),
+                    strokeWidth = 2f
+                )
+            }
+            for (y in 0..canvasHeight.toInt() step gridStep.toInt()) {
+                drawLine(
+                    color = Color(0xFF6366F1).copy(alpha = 0.3f),
+                    start = Offset(0f, y.toFloat()),
+                    end = Offset(canvasWidth, y.toFloat()),
+                    strokeWidth = 2f
+                )
+            }
+
+            // Draw specific "hidden" reveal nodes
+            val nodeRadius = 20.dp.toPx() * pulse
+            drawCircle(
+                color = Color(0xFF6366F1),
+                radius = nodeRadius,
+                center = Offset(canvasWidth * 0.3f, canvasHeight * 0.4f)
+            )
+            drawCircle(
+                color = Color(0xFF6366F1),
+                radius = nodeRadius,
+                center = Offset(canvasWidth * 0.7f, canvasHeight * 0.8f)
+            )
+            
+            // Draw a thick line connecting them (e.g. secret tunnel)
+            drawLine(
+                color = Color(0xFF6366F1).copy(alpha = pulse),
+                start = Offset(canvasWidth * 0.3f, canvasHeight * 0.4f),
+                end = Offset(canvasWidth * 0.7f, canvasHeight * 0.8f),
+                strokeWidth = 10f
+            )
+        }
+
+        Text(
+            "LEUCHTTISCH-PROTOKOLL AKTIV. LEGE FOLIE 'B' PASSGENAU AUF DAS DISPLAY.",
+            color = Color(0xFF6366F1),
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.align(Alignment.TopCenter).padding(top = 32.dp)
+        )
+
+        Button(
+            onClick = onClose,
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 32.dp)
+                .border(2.dp, Color(0xFF6366F1), RoundedCornerShape(8.dp))
+        ) {
+            Text("PROTOKOLL BEENDEN", color = Color(0xFF6366F1), fontWeight = FontWeight.Bold)
         }
     }
 }
