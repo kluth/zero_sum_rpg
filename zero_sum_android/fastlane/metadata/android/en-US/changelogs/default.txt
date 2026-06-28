@@ -1,0 +1,5 @@
+Brand new Neumorphic (Silk) UI Design!
+We completely overhauled the app's visuals to emphasize the tactical 'Everyday Hero' realism.
+- New Action & Dilemma Dashboard
+- Improved connection stability for the Live Mission Intel tab
+- Removed cyberpunk elements in favor of a highly realistic blackout simulation
