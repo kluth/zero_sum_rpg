@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+
+<html lang="de"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Charakter-Profil: Elias</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#6366f1",
+                    "surface-variant": "#dcdee4",
+                    "secondary": "#6c6e7e",
+                    "secondary-container": "#d8dae6",
+                    "error": "#dc2626",
+                    "inverse-on-surface": "#e8eaf0",
+                    "on-error-container": "#991b1b",
+                    "on-tertiary-fixed": "#2e1065",
+                    "on-tertiary-container": "#3b1f63",
+                    "on-primary-fixed-variant": "#4338ca",
+                    "surface-dim": "#d4d6dc",
+                    "secondary-fixed": "#d8dae6",
+                    "on-surface-variant": "#585a68",
+                    "tertiary-fixed": "#ede9fe",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-low": "#e5e7ed",
+                    "on-secondary-container": "#585a68",
+                    "inverse-surface": "#2e3040",
+                    "tertiary-fixed-dim": "#c4b5fd",
+                    "tertiary-container": "#a78bfa",
+                    "surface-container-lowest": "#f0f2f8",
+                    "surface-container": "#e2e4ea",
+                    "surface-container-highest": "#d6d8de",
+                    "surface-container-high": "#dcdee4",
+                    "background": "#e8eaf0",
+                    "outline-variant": "#d0d2dc",
+                    "error-container": "#fee2e2",
+                    "secondary-fixed-dim": "#b8baca",
+                    "on-background": "#2e3040",
+                    "primary-container": "#818cf8",
+                    "on-primary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#5b21b6",
+                    "surface": "#e8eaf0",
+                    "on-secondary-fixed": "#1a1b26",
+                    "primary": "#6366f1",
+                    "primary-fixed-dim": "#a5b4fc",
+                    "on-surface": "#2e3040",
+                    "on-secondary-fixed-variant": "#404252",
+                    "on-primary-fixed": "#1e1b4b",
+                    "outline": "#8a8c9a",
+                    "on-primary-container": "#e0e2ff",
+                    "surface-bright": "#edeef4",
+                    "primary-fixed": "#e0e2ff",
+                    "inverse-primary": "#a5b4fc",
+                    "tertiary": "#7c3aed",
+                    "on-error": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.5rem",
+                    "lg": "1rem",
+                    "xl": "1.5rem",
+                    "full": "9999px"
+            },
+            "spacing": {},
+            "fontFamily": {
+                    "headline": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "display": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "body": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "label": [
+                            "Plus Jakarta Sans"
+                    ]
+            },
+            "fontSize": {}
+    },
+        },
+      }
+    </script>
+<style>
+        /* Base Neomorphic Utilities */
+        .neo-raised {
+            box-shadow: 6px 6px 12px rgba(0,0,0,0.08), -6px -6px 12px rgba(255,255,255,0.6);
+        }
+        .neo-pressed {
+            box-shadow: inset 4px 4px 8px rgba(0,0,0,0.06), inset -4px -4px 8px rgba(255,255,255,0.5);
+        }
+        .neo-raised-hover:hover {
+            box-shadow: inset 4px 4px 8px rgba(0,0,0,0.06), inset -4px -4px 8px rgba(255,255,255,0.5);
+        }
+        /* Hide scrollbar for clean UI */
+        ::-webkit-scrollbar { display: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body min-h-screen pb-24 md:pb-8 antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky z-40 bg-surface shadow-[6px_6px_12px_rgba(0,0,0,0.08),-6px_-6px_12px_rgba(255,255,255,0.6)]">
+<div class="flex justify-between items-center px-6 py-4 w-full">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full flex items-center justify-center neo-raised text-primary">
+<span class="material-symbols-outlined" data-icon="signal_cellular_alt">signal_cellular_alt</span>
+</div>
+<h1 class="text-lg font-headline font-semibold text-on-surface uppercase tracking-wider">SURVIVAL_OS_v1.0</h1>
+</div>
+<div class="flex items-center gap-4">
+<span class="font-body font-semibold tracking-wider uppercase text-on-surface-variant text-sm">150MB</span>
+<div class="w-10 h-10 rounded-full flex items-center justify-center neo-raised text-primary hover:shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06),inset_-4px_-4px_8px_rgba(255,255,255,0.5)] transition-all duration-200 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="container mx-auto px-4 md:px-6 py-8 max-w-5xl flex flex-col gap-8">
+<!-- Hero Profile Section -->
+<section class="w-full bg-surface rounded-[2rem] p-6 md:p-10 neo-raised flex flex-col md:flex-row gap-8 items-center md:items-start relative overflow-hidden">
+<!-- Decorative background element -->
+<div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+<!-- Avatar -->
+<div class="relative shrink-0">
+<div class="w-32 h-32 md:w-40 md:h-40 rounded-full neo-pressed p-2">
+<div class="w-full h-full rounded-full overflow-hidden neo-raised">
+<img alt="Elias Avatar" class="w-full h-full object-cover grayscale opacity-90 mix-blend-multiply" data-alt="A striking, hyper-realistic portrait of a male survival medic named Elias in his late 30s. He has a rugged, pragmatic appearance with a short, neat beard and intense, focused eyes. He is wearing functional, tactical medical gear in muted grays and indigos. The lighting is soft and high-key, illuminating his face against a clean, cool gray background. The aesthetic is modern neomorphic, clean, and highly detailed, conveying a sense of calm competence in a crisis." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWmDV8wixvUnRikfVihHkziYYy-_wG9jBlq7g1p0syBuFXSFBWSTcCLZKR_dM-VE7ueHGhjUYqBCgoq6uc3typQZhv5N6QFjEUBMozFFPkMwFOJurQ60uj5lKdtBbfhbDCP5VosvLYKbSn3StRj99hoq1UEUDpQC4ROmVHU2CPm3Ma3XfNvnukScHS36xuCZEZyfSdcKpu4izMRxbmyjkW5F8LuE6YXJvpRtt4TY3b8ng_YZTC7AusM-qQ4bvafB2eS0zxgaMSPbw"/>
+</div>
+</div>
+<!-- Status Badge -->
+<div class="absolute bottom-2 right-2 w-8 h-8 rounded-full bg-surface neo-raised flex items-center justify-center">
+<div class="w-4 h-4 rounded-full bg-primary animate-pulse"></div>
+</div>
+</div>
+<!-- Identity & Key Stats -->
+<div class="flex flex-col flex-grow w-full gap-6 z-10">
+<div class="text-center md:text-left">
+<h2 class="text-3xl md:text-4xl font-headline font-bold text-on-surface tracking-tight">Elias</h2>
+<p class="text-lg text-primary font-medium tracking-wide uppercase mt-1">Sanitäter / Taktische Medizin</p>
+</div>
+<!-- Stress Level Meter -->
+<div class="w-full flex flex-col gap-3 mt-2">
+<div class="flex justify-between items-end px-1">
+<span class="text-sm font-semibold tracking-wider text-on-surface-variant uppercase">Stresslevel</span>
+<span class="text-xs font-bold text-error uppercase">Mentale Gesundheit</span>
+</div>
+<div class="w-full h-10 rounded-full neo-pressed p-1.5 relative overflow-hidden flex items-center">
+<!-- Dynamic Fill -->
+<div class="h-full bg-error rounded-full w-[78%] transition-all duration-1000 ease-out relative flex items-center justify-end pr-3 animate-pulse">
+<span class="text-white text-[10px] font-bold">78%</span>
+</div>
+</div>
+<p class="text-xs text-error font-bold text-right animate-pulse">KRITISCH: Akute Gefahr einer Panikattacke. Intervention zwingend erforderlich.</p>
+</div>
+</div>
+</section>
+<!-- Bento Grid for Skills and Needs -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full"><section class="bg-surface rounded-3xl p-8 neo-raised flex flex-col gap-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-surface neo-pressed flex items-center justify-center text-error">
+<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+</div>
+<h3 class="text-xl font-semibold text-on-surface tracking-wide">Psychische Symptome</h3>
+</div>
+<div class="flex flex-wrap gap-3">
+<div class="px-4 py-2 rounded-lg bg-surface neo-pressed text-xs font-bold text-error uppercase tracking-wider">Zittern</div>
+<div class="px-4 py-2 rounded-lg bg-surface neo-pressed text-xs font-bold text-error uppercase tracking-wider">Tunnelblick</div>
+<div class="px-4 py-2 rounded-lg bg-surface neo-pressed text-xs font-bold text-error uppercase tracking-wider">Atemnot</div>
+</div>
+</section>
+<!-- Analog Skills -->
+<section class="bg-surface rounded-3xl p-8 neo-raised flex flex-col gap-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-surface neo-pressed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="healing">healing</span>
+</div>
+<h3 class="text-xl font-semibold text-on-surface tracking-wide">Analog Skills</h3>
+</div>
+<div class="flex flex-wrap gap-4">
+<div class="px-5 py-3 rounded-xl bg-surface neo-raised text-sm font-medium text-on-surface flex items-center gap-2 cursor-default hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="medical_services">medical_services</span>
+                        Erste Hilfe (Advanced)
+                    </div>
+<div class="px-5 py-3 rounded-xl bg-surface neo-raised text-sm font-medium text-on-surface flex items-center gap-2 cursor-default hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="inventory_2">inventory_2</span>
+                        Logistik &amp; Triage
+                    </div>
+<div class="px-5 py-3 rounded-xl bg-surface neo-raised text-sm font-medium text-on-surface flex items-center gap-2 cursor-default hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="water_drop">water_drop</span>
+                        Wasseraufbereitung
+                    </div>
+</div>
+</section>
+<!-- Digital Needs -->
+<section class="bg-surface rounded-3xl p-8 neo-raised flex flex-col gap-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-surface neo-pressed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="memory">memory</span>
+</div>
+<h3 class="text-xl font-semibold text-on-surface tracking-wide">Digital Needs</h3>
+</div>
+<div class="flex flex-col gap-4">
+<div class="w-full p-4 rounded-2xl bg-surface neo-pressed flex justify-between items-center group cursor-pointer">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface neo-raised flex items-center justify-center text-secondary group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[16px]" data-icon="map">map</span>
+</div>
+<span class="font-medium text-sm text-on-surface">Offline-Karten (Topo)</span>
+</div>
+<span class="material-symbols-outlined text-secondary text-sm">download_done</span>
+</div>
+<div class="w-full p-4 rounded-2xl bg-surface neo-pressed flex justify-between items-center group cursor-pointer">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface neo-raised flex items-center justify-center text-secondary group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[16px]" data-icon="satellite_alt">satellite_alt</span>
+</div>
+<span class="font-medium text-sm text-on-surface">Telemedizin Uplink</span>
+</div>
+<div class="flex items-center gap-1">
+<div class="w-1.5 h-1.5 rounded-full bg-error animate-pulse"></div>
+<span class="text-[10px] text-error font-bold uppercase tracking-wider">Sync Req</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Status Toggles Section -->
+<section class="w-full bg-surface rounded-3xl p-8 neo-raised flex flex-col gap-6">
+<div class="flex items-center gap-3 mb-2">
+<h3 class="text-xl font-semibold text-on-surface tracking-wide">System &amp; Gear Status</h3>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Toggle 1 -->
+<div class="flex justify-between items-center p-4 rounded-2xl bg-surface neo-pressed">
+<span class="text-sm font-medium text-on-surface-variant">Med-Kit geprüft</span>
+<button aria-checked="true" class="neo-toggle relative inline-flex h-8 w-14 shrink-0 cursor-pointer rounded-full bg-surface neo-pressed transition-colors duration-200 ease-in-out focus:outline-none" role="switch" type="button">
+<span class="translate-x-6 inline-block h-6 w-6 transform rounded-full bg-primary neo-raised transition duration-200 ease-in-out mt-1 ml-1"></span>
+</button>
+</div>
+<!-- Toggle 2 -->
+<div class="flex justify-between items-center p-4 rounded-2xl bg-surface neo-pressed">
+<span class="text-sm font-medium text-on-surface-variant">Funkbereit</span>
+<button aria-checked="true" class="neo-toggle relative inline-flex h-8 w-14 shrink-0 cursor-pointer rounded-full bg-surface neo-pressed transition-colors duration-200 ease-in-out focus:outline-none" role="switch" type="button">
+<span class="translate-x-6 inline-block h-6 w-6 transform rounded-full bg-primary neo-raised transition duration-200 ease-in-out mt-1 ml-1"></span>
+</button>
+</div>
+<!-- Toggle 3 -->
+<div class="flex justify-between items-center p-4 rounded-2xl bg-surface neo-pressed">
+<span class="text-sm font-medium text-on-surface-variant">Schlafdefizit Ignorieren</span>
+<button aria-checked="false" class="neo-toggle relative inline-flex h-8 w-14 shrink-0 cursor-pointer rounded-full bg-surface neo-pressed transition-colors duration-200 ease-in-out focus:outline-none" role="switch" type="button">
+<span class="translate-x-0 inline-block h-6 w-6 transform rounded-full bg-surface neo-raised transition duration-200 ease-in-out mt-1 ml-1"></span>
+</button>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile Only as per structural logic, though prompt allows it generally, keeping it for the app feel) -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-[2rem] bg-surface shadow-[0px_-6px_12px_rgba(0,0,0,0.08),0px_6px_12px_rgba(255,255,255,0.6)] md:hidden">
+<div class="flex justify-around items-center px-4 pb-8 pt-6 w-full bg-surface rounded-t-[2rem]">
+<!-- Inactive Tab -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant w-16 h-16 hover:text-primary transition-colors group" href="#">
+<div class="w-10 h-10 rounded-xl flex items-center justify-center group-hover:neo-pressed transition-all">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+</div>
+<span class="font-label font-medium text-[10px] uppercase tracking-tighter mt-1">DASH</span>
+</a>
+<!-- Active Tab (GROUP matches the profile context) -->
+<a class="flex flex-col items-center justify-center text-primary shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06),inset_-4px_-4px_8px_rgba(255,255,255,0.5)] rounded-2xl w-16 h-16 active:scale-95 transition-transform duration-150 relative" href="#">
+<!-- Active dot indicator -->
+<div class="absolute -top-1 w-1.5 h-1.5 rounded-full bg-primary"></div>
+<span class="material-symbols-outlined mb-1" data-icon="group">group</span>
+<span class="font-label font-bold text-[10px] uppercase tracking-tighter">GROUP</span>
+</a>
+<!-- Inactive Tab -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant w-16 h-16 hover:text-primary transition-colors group" href="#">
+<div class="w-10 h-10 rounded-xl flex items-center justify-center group-hover:neo-pressed transition-all">
+<span class="material-symbols-outlined" data-icon="database">database</span>
+</div>
+<span class="font-label font-medium text-[10px] uppercase tracking-tighter mt-1">INTEL</span>
+</a>
+<!-- Inactive Tab -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant w-16 h-16 hover:text-primary transition-colors group" href="#">
+<div class="w-10 h-10 rounded-xl flex items-center justify-center group-hover:neo-pressed transition-all">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+</div>
+<span class="font-label font-medium text-[10px] uppercase tracking-tighter mt-1">COMM</span>
+</a>
+</div>
+</nav>
+<script>
+        // Simple script to handle Neomorphic Toggle interactions
+        document.querySelectorAll('.neo-toggle').forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                const isChecked = this.getAttribute('aria-checked') === 'true';
+                const thumb = this.querySelector('span');
+                
+                if (isChecked) {
+                    this.setAttribute('aria-checked', 'false');
+                    thumb.classList.remove('translate-x-6', 'bg-primary');
+                    thumb.classList.add('translate-x-0', 'bg-surface');
+                } else {
+                    this.setAttribute('aria-checked', 'true');
+                    thumb.classList.remove('translate-x-0', 'bg-surface');
+                    thumb.classList.add('translate-x-6', 'bg-primary');
+                }
+            });
+        });
+    </script>
+</body></html>

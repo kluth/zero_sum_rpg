@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Zero Sum RPG - Panic Intervention</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#e0e2ff",
+                        "surface-container-low": "#e5e7ed",
+                        "surface-container-highest": "#d6d8de",
+                        "outline": "#8a8c9a",
+                        "on-primary-fixed": "#1e1b4b",
+                        "secondary-fixed": "#d8dae6",
+                        "outline-variant": "#d0d2dc",
+                        "on-surface-variant": "#585a68",
+                        "tertiary": "#7c3aed",
+                        "on-tertiary-container": "#3b1f63",
+                        "on-error-container": "#991b1b",
+                        "on-background": "#2e3040",
+                        "tertiary-container": "#a78bfa",
+                        "secondary": "#6c6e7e",
+                        "inverse-primary": "#a5b4fc",
+                        "surface-container-high": "#dcdee4",
+                        "surface-bright": "#edeef4",
+                        "inverse-on-surface": "#e8eaf0",
+                        "surface-dim": "#d4d6dc",
+                        "on-secondary-container": "#585a68",
+                        "on-secondary-fixed": "#1a1b26",
+                        "on-tertiary-fixed": "#2e1065",
+                        "on-primary-fixed-variant": "#4338ca",
+                        "surface-variant": "#dcdee4",
+                        "primary-container": "#818cf8",
+                        "surface": "#e8eaf0",
+                        "primary-fixed-dim": "#a5b4fc",
+                        "on-surface": "#2e3040",
+                        "on-secondary-fixed-variant": "#404252",
+                        "secondary-fixed-dim": "#b8baca",
+                        "surface-container": "#e2e4ea",
+                        "on-primary-container": "#e0e2ff",
+                        "on-error": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "surface-container-lowest": "#f0f2f8",
+                        "error-container": "#fee2e2",
+                        "inverse-surface": "#2e3040",
+                        "on-tertiary-fixed-variant": "#5b21b6",
+                        "error": "#dc2626",
+                        "surface-tint": "#6366f1",
+                        "primary": "#6366f1",
+                        "background": "#e8eaf0",
+                        "tertiary-fixed": "#ede9fe",
+                        "secondary-container": "#d8dae6",
+                        "tertiary-fixed-dim": "#c4b5fd",
+                        "on-secondary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.surface');
+            color: theme('colors.on-surface');
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow: hidden; /* Tunnel vision effect */
+        }
+
+        /* Neomorphic Base Effects */
+        .neo-raised {
+            box-shadow: 6px 6px 12px rgba(0,0,0,0.08), -6px -6px 12px rgba(255,255,255,0.6);
+        }
+        .neo-pressed {
+            box-shadow: inset 4px 4px 8px rgba(0,0,0,0.06), inset -4px -4px 8px rgba(255,255,255,0.5);
+        }
+
+        /* Aggressive Panic Overrides - Breaking the soft feel intentionally */
+        .panic-raised {
+            box-shadow: 8px 8px 16px rgba(220, 38, 38, 0.2), -8px -8px 16px rgba(255,255,255,0.4);
+            border: 1px solid rgba(220, 38, 38, 0.1);
+        }
+        .panic-pressed {
+            box-shadow: inset 6px 6px 12px rgba(220, 38, 38, 0.3), inset -6px -6px 12px rgba(255,255,255,0.2);
+            background-color: theme('colors.error-container');
+        }
+
+        /* Tunnel Vision Overlay */
+        .tunnel-vision {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            background: radial-gradient(circle, transparent 30%, rgba(220, 38, 38, 0.15) 70%, rgba(0, 0, 0, 0.8) 100%);
+            z-index: 100;
+            animation: pulse-tunnel 2s infinite alternate;
+        }
+
+        @keyframes pulse-tunnel {
+            0% { background: radial-gradient(circle, transparent 40%, rgba(220, 38, 38, 0.1) 80%, rgba(0, 0, 0, 0.7) 100%); }
+            100% { background: radial-gradient(circle, transparent 20%, rgba(220, 38, 38, 0.3) 60%, rgba(0, 0, 0, 0.9) 100%); }
+        }
+
+        /* UI Shake Animation */
+        .shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both infinite;
+            transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+            perspective: 1000px;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        /* Glitch Text Effect */
+        .glitch {
+            position: relative;
+            display: inline-block;
+        }
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: theme('colors.surface');
+        }
+        .glitch::before {
+            left: 2px;
+            text-shadow: -1px 0 theme('colors.error');
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        }
+        .glitch::after {
+            left: -2px;
+            text-shadow: -1px 0 theme('colors.primary');
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim 2.5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(15px, 9999px, 83px, 0); }
+            20% { clip: rect(6px, 9999px, 81px, 0); }
+            40% { clip: rect(32px, 9999px, 60px, 0); }
+            60% { clip: rect(78px, 9999px, 81px, 0); }
+            80% { clip: rect(51px, 9999px, 97px, 0); }
+            100% { clip: rect(10px, 9999px, 21px, 0); }
+        }
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(65px, 9999px, 100px, 0); }
+            20% { clip: rect(10px, 9999px, 5px, 0); }
+            40% { clip: rect(32px, 9999px, 20px, 0); }
+            60% { clip: rect(54px, 9999px, 7px, 0); }
+            80% { clip: rect(81px, 9999px, 62px, 0); }
+            100% { clip: rect(14px, 9999px, 2px, 0); }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4 relative font-body bg-surface text-on-surface">
+<div class="tunnel-vision"></div>
+<main class="w-full max-w-md relative z-10 space-y-6">
+<!-- Header: AKUTE INTERVENTION -->
+<header class="text-center space-y-2">
+<div class="inline-flex items-center justify-center p-4 rounded-full panic-raised mb-2">
+<span class="material-symbols-outlined text-4xl text-error shake" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<h1 class="text-3xl font-headline font-extrabold text-error tracking-widest glitch uppercase" data-text="AKUTE INTERVENTION">AKUTE INTERVENTION</h1>
+<p class="text-sm font-medium text-on-surface-variant uppercase tracking-wider">Patient: Elias // Status: Kritisch</p>
+</header>
+<!-- Character Status: Stress Meter -->
+<section class="p-6 rounded-2xl panic-raised flex flex-col items-center justify-center space-y-4">
+<h2 class="text-xl font-bold text-error uppercase tracking-tight">SYSTEM ÜBERLASTET</h2>
+<div class="relative w-48 h-48 rounded-full neo-pressed flex items-center justify-center">
+<!-- Circular Progress Ring (Simulated) -->
+<svg class="absolute w-full h-full transform -rotate-90" viewbox="0 0 100 100">
+<circle class="text-surface-container-high" cx="50" cy="50" fill="none" r="45" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-error shake" cx="50" cy="50" fill="none" r="45" stroke="currentColor" stroke-dasharray="283" stroke-dashoffset="5.66" stroke-width="8" style="transition: stroke-dashoffset 0.5s ease;"></circle>
+</svg>
+<div class="text-center shake">
+<span class="text-5xl font-extrabold text-error">98</span><span class="text-2xl text-error">%</span>
+<p class="text-xs font-semibold text-error mt-1 uppercase">Stresslevel</p>
+</div>
+</div>
+</section>
+<!-- Countdown Timer -->
+<section class="flex flex-col items-center space-y-2">
+<p class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">STABILISIERUNGS-FENSTER</p>
+<div class="px-6 py-3 rounded-full panic-pressed text-error font-mono text-2xl font-bold tracking-widest">
+                00:14:08
+            </div>
+</section>
+<!-- Intervention Options -->
+<section class="space-y-4">
+<!-- Option 1: Analoge Beruhigung -->
+<button class="w-full text-left p-4 rounded-xl neo-raised hover:panic-pressed transition-all duration-200 group relative overflow-hidden flex items-center">
+<div class="mr-4 p-3 rounded-lg neo-pressed flex items-center justify-center group-hover:bg-error-container group-hover:text-error transition-colors">
+<span class="material-symbols-outlined">self_improvement</span>
+</div>
+<div class="flex-1">
+<h3 class="font-bold text-on-surface group-hover:text-error uppercase tracking-tight">Analoge Beruhigung</h3>
+<p class="text-xs text-on-surface-variant mt-1">Physische Technik (z.B. 4-7-8). Benötigt Zeit &amp; Skill Check.</p>
+</div>
+<div class="text-right">
+<span class="text-sm font-semibold text-primary group-hover:text-error">0 MB</span>
+</div>
+</button>
+<!-- Option 2: Digitale Unterstützung -->
+<button class="w-full text-left p-4 rounded-xl neo-raised hover:panic-pressed transition-all duration-200 group relative overflow-hidden flex items-center">
+<div class="mr-4 p-3 rounded-lg neo-pressed flex items-center justify-center group-hover:bg-error-container group-hover:text-error transition-colors">
+<span class="material-symbols-outlined">satellite_alt</span>
+</div>
+<div class="flex-1">
+<h3 class="font-bold text-on-surface group-hover:text-error uppercase tracking-tight">Digitale Unterstützung</h3>
+<p class="text-xs text-on-surface-variant mt-1">Telemedizin-Protokoll via Sat-Link. Schnell.</p>
+</div>
+<div class="text-right">
+<span class="text-sm font-semibold text-error group-hover:text-error">15 MB</span>
+</div>
+</button>
+<!-- Option 3: Medikamentöse Intervention -->
+<button class="w-full text-left p-4 rounded-xl neo-raised hover:panic-pressed transition-all duration-200 group relative overflow-hidden flex items-center">
+<div class="mr-4 p-3 rounded-lg neo-pressed flex items-center justify-center group-hover:bg-error-container group-hover:text-error transition-colors">
+<span class="material-symbols-outlined">vaccines</span>
+</div>
+<div class="flex-1">
+<h3 class="font-bold text-on-surface group-hover:text-error uppercase tracking-tight">Medikamentöse Intervention</h3>
+<p class="text-xs text-on-surface-variant mt-1">Sedativum aus IFAK. Verbraucht seltene Ressourcen.</p>
+</div>
+<div class="text-right">
+<span class="text-sm font-semibold text-primary group-hover:text-error">0 MB</span>
+<div class="text-[10px] text-error mt-0.5 uppercase font-bold">-1 IFAK</div>
+</div>
+</button>
+</section>
+</main>
+</body></html>

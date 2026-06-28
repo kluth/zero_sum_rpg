@@ -147,14 +147,12 @@ fun LobbyScreen(onHost: () -> Unit, onJoin: (String) -> Unit) {
         Text("ZERO SUM", color = TerminalGreen, fontSize = 48.sp, fontWeight = FontWeight.Bold, letterSpacing = 4.sp)
         Spacer(modifier = Modifier.height(64.dp))
         
-        Button(
+        SilkButton(
+            text = "HOST NEW OPERATION",
             onClick = onHost,
-            colors = ButtonDefaults.buttonColors(containerColor = WarningAmber.copy(alpha = 0.2f)),
-            modifier = Modifier.fillMaxWidth().height(64.dp).border(2.dp, WarningAmber, RoundedCornerShape(8.dp)),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Text("HOST NEW OPERATION", color = WarningAmber, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-        }
+            modifier = Modifier.fillMaxWidth().height(64.dp),
+            isCritical = true
+        )
         
         Spacer(modifier = Modifier.height(32.dp))
         Text("--- OR ---", color = Color.Gray, fontSize = 16.sp)
@@ -174,14 +172,11 @@ fun LobbyScreen(onHost: () -> Unit, onJoin: (String) -> Unit) {
             )
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Button(
+        SilkButton(
+            text = "JOIN SQUAD",
             onClick = { if (joinPin.length >= 4) onJoin(joinPin) },
-            colors = ButtonDefaults.buttonColors(containerColor = TerminalGreen.copy(alpha = 0.2f)),
-            modifier = Modifier.fillMaxWidth().height(64.dp).border(2.dp, TerminalGreen, RoundedCornerShape(8.dp)),
-            shape = RoundedCornerShape(8.dp)
-        ) {
-            Text("JOIN SQUAD", color = TerminalGreen, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-        }
+            modifier = Modifier.fillMaxWidth().height(64.dp)
+        )
     }
 }
 

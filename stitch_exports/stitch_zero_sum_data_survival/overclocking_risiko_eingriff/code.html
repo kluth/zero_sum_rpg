@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Survival OS - Overclocking</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#a78bfa",
+                        "primary": "#6366f1",
+                        "secondary-fixed": "#d8dae6",
+                        "primary-fixed": "#e0e2ff",
+                        "on-primary-fixed": "#1e1b4b",
+                        "surface-variant": "#dcdee4",
+                        "on-surface": "#2e3040",
+                        "tertiary": "#7c3aed",
+                        "surface-container-highest": "#d6d8de",
+                        "secondary-container": "#d8dae6",
+                        "on-secondary-container": "#585a68",
+                        "primary-fixed-dim": "#a5b4fc",
+                        "on-secondary-fixed": "#1a1b26",
+                        "inverse-on-surface": "#e8eaf0",
+                        "inverse-primary": "#a5b4fc",
+                        "surface": "#e8eaf0",
+                        "secondary-fixed-dim": "#b8baca",
+                        "on-primary-container": "#e0e2ff",
+                        "on-background": "#2e3040",
+                        "surface-container-lowest": "#f0f2f8",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed-dim": "#c4b5fd",
+                        "surface-container-high": "#dcdee4",
+                        "on-error-container": "#991b1b",
+                        "primary-container": "#818cf8",
+                        "inverse-surface": "#2e3040",
+                        "on-tertiary-fixed-variant": "#5b21b6",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed-variant": "#404252",
+                        "background": "#e8eaf0",
+                        "on-surface-variant": "#585a68",
+                        "error-container": "#fee2e2",
+                        "on-tertiary-container": "#3b1f63",
+                        "on-primary-fixed-variant": "#4338ca",
+                        "surface-bright": "#edeef4",
+                        "surface-tint": "#6366f1",
+                        "outline": "#8a8c9a",
+                        "tertiary-fixed": "#ede9fe",
+                        "surface-dim": "#d4d6dc",
+                        "surface-container-low": "#e5e7ed",
+                        "outline-variant": "#d0d2dc",
+                        "secondary": "#6c6e7e",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed": "#2e1065",
+                        "error": "#dc2626",
+                        "surface-container": "#e2e4ea"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        /* Neomorphic Styles */
+        .neo-surface {
+            background-color: theme('colors.background');
+        }
+        .neo-raised {
+            box-shadow: 6px 6px 12px rgba(0,0,0,0.08), -6px -6px 12px rgba(255,255,255,0.6);
+        }
+        .neo-inset {
+            box-shadow: inset 4px 4px 8px rgba(0,0,0,0.06), inset -4px -4px 8px rgba(255,255,255,0.5);
+        }
+        
+        /* Interactive States */
+        .neo-btn {
+            transition: all 0.2s ease;
+        }
+        .neo-btn:active {
+            box-shadow: inset 4px 4px 8px rgba(0,0,0,0.06), inset -4px -4px 8px rgba(255,255,255,0.5);
+            transform: scale(0.98);
+        }
+
+        /* Glitch & Pulse Effects (Simulated for this specific request, overriding neomorphic temporarily for dramatic effect) */
+        @keyframes pulse-red {
+            0% { background-color: rgba(220, 38, 38, 0.1); }
+            50% { background-color: rgba(220, 38, 38, 0.3); }
+            100% { background-color: rgba(220, 38, 38, 0.1); }
+        }
+        .pulse-overlay {
+            animation: pulse-red 2s infinite;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 1; }
+            5% { opacity: 0.8; }
+            10% { opacity: 1; }
+            15% { opacity: 0.3; }
+            20% { opacity: 1; }
+            50% { opacity: 1; }
+            55% { opacity: 0.9; }
+            60% { opacity: 0.4; }
+            65% { opacity: 1; }
+            100% { opacity: 1; }
+        }
+        .flicker-text {
+            animation: flicker 4s infinite;
+        }
+
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.05) 50%,
+                rgba(0,0,0,0.05)
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="neo-surface min-h-screen text-on-surface antialiased overflow-x-hidden relative">
+<!-- Scanline Overlay -->
+<div class="fixed inset-0 scanlines z-50 mix-blend-multiply opacity-50"></div>
+<!-- Red Pulse Overlay -->
+<div class="fixed inset-0 pulse-overlay z-40 mix-blend-color-burn pointer-events-none"></div>
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky z-40 bg-background shadow-[6px_6px_12px_rgba(0,0,0,0.08),-6px_-6px_12px_rgba(255,255,255,0.6)] flex justify-between items-center px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-error text-2xl flicker-text">terminal</span>
+<span class="font-display font-bold text-error tracking-tighter text-xl">SURVIVAL_OS_v1.0</span>
+</div>
+<span class="material-symbols-outlined text-error text-2xl animate-pulse">sensors</span>
+</header>
+<main class="container mx-auto px-4 py-8 max-w-lg relative z-30">
+<!-- Warning Header -->
+<div class="text-center mb-10 mt-6">
+<h1 class="font-headline font-bold text-3xl text-error tracking-widest uppercase mb-2 flicker-text">System Overclock</h1>
+<p class="font-body text-error font-medium tracking-widest text-sm uppercase">Overclocking In Progress... Mental Price: High</p>
+</div>
+<!-- Target Info Card -->
+<div class="neo-raised rounded-xl p-6 mb-8 relative overflow-hidden bg-background">
+<div class="absolute top-0 left-0 w-1 h-full bg-error"></div>
+<div class="flex items-start justify-between mb-4">
+<div>
+<h2 class="font-headline font-semibold text-xl text-on-surface mb-1">Target Identified</h2>
+<p class="font-body text-on-surface-variant text-sm">Elektronisches Schloss umgehen</p>
+</div>
+<span class="material-symbols-outlined text-error text-3xl">lock_open</span>
+</div>
+<div class="neo-inset rounded-lg p-4 bg-background mt-4 border border-error/20">
+<div class="flex justify-between text-sm mb-2 font-mono">
+<span class="text-on-surface-variant uppercase tracking-wider">Encryption Level</span>
+<span class="text-error font-bold">Class-4 Alpha</span>
+</div>
+<div class="flex justify-between text-sm font-mono">
+<span class="text-on-surface-variant uppercase tracking-wider">Bypass Probability</span>
+<span class="text-error font-bold">22.4%</span>
+</div>
+</div>
+</div>
+<!-- Progress/Status Area -->
+<div class="mb-12">
+<div class="flex justify-between items-end mb-2">
+<span class="font-body text-xs font-bold text-error uppercase tracking-wider">System Strain</span>
+<span class="font-mono text-sm font-bold text-error flicker-text">87%</span>
+</div>
+<div class="neo-inset h-4 rounded-full w-full bg-background overflow-hidden relative">
+<!-- Flickering Progress Bar -->
+<div class="absolute top-0 left-0 h-full bg-error rounded-full w-[87%] opacity-80" style="animation: flicker 1s infinite;"></div>
+<!-- Subdued background for remaining -->
+<div class="absolute top-0 left-[87%] h-full bg-surface-variant w-[13%]"></div>
+</div>
+</div>
+<!-- Action Area -->
+<div class="text-center">
+<div class="mb-6">
+<p class="font-body text-error font-bold text-lg uppercase tracking-widest mb-1 flicker-text">+30% Stress</p>
+<p class="font-body text-on-surface-variant text-xs uppercase tracking-wider">Mental Burnout Risk Imminent</p>
+</div>
+<!-- Giant Risk Button -->
+<button class="neo-btn neo-raised rounded-2xl w-full py-8 px-6 bg-background group relative overflow-hidden border-2 border-transparent focus:outline-none focus:border-error">
+<!-- Inner glow effect on hover/focus -->
+<div class="absolute inset-0 bg-error/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex flex-col items-center justify-center relative z-10">
+<span class="material-symbols-outlined text-error text-5xl mb-3 group-hover:scale-110 transition-transform duration-300" style="font-variation-settings: 'FILL' 1;">warning</span>
+<span class="font-headline font-extrabold text-3xl text-error tracking-widest uppercase">Execute</span>
+<span class="font-body text-error/70 text-xs mt-2 uppercase tracking-widest">Accept Consequences</span>
+</div>
+</button>
+</div>
+</main>
+<!-- Bottom Nav Suppressed as per guidelines (Linear/Transactional task focused screen) -->
+</body></html>

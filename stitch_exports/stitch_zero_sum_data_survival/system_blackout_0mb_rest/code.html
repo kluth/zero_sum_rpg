@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+
+<html class="light" lang="de"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SYSTEM BLACKOUT: 0MB</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tertiary-fixed": "#ede9fe",
+                        "on-surface-variant": "#585a68",
+                        "surface-container-low": "#e5e7ed",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-lowest": "#f0f2f8",
+                        "surface-container": "#e2e4ea",
+                        "tertiary-fixed-dim": "#c4b5fd",
+                        "tertiary-container": "#a78bfa",
+                        "on-secondary-container": "#585a68",
+                        "inverse-surface": "#2e3040",
+                        "outline-variant": "#d0d2dc",
+                        "surface-container-high": "#dcdee4",
+                        "background": "#e8eaf0",
+                        "surface-container-highest": "#d6d8de",
+                        "secondary-container": "#d8dae6",
+                        "error": "#dc2626",
+                        "surface-variant": "#dcdee4",
+                        "secondary": "#6c6e7e",
+                        "surface-tint": "#6366f1",
+                        "inverse-on-surface": "#e8eaf0",
+                        "on-tertiary-fixed": "#2e1065",
+                        "on-tertiary-container": "#3b1f63",
+                        "on-primary-fixed-variant": "#4338ca",
+                        "on-error-container": "#991b1b",
+                        "secondary-fixed": "#d8dae6",
+                        "surface-dim": "#d4d6dc",
+                        "primary-fixed-dim": "#a5b4fc",
+                        "primary": "#6366f1",
+                        "on-secondary-fixed": "#1a1b26",
+                        "on-surface": "#2e3040",
+                        "on-secondary-fixed-variant": "#404252",
+                        "on-primary-fixed": "#1e1b4b",
+                        "surface-bright": "#edeef4",
+                        "primary-fixed": "#e0e2ff",
+                        "on-primary-container": "#e0e2ff",
+                        "outline": "#8a8c9a",
+                        "on-error": "#ffffff",
+                        "tertiary": "#7c3aed",
+                        "inverse-primary": "#a5b4fc",
+                        "error-container": "#fee2e2",
+                        "on-background": "#2e3040",
+                        "secondary-fixed-dim": "#b8baca",
+                        "on-tertiary-fixed-variant": "#5b21b6",
+                        "on-secondary": "#ffffff",
+                        "primary-container": "#818cf8",
+                        "on-primary": "#ffffff",
+                        "surface": "#e8eaf0"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    fontFamily: {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .neo-raised {
+            box-shadow: 6px 6px 12px rgba(0,0,0,0.08), -6px -6px 12px rgba(255,255,255,0.6);
+        }
+        .neo-pressed {
+            box-shadow: inset 4px 4px 8px rgba(0,0,0,0.06), inset -4px -4px 8px rgba(255,255,255,0.5);
+        }
+        
+        /* Glitch effects mapped to light theme warning colors */
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+        .scanlines::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(220, 38, 38, 0.05) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            z-index: 10;
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+        }
+        .scanlines::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: rgba(220, 38, 38, 0.3);
+            animation: scanline 6s linear infinite;
+            z-index: 11;
+            pointer-events: none;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip-path: inset(80% 0 0 0); transform: translate(-2px, 2px); }
+            10% { clip-path: inset(10% 0 60% 0); transform: translate(2px, -2px); }
+            20% { clip-path: inset(40% 0 20% 0); transform: translate(-2px, 2px); }
+            30% { clip-path: inset(90% 0 5% 0); transform: translate(2px, -2px); }
+            40% { clip-path: inset(20% 0 50% 0); transform: translate(-2px, 2px); }
+            50% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -2px); }
+            60% { clip-path: inset(10% 0 70% 0); transform: translate(-2px, 2px); }
+            70% { clip-path: inset(80% 0 5% 0); transform: translate(2px, -2px); }
+            80% { clip-path: inset(30% 0 40% 0); transform: translate(-2px, 2px); }
+            90% { clip-path: inset(50% 0 30% 0); transform: translate(2px, -2px); }
+            100% { clip-path: inset(90% 0 0 0); transform: translate(-2px, 2px); }
+        }
+        
+        .glitch-text {
+            position: relative;
+        }
+        .glitch-text::before, .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.8;
+        }
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -1px 0 rgba(220, 38, 38, 0.7);
+            clip-path: inset(100% 0 0 0);
+            animation: glitch-anim 3s infinite linear alternate-reverse;
+        }
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -1px 0 rgba(99, 102, 241, 0.7);
+            clip-path: inset(100% 0 0 0);
+            animation: glitch-anim 2s infinite linear alternate-reverse;
+        }
+        
+        @keyframes pulse-red {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+            50% { box-shadow: 0 0 20px 5px rgba(220, 38, 38, 0.2); }
+        }
+        
+        .error-glow {
+            animation: pulse-red 2s infinite;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body min-h-screen relative overflow-x-hidden scanlines selection:bg-error selection:text-on-error flex flex-col items-center justify-center p-4 sm:p-8">
+<!-- Ambient background element to imply broken neomorphism -->
+<div class="fixed top-[-10vw] left-[-10vw] w-[40vw] h-[40vw] rounded-full bg-error-container opacity-20 blur-3xl z-0"></div>
+<div class="fixed bottom-[-10vw] right-[-10vw] w-[40vw] h-[40vw] rounded-full bg-tertiary-container opacity-10 blur-3xl z-0"></div>
+<main class="w-full max-w-lg z-20 flex flex-col gap-8 relative mt-16 mb-24">
+<!-- Header / Status Warning -->
+<header class="text-center space-y-2">
+<h1 class="font-display font-extrabold text-3xl sm:text-4xl tracking-tighter text-error uppercase glitch-text" data-text="SYSTEM BLACKOUT">SYSTEM BLACKOUT</h1>
+<p class="font-headline font-semibold text-on-surface-variant tracking-widest uppercase text-sm">DATENVOLUMEN ERSCHÖPFT</p>
+</header>
+<!-- 0MB Gauge -->
+<div class="relative mx-auto w-64 h-64 flex items-center justify-center">
+<!-- Fractured Neomorphic Ring -->
+<div class="absolute inset-0 rounded-full neo-pressed border-4 border-error/20 error-glow flex items-center justify-center">
+<svg class="absolute inset-0 w-full h-full -rotate-90" viewbox="0 0 100 100">
+<circle class="text-error/30" cx="50" cy="50" fill="none" r="45" stroke="currentColor" stroke-width="2"></circle>
+<!-- Simulated broken stroke -->
+<circle class="text-error" cx="50" cy="50" fill="none" r="45" stroke="currentColor" stroke-dasharray="20 10 5 15 2 40 10 30" stroke-width="4"></circle>
+</svg>
+</div>
+<div class="z-10 text-center">
+<span class="block font-display font-bold text-6xl text-error glitch-text tracking-tighter" data-text="0">0</span>
+<span class="block font-headline font-semibold text-xl text-on-surface-variant mt-1 uppercase">MB</span>
+</div>
+</div>
+<!-- Offline Status Banner -->
+<div class="bg-background rounded-xl p-4 neo-raised border-l-4 border-error flex items-center gap-4">
+<span class="material-symbols-outlined text-error text-3xl" style="font-variation-settings: 'FILL' 1;">wifi_off</span>
+<div>
+<h2 class="font-headline font-bold text-on-surface uppercase tracking-wide">OFFLINE: DIGITALER COLLAPSE</h2>
+<p class="text-on-surface-variant text-sm mt-1">Keine Verbindung zum Grid. Autonome Systeme kompromittiert.</p>
+</div>
+</div>
+<!-- Overclocking Warning -->
+<div class="bg-error-container/50 rounded-xl p-5 neo-pressed border border-error/20 relative overflow-hidden">
+<!-- Subtle diagonal stripes in background -->
+<div class="absolute inset-0 opacity-10" style="background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, #dc2626 10px, #dc2626 20px);"></div>
+<div class="relative z-10 flex flex-col gap-2">
+<div class="flex items-center gap-2 text-error">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">warning</span>
+<h3 class="font-headline font-bold uppercase tracking-wider text-sm">OVERCLOCKING MODE ACTIVE</h3>
+</div>
+<p class="text-on-error-container text-sm font-medium">
+<span class="font-bold uppercase">MENTALER PREIS:</span> Weitere Datenanfragen verbrauchen temporär kognitive Ressourcen (HP/Stress). Überlastungswarnung aktiv.
+                </p>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col gap-4 mt-4">
+<button class="w-full bg-background text-error rounded-xl py-4 px-6 neo-raised hover:opacity-80 active:neo-pressed transition-all duration-200 flex items-center justify-between group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined group-active:scale-95 transition-transform" style="font-variation-settings: 'FILL' 1;">emergency</span>
+<span class="font-headline font-semibold uppercase tracking-wide text-sm sm:text-base">Notfall-Uplink</span>
+</div>
+<span class="font-body font-bold text-xs bg-error-container text-on-error-container px-2 py-1 rounded-md">Kosten: -10% Stress</span>
+</button>
+<button class="w-full bg-background text-primary rounded-xl py-4 px-6 neo-raised hover:opacity-80 active:neo-pressed transition-all duration-200 flex items-center justify-between group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined group-active:scale-95 transition-transform" style="font-variation-settings: 'FILL' 1;">my_location</span>
+<span class="font-headline font-semibold uppercase tracking-wide text-sm sm:text-base">Analoge Lokalisierung</span>
+</div>
+<span class="font-body font-bold text-xs text-on-surface-variant">0MB, Langsam</span>
+</button>
+</div>
+</main>
+</body></html>

@@ -1,0 +1,11 @@
+Ponte en la piel de un héroe cotidiano en Zero Sum RPG: Blackout, un simulador de crisis altamente realista. Cuando un colapso masivo de la infraestructura sume a la ciudad en la oscuridad total, personas normales (paramédicos, técnicos de TI, periodistas y activistas) deben dar un paso al frente para sobrevivir y restaurar el orden.
+
+Esto no es una fantasía. Es una lucha desesperada y realista por la supervivencia. Utiliza una interfaz táctica y funcional diseñada para operaciones de campo para navegar por la crisis. Gestiona recursos críticos, coordina respuestas de emergencia y toma decisiones de vida o muerte en un entorno urbano crudo y realista.
+
+Características:
+- Héroes Cotidianos: Juega como ciudadanos comunes que utilizan sus habilidades profesionales para gestionar un apagón catastrófico.
+- Interfaz Táctica: Interactúa con un terminal realista de respuesta a crisis con una estética funcional y apagada.
+- Realismo Basado: Sin magia, sin ciencia ficción. Solo supervivencia pura y desesperada contra una infraestructura fallida.
+- Decisiones Estratégicas: Asigna suministros médicos, restaura redes de comunicación y mantén el orden en el caos.
+
+¿Podrás guiar a tu comunidad a través de las horas más oscuras?

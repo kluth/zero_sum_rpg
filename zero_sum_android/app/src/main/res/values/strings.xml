@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">Zero Sum RPG</string>
+    <string name="survival_os">SURVIVAL OS</string>
+    <string name="sys_offline">SYS.OS.MIL // OFFLINE</string>
+    <string name="uplink_err">UPLINK ERR</string>
+    <string name="secure_data_chunk">SECURE DATA CHUNK: %1$.1fMB / %2$dMB</string>
+    <string name="vital_sign_hp">OPERATOR VITAL SIGN (HP): %1$d / %2$d</string>
+    <string name="assigned_role">ASSIGNED ROLE (MOS):</string>
+    <string name="muted">MUTED</string>
+    <string name="light_table_active">LITE TABLE PROTOCOL ACTIVE</string>
+    <string name="sys_blackout">SYSTEM BLACKOUT</string>
+    <string name="reboot_sequence">INITIATING REBOOT SEQUENCE...</string>
+    <string name="data_corrupted">LOCAL DATA CORRUPTED. AWAITING MESH SYNC.</string>
 </resources>

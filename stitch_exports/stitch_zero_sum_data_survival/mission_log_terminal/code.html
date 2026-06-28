@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="de"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mission Log / Terminal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#6366f1",
+                    "surface-variant": "#dcdee4",
+                    "secondary": "#6c6e7e",
+                    "secondary-container": "#d8dae6",
+                    "error": "#dc2626",
+                    "inverse-on-surface": "#e8eaf0",
+                    "on-error-container": "#991b1b",
+                    "on-tertiary-fixed": "#2e1065",
+                    "on-tertiary-container": "#3b1f63",
+                    "on-primary-fixed-variant": "#4338ca",
+                    "surface-dim": "#d4d6dc",
+                    "secondary-fixed": "#d8dae6",
+                    "on-surface-variant": "#585a68",
+                    "tertiary-fixed": "#ede9fe",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-low": "#e5e7ed",
+                    "on-secondary-container": "#585a68",
+                    "inverse-surface": "#2e3040",
+                    "tertiary-fixed-dim": "#c4b5fd",
+                    "tertiary-container": "#a78bfa",
+                    "surface-container-lowest": "#f0f2f8",
+                    "surface-container": "#e2e4ea",
+                    "surface-container-highest": "#d6d8de",
+                    "surface-container-high": "#dcdee4",
+                    "background": "#e8eaf0",
+                    "outline-variant": "#d0d2dc",
+                    "error-container": "#fee2e2",
+                    "secondary-fixed-dim": "#b8baca",
+                    "on-background": "#2e3040",
+                    "primary-container": "#818cf8",
+                    "on-primary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#5b21b6",
+                    "surface": "#e8eaf0",
+                    "on-secondary-fixed": "#1a1b26",
+                    "primary": "#6366f1",
+                    "primary-fixed-dim": "#a5b4fc",
+                    "on-surface": "#2e3040",
+                    "on-secondary-fixed-variant": "#404252",
+                    "on-primary-fixed": "#1e1b4b",
+                    "outline": "#8a8c9a",
+                    "on-primary-container": "#e0e2ff",
+                    "surface-bright": "#edeef4",
+                    "primary-fixed": "#e0e2ff",
+                    "inverse-primary": "#a5b4fc",
+                    "tertiary": "#7c3aed",
+                    "on-error": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.5rem",
+                    "lg": "1rem",
+                    "xl": "1.5rem",
+                    "full": "9999px"
+            },
+            "spacing": {},
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "display": ["Plus Jakarta Sans"],
+                    "body": ["Plus Jakarta Sans"],
+                    "label": ["Plus Jakarta Sans"],
+                    "mono": ["JetBrains Mono", "monospace"]
+            },
+            "fontSize": {},
+            "boxShadow": {
+                "neo-raised": "6px 6px 12px rgba(0,0,0,0.08), -6px -6px 12px rgba(255,255,255,0.6)",
+                "neo-pressed": "inset 4px 4px 8px rgba(0,0,0,0.06), inset -4px -4px 8px rgba(255,255,255,0.5)",
+                "neo-shell": "0px -6px 12px rgba(0,0,0,0.08), 0px 6px 12px rgba(255,255,255,0.6)"
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #e8eaf0; /* matching 'surface' / 'background' */
+            color: #2e3040; /* 'on-surface' */
+            -webkit-font-smoothing: antialiased;
+        }
+        .neo-raised {
+            box-shadow: 6px 6px 12px rgba(0,0,0,0.08), -6px -6px 12px rgba(255,255,255,0.6);
+        }
+        .neo-pressed {
+            box-shadow: inset 4px 4px 8px rgba(0,0,0,0.06), inset -4px -4px 8px rgba(255,255,255,0.5);
+        }
+        
+        /* Terminal specific scanline effect */
+        .scanline {
+            position: relative;
+            overflow: hidden;
+        }
+        .scanline::after {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.02) 50%,
+                rgba(0,0,0,0.02)
+            );
+            background-size: 100% 4px;
+            z-index: 10;
+            pointer-events: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body min-h-screen flex flex-col pb-24 md:pb-0">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky bg-surface dark:bg-surface shadow-[6px_6px_12px_rgba(0,0,0,0.08),-6px_-6px_12px_rgba(255,255,255,0.6)] z-40">
+<div class="flex justify-between items-center px-6 py-4 w-full">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary dark:text-primary">signal_cellular_alt</span>
+<h1 class="text-lg font-headline font-semibold text-on-surface dark:text-on-surface">SURVIVAL_OS_v1.0</h1>
+</div>
+<div>
+<span class="font-body font-semibold tracking-wider uppercase text-primary dark:text-primary">150MB</span>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 px-4 py-8 max-w-4xl mx-auto w-full flex flex-col gap-8 md:px-8">
+<!-- Header Section -->
+<div class="flex flex-col gap-2">
+<h2 class="text-3xl font-headline font-bold text-on-surface">Mission Log</h2>
+<p class="text-on-surface-variant font-medium">Satelliten-Terminal &amp; Datenverbrauch</p>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Critical Upload Widget (Spans 12 cols on mobile, 8 on desktop) -->
+<div class="neo-raised rounded-xl p-6 bg-surface md:col-span-8 flex flex-col justify-between min-h-[200px]">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h3 class="font-headline font-semibold text-on-surface text-lg">KRITISCHER UPLOAD</h3>
+<p class="font-mono text-sm text-secondary mt-1">Uplink.Status: ÜBERTRAGUNG LÄUFT</p>
+</div>
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">cloud_upload</span>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between font-mono text-sm text-on-surface">
+<span>Telemetrie_Paket_07.dat</span>
+<span class="text-primary font-bold">78%</span>
+</div>
+<!-- Neumorphic Progress Bar Track -->
+<div class="h-6 rounded-full neo-pressed bg-surface p-1 relative overflow-hidden">
+<!-- Progress Fill -->
+<div class="h-full bg-primary rounded-full w-[78%] relative shadow-[4px_0_8px_rgba(99,102,241,0.5)] flex items-center justify-end px-2">
+<div class="w-2 h-2 rounded-full bg-white opacity-50 animate-pulse"></div>
+</div>
+</div>
+<div class="flex justify-between font-mono text-xs text-on-surface-variant">
+<span>ETA: 00:04:12</span>
+<span>12.4 MB / 15.9 MB</span>
+</div>
+</div>
+</div>
+<!-- Signal Status Widget (Spans 12 cols on mobile, 4 on desktop) -->
+<div class="neo-raised rounded-xl p-6 bg-surface md:col-span-4 flex flex-col items-center justify-center gap-4 text-center">
+<div class="w-24 h-24 rounded-full neo-pressed flex items-center justify-center bg-surface">
+<div class="w-20 h-20 rounded-full neo-raised flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-4xl">satellite_alt</span>
+</div>
+</div>
+<div>
+<h3 class="font-headline font-semibold text-on-surface">Satellitenverbindung</h3>
+<p class="font-mono text-sm text-tertiary mt-2">STARK</p>
+<p class="font-mono text-xs text-on-surface-variant mt-1">Latenz: 450ms</p>
+</div>
+</div>
+<!-- Terminal Log (Spans full width) -->
+<div class="neo-raised rounded-xl p-6 bg-surface md:col-span-12">
+<div class="flex items-center gap-2 mb-4 pb-4 border-b border-surface-variant/50">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">terminal</span>
+<h3 class="font-headline font-semibold text-on-surface uppercase tracking-widest text-sm">Transaktionsprotokoll</h3>
+</div>
+<!-- Terminal Container -->
+<div class="neo-pressed rounded-xl bg-surface p-4 h-64 overflow-y-auto font-mono text-sm scanline space-y-3">
+<div class="flex items-start gap-3 text-on-surface-variant opacity-70">
+<span class="text-secondary shrink-0">[14:02:11]</span>
+<span class="material-symbols-outlined text-sm shrink-0 mt-0.5">download</span>
+<div class="flex-1">
+<span class="text-on-surface">SYS.SYNC: Basis-Telemetrie</span>
+</div>
+<span class="text-secondary shrink-0">-0.2MB</span>
+</div>
+<div class="flex items-start gap-3 text-on-surface-variant">
+<span class="text-secondary shrink-0">[14:15:44]</span>
+<span class="material-symbols-outlined text-sm shrink-0 mt-0.5 text-error">map</span>
+<div class="flex-1">
+<span class="text-on-surface">NAV: Offline-Karten Sektor 7B (Cache)</span>
+</div>
+<span class="text-error font-semibold shrink-0">-5.0MB</span>
+</div>
+<div class="flex items-start gap-3 text-on-surface-variant">
+<span class="text-secondary shrink-0">[15:30:00]</span>
+<span class="material-symbols-outlined text-sm shrink-0 mt-0.5 text-tertiary">medical_services</span>
+<div class="flex-1">
+<span class="text-on-surface">MED: Telemedizin-Beratung (Video Low-Res)</span>
+</div>
+<span class="text-tertiary font-semibold shrink-0">-12.0MB</span>
+</div>
+<div class="flex items-start gap-3 text-on-surface-variant opacity-70">
+<span class="text-secondary shrink-0">[16:01:22]</span>
+<span class="material-symbols-outlined text-sm shrink-0 mt-0.5">chat</span>
+<div class="flex-1">
+<span class="text-on-surface">COM: Textnachricht (HQ)</span>
+</div>
+<span class="text-secondary shrink-0">-0.1MB</span>
+</div>
+<div class="flex items-start gap-3 text-on-surface-variant">
+<span class="text-secondary shrink-0">[16:45:10]</span>
+<span class="material-symbols-outlined text-sm shrink-0 mt-0.5 text-primary">cloud_upload</span>
+<div class="flex-1">
+<span class="text-on-surface">UPLINK: Telemetrie_Paket_07.dat <span class="animate-pulse">_</span></span>
+</div>
+<span class="text-primary font-semibold shrink-0">[AKTIV]</span>
+</div>
+</div>
+<!-- Terminal Input line -->
+<div class="mt-4 flex items-center gap-2 font-mono text-sm">
+<span class="text-primary font-bold">&gt;</span>
+<div class="h-8 flex-1 neo-pressed rounded-lg bg-surface flex items-center px-3">
+<span class="text-on-surface-variant animate-pulse">_</span>
+</div>
+<button class="h-8 px-4 rounded-lg neo-raised bg-surface text-primary font-bold hover:text-tertiary active:neo-pressed transition-all duration-200">
+                        EXEC
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only based on hierarchy rules, though shared JSON says md:flex hidden, wait, user rules say hide on desktop if topnav has it, but standard shell behavior usually puts this at bottom for mobile) -->
+<!-- Applying responsive rules: On MOBILE (md:hidden), TopAppBar loses links (it only has title anyway), BottomNavBar shows. -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 rounded-t-xl bg-surface dark:bg-surface shadow-[0px_-6px_12px_rgba(0,0,0,0.08),0px_6px_12px_rgba(255,255,255,0.6)]">
+<div class="flex justify-around items-center px-4 pb-6 pt-4 w-full bg-surface">
+<!-- DASH -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant w-16 h-16 hover:text-primary transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined mb-1">grid_view</span>
+<span class="font-label font-medium text-[10px] uppercase tracking-tighter">DASH</span>
+</button>
+<!-- GROUP -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant w-16 h-16 hover:text-primary transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined mb-1">group</span>
+<span class="font-label font-medium text-[10px] uppercase tracking-tighter">GROUP</span>
+</button>
+<!-- INTEL - ACTIVE STATE since this is a Terminal/Log -->
+<button class="flex flex-col items-center justify-center text-primary dark:text-primary shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06),inset_-4px_-4px_8px_rgba(255,255,255,0.5)] rounded-xl w-16 h-16 active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">database</span>
+<span class="font-label font-medium text-[10px] uppercase tracking-tighter">INTEL</span>
+</button>
+<!-- COMM -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant w-16 h-16 hover:text-primary transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined mb-1">terminal</span>
+<span class="font-label font-medium text-[10px] uppercase tracking-tighter">COMM</span>
+</button>
+</div>
+</nav>
+<!-- Desktop Side Nav (Hidden on mobile, visible on md+) 
+         Since BottomNavBar is mobile only, we typically need a desktop equivalent if the shell is active. 
+         The prompt implies terminal feel. The TopAppBar handles desktop header. We'll add a simple side nav or rely on the TopAppBar as instructed. The JSON didn't provide a SideNav, only TopAppBar and BottomNavBar. We will just hide BottomNavBar on md: -->
+</body></html>

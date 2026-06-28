@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="de"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Zero Sum - End of Session</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#a78bfa",
+                        "on-tertiary-fixed-variant": "#5b21b6",
+                        "secondary": "#6c6e7e",
+                        "on-tertiary-container": "#3b1f63",
+                        "tertiary-fixed": "#ede9fe",
+                        "inverse-on-surface": "#e8eaf0",
+                        "secondary-fixed": "#d8dae6",
+                        "on-primary": "#ffffff",
+                        "outline": "#8a8c9a",
+                        "surface-bright": "#edeef4",
+                        "primary-container": "#818cf8",
+                        "on-surface": "#2e3040",
+                        "on-background": "#2e3040",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed-dim": "#c4b5fd",
+                        "surface-tint": "#6366f1",
+                        "primary": "#6366f1",
+                        "on-surface-variant": "#585a68",
+                        "surface-dim": "#d4d6dc",
+                        "on-primary-fixed-variant": "#4338ca",
+                        "on-error-container": "#991b1b",
+                        "inverse-surface": "#2e3040",
+                        "surface-container": "#e2e4ea",
+                        "surface-container-highest": "#d6d8de",
+                        "on-secondary-fixed": "#1a1b26",
+                        "surface": "#e8eaf0",
+                        "on-primary-fixed": "#1e1b4b",
+                        "primary-fixed": "#e0e2ff",
+                        "on-primary-container": "#e0e2ff",
+                        "surface-container-low": "#e5e7ed",
+                        "error": "#dc2626",
+                        "background": "#e8eaf0",
+                        "on-error": "#ffffff",
+                        "surface-variant": "#dcdee4",
+                        "primary-fixed-dim": "#a5b4fc",
+                        "inverse-primary": "#a5b4fc",
+                        "on-tertiary-fixed": "#2e1065",
+                        "on-secondary-container": "#585a68",
+                        "error-container": "#fee2e2",
+                        "tertiary": "#7c3aed",
+                        "secondary-fixed-dim": "#b8baca",
+                        "outline-variant": "#d0d2dc",
+                        "surface-container-lowest": "#f0f2f8",
+                        "surface-container-high": "#dcdee4",
+                        "on-secondary-fixed-variant": "#404252",
+                        "secondary-container": "#d8dae6",
+                        "on-secondary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Plus Jakarta Sans"],
+                        "label": ["Plus Jakarta Sans"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Silk Neomorphic Utility Classes */
+        .neo-raised {
+            box-shadow: 6px 6px 12px rgba(0,0,0,0.08), -6px -6px 12px rgba(255,255,255,0.6);
+        }
+        .neo-pressed {
+            box-shadow: inset 4px 4px 8px rgba(0,0,0,0.06), inset -4px -4px 8px rgba(255,255,255,0.5);
+        }
+        .glitch-text {
+            position: relative;
+        }
+        .glitch-text::before, .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0.8;
+        }
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -1px 0 red;
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim 2.5s infinite linear alternate-reverse;
+        }
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -1px 0 blue;
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim 3s infinite linear alternate-reverse;
+        }
+        @keyframes glitch-anim {
+            0% { clip: rect(41px, 9999px, 86px, 0); }
+            20% { clip: rect(6px, 9999px, 96px, 0); }
+            40% { clip: rect(51px, 9999px, 60px, 0); }
+            60% { clip: rect(20px, 9999px, 20px, 0); }
+            80% { clip: rect(72px, 9999px, 85px, 0); }
+            100% { clip: rect(100px, 9999px, 49px, 0); }
+        }
+        .scanlines {
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.05) 50%, rgba(0,0,0,0.05));
+            background-size: 100% 4px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body min-h-screen flex flex-col relative overflow-x-hidden selection:bg-primary/30 selection:text-primary">
+<!-- Scanline Overlay -->
+<div class="fixed inset-0 pointer-events-none z-50 scanlines opacity-50 mix-blend-overlay"></div>
+<!-- Main Content Container -->
+<main class="flex-1 container mx-auto max-w-4xl px-4 py-8 flex flex-col gap-8 relative z-10 pb-32">
+<!-- Header Status -->
+<header class="neo-raised bg-background rounded-xl p-6 text-center border border-error/10 relative overflow-hidden">
+<div class="absolute inset-0 bg-error/5 animate-pulse"></div>
+<div class="relative z-10">
+<h1 class="font-display font-extrabold text-2xl tracking-tighter text-error glitch-text uppercase" data-text="MISSION COMPLETED // SYSTEM COLLAPSED">
+                     MISSION COMPLETED // SYSTEM COLLAPSED
+                 </h1>
+<p class="text-on-surface-variant font-medium mt-2 text-sm tracking-widest uppercase">Systemstatus: Offline | Integrität: Kritisch</p>
+</div>
+</header>
+<!-- Narrative Summary Box -->
+<section class="neo-raised bg-background rounded-xl overflow-hidden flex flex-col">
+<div class="relative h-48 md:h-64 w-full">
+<div class="absolute inset-0 bg-cover bg-center mix-blend-multiply opacity-80 filter grayscale sepia-[.2] hue-rotate-[-50deg]" data-alt="A melancholic, atmospheric cinematic view of a dark, rain-slicked cyberpunk city silhouette seen through a shattered, flickering terminal screen. Soft, dim light-mode neomorphic aesthetic with muted grays and striking crimson red warning lights reflecting in puddles. High contrast, somber mood, photorealistic textures." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuATA5rwk4CmeAwHpxdWknXCyVU8Chcze6T3fe9QQAqUMPd78OaqBdXZvikyBrCwzFrnfJ6oKxpC8E75tAzlkX4wGuuaXya71ZxW5WrnbOxpk-9WO076is7XruZvVdUDgTJRUiF6qmNjMAPE5GeF5_8F9goud1I5X0bjR2O_dKRkRyoCZT0y_boDybLtjJTisfH5iJwe1_Zwfd1xoJ2zzZ455eW5xKYWiK_xl7yl5arv7_CGPwjljnN1xBOVhtFyP9VgNyUhWK_uvdM')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<h2 class="font-headline font-bold text-xl text-primary tracking-wide uppercase flex items-center gap-2">
+<span class="material-symbols-outlined text-xl">terminal</span>
+                        DER PREIS DES ÜBERLEBENS
+                    </h2>
+</div>
+</div>
+<div class="p-6 pt-2">
+<p class="text-on-surface leading-relaxed text-base">
+                    Die Sirenen verstummten, doch das Echo des Alarms hallte in ihren Köpfen nach. Der Upload war erfolgreich, aber das Netzwerk des Syndikats reagierte mit einem katastrophalen Feedback-Loop. Die städtische Infrastruktur in Sektor 4 kollabierte teilweise. Sie haben die Daten, aber der Fluchtweg war ein Pfad aus Asche und zerrissenen Verbindungen.
+                </p>
+</div>
+</section>
+<!-- Consequences Bento Grid -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Mental Status -->
+<div class="neo-pressed bg-background rounded-xl p-6 flex flex-col justify-center items-center text-center gap-3 relative overflow-hidden group">
+<div class="absolute inset-0 bg-error/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="material-symbols-outlined text-4xl text-error mb-1">psychology</span>
+<h3 class="font-label text-sm font-semibold text-on-surface-variant uppercase tracking-wider">Mentaler Schaden</h3>
+<div class="font-display text-3xl font-extrabold text-error">+45%</div>
+<p class="text-xs text-on-surface-variant/80">Trauma-Level gestiegen</p>
+</div>
+<!-- Data Usage -->
+<div class="neo-pressed bg-background rounded-xl p-6 flex flex-col justify-center items-center text-center gap-3">
+<span class="material-symbols-outlined text-4xl text-primary mb-1">memory</span>
+<h3 class="font-label text-sm font-semibold text-on-surface-variant uppercase tracking-wider">Verbrauchte Daten</h3>
+<div class="font-display text-3xl font-extrabold text-on-surface">150<span class="text-lg text-on-surface-variant">/150 MB</span></div>
+<div class="inline-flex px-3 py-1 neo-raised rounded-full bg-error/10 text-error text-[10px] font-bold tracking-widest uppercase">
+                    EXTREM
+                </div>
+</div>
+<!-- Resources -->
+<div class="neo-pressed bg-background rounded-xl p-6 flex flex-col justify-center items-center text-center gap-3">
+<span class="material-symbols-outlined text-4xl text-secondary mb-1">inventory_2</span>
+<h3 class="font-label text-sm font-semibold text-on-surface-variant uppercase tracking-wider">Ressourcen-Verlust</h3>
+<div class="font-display text-2xl font-bold text-on-surface uppercase">Kritisch</div>
+<p class="text-xs text-on-surface-variant/80">Hardware beschädigt</p>
+</div>
+</section>
+<!-- Narrative Reflection Card -->
+<section class="neo-raised bg-background rounded-xl p-6 md:p-8 mt-4 border-l-4 border-primary">
+<h3 class="font-headline font-bold text-lg text-on-surface mb-4 flex items-center gap-2 uppercase tracking-wide">
+<span class="material-symbols-outlined text-primary">auto_stories</span>
+                NARRATIVE REFLEXION
+            </h3>
+<div class="space-y-4">
+<div class="neo-pressed bg-background rounded-lg p-5">
+<h4 class="font-bold text-primary mb-2 uppercase text-sm tracking-wider">Elias (Hacker)</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">
+                        Das Flatline-Signal des Mainframes brannte sich in seine Netzhaut. Jede Codezeile fühlte sich an wie ein Verrat. Die Paranoia ist kein Bug mehr, sie ist das neue Betriebssystem.
+                    </p>
+</div>
+<div class="neo-pressed bg-background rounded-lg p-5">
+<h4 class="font-bold text-primary mb-2 uppercase text-sm tracking-wider">Kaan (Street-Samurai)</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">
+                        Der Geruch von Ozon und verbranntem Chrom sitzt tief in seinen kybernetischen Atemwegen. Die Servos in seinem linken Arm zittern sporadisch – eine physische Erinnerung an den Preis der Flucht.
+                    </p>
+</div>
+</div>
+</section>
+</main>
+<!-- Close Session Action Bar (Fixed Bottom) -->
+<div class="fixed bottom-0 left-0 w-full bg-background neo-raised rounded-t-xl p-4 md:p-6 z-40 flex justify-center pb-8 md:pb-6">
+<button class="w-full max-w-md neo-raised bg-background hover:neo-pressed text-error font-headline font-bold text-lg py-4 px-8 rounded-xl uppercase tracking-widest transition-all duration-200 flex items-center justify-center gap-3 group">
+<span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">power_settings_new</span>
+            SESSION ABSCHLIESSEN
+        </button>
+</div>
+</body></html>

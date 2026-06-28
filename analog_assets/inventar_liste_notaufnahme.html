@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventar Notaufnahme</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="neu-container">
+        <div class="doc-header">
+            <div>
+                <h2>BESTANDSAUFNAHME</h2>
+                <span class="status-indicator status-red"></span> <strong>KRITISCHER MANGEL</strong>
+            </div>
+            <div style="text-align: right; color: var(--text-muted); font-family: monospace;">
+                Datum: 16.11.2023 08:00 <br> 
+                ID: HOSP-INV-11 <br>
+                Autorisierung: Oberschwester Clara
+            </div>
+        </div>
+        
+            <h3>Aktueller Bestand (Notaufnahme / Triage)</h3>
+            <table>
+                <tr><th>Material</th><th>Bestand</th><th>Status</th></tr>
+                <tr><td>Blutkonserven (O Neg)</td><td>2 Einheiten</td><td style="color: var(--danger-red);">Kritisch</td></tr>
+                <tr><td>Morphin / Schmerzmittel</td><td>15 Ampullen</td><td style="color: var(--warning-amber);">Niedrig</td></tr>
+                <tr><td>Verbandsmaterial (Steril)</td><td>Ausreichend für 24h</td><td style="color: var(--warning-amber);">Niedrig</td></tr>
+                <tr><td>Diesel für Notstrom</td><td>600 Liter (ca. 14 Stunden)</td><td style="color: var(--danger-red);">Kritisch</td></tr>
+                <tr><td>Trinkwasser (Flaschen)</td><td>120 Liter</td><td style="color: var(--danger-red);">Rationiert</td></tr>
+            </table>
+            <div class="neu-inset">
+                <p><strong>Anmerkung:</strong> Wenn die Lieferung des Roten Kreuzes heute nicht eintrifft, müssen wir ab 18:00 Uhr die Beatmungsgeräte für Nicht-Akut-Patienten abschalten, um Diesel zu sparen. Eine absolute Katastrophe.</p>
+            </div>
+            <div class="stamp">HILFERUF</div>
+        
+    </div>
+</body>
+</html>

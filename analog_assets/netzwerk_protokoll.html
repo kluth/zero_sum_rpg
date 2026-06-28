@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netzwerk Protokoll</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="neu-container">
+        <div class="doc-header">
+            <div>
+                <h2>SERVER-LOG-AUSZUG</h2>
+                <span class="status-indicator status-red"></span> <strong>SYSTEM PANIC</strong>
+            </div>
+            <div style="text-align: right; color: var(--text-muted); font-family: monospace;">
+                Datum: 14.11.2023 23:42:01 <br> 
+                ID: IT-LOG-001 <br>
+                Autorisierung: SysAdmin-Automated
+            </div>
+        </div>
+        
+            <div class="neu-inset" style="font-family: monospace; background-color: #1e293b; color: #38bdf8;">
+                <p>[23:41:59] WARN: Unrecognized voltage spike on main trunk.</p>
+                <p>[23:42:00] CRIT: UPS-1 Failure. Switching to UPS-2.</p>
+                <p>[23:42:01] CRIT: UPS-2 Failure. Core temp rising.</p>
+                <p>[23:42:01] ALERT: Multiple node disconnections in Sector 4.</p>
+                <p style="color: #f87171;">[23:42:02] FATAL: Main grid sync lost. Initiating emergency shutdown.</p>
+                <p style="color: #f87171;">[23:42:02] FATAL: Shutdown failed. Override detected at terminal 44.</p>
+                <p>[23:42:03] ... connection lost ...</p>
+            </div>
+            <h3>Analyse des Vorfalls</h3>
+            <p>Die Serverprotokolle deuten nicht auf einen gewöhnlichen Ausfall hin. Die USV-Anlagen wurden physisch oder durch eine gezielte Überspannung zerstört. Terminal 44 befindet sich im Kellergeschoss des Umspannwerks, welches laut Wachplan zu diesem Zeitpunkt unbesetzt sein sollte.</p>
+            <a href="#" class="neu-button">Vollständiges Log anfordern (Offline)</a>
+        
+    </div>
+</body>
+</html>
