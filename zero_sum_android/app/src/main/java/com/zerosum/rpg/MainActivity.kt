@@ -194,7 +194,9 @@ fun GameScreen(sessionId: String) {
     val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { hasMicPermission = it }
     
     val uiState by NetworkManager.uiState.collectAsStateWithLifecycle()
-    val isCritical = (uiState.dataLimit - uiState.dataUsed) < 30f
+    val remainingData = uiState.dataLimit - uiState.dataUsed
+    val isCritical = remainingData < 30f && remainingData > 0f
+    val isBlackout = remainingData <= 0f
     
     val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
     LaunchedEffect(isCritical) {
@@ -217,8 +219,8 @@ fun GameScreen(sessionId: String) {
         NetworkManager.resetState()
         val initialChar = CharacterState(
             id = "char_1",
-            name = "KAIRO 'GHOST' CHEN",
-            role = "CYBER-INFILTRATOR",
+            name = "MAX MUSTERMANN",
+            role = "IT-TECHNIKER",
             stats = FlatStats(
                 hp_current = 78,
                 stealth_total = 85,
@@ -286,13 +288,16 @@ fun GameScreen(sessionId: String) {
         label = "CriticalFlash"
     )
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-        HeaderSection(sessionId)
+    if (isBlackout) {
+        SystemBlackoutScreen()
+    } else {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+            HeaderSection(sessionId, remainingData)
         Spacer(modifier = Modifier.height(16.dp))
         Column(modifier = Modifier.weight(1f)) {
             CharacterSheetSection(modifier = Modifier.weight(1f))
@@ -308,13 +313,13 @@ fun GameScreen(sessionId: String) {
         }
     }
     
-    if (isCritical) {
+    if (isCritical && !isBlackout) {
         Box(modifier = Modifier.fillMaxSize().background(Color.Red.copy(alpha = flashAlpha)))
     }
 }
 
 @Composable
-fun HeaderSection(sessionId: String) {
+fun HeaderSection(sessionId: String, remainingData: Float) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -324,17 +329,54 @@ fun HeaderSection(sessionId: String) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(
-            text = "ZERO SUM",
-            color = TerminalGreen,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            letterSpacing = 2.sp
-        )
+        Column {
+            Text(
+                text = "SURVIVAL OS",
+                color = TerminalGreen,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 2.sp
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                Text("${remainingData.toInt()} MB", color = if (remainingData < 30f) Color.Red else Color.Cyan, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Button(
+                    onClick = { NetworkManager.processIntent(PlayerIntent.ConsumeData(25f)) },
+                    colors = ButtonDefaults.buttonColors(containerColor = TerminalGreen.copy(alpha = 0.2f)),
+                    modifier = Modifier.height(32.dp).border(1.dp, TerminalGreen, RoundedCornerShape(4.dp)),
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
+                ) {
+                    Text("-25MB (Sat-Link)", color = TerminalGreen, fontSize = 10.sp)
+                }
+            }
+        }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("SESSION: $sessionId", color = Color.White, fontSize = 12.sp, modifier = Modifier.align(Alignment.CenterVertically))
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("AUTO-DEPLOY ACTIVE", color = WarningAmber, fontSize = 12.sp, modifier = Modifier.align(Alignment.CenterVertically))
+        }
+    }
+}
+
+@Composable
+fun SystemBlackoutScreen() {
+    Column(
+        modifier = Modifier.fillMaxSize().background(Color(0xFF0A0A0C)).padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text("SYSTEM BLACKOUT", color = Color.Red, fontSize = 36.sp, fontWeight = FontWeight.Bold)
+        Spacer(modifier = Modifier.height(16.dp))
+        Text("0 MB VERBLEIBEND", color = Color.White, fontSize = 24.sp)
+        Spacer(modifier = Modifier.height(32.dp))
+        Text("OFFLINE: DIGITALER COLLAPSE", color = Color.Gray, fontSize = 16.sp)
+        Spacer(modifier = Modifier.height(16.dp))
+        Text("Keine Verbindung zum Grid. Autonome Systeme kompromittiert. PnP Analog-Modus aktiv.", color = Color.Gray, fontSize = 12.sp, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+        Spacer(modifier = Modifier.height(64.dp))
+        Button(
+            onClick = { NetworkManager.processIntent(PlayerIntent.ConsumeData(-150f)) },
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Red.copy(alpha = 0.2f)),
+            modifier = Modifier.fillMaxWidth().height(64.dp).border(2.dp, Color.Red, RoundedCornerShape(8.dp))
+        ) {
+            Text("ANALOGER REBOOT (Finde Offline-Server)", color = Color.Red, fontWeight = FontWeight.Bold)
         }
     }
 }

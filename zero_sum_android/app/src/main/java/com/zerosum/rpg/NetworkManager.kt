@@ -197,9 +197,12 @@ object NetworkManager {
                 )
                 database.child("sessions/$sessionId/gameState/characters/${char.id}").setValue(charData)
             }
+            is PlayerIntent.ConsumeData -> {
+                val newUsed = (_uiState.value.dataUsed + intent.amountMB).coerceAtLeast(0f)
+                _uiState.update { it.copy(dataUsed = newUsed) }
+            }
         }
     }
-
     private fun parseCharacterState(map: Map<*, *>): CharacterState? {
         val charId = "char_1"
         val rawChar = map[charId] as? Map<*, *> ?: map.values.firstOrNull() as? Map<*, *> ?: return null
