@@ -87,21 +87,31 @@ fun SilkButton(
     var isPressed by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(if (isPressed) 0.95f else 1.0f)
     val context = LocalContext.current
+    val hapticEngine = remember { EngineProvider.getHaptic(context) }
+    val audioEngine = remember { EngineProvider.getAudio(context) }
+
+    var finalModifier = modifier
+        .scale(scale)
+        .clip(RoundedCornerShape(12.dp))
+        .background(if (isPressed) SilkCoolGray.copy(alpha = 0.9f) else SilkCoolGray)
+        .neumorphic(isPressed = isPressed)
+        
+    if (isCritical) {
+        finalModifier = finalModifier.neumorphicBreathing()
+    }
 
     Box(
-        modifier = modifier
-            .scale(scale)
-            .clip(RoundedCornerShape(12.dp))
-            .background(if (isPressed) SilkCoolGray.copy(alpha = 0.9f) else SilkCoolGray)
-            .neumorphic(isPressed = isPressed)
+        modifier = finalModifier
             .pointerInput(Unit) {
                 while (true) {
                     awaitPointerEventScope {
                         awaitFirstDown(false)
                         isPressed = true
-                        triggerHaptic(context, isCritical)
+                        hapticEngine.play(if (isCritical) HapticEngine.Profile.HEARTBEAT_CRITICAL else HapticEngine.Profile.UI_NEOMORPHIC_TAP)
+                        audioEngine.play(if (isCritical) AudioEngine.Profile.ERROR_CRITICAL else AudioEngine.Profile.GEIGER_COUNTER_CLICK)
                         waitForUpOrCancellation()
                         isPressed = false
+                        hapticEngine.play(HapticEngine.Profile.ANALOG_CLICK)
                         onClick()
                     }
                 }
@@ -115,28 +125,5 @@ fun SilkButton(
             fontSize = 14.sp,
             letterSpacing = 2.sp
         )
-    }
-}
-
-fun triggerHaptic(context: Context, isCritical: Boolean = false) {
-    val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        val vibratorManager = context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
-        vibratorManager.defaultVibrator
-    } else {
-        @Suppress("DEPRECATION")
-        context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-    }
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        if (isCritical) {
-            val timings = longArrayOf(0, 50, 50, 50)
-            val amplitudes = intArrayOf(0, 255, 0, 255)
-            vibrator.vibrate(VibrationEffect.createWaveform(timings, amplitudes, -1))
-        } else {
-            vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK))
-        }
-    } else {
-        @Suppress("DEPRECATION")
-        vibrator.vibrate(if (isCritical) 200 else 50)
     }
 }

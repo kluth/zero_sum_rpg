@@ -17,6 +17,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlin.random.Random
+import android.os.Vibrator
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.animation.AnimatedVisibility
@@ -27,11 +31,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import android.os.Vibrator
 import android.os.VibrationEffect
 import android.Manifest
 import android.content.pm.PackageManager
@@ -41,7 +41,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.json.JSONObject
-import kotlin.random.Random
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -60,7 +59,20 @@ import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.selection.selectableGroup
 
+object EngineProvider {
+    var audio: AudioEngine? = null
+    var haptic: HapticEngine? = null
 
+    fun getAudio(context: Context): AudioEngine {
+        if (audio == null) audio = AudioEngine(context.applicationContext)
+        return audio!!
+    }
+
+    fun getHaptic(context: Context): HapticEngine {
+        if (haptic == null) haptic = HapticEngine(context.applicationContext)
+        return haptic!!
+    }
+}
 
 val AcidGreen = Color(0xFF39FF14)
 val DarkBackground = Color(0xFF0A0A0C)
@@ -107,6 +119,7 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         NetworkManager.disconnect()
+        EngineProvider.audio?.release()
     }
 }
 
@@ -193,17 +206,23 @@ fun GameScreen(sessionId: String) {
     val isCritical = remainingData < 30f && remainingData > 0f
     val isBlackout = remainingData <= 0f
     
-    val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+    val hapticEngine = remember { EngineProvider.getHaptic(context) }
+    val audioEngine = remember { EngineProvider.getAudio(context) }
+
     LaunchedEffect(isCritical) {
         if (isCritical) {
+            audioEngine.play(AudioEngine.Profile.PROXIMITY_WARNING)
             while(isActive) {
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
-                } else {
-                    vibrator.vibrate(500)
-                }
+                hapticEngine.play(HapticEngine.Profile.HEARTBEAT_CRITICAL)
                 delay(1000)
             }
+        }
+    }
+
+    LaunchedEffect(isBlackout) {
+        if (isBlackout) {
+            audioEngine.play(AudioEngine.Profile.SYSTEM_BLACKOUT)
+            hapticEngine.play(HapticEngine.Profile.POWER_OUTAGE)
         }
     }
 
@@ -238,7 +257,6 @@ fun GameScreen(sessionId: String) {
         var job: kotlinx.coroutines.Job? = null
         if (hasMicPermission) {
             try {
-                // Use the context constructor to fix deprecation
                 recorder = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
                     MediaRecorder(context)
                 } else {
@@ -364,7 +382,13 @@ fun HeaderSection(sessionId: String, remainingData: Float) {
 @Composable
 fun SystemBlackoutScreen() {
     Column(
-        modifier = Modifier.fillMaxSize().background(Color(0xFF0A0A0C)).padding(32.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF0A0A0C))
+            .padding(32.dp)
+            .cctvStaticNoise()
+            .blackoutFade(isBlackout = true)
+            .crtFlicker(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
