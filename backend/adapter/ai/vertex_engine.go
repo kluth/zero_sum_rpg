@@ -36,7 +36,7 @@ func NewVertexAIEngine(apiKey, baseURL string) *VertexAIEngine {
 }
 
 func (e *VertexAIEngine) GenerateQuestPayload(context string) domain.Result[domain.GeneratedQuestPayload] {
-	prompt := fmt.Sprintf(`Generate a quest for a cyberpunk RPG based on: "%s".
+	prompt := fmt.Sprintf(`Generate a gritty, realistic "Everyday Hero Crisis" dilemma based on: "%s". Do not use sci-fi, fantasy, or cyberpunk tropes.
 Return strictly valid JSON with no markdown formatting.
 Format: {"Title": "string", "Description": "string", "SuggestedReward": number}`, context)
 

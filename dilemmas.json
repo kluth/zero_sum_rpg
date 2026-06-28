@@ -1,0 +1,58 @@
+[
+  {
+    "id": "dil_paramedic_01",
+    "class": "Paramedic",
+    "title": "Triage im Dunkeln",
+    "context": "Rettungswagen steckt im Verkehrskollaps fest. Zivilist mit Trauma am Wagen, gleichzeitig Code Red aus U-Bahn-Schacht (Massenpanik).",
+    "options": [
+      {
+        "id": "opt_a",
+        "title": "Lokale Stabilisierung",
+        "action": "Unfallopfer vor Ort behandeln",
+        "costs": {
+          "med_supplies": -50,
+          "stress": -10
+        },
+        "consequence": "Zivilist gerettet. Keine Medikamente für U-Bahn-Opfer übrig."
+      },
+      {
+        "id": "opt_b",
+        "title": "Code Red priorisieren",
+        "action": "Zivilist abweisen, mit vollem Trauma-Kit zur U-Bahn rennen",
+        "costs": {
+          "stress": 20,
+          "reputation": -5
+        },
+        "consequence": "Massen-Triage möglich. Zivilist am Wagen bleibt kritisch unversorgt."
+      }
+    ]
+  },
+  {
+    "id": "dil_it_tech_01",
+    "class": "IT Technician",
+    "title": "Das letzte Backup",
+    "context": "Städtischer Serverknoten läuft auf Notstrom (noch 12 Min). Bandbreite bricht ein. Laufwerk hat nur Platz für einen Datensatz.",
+    "options": [
+      {
+        "id": "opt_a",
+        "title": "Notfunk-Routing sichern",
+        "action": "Feuerwehr-Netzwerkdaten kopieren",
+        "costs": {
+          "data_mb": -10,
+          "reputation": 10
+        },
+        "consequence": "Rettungskräfte wieder koordiniert. Beweise über Blackout-Ursache gelöscht."
+      },
+      {
+        "id": "opt_b",
+        "title": "Beweise extrahieren",
+        "action": "Whistleblower-Logs sichern, Notfunk ignorieren",
+        "costs": {
+          "stress": 25,
+          "story_fragments": 1
+        },
+        "consequence": "Wahrheit gesichert. Rettungskräfte bleiben blind und unkoordiniert."
+      }
+    ]
+  }
+]
