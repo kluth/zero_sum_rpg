@@ -1,6 +1,6 @@
 steps:
   # 1. Test the Go Backend
-  - name: 'golang:1.22'
+  - name: 'golang:1.25'
     entrypoint: 'bash'
     args:
       - '-c'
@@ -10,7 +10,7 @@ steps:
         go test -v -cover ./...
 
   # 2. Build the Backend Binary
-  - name: 'golang:1.22'
+  - name: 'golang:1.25'
     entrypoint: 'bash'
     args:
       - '-c'
