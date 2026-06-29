@@ -15,6 +15,41 @@ import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import okhttp3.Response
 
+data class MedicalState(
+    val patientName: String = "J. DOE (M, 45)",
+    val location: String = "72 Pine St",
+    val heartRate: Int = 88,
+    val bloodPressure: String = "142/96",
+    val o2Sat: Int = 94,
+    val respRate: Int = 18,
+    val timeline: List<String> = listOf("16:12|Dispatch Received", "16:16|Arrived Scene", "16:17|Assessments (HR 88)", "16:18|Administered O2")
+)
+
+data class MapMarkerData(
+    val id: String = "",
+    val label: String = "",
+    val x: Float = 0f,
+    val y: Float = 0f
+)
+
+data class DispatchState(
+    val situation: String = "CITY BLACKOUT",
+    val elapsedTime: String = "12:45",
+    val markers: List<MapMarkerData> = listOf(
+        MapMarkerData("1", "Stuck elevator", 32f, -40f),
+        MapMarkerData("2", "Traffic gridlock", -32f, -40f)
+    )
+)
+
+data class CommsState(
+    val activeCall: String = "TOWER FIRE",
+    val status: String = "DISPATCHING UNITS",
+    val zone: String = "SECTOR 4",
+    val elapsed: String = "03:41",
+    val dispatchFeed: String = "ENGINE 12: En route",
+    val operationsFeed: List<String> = listOf("11:27 AM | HQ | Dispatch confirmed.", "11:28 AM | PTL. DAVIS | Arrived on scene.", "11:29 AM | MED 4 | Request backup.")
+)
+
 data class FlatStats(
     val hp_current: Int = 100,
     val hp_max: Int = 100,
@@ -77,7 +112,10 @@ data class PlayerState(
     val dataUsed: Float = 14.2f,
     val dataLimit: Float = 150.0f,
     val dilemma: DilemmaState? = null,
-    val gmIntel: String? = null
+    val gmIntel: String? = null,
+    val medical: MedicalState = MedicalState(),
+    val dispatch: DispatchState = DispatchState(),
+    val comms: CommsState = CommsState()
 )
 
 sealed class PlayerIntent {
@@ -380,9 +418,50 @@ object NetworkManager {
                         
                         val intel = campMap?.get("intel") as? String
                         
+                        val rawMed = campMap?.get("medical") as? Map<*, *>
+                        val medState = MedicalState(
+                            patientName = rawMed?.get("patientName") as? String ?: "J. DOE (M, 45)",
+                            location = rawMed?.get("location") as? String ?: "72 Pine St",
+                            heartRate = (rawMed?.get("heartRate") as? Number)?.toInt() ?: 88,
+                            bloodPressure = rawMed?.get("bloodPressure") as? String ?: "142/96",
+                            o2Sat = (rawMed?.get("o2Sat") as? Number)?.toInt() ?: 94,
+                            respRate = (rawMed?.get("respRate") as? Number)?.toInt() ?: 18,
+                            timeline = (rawMed?.get("timeline") as? List<String>) ?: listOf("16:12|Dispatch Received", "16:16|Arrived Scene", "16:17|Assessments (HR 88)", "16:18|Administered O2")
+                        )
+
+                        val rawDisp = campMap?.get("dispatch") as? Map<*, *>
+                        val rawMarkers = rawDisp?.get("markers") as? List<Map<*,*>>
+                        val markersList = rawMarkers?.map { 
+                            MapMarkerData(
+                                id = it["id"] as? String ?: "",
+                                label = it["label"] as? String ?: "",
+                                x = (it["x"] as? Number)?.toFloat() ?: 0f,
+                                y = (it["y"] as? Number)?.toFloat() ?: 0f
+                            )
+                        } ?: listOf(MapMarkerData("1", "Stuck elevator", 32f, -40f), MapMarkerData("2", "Traffic gridlock", -32f, -40f))
+                        
+                        val dispState = DispatchState(
+                            situation = rawDisp?.get("situation") as? String ?: "CITY BLACKOUT",
+                            elapsedTime = rawDisp?.get("elapsedTime") as? String ?: "12:45",
+                            markers = markersList
+                        )
+
+                        val rawComms = campMap?.get("comms") as? Map<*, *>
+                        val commsState = CommsState(
+                            activeCall = rawComms?.get("activeCall") as? String ?: "TOWER FIRE",
+                            status = rawComms?.get("status") as? String ?: "DISPATCHING UNITS",
+                            zone = rawComms?.get("zone") as? String ?: "SECTOR 4",
+                            elapsed = rawComms?.get("elapsed") as? String ?: "03:41",
+                            dispatchFeed = rawComms?.get("dispatchFeed") as? String ?: "ENGINE 12: En route",
+                            operationsFeed = (rawComms?.get("operationsFeed") as? List<String>) ?: listOf("11:27 AM | HQ | Dispatch confirmed.", "11:28 AM | PTL. DAVIS | Arrived on scene.", "11:29 AM | MED 4 | Request backup.")
+                        )
+
                         _uiState.value = _uiState.value.copy(
                             dilemma = dilemma,
-                            gmIntel = intel
+                            gmIntel = intel,
+                            medical = medState,
+                            dispatch = dispState,
+                            comms = commsState
                         )
                     } catch (e: Exception) { e.printStackTrace() }
                 }

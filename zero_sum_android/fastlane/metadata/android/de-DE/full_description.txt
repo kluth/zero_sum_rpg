@@ -1,11 +1,20 @@
-Schlüpfen Sie in die Rolle eines Alltagshelden in Zero Sum RPG: Blackout, einem hochrealistischen Krisensimulator. Als ein massiver Zusammenbruch der Infrastruktur die Stadt in völlige Dunkelheit stürzt, müssen ganz normale Menschen – Sanitäter, IT-Techniker, Journalisten und Aktivisten – über sich hinauswachsen, um zu überleben und die Ordnung wiederherzustellen.
+Die offizielle Companion-App für das analoge Tabletop RPG "Zero Sum: Blackout"!
 
-Dies ist keine Fantasie. Dies ist ein knallharter, verzweifelter Kampf ums Überleben. Nutzen Sie ein funktionales, taktisches Interface, das für Feldeinsätze entwickelt wurde, um die Krise zu bewältigen. Verwalten Sie kritische Ressourcen, koordinieren Sie Notfallmaßnahmen und treffen Sie Entscheidungen über Leben und Tod in einer düsteren, realistischen städtischen Umgebung.
+Schlüpfen Sie in die Rolle eines Alltagshelden in Zero Sum RPG: Blackout, einem hochrealistischen Krisensimulator. Als ein massiver Zusammenbruch der Infrastruktur die Stadt in völlige Dunkelheit stürzt, müssen ganz normale Menschen – Sanitäter, IT-Techniker, Journalisten und Aktivisten – über sich hinauswachsen, um zu überleben und die Ordnung wiederherzustellen. 
 
-Eigenschaften:
-- Alltagshelden: Spielen Sie als ganz normale Bürger, die ihre beruflichen Fähigkeiten einsetzen, um einen katastrophalen Blackout zu bewältigen.
-- Taktisches Interface: Interagieren Sie mit einem realistischen Krisenreaktionsterminal mit gedämpfter, funktionaler Ästhetik.
-- Fundierter Realismus: Keine Magie, kein Sci-Fi. Nur rohes, verzweifeltes Überleben gegen eine versagende Infrastruktur.
-- Strategische Entscheidungen: Verteilen Sie medizinische Hilfsgüter, stellen Sie Kommunikationsnetzwerke wieder her und bewahren Sie im Chaos die Ordnung.
+Dies ist keine Fantasie. Dies ist ein knallharter, verzweifelter Kampf ums Überleben. Nutzen Sie die Companion-App mit einem bahnbrechenden, funktionalen Neomorphic-Interface (Silk-Design), das exakt für Feldeinsätze entwickelt wurde. 
+
+NEU IN DIESER VERSION:
+- Asymmetrisches Gameplay: Wählen Sie Ihre Rolle (Sanitäter, Koordinator, Funker) in der App. Sie sehen exklusiv nur Ihr Dashboard – was echte Kommunikation und Absprache am Spieltisch erzwingt!
+- Medical Dashboard: Behalten Sie die Vitalwerte von Patienten im Auge, inklusive dynamischem haptischem EKG-Feedback.
+- Heroic Dispatch Map: Eine interaktive Live-Karte für den Koordinator, um Ressourcen und Vorfälle zu verwalten.
+- Crisis Comm Center: Push-to-Talk Funkgerät mit echtem Audio-Rauschen und asymmetrischen Nachrichten-Feeds.
+- Game Master Live-Integration: Der Game Master kann Vitals, Map-Marker und Funk-Sprüche live im Spiel über das Web-Terminal manipulieren, die sofort auf den Geräten der Spieler erscheinen.
+
+EXKLUSIVE LOKALE SZENARIEN (Inspiriert von wahren Begebenheiten):
+Spielen Sie Missionen, die auf realen historischen Krisen basieren und testen Sie, ob Sie es besser gemacht hätten:
+- Das Münsterländer Schneechaos (2005): 5 Tage Blackout bei eisigen Temperaturen. Wie verteilen Sie die letzten Notstromaggregate?
+- Die Ahrtal-Katastrophe: Koordinieren Sie Helfer über Analog-Funk, wenn die gesamte Mobilfunk-Infrastruktur weggespült wurde.
+- Der Köpenick-Blackout (2019): 31 Stunden ohne Strom im Ballungsraum. Verhindern Sie die absolute Panik.
 
 Können Sie Ihre Gemeinschaft durch die dunkelsten Stunden führen?

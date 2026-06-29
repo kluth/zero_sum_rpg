@@ -1,5 +1,7 @@
-- Complete UI Overhaul: The app now features the official "Silk" Neomorphism design system!
-- Removed all outdated Cyberpunk/Matrix aesthetics. New tactile, soft-shadow interfaces.
-- **NEW**: PnP Analog Sync! Real Firebase integration for Dilemma Voting, GM Intel, and live Hash Decoding directly from the tabletop!
-- Stability improvements for Cloud Backend (Firestore and Mesh Networking).
-- Stitch Inspector Team Review: 100% Neomorphism UI perfection achieved.
+VERSION 2.0: THE COMPANION APP REVOLUTION
+- NEW: Asymmetric Role System (Paramedic, Coordinator, Comms) - each player sees only their specific interface!
+- NEW: "Silk" Neomorphic Soft-UI Design System for maximum realism.
+- NEW: Medical Dashboard with haptic ECG feedback (Feel the patient's pulse in your hand!).
+- NEW: Heroic Dispatch Map - Interactive live map for the Coordinator.
+- NEW: Crisis Comm Center - Push-to-Talk radio interface with audio feedback.
+- NEW: Full Game Master (GM) Live-Integration via Firebase. The GM can manipulate stats in real-time.

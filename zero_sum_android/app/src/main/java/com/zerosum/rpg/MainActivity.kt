@@ -134,12 +134,12 @@ fun ZeroSumApp(isTestLab: Boolean) {
 
     if (currentScreen == AppScreen.LOBBY) {
         LobbyScreen(
-            onHost = {
+            onHost = { role ->
                 NetworkManager.processIntent(PlayerIntent.HostSession)
-                sessionId = "HOSTING" // Normally would extract from state, simplified here
+                sessionId = "HOSTING" 
                 currentScreen = AppScreen.GAME
             },
-            onJoin = { pin ->
+            onJoin = { pin, role ->
                 NetworkManager.processIntent(PlayerIntent.JoinSession(pin))
                 sessionId = pin
                 currentScreen = AppScreen.GAME
@@ -151,22 +151,38 @@ fun ZeroSumApp(isTestLab: Boolean) {
 }
 
 @Composable
-fun LobbyScreen(onHost: () -> Unit, onJoin: (String) -> Unit) {
+fun LobbyScreen(onHost: (String) -> Unit, onJoin: (String, String) -> Unit) {
     var joinPin by remember { mutableStateOf("") }
+    var selectedRole by remember { mutableStateOf("Sanitäter") }
+    val roles = listOf("Sanitäter", "Koordinator", "Funker")
 
     Column(
         modifier = Modifier.fillMaxSize().padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text("ZERO SUM", color = TerminalGreen, fontSize = 48.sp, fontWeight = FontWeight.Bold, letterSpacing = 4.sp)
-        Spacer(modifier = Modifier.height(64.dp))
+        Text("ZERO SUM", color = SilkIndigo, fontSize = 48.sp, fontWeight = FontWeight.Bold, letterSpacing = 4.sp)
+        Spacer(modifier = Modifier.height(32.dp))
+        
+        Text("SELECT ROLE:", color = Color.Gray, fontSize = 14.sp, modifier = Modifier.align(Alignment.Start))
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            roles.forEach { role ->
+                SilkButton(
+                    text = role,
+                    onClick = { selectedRole = role },
+                    modifier = Modifier.weight(1f).padding(horizontal = 4.dp).height(48.dp),
+                    isCritical = selectedRole == role
+                )
+            }
+        }
+        
+        Spacer(modifier = Modifier.height(32.dp))
         
         SilkButton(
-            text = "HOST NEW OPERATION",
-            onClick = onHost,
-            modifier = Modifier.fillMaxWidth().height(64.dp),
-            isCritical = true
+            text = "INITIALIZE TERMINAL",
+            onClick = { onHost(selectedRole) },
+            modifier = Modifier.fillMaxWidth().height(64.dp)
         )
         
         Spacer(modifier = Modifier.height(32.dp))
@@ -176,30 +192,30 @@ fun LobbyScreen(onHost: () -> Unit, onJoin: (String) -> Unit) {
         OutlinedTextField(
             value = joinPin,
             onValueChange = { joinPin = it.uppercase().take(6) },
-            label = { Text("ENTER SESSION PIN", color = TerminalGreen) },
+            label = { Text("ENTER SESSION PIN", color = SilkIndigo) },
             modifier = Modifier.fillMaxWidth().neumorphic(isPressed = true, cornerRadius = 8.dp),
             singleLine = true,
             shape = RoundedCornerShape(8.dp),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Color.Transparent,
                 unfocusedBorderColor = Color.Transparent,
-                focusedTextColor = TerminalGreen,
-                unfocusedTextColor = TerminalGreen.copy(alpha = 0.7f),
+                focusedTextColor = SilkIndigo,
+                unfocusedTextColor = SilkIndigo.copy(alpha = 0.7f),
                 focusedContainerColor = DarkBackground,
                 unfocusedContainerColor = DarkBackground
             )
         )
         Spacer(modifier = Modifier.height(16.dp))
         SilkButton(
-            text = "JOIN SQUAD",
-            onClick = { if (joinPin.length >= 4) onJoin(joinPin) },
+            text = "CONNECT TO DISPATCH",
+            onClick = { if (joinPin.length >= 4) onJoin(joinPin, selectedRole) },
             modifier = Modifier.fillMaxWidth().height(64.dp)
         )
     }
 }
 
 @Composable
-fun GameScreen(sessionId: String) {
+fun GameScreen(sessionId: String, selectedRole: String) {
     val context = androidx.compose.ui.platform.LocalContext.current
     var hasMicPermission by remember { 
         mutableStateOf(ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) 
@@ -247,7 +263,7 @@ fun GameScreen(sessionId: String) {
         val initialChar = CharacterState(
             id = "char_1",
             name = "MAX MUSTERMANN",
-            role = "IT-TECHNIKER",
+            role = selectedRole,
             stats = FlatStats(
                 hp_current = 78,
                 stealth_total = 85,
@@ -315,7 +331,6 @@ fun GameScreen(sessionId: String) {
     )
 
     var isLightTableMode by remember { mutableStateOf(false) }
-    var selectedTab by remember { mutableStateOf(0) } // 0 = Profile, 1 = Map, 2 = Comms
 
     if (isLightTableMode) {
         LightTableScreen(onClose = { isLightTableMode = false })
@@ -332,31 +347,12 @@ fun GameScreen(sessionId: String) {
                 Spacer(modifier = Modifier.height(16.dp))
                 
                 Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
-                    when(selectedTab) {
-                        0 -> CharacterSheetSection(modifier = Modifier.fillMaxSize())
-                        1 -> MapGeneratorSection(modifier = Modifier.fillMaxSize())
-                        2 -> Column(modifier = Modifier.fillMaxSize()) {
-                                 AcousticPhysicsSection(modifier = Modifier.weight(1f))
-                                 Spacer(modifier = Modifier.height(16.dp))
-                                 RemoteCommsSection(modifier = Modifier.weight(1f), onLightTableActivate = { isLightTableMode = true })
-                             }
+                    when(uiState.character?.role ?: selectedRole) {
+                        "Sanitäter" -> MedicalDashboardSection(uiState.medical, modifier = Modifier.fillMaxSize())
+                        "Koordinator" -> HeroicDispatchMapSection(uiState.dispatch, modifier = Modifier.fillMaxSize())
+                        "Funker" -> CommsRadioSection(uiState.comms, modifier = Modifier.fillMaxSize())
+                        else -> HeroicDispatchMapSection(uiState.dispatch, modifier = Modifier.fillMaxSize())
                     }
-                }
-                
-                Spacer(modifier = Modifier.height(16.dp))
-                
-                // Neomorphic Bottom Bar
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(DarkBackground, RoundedCornerShape(24.dp))
-                        .neumorphic(cornerRadius = 24.dp)
-                        .padding(8.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    TabButton("PROFILE", selectedTab == 0, Modifier.weight(1f)) { selectedTab = 0 }
-                    TabButton("MAP", selectedTab == 1, Modifier.weight(1f)) { selectedTab = 1 }
-                    TabButton("COMMS", selectedTab == 2, Modifier.weight(1f)) { selectedTab = 2 }
                 }
             }
             
@@ -426,9 +422,9 @@ fun HeaderSection(sessionId: String, remainingData: Float) {
     ) {
         Column {
             Text(
-                text = "SURVIVAL OS",
-                color = TerminalGreen,
-                fontSize = 24.sp,
+                text = "EMERGENCY BROADCAST",
+                color = SilkIndigo,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 2.sp
             )

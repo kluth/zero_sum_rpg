@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zero Sum - Game Master Terminal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #E8EAF0;
+            --indigo: #6366F1;
+            --text-dark: #333333;
+            --text-light: #888888;
+            --shadow-light: #ffffff;
+            --shadow-dark: #c8cbd8;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: var(--indigo);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .card {
+            background-color: var(--bg-color);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 12px 12px 24px var(--shadow-dark), -12px -12px 24px var(--shadow-light);
+        }
+
+        .card h2 {
+            font-size: 1.2rem;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            color: var(--indigo);
+            border-bottom: 2px solid var(--shadow-dark);
+            padding-bottom: 0.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+        }
+
+        input[type="text"], input[type="number"] {
+            background-color: var(--bg-color);
+            border: none;
+            padding: 1rem;
+            border-radius: 12px;
+            color: var(--text-dark);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 700;
+            box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light);
+            outline: none;
+        }
+
+        input:focus {
+            box-shadow: inset 8px 8px 16px var(--shadow-dark), inset -8px -8px 16px var(--shadow-light);
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            background-color: var(--indigo);
+            color: white;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            border-radius: 16px;
+            cursor: pointer;
+            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+            transition: all 0.2s ease;
+            margin-top: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        button:active {
+            box-shadow: inset 6px 6px 12px rgba(0,0,0,0.2), inset -6px -6px 12px rgba(255,255,255,0.1);
+        }
+        
+        .alert-btn {
+            background-color: #8B0000;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Zero Sum GM Terminal</h1>
+
+    <div class="dashboard-container">
+        <!-- Medical Control -->
+        <div class="card">
+            <h2>Paramedic Controls</h2>
+            <div class="input-group">
+                <label>Patient Name</label>
+                <input type="text" id="med-name" value="J. DOE (M, 45)">
+            </div>
+            <div class="input-group">
+                <label>Heart Rate (BPM)</label>
+                <input type="number" id="med-hr" value="88">
+            </div>
+            <div class="input-group">
+                <label>Blood Pressure</label>
+                <input type="text" id="med-bp" value="142/96">
+            </div>
+            <div class="input-group">
+                <label>O2 Saturation (%)</label>
+                <input type="number" id="med-o2" value="94">
+            </div>
+            <div class="input-group">
+                <label>Resp Rate (RPM)</label>
+                <input type="number" id="med-resp" value="18">
+            </div>
+            <button id="update-med">Push Vitals to App</button>
+            <button id="critical-med" class="alert-btn">Trigger Cardiac Arrest</button>
+        </div>
+
+        <!-- Dispatch Control -->
+        <div class="card">
+            <h2>Coordinator Controls</h2>
+            <div class="input-group">
+                <label>Active Situation</label>
+                <input type="text" id="disp-sit" value="CITY BLACKOUT">
+            </div>
+            <div class="input-group">
+                <label>Elapsed Time</label>
+                <input type="text" id="disp-time" value="12:45">
+            </div>
+            
+            <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; margin-top: 1rem; display: block;">Map Markers</label>
+            <div style="background: var(--bg-color); box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light); padding: 1rem; border-radius: 12px; margin-bottom: 1rem; margin-top: 0.5rem;" id="marker-list">
+                <!-- dynamically loaded -->
+                <p style="font-size: 0.8rem;"><i>Loading markers...</i></p>
+            </div>
+            
+            <div style="display: flex; gap: 0.5rem;">
+                <input type="text" id="new-marker-label" placeholder="Marker Label" style="flex: 2;">
+                <input type="number" id="new-marker-x" placeholder="X" style="flex: 1;">
+                <input type="number" id="new-marker-y" placeholder="Y" style="flex: 1;">
+            </div>
+            <button id="add-marker" style="margin-top: 0.5rem; background-color: var(--text-dark);">Add Marker</button>
+            
+            <button id="update-disp">Push Map Status</button>
+        </div>
+
+        <!-- Comms Control -->
+        <div class="card">
+            <h2>Comms Controls</h2>
+            <div class="input-group">
+                <label>Active Call</label>
+                <input type="text" id="comms-call" value="TOWER FIRE">
+            </div>
+            <div class="input-group">
+                <label>Status</label>
+                <input type="text" id="comms-status" value="DISPATCHING UNITS">
+            </div>
+            <div class="input-group">
+                <label>Dispatch Feed</label>
+                <input type="text" id="comms-feed" value="ENGINE 12: En route">
+            </div>
+            <button id="update-comms">Push to Comms</button>
+            
+            <div style="margin-top: 2rem;">
+                <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; margin-bottom: 0.5rem; display: block;">Push Operation Message</label>
+                <input type="text" id="new-op-message" placeholder="e.g. 11:35 AM | HQ | All units hold position" style="width: 100%; box-sizing: border-box;">
+                <button id="add-op-message" style="margin-top: 0.5rem; background-color: var(--text-dark);">Broadcast Message</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK (Modular) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, update, get, push, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAu8ZR3KKptgB_hzY0XjLD4TOisGKu-C_4",
+            projectId: "zero-sum-rpg-2026",
+            databaseURL: "https://zero-sum-rpg-2026-default-rtdb.europe-west1.firebasedatabase.app" // Adjust if US region
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Medical Updates
+        document.getElementById('update-med').addEventListener('click', async () => {
+            const btn = document.getElementById('update-med');
+            btn.innerText = "Pushing...";
+            
+            await update(ref(db, 'campaign/medical'), {
+                patientName: document.getElementById('med-name').value,
+                heartRate: parseInt(document.getElementById('med-hr').value),
+                bloodPressure: document.getElementById('med-bp').value,
+                o2Sat: parseInt(document.getElementById('med-o2').value),
+                respRate: parseInt(document.getElementById('med-resp').value)
+            });
+            
+            btn.innerText = "Success!";
+            setTimeout(() => btn.innerText = "Push Vitals to App", 2000);
+        });
+
+        document.getElementById('critical-med').addEventListener('click', async () => {
+            document.getElementById('med-hr').value = 40;
+            document.getElementById('med-bp').value = "80/40";
+            document.getElementById('med-o2').value = 85;
+            document.getElementById('med-resp').value = 35;
+            document.getElementById('update-med').click();
+            
+            // Add timeline event
+            const medRef = ref(db, 'campaign/medical');
+            const snap = await get(medRef);
+            let timeline = snap.val()?.timeline || [];
+            timeline.unshift("16:22|PATIENT CODING - CARDIAC ARREST");
+            await update(medRef, { timeline });
+        });
+
+        // Dispatch Updates
+        document.getElementById('update-disp').addEventListener('click', async () => {
+            const btn = document.getElementById('update-disp');
+            btn.innerText = "Pushing...";
+            
+            await update(ref(db, 'campaign/dispatch'), {
+                situation: document.getElementById('disp-sit').value,
+                elapsedTime: document.getElementById('disp-time').value
+            });
+            
+            btn.innerText = "Success!";
+            setTimeout(() => btn.innerText = "Push Map Status", 2000);
+        });
+
+        // Markers Management
+        let currentMarkers = [];
+        const loadMarkers = async () => {
+            const snap = await get(ref(db, 'campaign/dispatch/markers'));
+            const listDiv = document.getElementById('marker-list');
+            listDiv.innerHTML = "";
+            currentMarkers = snap.val() || [];
+            
+            if (currentMarkers.length === 0) {
+                listDiv.innerHTML = "<p style='font-size:0.8rem;color:gray;'>No markers.</p>";
+            } else {
+                currentMarkers.forEach((m, idx) => {
+                    listDiv.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.5rem;">
+                        <span style="font-size:0.85rem; font-weight:700;">${m.label} [${m.x}, ${m.y}]</span>
+                        <button onclick="window.deleteMarker(${idx})" style="width:auto; padding: 0.2rem 0.5rem; margin:0; background: #8B0000; font-size: 0.7rem;">DEL</button>
+                    </div>`;
+                });
+            }
+        };
+        
+        window.deleteMarker = async (idx) => {
+            currentMarkers.splice(idx, 1);
+            await set(ref(db, 'campaign/dispatch/markers'), currentMarkers);
+            loadMarkers();
+        };
+
+        document.getElementById('add-marker').addEventListener('click', async () => {
+            const label = document.getElementById('new-marker-label').value;
+            const x = parseFloat(document.getElementById('new-marker-x').value || "0");
+            const y = parseFloat(document.getElementById('new-marker-y').value || "0");
+            if (!label) return;
+            
+            currentMarkers.push({ id: Date.now().toString(), label, x, y });
+            await set(ref(db, 'campaign/dispatch/markers'), currentMarkers);
+            loadMarkers();
+        });
+
+        // Comms Updates
+        document.getElementById('update-comms').addEventListener('click', async () => {
+            const btn = document.getElementById('update-comms');
+            btn.innerText = "Pushing...";
+            
+            await update(ref(db, 'campaign/comms'), {
+                activeCall: document.getElementById('comms-call').value,
+                status: document.getElementById('comms-status').value,
+                dispatchFeed: document.getElementById('comms-feed').value
+            });
+            
+            btn.innerText = "Success!";
+            setTimeout(() => btn.innerText = "Push to Comms", 2000);
+        });
+
+        document.getElementById('add-op-message').addEventListener('click', async () => {
+            const msg = document.getElementById('new-op-message').value;
+            if(!msg) return;
+            
+            const btn = document.getElementById('add-op-message');
+            btn.innerText = "Broadcasting...";
+            
+            const commsRef = ref(db, 'campaign/comms');
+            const snap = await get(commsRef);
+            let feed = snap.val()?.operationsFeed || [];
+            feed.unshift(msg);
+            await update(commsRef, { operationsFeed: feed });
+            
+            document.getElementById('new-op-message').value = "";
+            btn.innerText = "Broadcast Message";
+        });
+
+        // Init
+        loadMarkers();
+    </script>
+</body>
+</html>

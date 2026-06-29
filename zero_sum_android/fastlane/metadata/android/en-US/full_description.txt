@@ -1,11 +1,20 @@
+The official Companion App for the analog tabletop RPG "Zero Sum: Blackout"!
+
 Step into the shoes of an everyday hero in Zero Sum RPG: Blackout, a highly realistic crisis simulator. When a massive infrastructural collapse plunges the city into complete darkness, normal people—paramedics, IT technicians, journalists, and activists—must step up to survive and restore order.
 
-This is not a fantasy. This is a grounded, desperate struggle for survival. Utilize a functional, tactical interface designed for field operations to navigate the crisis. Manage critical resources, coordinate emergency responses, and make life-or-death decisions in a gritty, realistic urban environment.
+This is not a fantasy. This is a grounded, desperate struggle for survival. Utilize the companion app featuring a groundbreaking, functional Neomorphic interface (Silk design) specifically built for field operations.
 
-Features:
-- Everyday Heroes: Play as ordinary citizens using their professional skills to manage a catastrophic blackout.
-- Tactical Interface: Interact with a realistic crisis response terminal featuring muted, functional aesthetics.
-- Grounded Realism: No magic, no sci-fi. Just raw, desperate survival against failing infrastructure.
-- Strategic Decisions: Allocate medical supplies, restore communication networks, and maintain order in the chaos.
+NEW IN THIS VERSION:
+- Asymmetric Gameplay: Choose your role (Paramedic, Coordinator, Comms Officer) in the app. You only see your exclusive dashboard—enforcing real communication and coordination at the physical gaming table!
+- Medical Dashboard: Monitor patient vitals with dynamic haptic ECG feedback.
+- Heroic Dispatch Map: An interactive live map for the Coordinator to manage resources and incidents.
+- Crisis Comm Center: Push-to-Talk radio featuring real static audio and asymmetric message feeds.
+- Game Master Live-Integration: The Game Master can manipulate vitals, map markers, and radio messages live during the game via the Web Terminal, instantly updating the players' devices.
+
+EXCLUSIVE LOCALIZED SCENARIOS (Inspired by True Events):
+Play missions based on real historical crises and test if you could have done better:
+- The Northeast Blackout (2003): 50 million people without power. Traffic lights dead, subways trapped. Can you prevent total anarchy?
+- The Texas Power Crisis (Winter Storm Uri): The grid has failed under extreme freezing temperatures. Who gets the last backup generators?
+- Hurricane Response: Communications are severed by extreme flooding. Use the Comms Radio module to coordinate makeshift rescue teams in the dark.
 
 Can you lead your community through the darkest hours?
