@@ -60,6 +60,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.foundation.clickable
 
 object EngineProvider {
     var audio: AudioEngine? = null
@@ -207,7 +208,7 @@ fun GameScreen(sessionId: String) {
     
     val uiState by NetworkManager.uiState.collectAsStateWithLifecycle()
     val remainingData = uiState.dataLimit - uiState.dataUsed
-    val isCritical = remainingData < 30f && remainingData > 0f
+    val isCritical = (uiState.character?.stats?.stress_current ?: 0) >= 80
     val isBlackout = remainingData <= 0f
     
     val hapticEngine = remember { EngineProvider.getHaptic(context) }
@@ -357,6 +358,23 @@ fun GameScreen(sessionId: String) {
                     TabButton("MAP", selectedTab == 1, Modifier.weight(1f)) { selectedTab = 1 }
                     TabButton("COMMS", selectedTab == 2, Modifier.weight(1f)) { selectedTab = 2 }
                 }
+            }
+            
+            uiState.gmIntel?.let { intel ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .background(SilkIndigo, RoundedCornerShape(12.dp))
+                        .padding(16.dp)
+                        .align(Alignment.TopCenter)
+                ) {
+                    Text("GM INTEL: $intel", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                }
+            }
+            
+            uiState.dilemma?.let { dilemma ->
+                DilemmaOverlay(dilemma)
             }
         }
     }
@@ -755,14 +773,19 @@ fun RemoteCommsSection(modifier: Modifier = Modifier, onLightTableActivate: () -
             onValueChange = { 
                 val input = it.uppercase().take(4)
                 hashInput = input
-                if (input == "7B42") decryptedMessage = "GEHEIM: Verstecktes Medkit in Sektor B gefunden."
-                else if (input == "9901") decryptedMessage = "WARNUNG: Nächster Raum ist mit EMP-Minen gesichert."
-                else if (input == "LITE") {
-                    decryptedMessage = "INITIATING LIGHT TABLE..."
-                    onLightTableActivate()
+                if (input.length == 4) {
+                    if (input == "LITE") {
+                        decryptedMessage = "INITIATING LIGHT TABLE..."
+                        onLightTableActivate()
+                    } else {
+                        decryptedMessage = "DECRYPTING..."
+                        NetworkManager.decryptHash(input) { result ->
+                            decryptedMessage = result
+                        }
+                    }
+                } else {
+                    decryptedMessage = null
                 }
-                else if (input.length == 4) decryptedMessage = "FEHLER: Hash-Code unbekannt oder beschädigt."
-                else decryptedMessage = null
             },
             label = { Text("HASH-CODE EINGEBEN", color = SilkIndigo, fontSize = 10.sp) },
             modifier = Modifier.fillMaxWidth(0.7f).neumorphic(isPressed = true, cornerRadius = 8.dp),
@@ -795,14 +818,15 @@ fun RemoteCommsSection(modifier: Modifier = Modifier, onLightTableActivate: () -
                             val input = barcode.uppercase().take(4)
                             hashInput = input
                             isScannerOpen = false
-                            if (input == "7B42") decryptedMessage = "GEHEIM: Verstecktes Medkit in Sektor B gefunden."
-                            else if (input == "9901") decryptedMessage = "WARNUNG: Nächster Raum ist mit EMP-Minen gesichert."
-                            else if (input == "LITE") {
+                            if (input == "LITE") {
                                 decryptedMessage = "INITIATING LIGHT TABLE..."
                                 onLightTableActivate()
+                            } else {
+                                decryptedMessage = "DECRYPTING..."
+                                NetworkManager.decryptHash(input) { result ->
+                                    decryptedMessage = result
+                                }
                             }
-                            else if (input.length == 4) decryptedMessage = "FEHLER: Hash-Code unbekannt oder beschädigt."
-                            else decryptedMessage = null
                         }
                     )
                 }
@@ -819,6 +843,53 @@ fun RemoteCommsSection(modifier: Modifier = Modifier, onLightTableActivate: () -
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                 modifier = Modifier.fillMaxWidth().background(SilkLight, RoundedCornerShape(8.dp)).padding(8.dp)
             )
+        }
+    }
+}
+
+@Composable
+fun DilemmaOverlay(dilemma: DilemmaState) {
+    var timeLeft by remember(dilemma.expiresAt) { mutableStateOf(Math.max(0L, (dilemma.expiresAt - System.currentTimeMillis()) / 1000)) }
+    
+    LaunchedEffect(dilemma.expiresAt) {
+        while(isActive) {
+            timeLeft = Math.max(0L, (dilemma.expiresAt - System.currentTimeMillis()) / 1000)
+            if (timeLeft <= 0) {
+                NetworkManager.processIntent(PlayerIntent.VoteDilemma("B"))
+                break
+            }
+            delay(1000)
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.8f))
+            .clickable(enabled = false) {},
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .background(DarkBackground, RoundedCornerShape(24.dp))
+                .neumorphic(cornerRadius = 24.dp)
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("CRITICAL DILEMMA", color = DangerRed, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(dilemma.text, color = SilkIndigo, fontSize = 16.sp, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            Text("TIME REMAINING: $timeLeft s", color = if (timeLeft < 10) DangerRed else WarningAmber, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                SilkButton(text = dilemma.optionA, onClick = { NetworkManager.processIntent(PlayerIntent.VoteDilemma("A")) })
+                Spacer(modifier = Modifier.width(16.dp))
+                SilkButton(text = dilemma.optionB, onClick = { NetworkManager.processIntent(PlayerIntent.VoteDilemma("B")) })
+            }
         }
     }
 }

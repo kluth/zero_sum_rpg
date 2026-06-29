@@ -1,5 +1,5 @@
 - Complete UI Overhaul: The app now features the official "Silk" Neomorphism design system!
-- Removed all outdated Cyberpunk/Matrix aesthetics (neon green, dark themes, scanlines).
-- New tactile, soft-shadow interfaces for grounded realism.
-- Stability fix: Cloud Functions are now robustly linked to the Firestore database.
+- Removed all outdated Cyberpunk/Matrix aesthetics. New tactile, soft-shadow interfaces.
+- **NEW**: PnP Analog Sync! Real Firebase integration for Dilemma Voting, GM Intel, and live Hash Decoding directly from the tabletop!
+- Stability improvements for Cloud Backend (Firestore and Mesh Networking).
 - Stitch Inspector Team Review: 100% Neomorphism UI perfection achieved.

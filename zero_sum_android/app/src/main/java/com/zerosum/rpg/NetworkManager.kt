@@ -62,12 +62,22 @@ data class MapState(
     val rooms: List<MapRoom> = emptyList()
 )
 
+data class DilemmaState(
+    val id: String = "",
+    val text: String = "",
+    val optionA: String = "",
+    val optionB: String = "",
+    val expiresAt: Long = 0L
+)
+
 data class PlayerState(
     val character: CharacterState? = null,
     val recentRolls: List<Roll> = emptyList(),
     val map: MapState? = null,
     val dataUsed: Float = 14.2f,
-    val dataLimit: Float = 150.0f
+    val dataLimit: Float = 150.0f,
+    val dilemma: DilemmaState? = null,
+    val gmIntel: String? = null
 )
 
 sealed class PlayerIntent {
@@ -78,6 +88,7 @@ sealed class PlayerIntent {
     object HostSession : PlayerIntent()
     data class SetupInitialProfile(val charState: CharacterState) : PlayerIntent()
     data class ConsumeData(val amountMB: Float) : PlayerIntent()
+    data class VoteDilemma(val option: String) : PlayerIntent()
 }
 
 object NetworkManager {
@@ -96,6 +107,7 @@ object NetworkManager {
     private var sessionId: String = "DEFAULT"
     private var charEventListener: ValueEventListener? = null
     private var mapEventListener: ValueEventListener? = null
+    private var campaignEventListener: ValueEventListener? = null
     
     private var webSocket: WebSocket? = null
     private val client = OkHttpClient()
@@ -158,6 +170,26 @@ object NetworkManager {
         }
     }
 
+    fun decryptHash(hash: String, callback: (String?) -> Unit) {
+        if (hash == "LITE") {
+            callback("INITIATING LIGHT TABLE...")
+            return
+        }
+        database.child("sessions/$sessionId/campaign/props/$hash").addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val text = snapshot.value as? String
+                    callback(text)
+                } else {
+                    callback("FEHLER: Hash-Code unbekannt oder beschädigt.")
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                callback("FEHLER: Netzwerk-Fehler beim Entschlüsseln.")
+            }
+        })
+    }
+
     fun processIntent(intent: PlayerIntent) {
         when (intent) {
             is PlayerIntent.EmergencyHeal -> {
@@ -202,6 +234,10 @@ object NetworkManager {
             is PlayerIntent.ConsumeData -> {
                 val newUsed = (_uiState.value.dataUsed + intent.amountMB).coerceAtLeast(0f)
                 _uiState.update { it.copy(dataUsed = newUsed) }
+            }
+            is PlayerIntent.VoteDilemma -> {
+                val currentChar = _uiState.value.character ?: return
+                database.child("sessions/$sessionId/campaign/dilemma/votes/${currentChar.id}").setValue(intent.option)
             }
         }
     }
@@ -324,6 +360,37 @@ object NetworkManager {
         }
         mapEventListener = mListener
         database.child("sessions/$sessionId/gameState/map").addValueEventListener(mListener)
+
+        val campListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    try {
+                        val campMap = snapshot.value as? Map<*, *>
+                        
+                        val rawDilemma = campMap?.get("dilemma") as? Map<*, *>
+                        val dilemma = if (rawDilemma != null && rawDilemma["active"] == true) {
+                            DilemmaState(
+                                id = rawDilemma["id"] as? String ?: "",
+                                text = rawDilemma["text"] as? String ?: "",
+                                optionA = rawDilemma["optionA"] as? String ?: "",
+                                optionB = rawDilemma["optionB"] as? String ?: "",
+                                expiresAt = (rawDilemma["expiresAt"] as? Number)?.toLong() ?: 0L
+                            )
+                        } else null
+                        
+                        val intel = campMap?.get("intel") as? String
+                        
+                        _uiState.value = _uiState.value.copy(
+                            dilemma = dilemma,
+                            gmIntel = intel
+                        )
+                    } catch (e: Exception) { e.printStackTrace() }
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {}
+        }
+        campaignEventListener = campListener
+        database.child("sessions/$sessionId/campaign").addValueEventListener(campListener)
     }
 
     private fun logTrauma(player: String, amount: Int) {
@@ -357,6 +424,10 @@ object NetworkManager {
             database.child("sessions/$sessionId/gameState/map").removeEventListener(it)
         }
         mapEventListener = null
+        campaignEventListener?.let {
+            database.child("sessions/$sessionId/campaign").removeEventListener(it)
+        }
+        campaignEventListener = null
         try {
             webSocket?.close(1000, "App disconnecting")
         } catch (e: Exception) {}
