@@ -4,7 +4,7 @@ platform :android do
   desc "Submit a new build to the Google Play Internal Testing track"
   lane :deploy do
     upload_to_play_store(
-      track: 'internal',
+      track: 'production',
       aab: 'app/build/outputs/bundle/release/app-release.aab',
       ack_bundle_installation_warning: true,
       json_key: '/tmp/google-play-api-key.json'
