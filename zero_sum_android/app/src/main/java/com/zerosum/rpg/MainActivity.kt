@@ -174,13 +174,16 @@ fun LobbyScreen(onHost: () -> Unit, onJoin: (String) -> Unit) {
             value = joinPin,
             onValueChange = { joinPin = it.uppercase().take(6) },
             label = { Text("ENTER SESSION PIN", color = TerminalGreen) },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().neumorphic(isPressed = true, cornerRadius = 8.dp),
             singleLine = true,
+            shape = RoundedCornerShape(8.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = TerminalGreen,
-                unfocusedBorderColor = TerminalGreen.copy(alpha = 0.5f),
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent,
+                focusedTextColor = TerminalGreen,
+                unfocusedTextColor = TerminalGreen.copy(alpha = 0.7f),
+                focusedContainerColor = DarkBackground,
+                unfocusedContainerColor = DarkBackground
             )
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -473,9 +476,9 @@ fun CharacterSheetSection(modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.height(4.dp))
                 LinearProgressIndicator(
                     progress = dataUsed / dataLimit,
-                    modifier = Modifier.fillMaxWidth().height(16.dp).border(1.dp, WarningAmber),
+                    modifier = Modifier.fillMaxWidth().height(16.dp).neumorphic(isPressed = true, cornerRadius = 8.dp),
                     color = WarningAmber,
-                    trackColor = TerminalDark,
+                    trackColor = Color.Transparent,
                 )
                 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -491,9 +494,9 @@ fun CharacterSheetSection(modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.height(4.dp))
                 LinearProgressIndicator(
                     progress = hp.toFloat() / maxHp,
-                    modifier = Modifier.fillMaxWidth().height(24.dp).border(1.dp, TerminalGreen),
+                    modifier = Modifier.fillMaxWidth().height(24.dp).neumorphic(isPressed = true, cornerRadius = 12.dp),
                     color = if (hp < 30) DangerRed else TerminalGreen,
-                    trackColor = TerminalDark,
+                    trackColor = Color.Transparent,
                 )
                 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -514,8 +517,8 @@ fun CharacterSheetSection(modifier: Modifier = Modifier) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 4.dp)
-                                .background(if (selectedClass == className) TerminalGreen.copy(alpha = 0.2f) else Color.Transparent)
-                                .border(1.dp, if (selectedClass == className) TerminalGreen else TerminalGreen.copy(alpha = 0.3f))
+                                .background(if (selectedClass == className) TerminalGreen.copy(alpha = 0.1f) else DarkBackground, RoundedCornerShape(8.dp))
+                                .neumorphic(isPressed = selectedClass == className, cornerRadius = 8.dp)
                                 .padding(8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -576,8 +579,8 @@ fun StatBar(label: String, current: Int, max: Int, color: Color) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(30.dp)
-                .background(Color.Black)
-                .border(2.dp, color.copy(alpha = 0.5f))
+                .background(DarkBackground, RoundedCornerShape(8.dp))
+                .neumorphic(isPressed = true, cornerRadius = 8.dp)
         ) {
             Box(
                 modifier = Modifier
@@ -689,7 +692,7 @@ fun RemoteCommsSection(modifier: Modifier = Modifier, onLightTableActivate: () -
         modifier = modifier
             .fillMaxWidth()
             .background(SilkBg, RoundedCornerShape(16.dp))
-            .border(2.dp, SilkLight, RoundedCornerShape(16.dp))
+            .neumorphic(cornerRadius = 16.dp)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -713,13 +716,16 @@ fun RemoteCommsSection(modifier: Modifier = Modifier, onLightTableActivate: () -
                 else decryptedMessage = null
             },
             label = { Text("HASH-CODE EINGEBEN", color = SilkIndigo, fontSize = 10.sp) },
-            modifier = Modifier.fillMaxWidth(0.7f),
+            modifier = Modifier.fillMaxWidth(0.7f).neumorphic(isPressed = true, cornerRadius = 8.dp),
             singleLine = true,
+            shape = RoundedCornerShape(8.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = SilkIndigo,
-                unfocusedBorderColor = SilkShadow,
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent,
                 focusedTextColor = SilkIndigo,
-                unfocusedTextColor = Color.DarkGray
+                unfocusedTextColor = Color.DarkGray,
+                focusedContainerColor = SilkBg,
+                unfocusedContainerColor = SilkBg
             )
         )
         
@@ -854,8 +860,8 @@ fun VideoFeedCard(name: String, isMuted: Boolean) {
         modifier = Modifier
             .fillMaxWidth()
             .height(100.dp)
-            .background(Color.Black, RoundedCornerShape(4.dp))
-            .border(1.dp, Color.DarkGray, RoundedCornerShape(4.dp))
+            .background(DarkBackground, RoundedCornerShape(8.dp))
+            .neumorphic(isPressed = true, cornerRadius = 8.dp)
     ) {
         Text(
             text = name,

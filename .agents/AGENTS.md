@@ -10,3 +10,9 @@
   - **Typography:** Plus Jakarta Sans.
 - **Forbidden Elements:** Do NOT add glowing neon effects, cyberpunk elements, sci-fi tropes, magic, or fantasy language to the code, UI, or descriptions.
 - **Tone:** Gritty, realistic, grounded, desperate, and strictly contemporary. All code logic and naming conventions must strictly adhere to this rule, while the UI strictly adheres to the Neomorphic Silk standard.
+
+
+## 2. GOOGLE PLAY STORE CHANGELOGS
+**CRITICAL RULE:** Whenever making updates that change functionality, design, or include bug fixes that will be pushed to the Google Play Store, ALWAYS update the fastlane changelogs before pushing.
+- Modify the `default.txt` file located in the respective fastlane language directories (e.g., `zero_sum_android/fastlane/metadata/android/de-DE/changelogs/default.txt` and `en-US`).
+- Ensure the changelog accurately reflects the changes in the target language.

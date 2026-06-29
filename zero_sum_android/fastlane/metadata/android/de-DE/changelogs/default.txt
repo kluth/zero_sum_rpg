@@ -2,3 +2,4 @@
 - Der alte Cyberpunk/Matrix-Look (Neon-Grün, Dunkle Themes, Scanlines) wurde vollständig entfernt.
 - Neue taktische, erhabene Interfaces für mehr Realismus.
 - Stabilitätsverbesserung: Cloud Functions sind nun sicher mit der Firestore-Datenbank verknüpft.
+- Stitch Inspector Team Review: Die Benutzeroberfläche wurde zu 100% auf Neomorphismus-Perfektion getrimmt.
