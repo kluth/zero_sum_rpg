@@ -121,6 +121,12 @@
     <h1>Zero Sum GM Terminal</h1>
 
     <div class="dashboard-container">
+        <!-- Session Setup -->
+        <div class="card" style="grid-column: 1 / -1; display: flex; gap: 1rem; align-items: center; background: var(--indigo); color: white;">
+            <label style="color: white;">Session ID:</label>
+            <input type="text" id="session-id" value="0000" style="background: rgba(0,0,0,0.2); color: white; box-shadow: none;">
+        </div>
+
         <!-- Medical Control -->
         <div class="card">
             <h2>Paramedic Controls</h2>
@@ -217,12 +223,15 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
+        // Session Helper
+        const getSessionPath = (subpath) => `sessions/${document.getElementById('session-id').value}/${subpath}`;
+
         // Medical Updates
         document.getElementById('update-med').addEventListener('click', async () => {
             const btn = document.getElementById('update-med');
             btn.innerText = "Pushing...";
             
-            await update(ref(db, 'campaign/medical'), {
+            await update(ref(db, getSessionPath('campaign/medical')), {
                 patientName: document.getElementById('med-name').value,
                 heartRate: parseInt(document.getElementById('med-hr').value),
                 bloodPressure: document.getElementById('med-bp').value,
@@ -242,7 +251,7 @@
             document.getElementById('update-med').click();
             
             // Add timeline event
-            const medRef = ref(db, 'campaign/medical');
+            const medRef = ref(db, getSessionPath('campaign/medical'));
             const snap = await get(medRef);
             let timeline = snap.val()?.timeline || [];
             timeline.unshift("16:22|PATIENT CODING - CARDIAC ARREST");
@@ -254,7 +263,7 @@
             const btn = document.getElementById('update-disp');
             btn.innerText = "Pushing...";
             
-            await update(ref(db, 'campaign/dispatch'), {
+            await update(ref(db, getSessionPath('campaign/dispatch')), {
                 situation: document.getElementById('disp-sit').value,
                 elapsedTime: document.getElementById('disp-time').value
             });
@@ -266,7 +275,7 @@
         // Markers Management
         let currentMarkers = [];
         const loadMarkers = async () => {
-            const snap = await get(ref(db, 'campaign/dispatch/markers'));
+            const snap = await get(ref(db, getSessionPath('campaign/dispatch/markers')));
             const listDiv = document.getElementById('marker-list');
             listDiv.innerHTML = "";
             currentMarkers = snap.val() || [];
@@ -285,7 +294,7 @@
         
         window.deleteMarker = async (idx) => {
             currentMarkers.splice(idx, 1);
-            await set(ref(db, 'campaign/dispatch/markers'), currentMarkers);
+            await set(ref(db, getSessionPath('campaign/dispatch/markers')), currentMarkers);
             loadMarkers();
         };
 
@@ -296,7 +305,7 @@
             if (!label) return;
             
             currentMarkers.push({ id: Date.now().toString(), label, x, y });
-            await set(ref(db, 'campaign/dispatch/markers'), currentMarkers);
+            await set(ref(db, getSessionPath('campaign/dispatch/markers')), currentMarkers);
             loadMarkers();
         });
 
@@ -305,7 +314,7 @@
             const btn = document.getElementById('update-comms');
             btn.innerText = "Pushing...";
             
-            await update(ref(db, 'campaign/comms'), {
+            await update(ref(db, getSessionPath('campaign/comms')), {
                 activeCall: document.getElementById('comms-call').value,
                 status: document.getElementById('comms-status').value,
                 dispatchFeed: document.getElementById('comms-feed').value
@@ -322,7 +331,7 @@
             const btn = document.getElementById('add-op-message');
             btn.innerText = "Broadcasting...";
             
-            const commsRef = ref(db, 'campaign/comms');
+            const commsRef = ref(db, getSessionPath('campaign/comms'));
             const snap = await get(commsRef);
             let feed = snap.val()?.operationsFeed || [];
             feed.unshift(msg);
