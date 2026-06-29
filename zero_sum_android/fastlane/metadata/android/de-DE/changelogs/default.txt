@@ -1,5 +1,4 @@
-Völlig neues Neumorphismus (Silk) UI Design!
-Wir haben die gesamte App visuell überarbeitet, um den taktischen 'Everyday Hero' Realismus zu stärken.
-- Neues Action & Dilemma Dashboard
-- Verbesserte Verbindungsstabilität für den Live Mission Intel Tab
-- Cyberpunk-Elemente wurden für eine realistischere Blackout-Simulation entfernt
+- Kompletter UI-Overhaul: Die App erstrahlt nun im offiziellen "Silk" Neomorphismus-Design!
+- Der alte Cyberpunk/Matrix-Look (Neon-Grün, Dunkle Themes, Scanlines) wurde vollständig entfernt.
+- Neue taktische, erhabene Interfaces für mehr Realismus.
+- Stabilitätsverbesserung: Cloud Functions sind nun sicher mit der Firestore-Datenbank verknüpft.
