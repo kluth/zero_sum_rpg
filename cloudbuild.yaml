@@ -1,6 +1,6 @@
 steps:
   # 1. Test the Go Backend
-  - name: 'golang:1.25'
+  - name: 'golang:1.22'
     entrypoint: 'bash'
     args:
       - '-c'
@@ -10,7 +10,7 @@ steps:
         go test -v -cover ./...
 
   # 2. Build the Backend Binary
-  - name: 'golang:1.25'
+  - name: 'golang:1.22'
     entrypoint: 'bash'
     args:
       - '-c'
@@ -31,15 +31,18 @@ steps:
         npm run test -- --watch=false --browsers=ChromeHeadless || true
         npm run build -- --configuration production
 
-  # 4. Android Linting & Unit Tests
+  # 4. Android Linting & Unit Tests & Build
   - name: 'ghcr.io/cirruslabs/android-sdk:34'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
         cd zero_sum_android
+        echo "$$ANDROID_KEYSTORE_B64" | base64 -d > app/upload-keystore.jks
         ./gradlew lintRelease testReleaseUnitTest
         ./gradlew bundleRelease
+        ./gradlew assembleDebug
+    secretEnv: ['ANDROID_KEYSTORE_B64']
 
   # 5. Automated AI Testing via Firebase Test Lab (Robo Test)
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
@@ -49,7 +52,7 @@ steps:
       - |
         gcloud firebase test android run \
           --type robo \
-          --app zero_sum_android/app/build/outputs/bundle/release/app-release.aab \
+          --app zero_sum_android/app/build/outputs/apk/debug/app-debug.apk \
           --device model=Pixel3,version=30,locale=en,orientation=portrait \
           --timeout 3m
 
@@ -60,13 +63,12 @@ steps:
       - '-c'
       - |
         cd zero_sum_android
-        echo "$$ANDROID_KEYSTORE_B64" | base64 -d > app/upload-keystore.jks
         echo "$$PLAY_STORE_KEY" > /tmp/google-play-api-key.json
         apt-get update && apt-get install -y ruby-full build-essential
         gem install bundler
         gem install fastlane
         fastlane deploy
-    secretEnv: ['PLAY_STORE_KEY', 'ANDROID_KEYSTORE_B64']
+    secretEnv: ['PLAY_STORE_KEY']
 
   # 7. Deploy Firebase Backend (Functions & Database Rules)
   - name: 'node:20'
