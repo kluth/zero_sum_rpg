@@ -74,15 +74,14 @@ object EngineProvider {
     }
 }
 
-val AcidGreen = Color(0xFF39FF14)
-val DarkBackground = Color(0xFF0A0A0C)
-val GlassBackground = Color(0x0500F0FF)
-val ToughpadArmor = Color(0xFF1E211D)
-val ArmorHighlight = Color(0xFF454B41)
-val TerminalGreen = Color(0xFF4AF626)
-val TerminalDark = Color(0xFF091F05)
+val DarkBackground = Color(0xFFE8EAF0) // SilkCoolGray
+val GlassBackground = Color(0xFFE8EAF0)
+val ToughpadArmor = Color(0xFFE8EAF0)
+val ArmorHighlight = Color(0xFFE8EAF0)
+val TerminalGreen = Color(0xFF6366F1) // SilkIndigo
+val TerminalDark = Color(0xFFE8EAF0)
 val DangerRed = Color(0xFFFF2A00)
-val WarningAmber = Color(0xFFFFB300)
+val WarningAmber = Color(0xFF7C3AED) // Tertiary Violet
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -99,7 +98,7 @@ class MainActivity : ComponentActivity() {
         
         setContent {
             MaterialTheme(
-                colorScheme = darkColorScheme(
+                colorScheme = lightColorScheme(
                     background = DarkBackground,
                     surface = DarkBackground,
                     primary = TerminalGreen,
@@ -349,8 +348,8 @@ fun HeaderSection(sessionId: String, remainingData: Float) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(GlassBackground, RoundedCornerShape(8.dp))
-            .border(1.dp, TerminalGreen.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
+            .background(DarkBackground, RoundedCornerShape(8.dp))
+            .neumorphic()
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -374,7 +373,7 @@ fun HeaderSection(sessionId: String, remainingData: Float) {
             }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("SESSION: $sessionId", color = Color.White, fontSize = 12.sp, modifier = Modifier.align(Alignment.CenterVertically))
+            Text("SESSION: $sessionId", color = SilkIndigo, fontSize = 12.sp, modifier = Modifier.align(Alignment.CenterVertically))
         }
     }
 }
@@ -384,11 +383,8 @@ fun SystemBlackoutScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF0A0A0C))
-            .padding(32.dp)
-            .cctvStaticNoise()
-            .blackoutFade(isBlackout = true)
-            .crtFlicker(),
+            .background(DarkBackground)
+            .padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -428,16 +424,16 @@ fun CharacterSheetSection(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxHeight()
-            .background(ToughpadArmor, RoundedCornerShape(16.dp))
-            .border(4.dp, ArmorHighlight, RoundedCornerShape(16.dp))
+            .background(DarkBackground, RoundedCornerShape(16.dp))
+            .neumorphic()
             .padding(12.dp)
     ) {
         // Inner Screen
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(TerminalDark, RoundedCornerShape(8.dp))
-                .border(2.dp, TerminalGreen.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
+                .background(DarkBackground, RoundedCornerShape(8.dp))
+                .neumorphic(isPressed = true)
                 .padding(16.dp)
         ) {
             // Screen Content
@@ -566,52 +562,8 @@ fun CharacterSheetSection(modifier: Modifier = Modifier) {
                 }
             }
             
-            // Overlays (Cracked Screen & Scanlines)
-            Spacer(modifier = Modifier.fillMaxSize().drawWithCache {
-                val path1 = Path().apply {
-                    moveTo(size.width * 0.8f, 0f)
-                    lineTo(size.width * 0.7f, size.height * 0.3f)
-                    lineTo(size.width * 0.9f, size.height * 0.5f)
-                    lineTo(size.width * 0.6f, size.height * 0.8f)
-                    lineTo(size.width * 0.75f, size.height)
-                }
-                val path2 = Path().apply {
-                    moveTo(size.width * 0.7f, size.height * 0.3f)
-                    lineTo(size.width * 0.3f, size.height * 0.4f)
-                    lineTo(0f, size.height * 0.35f)
-                }
-                val path3 = Path().apply {
-                    moveTo(size.width * 0.6f, size.height * 0.8f)
-                    lineTo(size.width * 0.4f, size.height)
-                }
-                val barHeight = 2.dp.toPx()
-                val gap = 4.dp.toPx()
-
-                onDrawBehind {
-                    drawPath(path = path1, color = Color.White.copy(alpha = 0.15f), style = Stroke(width = 3f))
-                    drawPath(path = path2, color = Color.White.copy(alpha = 0.1f), style = Stroke(width = 2f))
-                    drawPath(path = path3, color = Color.White.copy(alpha = 0.1f), style = Stroke(width = 1.5f))
-                    
-                    var y = 0f
-                    while (y < size.height) {
-                        drawRect(
-                            color = Color.Black.copy(alpha = 0.1f),
-                            topLeft = Offset(0f, y),
-                            size = Size(size.width, barHeight)
-                        )
-                        y += barHeight + gap
-                    }
-                }
-            })
         }
-        
-        // Screws in the corners of the chassis
-        val screwColor = Color(0xFF111111)
-        val screwRadius = 6.dp
-        Box(modifier = Modifier.align(Alignment.TopStart).padding(4.dp).size(screwRadius * 2).background(screwColor, CircleShape))
-        Box(modifier = Modifier.align(Alignment.TopEnd).padding(4.dp).size(screwRadius * 2).background(screwColor, CircleShape))
-        Box(modifier = Modifier.align(Alignment.BottomStart).padding(4.dp).size(screwRadius * 2).background(screwColor, CircleShape))
-        Box(modifier = Modifier.align(Alignment.BottomEnd).padding(4.dp).size(screwRadius * 2).background(screwColor, CircleShape))
+
     }
 }
 
@@ -653,8 +605,8 @@ fun DiceRollerSection(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxHeight()
-            .background(GlassBackground, RoundedCornerShape(8.dp))
-            .border(1.dp, TerminalGreen.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
+            .background(DarkBackground, RoundedCornerShape(8.dp))
+            .neumorphic()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
