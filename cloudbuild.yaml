@@ -87,7 +87,7 @@ availableSecrets:
       env: 'PLAY_STORE_KEY'
     - versionName: projects/$PROJECT_ID/secrets/android_keystore_b64/versions/latest
       env: 'ANDROID_KEYSTORE_B64'
-    - versionName: projects/$PROJECT_ID/secrets/firebase_token/versions/latest
+    - versionName: projects/$PROJECT_ID/secrets/firebase-token/versions/latest
       env: 'FIREBASE_TOKEN'
 
 options:
