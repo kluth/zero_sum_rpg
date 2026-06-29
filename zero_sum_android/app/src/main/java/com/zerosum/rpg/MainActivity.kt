@@ -58,6 +58,8 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.ui.input.pointer.pointerInput
 
 object EngineProvider {
     var audio: AudioEngine? = null
@@ -312,6 +314,7 @@ fun GameScreen(sessionId: String) {
     )
 
     var isLightTableMode by remember { mutableStateOf(false) }
+    var selectedTab by remember { mutableStateOf(0) } // 0 = Profile, 1 = Map, 2 = Comms
 
     if (isLightTableMode) {
         LightTableScreen(onClose = { isLightTableMode = false })
@@ -324,25 +327,71 @@ fun GameScreen(sessionId: String) {
                     .fillMaxSize()
                     .padding(16.dp)
             ) {
-            HeaderSection(sessionId, remainingData)
-        Spacer(modifier = Modifier.height(16.dp))
-        Column(modifier = Modifier.weight(1f)) {
-            CharacterSheetSection(modifier = Modifier.weight(1f))
-            Spacer(modifier = Modifier.height(16.dp))
-            Column(modifier = Modifier.weight(2f)) {
-                DiceRollerSection(modifier = Modifier.weight(1f))
+                HeaderSection(sessionId, remainingData)
                 Spacer(modifier = Modifier.height(16.dp))
-                MapGeneratorSection(modifier = Modifier.weight(1.5f))
+                
+                Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                    when(selectedTab) {
+                        0 -> CharacterSheetSection(modifier = Modifier.fillMaxSize())
+                        1 -> MapGeneratorSection(modifier = Modifier.fillMaxSize())
+                        2 -> Column(modifier = Modifier.fillMaxSize()) {
+                                 DiceRollerSection(modifier = Modifier.weight(1f))
+                                 Spacer(modifier = Modifier.height(16.dp))
+                                 RemoteCommsSection(modifier = Modifier.weight(1f), onLightTableActivate = { isLightTableMode = true })
+                             }
+                    }
+                }
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                // Neomorphic Bottom Bar
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(DarkBackground, RoundedCornerShape(24.dp))
+                        .neumorphic(cornerRadius = 24.dp)
+                        .padding(8.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    TabButton("PROFILE", selectedTab == 0, Modifier.weight(1f)) { selectedTab = 0 }
+                    TabButton("MAP", selectedTab == 1, Modifier.weight(1f)) { selectedTab = 1 }
+                    TabButton("COMMS", selectedTab == 2, Modifier.weight(1f)) { selectedTab = 2 }
+                }
             }
-            Spacer(modifier = Modifier.height(16.dp))
-            RemoteCommsSection(modifier = Modifier.weight(1f), onLightTableActivate = { isLightTableMode = true })
-        }
-        }
         }
     }
     
     if (isCritical && !isBlackout) {
         Box(modifier = Modifier.fillMaxSize().background(Color.Red.copy(alpha = flashAlpha)))
+    }
+}
+
+@Composable
+fun TabButton(text: String, isSelected: Boolean, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    val haptic = LocalHapticFeedback.current
+    Box(
+        modifier = modifier
+            .padding(horizontal = 4.dp)
+            .background(DarkBackground, RoundedCornerShape(16.dp))
+            .neumorphic(isPressed = isSelected, cornerRadius = 16.dp)
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        onClick()
+                    }
+                )
+            }
+            .padding(vertical = 12.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = text,
+            fontFamily = FontFamily.SansSerif,
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+            color = if (isSelected) SilkIndigo else Color.Gray,
+            fontSize = 12.sp
+        )
     }
 }
 
@@ -449,14 +498,14 @@ fun CharacterSheetSection(modifier: Modifier = Modifier) {
                 ) {
                     Text(
                         text = "SYS.OS.MIL // OFFLINE",
-                        fontFamily = FontFamily.Monospace,
+                        fontFamily = FontFamily.SansSerif,
                         color = TerminalGreen,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
                         text = "UPLINK ERR",
-                        fontFamily = FontFamily.Monospace,
+                        fontFamily = FontFamily.SansSerif,
                         color = DangerRed,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
@@ -536,7 +585,7 @@ fun CharacterSheetSection(modifier: Modifier = Modifier) {
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = className.uppercase(),
-                                fontFamily = FontFamily.Monospace,
+                                fontFamily = FontFamily.SansSerif,
                                 color = if (selectedClass == className) TerminalGreen else TerminalGreen.copy(alpha = 0.7f),
                                 fontWeight = if (selectedClass == className) FontWeight.Bold else FontWeight.Normal,
                                 fontSize = 14.sp

@@ -63,32 +63,70 @@ fun Modifier.neumorphic(
             val frameworkPaint = paint.asFrameworkPaint()
             val blurPx = blur.toPx()
             val offsetPx = offset.toPx()
-
+            
             if (blurPx > 0f) {
-                // Light shadow (top-left)
-                frameworkPaint.color = android.graphics.Color.TRANSPARENT
-                frameworkPaint.setShadowLayer(
-                    blurPx,
-                    -offsetPx,
-                    -offsetPx,
-                    lightShadowColor.toArgb()
-                )
-                canvas.drawRoundRect(
-                    left = 0f, top = 0f, right = size.width, bottom = size.height,
-                    radiusX = cornerRadius.toPx(), radiusY = cornerRadius.toPx(), paint = paint
-                )
+                if (!isPressed) {
+                    // DROP SHADOW (Raised)
+                    // Light shadow (top-left)
+                    frameworkPaint.color = android.graphics.Color.TRANSPARENT
+                    frameworkPaint.setShadowLayer(blurPx, -offsetPx, -offsetPx, lightShadowColor.toArgb())
+                    canvas.drawRoundRect(
+                        left = 0f, top = 0f, right = size.width, bottom = size.height,
+                        radiusX = cornerRadius.toPx(), radiusY = cornerRadius.toPx(), paint = paint
+                    )
+    
+                    // Dark shadow (bottom-right)
+                    frameworkPaint.setShadowLayer(blurPx, offsetPx, offsetPx, darkShadowColor.toArgb())
+                    canvas.drawRoundRect(
+                        left = 0f, top = 0f, right = size.width, bottom = size.height,
+                        radiusX = cornerRadius.toPx(), radiusY = cornerRadius.toPx(), paint = paint
+                    )
+                } else {
+                    // INNER SHADOW (Inset)
+                    // For a true inset shadow without complex clipping, we draw soft strokes inside the bounds.
+                    val strokeWidth = offsetPx * 2f
+                    
+                    // Dark inner shadow (top-left)
+                    val darkPaint = Paint().apply {
+                        color = darkShadowColor.copy(alpha = 0.5f)
+                        style = androidx.compose.ui.graphics.PaintingStyle.Stroke
+                        this.strokeWidth = strokeWidth
+                        asFrameworkPaint().apply {
+                            setShadowLayer(blurPx, offsetPx, offsetPx, darkShadowColor.toArgb())
+                        }
+                    }
+                    
+                    // Light inner shadow (bottom-right)
+                    val lightPaint = Paint().apply {
+                        color = lightShadowColor.copy(alpha = 0.5f)
+                        style = androidx.compose.ui.graphics.PaintingStyle.Stroke
+                        this.strokeWidth = strokeWidth
+                        asFrameworkPaint().apply {
+                            setShadowLayer(blurPx, -offsetPx, -offsetPx, lightShadowColor.toArgb())
+                        }
+                    }
 
-                // Dark shadow (bottom-right)
-                frameworkPaint.setShadowLayer(
-                    blurPx,
-                    offsetPx,
-                    offsetPx,
-                    darkShadowColor.toArgb()
-                )
-                canvas.drawRoundRect(
-                    left = 0f, top = 0f, right = size.width, bottom = size.height,
-                    radiusX = cornerRadius.toPx(), radiusY = cornerRadius.toPx(), paint = paint
-                )
+                    // Clip to exact shape to prevent bleeding outside
+                    val clipPath = androidx.compose.ui.graphics.Path().apply {
+                        addRoundRect(androidx.compose.ui.geometry.RoundRect(0f, 0f, size.width, size.height, androidx.compose.ui.geometry.CornerRadius(cornerRadius.toPx(), cornerRadius.toPx())))
+                    }
+                    
+                    canvas.save()
+                    canvas.clipPath(clipPath)
+                    
+                    // Draw strokes offset so their shadow falls *inside* the view
+                    canvas.drawRoundRect(
+                        left = -strokeWidth, top = -strokeWidth, right = size.width + strokeWidth, bottom = size.height + strokeWidth,
+                        radiusX = cornerRadius.toPx(), radiusY = cornerRadius.toPx(), paint = darkPaint
+                    )
+                    
+                    canvas.drawRoundRect(
+                        left = -strokeWidth, top = -strokeWidth, right = size.width + strokeWidth, bottom = size.height + strokeWidth,
+                        radiusX = cornerRadius.toPx(), radiusY = cornerRadius.toPx(), paint = lightPaint
+                    )
+                    
+                    canvas.restore()
+                }
             }
         }
     }
@@ -112,24 +150,11 @@ fun SilkButton(
     val hapticEngine = remember { EngineProvider.getHaptic(context) }
     val audioEngine = remember { EngineProvider.getAudio(context) }
 
-    // Gradient for realistic 3D volume extrusion
-    val gradientColors = if (isPressed) {
-        listOf(SilkCoolGray, SilkShadowLight.copy(alpha = 0.5f))
-    } else {
-        listOf(SilkShadowLight.copy(alpha = 0.7f), SilkCoolGray)
-    }
-
     var finalModifier = modifier
         .scale(scale)
         .neumorphic(isPressed = isPressed, cornerRadius = 12.dp)
         .clip(RoundedCornerShape(12.dp))
-        .background(
-            brush = Brush.linearGradient(
-                colors = gradientColors,
-                start = Offset.Zero,
-                end = Offset.Infinite
-            )
-        )
+        .background(SilkCoolGray)
         
     if (isCritical) {
         finalModifier = finalModifier.neumorphicBreathing()
