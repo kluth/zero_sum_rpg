@@ -53,6 +53,7 @@ steps:
         gcloud firebase test android run \
           --type robo \
           --app zero_sum_android/app/build/outputs/apk/debug/app-debug.apk \
+          --results-bucket mister-know-it-all-test-lab-results \
           --timeout 3m
 
   # 6. Deploy Android App to Google Play
