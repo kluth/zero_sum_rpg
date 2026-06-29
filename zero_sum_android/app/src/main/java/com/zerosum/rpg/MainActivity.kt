@@ -336,7 +336,7 @@ fun GameScreen(sessionId: String) {
                         0 -> CharacterSheetSection(modifier = Modifier.fillMaxSize())
                         1 -> MapGeneratorSection(modifier = Modifier.fillMaxSize())
                         2 -> Column(modifier = Modifier.fillMaxSize()) {
-                                 DiceRollerSection(modifier = Modifier.weight(1f))
+                                 AcousticPhysicsSection(modifier = Modifier.weight(1f))
                                  Spacer(modifier = Modifier.height(16.dp))
                                  RemoteCommsSection(modifier = Modifier.weight(1f), onLightTableActivate = { isLightTableMode = true })
                              }
@@ -661,7 +661,7 @@ fun StatBar(label: String, current: Int, max: Int, color: Color) {
 }
 
 @Composable
-fun DiceRollerSection(modifier: Modifier = Modifier) {
+fun AcousticPhysicsSection(modifier: Modifier = Modifier) {
     val uiState by NetworkManager.uiState.collectAsStateWithLifecycle()
     val mapState = uiState.map
 
@@ -680,7 +680,7 @@ fun DiceRollerSection(modifier: Modifier = Modifier) {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("ACOUSTIC PHYSICS & SNR CALC", color = Color.Gray, fontSize = 12.sp, modifier = Modifier.align(Alignment.Start))
+        Text("ACOUSTIC SENSOR & SNR", color = Color.Gray, fontSize = 12.sp, modifier = Modifier.align(Alignment.Start))
         
         Box(
             modifier = Modifier
@@ -690,23 +690,23 @@ fun DiceRollerSection(modifier: Modifier = Modifier) {
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 if (snrResult != null) {
-                    Text("SNR: $snrResult", color = TerminalGreen, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    Text("SNR: $snrResult dB", color = TerminalGreen, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                     Text("AUDIBLE RANGE: $acousticRange", color = WarningAmber, fontSize = 14.sp)
                     Text("RAYCAST HIT: $raycastMaterial", color = Color.Gray, fontSize = 12.sp)
                 } else {
-                    Text("WAITING FOR SIGNAL", color = Color.DarkGray, fontSize = 18.sp)
+                    Text("WAITING FOR PING", color = Color.DarkGray, fontSize = 18.sp)
                 }
             }
         }
         
         SilkButton(
-            text = if (isCalculating) "CALCULATING..." else "SOLVE PHYSICS",
+            text = if (isCalculating) "SCANNING..." else "PING ENVIRONMENT",
             onClick = {
                 if (isCalculating) return@SilkButton
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 coroutineScope.launch {
                     isCalculating = true
-                    delay(300)
+                    delay(500)
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     
                     val mapMaterials = mapState?.grid?.map { it.material }?.distinct()?.filter { it != "None" && it.isNotEmpty() } ?: emptyList()
@@ -726,16 +726,13 @@ fun DiceRollerSection(modifier: Modifier = Modifier) {
                     raycastMaterial = "$actualMaterial (-${dropOff}dB)"
 
                     val ambientDb = Random.nextInt(40, 60)
-                    val gunshotDb = 140
-                    val dropRequired = gunshotDb - ambientDb - dropOff
+                    val sourceDb = 110 // Average loud noise source
+                    val dropRequired = sourceDb - ambientDb - dropOff
                     val distanceMeters = if (dropRequired <= 0) 1 else Math.pow(2.0, dropRequired / 6.0).toInt()
                     
-                    val stealthScore = uiState.character?.stats?.stealth_total ?: 50
-                    val pSignal = Math.pow(10.0, (100 - stealthScore) / 10.0)
-                    val pNoise = Math.pow(10.0, ambientDb / 10.0)
-                    val snr = String.format("%.2f", pSignal / pNoise)
+                    val snr = sourceDb - ambientDb
                     
-                    snrResult = snr
+                    snrResult = "$snr"
                     acousticRange = "$distanceMeters METERS"
                     isCalculating = false
                 }
