@@ -131,22 +131,25 @@ enum class AppScreen { LOBBY, GAME }
 fun ZeroSumApp(isTestLab: Boolean) {
     var currentScreen by remember { mutableStateOf(AppScreen.LOBBY) }
     var sessionId by remember { mutableStateOf("") }
+    var userRole by remember { mutableStateOf("Sanitäter") }
 
     if (currentScreen == AppScreen.LOBBY) {
         LobbyScreen(
             onHost = { role ->
                 NetworkManager.processIntent(PlayerIntent.HostSession)
                 sessionId = "HOSTING" 
+                userRole = role
                 currentScreen = AppScreen.GAME
             },
             onJoin = { pin, role ->
                 NetworkManager.processIntent(PlayerIntent.JoinSession(pin))
                 sessionId = pin
+                userRole = role
                 currentScreen = AppScreen.GAME
             }
         )
     } else {
-        GameScreen(sessionId)
+        GameScreen(sessionId, userRole)
     }
 }
 
